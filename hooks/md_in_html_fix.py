@@ -21,7 +21,7 @@ def _replace_gitcode_url(m, page_dir: Path, docs_dir: Path):
     return str(Path(local_abs).relative_to(page_dir))
 
 
-def on_page_markdown(markdown, page, docs_dir, **kwargs):
+def on_page_markdown(markdown, page, config, **kwargs):
     # 1. 给 <div> 注入 markdown="1"
     markdown = re.sub(
         r'<div(?![^>]*\bmarkdown=)([^>]*)>',
@@ -32,7 +32,7 @@ def on_page_markdown(markdown, page, docs_dir, **kwargs):
     # 2. 替换 raw.gitcode.com 外链为本地相对路径
     page_dir = Path(page.file.abs_src_path).parent
     markdown = _GITCODE_RAW.sub(
-        lambda m: _replace_gitcode_url(m, page_dir, Path(docs_dir)),
+        lambda m: _replace_gitcode_url(m, page_dir, Path(config.docs_dir)),
         markdown,
     )
 
