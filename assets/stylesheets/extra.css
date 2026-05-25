@@ -1,7 +1,38 @@
-.wy-nav-content {
-  max-width: none;
+/* =====================
+   内容区宽度
+   ===================== */
+.md-grid {
+  max-width: 1440px;
 }
 
-.wy-nav-content-wrap {
-  background: #fcfcfc;
+/* =====================
+   表格
+   ===================== */
+.md-typeset table:not([class]) {
+  display: table;
+  width: 100%;
+  font-size: 0.75rem;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  white-space: nowrap;
+}
+
+/* =====================
+   代码
+   ===================== */
+.md-typeset code {
+  font-size: 0.85em;
+}
+
+/* =====================
+   徽章图片行内对齐
+   ===================== */
+.md-typeset img[src*="badgen.net"],
+.md-typeset img[src*="shields.io"] {
+  display: inline;
+  vertical-align: middle;
+  margin: 0 2px;
 }

@@ -7,9 +7,33 @@ edit_uri: edit/master/
 
 docs_dir: .
 site_dir: ../site
+
 theme:
-  name: readthedocs
-  navigation_depth: 10
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换至深色模式
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换至浅色模式
+  features:
+    - navigation.top          # 回到顶部按钮
+    - navigation.indexes      # 章节首页
+    - navigation.expand       # 自动展开当前章节
+    - search.highlight        # 高亮搜索词
+    - search.suggest          # 搜索联想
+    - search.share            # 可分享搜索链接
+    - content.code.copy       # 代码块一键复制
+    - content.action.edit     # 页面编辑按钮
+    - content.tooltips        # 缩写悬浮提示
 
 use_directory_urls: true
 
@@ -20,11 +44,40 @@ extra_javascript:
   - assets/javascripts/readthedocs-search.js
 
 plugins:
-  - search
+  - search:
+      lang:
+        - zh
+        - en
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|(?!\b)(?=[A-Z][a-z])'
   - same-dir
+  - glightbox
+  - git-revision-date-localized:
+      enable_creation_date: false
+      fallback_to_build_date: true
 
 markdown_extensions:
   - md_in_html
+  - tables
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 hooks:
   - hooks/nav_tree.py
