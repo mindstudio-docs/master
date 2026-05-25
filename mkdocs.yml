@@ -1,6 +1,9 @@
 site_name: MindStudio GitHub Docs
 site_description: MindStudio tools documentation collection
-site_url: ""
+site_url: https://mindstudio-docs-master.readthedocs.io/
+repo_url: https://github.com/mindstudio-docs/master
+repo_name: mindstudio-docs/master
+edit_uri: edit/master/
 
 docs_dir: .
 site_dir: ../site
@@ -32,32 +35,7 @@ validation:
     absolute_links: ignore
     unrecognized_links: ignore
 
-nav:
-  - Home: README.md
-  - Tools:
-      - msdebug: msdebug/README.md
-      - msinsight: msinsight/README.md
-      - msit: msit/README.md
-      - mskl: mskl/README.md
-      - mskpp: mskpp/README.md
-      - msmemscope: msmemscope/README.md
-      - msmodeling: msmodeling/README.md
-      - msmodelslim: msmodelslim/README.md
-      - msmonitor: msmonitor/README.md
-      - msopcom: msopcom/README.md
-      - msopgen: msopgen/README.md
-      - msopmodeling: msopmodeling/README.md
-      - msopprof: msopprof/README.md
-      - msoptuner: msoptuner/README.md
-      - msot: msot/README.md
-      - msprobe: msprobe/README.md
-      - msprof: msprof/README.md
-      - msprof-analyze: msprof-analyze/README.md
-      - mspti: mspti/README.md
-      - mssanitizer: mssanitizer/README.md
-      - msserviceprofiler: msserviceprofiler/README.md
-      - mstt: mstt/README.md
-      - mstx: mstx/README.md
+# nav 由 hooks/nav_tree.py 在构建时动态生成
 
 exclude_docs: |
   .git/

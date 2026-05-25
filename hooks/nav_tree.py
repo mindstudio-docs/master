@@ -33,14 +33,29 @@ MARKDOWN_LINK_RE = re.compile(r"!?\[([^\]]*)\]\([^)]+\)")
 INLINE_MARKUP_RE = re.compile(r"[`*_]+")
 
 
+NON_TOOL_DIRS = {"assets", "hooks", "site"}
+
+
 def on_config(config):
     docs_dir = Path(config["docs_dir"])
-    tools = []
 
-    for tool in TOOL_ORDER:
+    # 自动发现所有工具目录（排除隐藏目录和非工具目录）
+    discovered = {
+        d.name
+        for d in docs_dir.iterdir()
+        if d.is_dir() and not d.name.startswith(".") and d.name not in NON_TOOL_DIRS
+    }
+
+    # 按 TOOL_ORDER 排序，未列出的目录追加到末尾（字母序）
+    ordered = [t for t in TOOL_ORDER if t in discovered]
+    ordered += sorted(discovered - set(TOOL_ORDER))
+
+    tools = []
+    for tool in ordered:
         tool_dir = docs_dir / tool
-        if tool_dir.is_dir():
-            tools.append({tool: build_directory_nav(tool_dir, docs_dir)})
+        nav_items = build_directory_nav(tool_dir, docs_dir)
+        if nav_items:
+            tools.append({tool: nav_items})
 
     config["nav"] = [
         {"Home": "README.md"},
