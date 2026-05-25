@@ -2,13 +2,13 @@
 
 MindStudio是华为面向昇腾AI开发者提供的全流程工具链，致力于提供端到端的昇腾AI应用开发解决方案，使能开发者高效完成训练开发、推理开发和算子开发。
 
-## 各工具文档入口
+## 工具简介及资料入口
 
 | 工具目录 | 功能简介 | README |
 | --- | --- | --- |
-| mstt | 训练开发工具链，提供分析迁移、精度调试与性能调优能力，助力实现精度与性能双优。 | [mstt/README.md](mstt/README.md) |
-| msit | 推理开发工具链，提供模型压缩、调试与调优等能力，助力用户实现最优推理性能。 | [msit/README.md](msit/README.md) |
-| msot | 算子开发工具链，提供算子设计、开发框架生成、功能调试、异常检测与多维性能调优等能力。 | [msot/README.md](msot/README.md) |
+| mstt | **【训练开发工具链】** 提供分析迁移、精度调试与性能调优能力，助力实现精度与性能双优。 | [mstt/README.md](mstt/README.md) |
+| msit | **【推理开发工具链】** 提供模型压缩、调试与调优等能力，助力用户实现最优推理性能。 | [msit/README.md](msit/README.md) |
+| msot | **【算子开发工具链】** 提供算子设计、开发框架生成、功能调试、异常检测与多维性能调优等能力。 | [msot/README.md](msot/README.md) |
 | msprobe | **【精度调试】** 昇腾全场景精度工具，用于精度调试与问题定位。 | [msprobe/README.md](msprobe/README.md) |
 | msprof | **【模型调优】** 全场景性能调优底座，采集软硬件全栈性能数据，提升设备调优效率。 | [msprof/README.md](msprof/README.md) |
 | msprof-analyze | **【性能分析】** 基于采集数据做性能分析，快速识别性能瓶颈。 | [msprof-analyze/README.md](msprof-analyze/README.md) |
