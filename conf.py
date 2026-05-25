@@ -10,7 +10,7 @@ source_suffix = {
     ".rst": "restructuredtext",
     ".md": "markdown",
 }
-master_doc = "README"
+master_doc = "index"
 
 html_theme = "sphinx_rtd_theme"
 html_theme_options = {
@@ -33,6 +33,7 @@ exclude_patterns = [
     ".readthedocs.yaml",
     "mkdocs.yml",
     "requirements.txt",
+    "README.md",
 ]
 
 suppress_warnings = [
