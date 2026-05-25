@@ -27,7 +27,6 @@ theme:
   features:
     - navigation.top          # 回到顶部按钮
     - navigation.indexes      # 章节首页
-    - navigation.expand       # 自动展开当前章节
     - search.highlight        # 高亮搜索词
     - search.suggest          # 搜索联想
     - search.share            # 可分享搜索链接
