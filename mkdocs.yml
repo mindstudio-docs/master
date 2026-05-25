@@ -51,9 +51,6 @@ plugins:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|(?!\b)(?=[A-Z][a-z])'
   - same-dir
   - glightbox
-  - git-revision-date-localized:
-      enable_creation_date: false
-      fallback_to_build_date: true
 
 markdown_extensions:
   - md_in_html
