@@ -4,6 +4,7 @@
 2. 将 raw.gitcode.com/Ascend/{repo}/raw/master/{path} 外链替换为
    本地相对路径，解决 ReadTheDocs 无法加载防盗链图片的问题。
 """
+import os
 import re
 from pathlib import Path
 
@@ -18,7 +19,7 @@ def _replace_gitcode_url(m, page_dir: Path, docs_dir: Path):
     local_abs = docs_dir / repo / file_path
     if not local_abs.exists():
         return m.group(0)  # 本地不存在则保留原链接
-    return str(Path(local_abs).relative_to(page_dir))
+    return os.path.relpath(local_abs, page_dir)
 
 
 def on_page_markdown(markdown, page, config, **kwargs):
