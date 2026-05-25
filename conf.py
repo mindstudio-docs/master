@@ -33,17 +33,24 @@ exclude_patterns = [
     ".readthedocs.yaml",
     "mkdocs.yml",
     "requirements.txt",
-    "*/docs/**",
-    "*/src/**",
-    "*/example/**",
-    "*/examples/**",
-    "*/test/**",
-    "*/tests/**",
 ]
 
 suppress_warnings = [
     "myst.header",
     "myst.xref_missing",
     "toc.not_included",
+    "toc.not_readable",
+    "image.not_readable",
+    "docutils",
     "misc.highlighting_failure",
 ]
+
+
+def drop_directory_images(app, env):
+    for filename in list(env.images.keys()):
+        if (app.srcdir / filename).is_dir():
+            env.images.pop(filename, None)
+
+
+def setup(app):
+    app.connect("env-updated", drop_directory_images)
