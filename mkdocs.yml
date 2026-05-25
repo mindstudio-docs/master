@@ -9,6 +9,9 @@ theme:
 
 use_directory_urls: true
 
+extra_css:
+  - assets/stylesheets/extra.css
+
 plugins:
   - search
   - same-dir
@@ -52,6 +55,9 @@ nav:
 exclude_docs: |
   .git/
   .devin/
+  .idea/
+  .venv/
+  .mkdocs*/
   .readthedocs.yaml
   mkdocs.yml
   requirements.txt
