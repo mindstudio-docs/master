@@ -5,10 +5,14 @@ document.addEventListener("DOMContentLoaded", function () {
   var searchForms = document.querySelectorAll("form[role='search'], #rtd-search-form");
   var syncTimer = null;
   var enhancedInputs = new WeakSet();
+  var composingInputs = new WeakSet();
 
   function getSearchQuery(query) {
     var chineseChars = query.match(/[\u4e00-\u9fff]/g);
 
+    // Read the Docs Addons currently ignores queries shorter than 3 chars.
+    // A trailing space lets two-character Chinese terms, such as "算子",
+    // reach the server-side search API without changing the visible query.
     if (chineseChars && query.length < 3) {
       return query + " ";
     }
@@ -31,9 +35,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     enhancedInputs.add(input);
+    input.addEventListener("compositionstart", function () {
+      composingInputs.add(input);
+    });
+    input.addEventListener("compositionend", function () {
+      composingInputs.delete(input);
+    });
     input.addEventListener(
       "input",
       function () {
+        if (composingInputs.has(input)) {
+          return;
+        }
+
         var query = input.value.trim();
         var rtdQuery = getSearchQuery(query);
 
@@ -49,6 +63,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getReadTheDocsSearchInput() {
+    // The official Addons search box is rendered inside a web component shadow
+    // root. There is no public API for pre-filling it, so this bridge locates
+    // the component input and dispatches its normal input event.
     var elements = document.querySelectorAll("*");
 
     for (var index = 0; index < elements.length; index += 1) {
@@ -64,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return null;
   }
 
-  function syncReadTheDocsSearch(query) {
+  function openRtdSearchWithQuery(query) {
     var input = getReadTheDocsSearchInput();
 
     if (!input) {
@@ -101,9 +118,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     clearTimeout(syncTimer);
     syncTimer = setTimeout(function () {
-      if (!syncReadTheDocsSearch(query)) {
+      if (!openRtdSearchWithQuery(query)) {
         setTimeout(function () {
-          syncReadTheDocsSearch(query);
+          openRtdSearchWithQuery(query);
         }, 300);
       }
     }, 50);
