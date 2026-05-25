@@ -12,6 +12,9 @@ use_directory_urls: true
 extra_css:
   - assets/stylesheets/extra.css
 
+extra_javascript:
+  - assets/javascripts/readthedocs-search.js
+
 plugins:
   - search:
       separator: '[\s\u200b\-]+'
