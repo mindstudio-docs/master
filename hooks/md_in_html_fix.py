@@ -11,9 +11,7 @@ from pathlib import Path
 _GITCODE_RAW = re.compile(
     r'https?://raw\.gitcode\.com/Ascend/([^/]+)/raw/[^/]+/(.+?)(?=["\'\s>])'
 )
-_DIV_WITH_MARKDOWN_RE = re.compile(
-    r'<div(?![^>]*\bmarkdown=)([^>]*)>\s*(?=(?:\n\s*)?(?:[#*>-]|\[|!\[))'
-)
+_DIV_RE = re.compile(r'<div(?![^>]*\bmarkdown=)([^>]*)>')
 
 
 def _replace_gitcode_url(m, page_dir: Path, docs_dir: Path):
@@ -28,13 +26,8 @@ def _replace_gitcode_url(m, page_dir: Path, docs_dir: Path):
     )
 
 
-def _should_enable_md_in_html(page):
-    return Path(page.file.src_path).name == "README.md"
-
-
 def on_page_markdown(markdown, page, config, **kwargs):
-    if _should_enable_md_in_html(page):
-        markdown = _DIV_WITH_MARKDOWN_RE.sub(r'<div\1 markdown="1">', markdown)
+    markdown = _DIV_RE.sub(r'<div\1 markdown="1">', markdown)
 
     page_dir = Path(page.file.abs_src_path).parent
     markdown = _GITCODE_RAW.sub(
