@@ -19,6 +19,9 @@ plugins:
   - search
   - same-dir
 
+hooks:
+  - hooks/nav_tree.py
+
 validation:
   nav:
     omitted_files: ignore
