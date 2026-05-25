@@ -61,10 +61,15 @@ def build_directory_nav(directory, docs_dir):
     if index.is_file():
         items.append({get_title(index): to_nav_path(index, docs_dir)})
 
-    for child in sorted(directory.rglob("*.md"), key=lambda path: path.as_posix().lower()):
-        if child.name in {"README.md", "index.md"}:
+    for child in sorted(directory.iterdir(), key=sort_key):
+        if should_skip_child(child):
             continue
-        items.append({get_flat_title(child, directory): to_nav_path(child, docs_dir)})
+        if child.is_dir():
+            child_items = build_directory_nav(child, docs_dir)
+            if child_items:
+                items.append({child.name: child_items})
+        elif child.suffix.lower() == ".md" and child.name not in {"README.md", "index.md"}:
+            items.append({get_title(child): to_nav_path(child, docs_dir)})
 
     return items
 
@@ -98,13 +103,3 @@ def clean_title(title):
     title = MARKDOWN_LINK_RE.sub(r"\1", title)
     title = INLINE_MARKUP_RE.sub("", title)
     return title.strip() or "Untitled"
-
-
-def get_flat_title(path, tool_dir):
-    title = get_title(path)
-    relative_parent = path.parent.relative_to(tool_dir).as_posix()
-
-    if relative_parent == ".":
-        return title
-
-    return f"{relative_parent} / {title}"
