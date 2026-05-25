@@ -13,8 +13,13 @@ extra_css:
   - assets/stylesheets/extra.css
 
 plugins:
-  - search
+  - search:
+      separator: '[\s\u200b\-]+'
+      min_search_length: 1
   - same-dir
+
+hooks:
+  - hooks/search_zh.py
 
 validation:
   nav:
