@@ -1,3 +1,2 @@
 mkdocs
 mkdocs-same-dir==0.1.2
-jieba

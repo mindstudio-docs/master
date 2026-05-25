@@ -16,13 +16,8 @@ extra_javascript:
   - assets/javascripts/readthedocs-search.js
 
 plugins:
-  - search:
-      separator: '[\s\u200b\-]+'
-      min_search_length: 1
+  - search
   - same-dir
-
-hooks:
-  - hooks/search_zh.py
 
 validation:
   nav:
