@@ -23,8 +23,12 @@ plugins:
   - search
   - same-dir
 
+markdown_extensions:
+  - md_in_html
+
 hooks:
   - hooks/nav_tree.py
+  - hooks/md_in_html_fix.py
 
 validation:
   nav:
