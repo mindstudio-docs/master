@@ -1,7 +1,120 @@
 {
   "repo_notes": [
     {
-      "content": "此仓库为 MindStudio 工具链的完整资料库，依据 mstt、msit 和 msot 目录下的 README.md 文件，按训练、推理和算子三大场景进行组织，各场景包含若干专用工具。重点工具如下：mssanitizer、msopprof、msprof、msprobe、msmodelslim、msinsight。"
+      "content": "This repository is the aggregated documentation source for the MindStudio full-process toolchain. The root README.md is the project entry point. Each top-level tool directory contains its own README.md and may contain additional docs, guides, examples, and design materials. When generating the wiki, treat the repository as a documentation collection rather than a single codebase, and cover all listed tool directories instead of only sampling the first indexed subset."
+    },
+    {
+      "content": "The root README.md table is the canonical overview of all tools and should be used to build the wiki home page. Preserve the tool ordering used in README.md and in hooks/nav_tree.py where applicable."
+    }
+  ],
+  "pages": [
+    {
+      "title": "MindStudio Full-Process Toolchain Overview",
+      "purpose": "Provide the wiki home page. Summarize the repository purpose, explain that it aggregates MindStudio tool documentation, and list every top-level tool directory with a short function summary based on the root README.md and each tool README.md."
+    },
+    {
+      "title": "Training Toolchain",
+      "purpose": "Summarize the training-related tools and documentation, especially mstt and related precision, profiling, monitoring, and memory tools. Use the README.md files and docs under mstt, msprobe, msprof, msprof-analyze, mspti, msmemscope, msmonitor, mssanitizer, and msserviceprofiler."
+    },
+    {
+      "title": "Inference Toolchain",
+      "purpose": "Summarize the inference-related tools and documentation, especially msit and supporting tools. Use the README.md files and docs under msit, msmodelslim, mskl, mskpp, msdebug, msmodeling, and msinsight."
+    },
+    {
+      "title": "Operator Development Toolchain",
+      "purpose": "Summarize the operator development and optimization tools. Use the README.md files and docs under msot, msopcom, msopgen, msopmodeling, msopprof, msoptuner, and mstx."
+    },
+    {
+      "title": "msdebug",
+      "purpose": "Document msdebug based on msdebug/README.md and any docs under msdebug."
+    },
+    {
+      "title": "msinsight",
+      "purpose": "Document msinsight based on msinsight/README.md and docs under msinsight, including its visualization, profiling, and performance analysis capabilities."
+    },
+    {
+      "title": "msit",
+      "purpose": "Document msit based on msit/README.md and docs under msit, including model compression, debugging, and inference performance optimization."
+    },
+    {
+      "title": "mskl",
+      "purpose": "Document mskl based on mskl/README.md and docs under mskl."
+    },
+    {
+      "title": "mskpp",
+      "purpose": "Document mskpp based on mskpp/README.md and docs under mskpp."
+    },
+    {
+      "title": "msmemscope",
+      "purpose": "Document msmemscope based on msmemscope/README.md and docs under msmemscope."
+    },
+    {
+      "title": "msmodeling",
+      "purpose": "Document msmodeling based on msmodeling/README.md and docs under msmodeling."
+    },
+    {
+      "title": "msmodelslim",
+      "purpose": "Document msmodelslim based on msmodelslim/README.md and docs under msmodelslim."
+    },
+    {
+      "title": "msmonitor",
+      "purpose": "Document msmonitor based on msmonitor/README.md and docs under msmonitor."
+    },
+    {
+      "title": "msopcom",
+      "purpose": "Document msopcom based on msopcom/README.md and docs under msopcom."
+    },
+    {
+      "title": "msopgen",
+      "purpose": "Document msopgen based on msopgen/README.md and docs under msopgen."
+    },
+    {
+      "title": "msopmodeling",
+      "purpose": "Document msopmodeling based on msopmodeling/README.md and docs under msopmodeling."
+    },
+    {
+      "title": "msopprof",
+      "purpose": "Document msopprof based on msopprof/README.md and docs under msopprof."
+    },
+    {
+      "title": "msoptuner",
+      "purpose": "Document msoptuner based on msoptuner/README.md and docs under msoptuner."
+    },
+    {
+      "title": "msot",
+      "purpose": "Document msot based on msot/README.md and docs under msot, including operator design, development, debugging, exception detection, and multidimensional performance tuning."
+    },
+    {
+      "title": "msprobe",
+      "purpose": "Document msprobe based on msprobe/README.md and docs under msprobe."
+    },
+    {
+      "title": "msprof",
+      "purpose": "Document msprof based on msprof/README.md and docs under msprof."
+    },
+    {
+      "title": "msprof-analyze",
+      "purpose": "Document msprof-analyze based on msprof-analyze/README.md and docs under msprof-analyze."
+    },
+    {
+      "title": "mspti",
+      "purpose": "Document mspti based on mspti/README.md and docs under mspti."
+    },
+    {
+      "title": "mssanitizer",
+      "purpose": "Document mssanitizer based on mssanitizer/README.md and docs under mssanitizer."
+    },
+    {
+      "title": "msserviceprofiler",
+      "purpose": "Document msserviceprofiler based on msserviceprofiler/README.md and docs under msserviceprofiler."
+    },
+    {
+      "title": "mstt",
+      "purpose": "Document mstt based on mstt/README.md and docs under mstt, including migration analysis, precision debugging, and performance tuning."
+    },
+    {
+      "title": "mstx",
+      "purpose": "Document mstx based on mstx/README.md and docs under mstx."
     }
   ]
 }
