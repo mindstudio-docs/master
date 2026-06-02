@@ -98,7 +98,7 @@ rm -rf ~/ot_demo/workspace/src && mkdir -p ~/ot_demo/workspace/src && cd ~/ot_de
 #### 2.2.3 基于配置生成代码框架
 
 **1. 获取芯片型号并拼接参数**   
-参考《[芯片SoC类型获取方法](https://gitcode.com/Ascend/msot/blob/master/docs/zh/quick_start/get_chip_soc_type.md)》获取芯片类型，例如 Ascend910B4。
+执行以下命令获取芯片SoC类型：`python3 -c "import acl; print(acl.get_soc_name())"`。
 
 参数 -c：芯片类型，格式为 `aicpu`/`ai_core-{首字母小写芯片SoC型号}`，ai_core拼接后的示例为：ai_core-ascend910B4、ai_core-ascend910_9392。   
 
