@@ -25,6 +25,10 @@
       "purpose": "Summarize the operator development and optimization tools. Use the README.md files and docs under msot, msopcom, msopgen, msopmodeling, msopprof, msoptuner, and mstx."
     },
     {
+      "title": "msagent",
+      "purpose": "Document msagent based on msagent/README.md and any docs under msagent."
+    },
+    {
       "title": "msdebug",
       "purpose": "Document msdebug based on msdebug/README.md and any docs under msdebug."
     },
