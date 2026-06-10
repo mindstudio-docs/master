@@ -20,6 +20,22 @@ For details, see [Figure 1 msOpGen workflow](#fig1120319585112).
 
 ## Preparations<a id="Preparations"></a>
 
+**Glossary<a id="Glossary"></a>**
+
+| Term | Description |
+|------|------|
+| Host Side | Code running on the CPU, responsible for data preprocessing, operator invocation scheduling, and Tiling computation |
+| Kernel Side | Code running on the NPU (AI Core/Vector Core), responsible for executing large-scale parallel computing |
+| Tiling | A technique for splitting large data into smaller blocks to fully utilize on-chip memory and optimize memory access |
+| GM | Global Memory, off-chip large-capacity storage on the NPU |
+| UB | Unified Buffer, on-chip fast local storage within each AI Core |
+| TQue / TPipe | Pipeline queue management objects in the Ascend C programming framework |
+| DataCopy | Ascend C data transfer API for moving data between GM and UB |
+| EnQue / DeQue | Pipeline synchronization operations for enqueuing and dequeuing data |
+| Soc Version | AI processor chip model identifier for specifying the target hardware platform |
+| aclnn | Single-operator API invocation method for Ascend C operators |
+
+
 After the environment is set up according to the requirements, you can directly use msOpGen.
 
 **Environment Setup<a id="section16705155515116"></a>**

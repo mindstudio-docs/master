@@ -1,44 +1,57 @@
 # MindStudio Ops Generator Installation Guide
 
-## Installation Description
+<br>
 
-MindStudio Ops Generator (msOpGen) is a tool for improving operator development efficiency. It provides the template project generation capability, simplifies operator project setup, and facilitates operator testing and validation. MindStudio Ops System Test (msOpST) is a tool for improving operator development efficiency. It tests the input and output of an operator in a real-world hardware environment to check operator functions. This document describes how to install msOpGen and msOpST. 
+## 1. Installation Overview
 
-## Preparing for Installation
+This tool is integrated into CANN. If CANN is already installed and you do not need to update this tool, you can use it directly without following this document.
 
-### 1. Environment and Dependencies
+If CANN is not installed in your environment, see [CANN Quick Installation](https://www.hiascend.com/cann/download) to install the Ascend NPU driver and CANN software (including the Toolkit and ops package), and configure the environment variables.
 
-#### Binary Installation
+To upgrade the tool separately or use the latest version, you can choose one of the following installation methods: [Online Installation](#21-online-installation), [Offline Installation](#22-offline-installation), or [Source Installation](#23-source-installation).
 
-The MindStudio toolchain is integrated into the CANN package for release. You can install it in either of the following ways.
+## 2. Installation Methods
 
-##### Method 1: Install the software according to the CANN official document
+### 2.1 Online Installation
 
-For details, see <a href="https://www.hiascend.com/document/detail/zh/canncommercial/850/softwareinst" target="_blank">CANN Installation Guide</a>.
-Perform the installation and configuration step by step according to the document.
+If your device has internet access, you can use a single command to automatically download and install the tool. Visit the MindStudio [download page](https://www.hiascend.com/developer/software/mindstudio/download) on the Ascend Community website, select the corresponding CANN version, choose "Online Installation", and follow the prompts to complete the operation.
 
-##### Method 2: Use the official CANN container image
+### 2.2 Offline Installation
 
-Visit <a href="https://www.hiascend.com/developer/ascendhub/detail/17da20d1c2b6493cb38765adeba85884" target="_blank">CANN official image repository</a>.
-Pull the image and start the container according to the instructions in the repository.
+For devices in enterprise intranets or other environments without internet access, first download the complete offline installation package on a machine with internet access, then transfer it to the target device for installation. Visit the MindStudio [download page](https://www.hiascend.com/developer/software/mindstudio/download) on the Ascend Community website, select the corresponding CANN version, choose "Offline Installation", and obtain the corresponding installation package and operation instructions.
 
-#### Installing Python Dependencies
+### 2.3 Source Installation
+
+If you need to use the latest code features or modify the source code to enhance functionality, download the repository code, compile and package the tool yourself, and complete the installation.
+
+#### 2.3.1 Environment Preparation
+
+Follow the guide [Operator Tool Development Environment Setup Guide](https://gitcode.com/Ascend/msot/blob/26.0.0/docs/en/common/dev_env_setup.md) to configure the environment.
+
+- Clone the repository
+
+    ```sh
+    git clone https://gitcode.com/Ascend/msopgen.git
+    ```
+
+- Install Python dependencies
+
+    ```sh
+    cd msopgen
+    pip install -r requirements.txt
+    ```
+
+#### 2.3.2 Installation
+
+##### 2.3.2.1 Build the Package
+
+Run the following command to generate `.whl` packages in the `output` directory, including both `mindstudio_opgen` and `mindstudio_opst`.
 
 ```sh
-pip install -r requirements.txt
-```
-
-### 2. Generating .whl Packages
-
-The generated .whl packages (`mindstudio_opgen` and `mindstudio_opst`) are stored in the `output` directory.
-
-```py
 python build.py
 ```
 
-## Installation Procedure
-
-### Installing the .whl Packages
+##### 2.3.2.2 Install the .whl Packages
 
 ```sh
 cd output
@@ -46,30 +59,42 @@ pip install mindstudio_opgen-xxxxx.whl
 pip install mindstudio_opst-xxxxx.whl
 ```
 
-### Uninstallation
+## 3. Uninstallation
 
-Run the following commands to uninstall the packages:
+To uninstall, follow these steps:
 
-```sh
-pip uninstall mindstudio_opgen-xxxxx.whl 
-pip uninstall mindstudio_opst-xxxxx.whl
-```
+1. Download the script.
 
-### Upgrade
+   ```bash
+   curl -O https://inst.obs.cn-north-4.myhuaweicloud.com/26.0.0/ms_install.py
+   ```
 
-To replace the installed .whl package with another .whl package, run the following command:
+   > [!NOTE]
+   >
+   > - An internet connection is required to download the script. If the environment does not have internet access or is offline, download the script on a machine with internet access and copy it to the target device.
+   > - If the command is unresponsive or a connection failure, SSL certificate error, or other problem occurs, see the [FAQ](https://www.hiascend.com/developer/blog/details/02176213671719317003).
 
-```sh
-pip install mindstudio_opgen-xxxxx.whl --force-reinstall
-pip install mindstudio_opst-xxxxx.whl --force-reinstall
-```
+2. Run the uninstall command.
 
-During the installation, if the system asks you whether to replace the original installation package,
-enter `y`. The installation package will be automatically upgraded.
+   ```bash
+   python ms_install.py uninstall {tools_name}
+   ```
 
-### Running UT and ST Cases
+   Replace `{tools_name}` with the name of the tool you want to uninstall. You can query the tool name by running `python ms_install.py help`. Available tools are listed under the "Available Tools" field in the output.
 
-`3.7 <= Python version <= 3.10`. Replace `\${INSTALL_DIR}` with the actual CANN installation directory. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation directory is `$HOME/Ascend/cann`.
+   Upon successful uninstallation, the following message is displayed:
+
+   ```text
+   Successfully uninstalled 1 tool ({tools_name})
+   ```
+
+## 4. Upgrade
+
+Upgrade means "uninstall first, then install". Run the installation command directly. The tool will automatically uninstall the old version and guide you through the upgrade installation.
+
+## 5. Running UT and ST Test Cases
+
+`3.7 <= Python version <= 3.11`. Replace `${INSTALL_DIR}` with the file storage path after the CANN software is installed. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation path is `$HOME/Ascend/cann`.
 
 ```shell
 source ${INSTALL_DIR}/set_env.sh

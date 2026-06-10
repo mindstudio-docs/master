@@ -176,23 +176,6 @@
                     "shape": [12,32]
                 }
             ]
-        },
-        {
-            "case_name": "Test_Less_002",
-            "op": "Less",
-            "input_desc": [
-                {                               
-                 ...
-                },
-                {                   
-                 ... 
-                }
-            ],
-            "output_desc": [
-                {
-                  ...
-                }
-            ]
         }
     ]
     ```
@@ -346,15 +329,25 @@
             "op": "ArgMin",
             "input_desc": [
                 {
-                ...
+                    "format": ["ND"],
+                    "type": ["float"],
+                    "shape": [16,32],
+                    "data_distribute": ["uniform"],
+                    "value_range": [[-10.0, 10.0]]
                 },
             {
-                ...
+                    "format": ["ND"],
+                    "type": ["int64"],
+                    "shape": [1],
+                    "data_distribute": ["uniform"],
+                    "value_range": [[0, 1]]
                 }
         ],
         "output_desc": [
                 {
-                ...
+                    "format": ["ND"],
+                    "type": ["int64"],
+                    "shape": [16]
                 }
             ],
         "attr":[
@@ -438,13 +431,19 @@
                         ]
                     ]
                 },
-                {                     
-                      ...
+                {
+                    "format": ["ND"],
+                    "type": ["float"],
+                    "shape": [11],
+                    "data_distribute": ["uniform"],
+                    "value_range": [[0.5, 2.0]]
                 }
             ],  
             "output_desc": [                     
                 {
-                    ...
+                    "format": ["ND"],
+                    "type": ["float"],
+                    "shape": [11]
                 }
             ]
         }

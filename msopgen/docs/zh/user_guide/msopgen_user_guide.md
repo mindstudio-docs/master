@@ -20,6 +20,21 @@
 
 ## 使用前准备<a id="使用前准备"></a>
 
+**术语表<a id="术语表"></a>**
+
+| 术语 | 说明 |
+|------|------|
+| Host侧 | 运行在 CPU 上的代码，负责数据预处理、算子调用调度、Tiling 计算等 |
+| Kernel侧 | 运行在 NPU（AI Core/Vector Core）上的代码，负责执行大规模并行计算 |
+| Tiling | 将大规模数据切分为小块处理的技术，以充分利用片上内存并优化访存效率 |
+| GM | Global Memory（全局内存），NPU 片外大容量存储 |
+| UB | Unified Buffer（统一缓冲区），每个 AI Core 内部的快速局部存储 |
+| TQue / TPipe | Ascend C 编程框架中的流水线队列管理对象 |
+| DataCopy | Ascend C 数据搬运 API，在 GM 与 UB 之间搬运数据 |
+| EnQue / DeQue | 将数据入队/出队的流水同步操作 |
+| Soc Version | AI 处理器芯片型号标识，用于指定编译目标硬件平台 |
+| aclnn | Ascend C 算子的单算子 API 调用方式 |
+
 按照环境要求进行配置后，可直接使用msOpGen工具的相关功能。
 
 **环境准备<a id="section16705155515116"></a>**
