@@ -13,6 +13,15 @@
 
 ```{toctree}
 :maxdepth: 2
+:caption: 快速入门
+:hidden:
+
+系统调优快速入门 <zh/quick_start/system_tuning_quick_start>
+算子调优快速入门 <zh/quick_start/operator_tuning_quick_start>
+```
+
+```{toctree}
+:maxdepth: 2
 :caption: 功能指南
 :hidden:
 
@@ -29,6 +38,7 @@
 :hidden:
 
 开发指南 <zh/development_guide/develop_guide>
+开发环境搭建 <zh/developer_guide/environment_setup>
 ```
 
 ```{toctree}

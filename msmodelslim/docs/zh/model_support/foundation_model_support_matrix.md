@@ -678,6 +678,20 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
+      <td rowspan="1"><strong><a href="../../../example/MiniMax-M2/README.md">MiniMax-M2系列</a></strong></td>
+      <td>MiniMax-M2.7</td>
+      <td>-</td>
+      <td>-</td>
+      <td>√(一键量化)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>√(一键量化)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/InternLM2/README.md">InternLM系列</a></strong></td>
       <td>InternLM2-20B</td>
       <td>-</td>
@@ -855,7 +869,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="4">Qwen3-VL-Embedding&Reranker系列</td>
+      <td rowspan="4"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen3-VL-Embedding/README.md">Qwen3-VL-Embedding&Reranker系列</a></strong></td>
       <td>Qwen3-VL-Embedding-2B</td>
       <td>transformers==4.57.1</td>
       <td>√</td>

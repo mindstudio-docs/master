@@ -372,7 +372,7 @@ interface MovingState {
 
 ##### 4.3.2.2 mousedown
 
-鼠标按下后触发的事件，下发是大致源码与解读：
+鼠标按下后触发的事件，下方是大致源码与解读：
 
 ```txt
 const getHandleMouseDown = (dragDirection: DragDirection, draggable: React.RefObject<HTMLDivElement>,
@@ -429,7 +429,7 @@ const getHandleMouseDown = (dragDirection: DragDirection, draggable: React.RefOb
 
 ##### 4.3.2.3 mousemove
 
-鼠标移动时触发的事件，下发是大致源码与解读：
+鼠标移动时触发的事件，下方是大致源码与解读：
 
 ![image](./figures/timeline/dee8c49c-e640-42fb-9eaf-3d37552c0479.png)
 
@@ -525,7 +525,7 @@ const handleMouseMove =
 
 ##### 4.3.2.4 mouseup
 
-鼠标放开时触发的事件，下发是大致源码与解读：
+鼠标放开时触发的事件，下方是大致源码与解读：
 
 ```ts
 const handleMouseUp =
@@ -675,9 +675,9 @@ export interface DomainRange {
 |  3 | endTimeAll           | `number`                          | 最大的结束时间               |
 |  4 | session              | `Session`                         | timeline 的 session 数据 |
 |  5 | interactorMouseState | `InteractorMouseState`            | 鼠标相关事件的状态             |
-|  6 | onTimeStamp          | `TimeStampCallbackFunc`           | 待确定                   |
+|  6 | onTimeStamp          | `TimeStampCallbackFunc`           | 待确认                   |
 |  7 | isNsMode             | `isNsMode`                        | 是否是 NS 模式             |
-|  8 | splitLineRef         | `React.RefObject<HTMLDivElement>` | 待确定                   |
+|  8 | splitLineRef         | `React.RefObject<HTMLDivElement>` | 待确认                   |
 |  9 | renderTrigger        | `boolean`                         | 是否渲染 trigger          |
 | 10 | selectedRange        | `[ TimeStamp, TimeStamp ]`        | 窗格中选中区间的大小            |
 
@@ -840,7 +840,7 @@ Counter 泳道如图所示：
 <summary> <code>unit/counter</code> </summary>
 req:
 
-```tson
+```json
 {
   "id": 24,
   "moduleName": "timeline",
@@ -870,7 +870,7 @@ req:
 
 resp:
 
-```tson
+```json
 {
   "type": "response",
   "id": 828,
@@ -947,7 +947,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 1. HBM 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -969,7 +969,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 2. LLC 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -994,7 +994,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 3. DDR 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -1019,7 +1019,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 4. STARS_SOC 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -1044,7 +1044,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 5. ACC_PMU 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -1065,7 +1065,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 6. NPU_MEM 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -1087,7 +1087,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 7. SAMPLE_PMU 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -1104,7 +1104,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 8. ROCE\ROH\NIC 类型
 
-```tson
+```json
 // 1
 {
   "timestamp": 20534090,
@@ -1136,7 +1136,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 9. HCCS 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -1152,13 +1152,13 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 10. PCIE 类型
 
-```tson
+```json
 // 1
 {
   "timestamp": 20534090,
   "value": {
     "txAvg(B/s)": 11572.6466,
-    "rxAvg(B/s)": 11572.6466,
+    "rxAvg(B/s)": 11572.6466
   }
 }
 // 2
@@ -1181,7 +1181,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 ###### 11. AI_CORE 类型
 
-```tson
+```json
 {
   "timestamp": 20534090,
   "value": {
@@ -1229,7 +1229,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
 3. 例子：json 文件中关于 Counter 的片段
 
-   ```tson
+   ```json
    {"processName": "APP/DDR", "ts": "1707359574357536.879", "pid": 1717664, "tid": 0, "args": {"KB": 0.0}, "ph": "C"}
 
    {"processName": "APP/HBM", "ts": "1707359574357536.879", "pid": 1717664, "tid": 0, "args": {"KB": 9069036.0}, "ph": "C"}
@@ -1300,7 +1300,7 @@ void DbTraceDataBase::GetCounterUnitsAndDataTypes(PROCESS_TYPE type, std::vector
 
    req:
 
-   ```tson
+   ```json
    {
      "rankId": "ubuntu8438122216155992192_0 0",
      "tid": ["272_0"],
@@ -1489,7 +1489,7 @@ Advisor 模块涉及 5 个新增的前后端请求/响应消息：
 
 #### 4.8.4 总体概述
 
-对于单卡专家建议，其主体将放置在 Timeline 页签内，可以更加方便的与 Timeline 界面进行联动，帮助开发者更快地找到优化点所处的位置，这与友商的 NSight Systems 的设计一致。具体而言：在“Timeline”页签下，“System View”内新增“Expert System View”选项，总体界面放置于页面下方处。
+对于单卡专家建议，其主体将放置在 Timeline 页签内，可以更加方便的与 Timeline 界面进行联动，帮助开发者更快地找到优化点所处的位置，这与友商的 NVIDIA NSight Systems 的设计一致。具体而言：在“Timeline”页签下，“System View”内新增“Expert System View”选项，总体界面放置于页面下方处。
 
 #### 4.8.5 代码设计
 
