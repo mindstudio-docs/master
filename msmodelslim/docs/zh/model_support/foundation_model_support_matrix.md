@@ -49,7 +49,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
   </thead>
   <tbody>
     <tr>
-      <td rowspan="10"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/DeepSeek/README.md">DeepSeek系列</a></strong></td>
+      <td rowspan="11"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/DeepSeek/README.md">DeepSeek系列</a></strong></td>
       <td>DeepSeek-V2-16B</td>
       <td>-</td>
       <td>√</td>
@@ -146,6 +146,19 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>√(一键量化)</td>
       <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>DeepSeek-V4-Pro</td>
+      <td>transformers==4.48.2</td>
+      <td>-</td>
+      <td>√(一键量化)</td>
+      <td>√(一键量化)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -837,6 +850,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <th>w8a8s(稀疏量化)<sup>1</sup></th>
       <th>w4a8</th>
       <th>w4a4c8</th>
+            <th>w4a4f4</th>
     </tr>
   </thead>
   <tbody>
@@ -849,6 +863,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen3-VL-8B-Instruct</td>
@@ -858,6 +873,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>√</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen3-VL-32B-Instruct</td>
@@ -867,6 +883,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="4"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen3-VL-Embedding/README.md">Qwen3-VL-Embedding&Reranker系列</a></strong></td>
@@ -877,6 +894,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen3-VL-Embedding-8B</td>
@@ -886,6 +904,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen3-VL-Reranker-2B</td>
@@ -895,6 +914,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen3-VL-Reranker-8B</td>
@@ -904,6 +924,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen3-VL-MoE/README.md">Qwen3-VL-MoE系列</a></strong></td>
@@ -914,6 +935,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="2"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen3-Omni/README.md">Qwen3-Omni系列</a></strong></td>
@@ -924,6 +946,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen3-Omni-30B-A3B-Instruct</td>
@@ -933,6 +956,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="2"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen2.5-VL/README.md">Qwen2.5-VL系列</a></strong></td>
@@ -943,6 +967,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen2.5-VL-72B</td>
@@ -952,6 +977,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen2.5-Omni/README.md">Qwen2.5-Omni系列</a></strong></td>
@@ -962,6 +988,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="2"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen2-VL/README.md">Qwen2-VL系列</a></strong></td>
@@ -972,6 +999,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Qwen2-VL-72B</td>
@@ -981,6 +1009,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Qwen-VL/README.md">Qwen-VL系列</a></strong></td>
@@ -991,6 +1020,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="2"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/InternVL2/README.md">InternVL2系列</a></strong></td>
@@ -1001,6 +1031,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>InternVL2-40B</td>
@@ -1010,6 +1041,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/LLaVA/README.md">LLaVA系列</a></strong></td>
@@ -1020,6 +1052,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/GLM-4.1V/README.md">GLM-4.1V系列</a></strong></td>
@@ -1030,6 +1063,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>√</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/GLM-4.6V/README.md">GLM-4.6V</a></strong></td>
@@ -1040,6 +1074,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Kimi-K2.5/README.md">Kimi-K2.5</a></strong></td>
@@ -1050,6 +1085,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>√</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/Kimi-K2.6/README.md">Kimi-K2.6</a></strong></td>
@@ -1060,6 +1096,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>√</td>
       <td>√</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/InternVL3_5/README.md">InternVL3_5系列</a></strong></td>
@@ -1070,6 +1107,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_vlm/InternVL3_5-MoE/README.md">InternVL3_5-MoE系列</a></strong></td>
@@ -1080,6 +1118,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td rowspan="7"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/multimodal_sd/README.md">多模态生成模型</a></strong></td>
@@ -1090,6 +1129,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Open-Sora-Plan v1.2</td>
@@ -1099,6 +1139,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>FLUX.1-dev</td>
@@ -1108,6 +1149,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>HunyuanVideo</td>
@@ -1117,6 +1159,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Wan2.1</td>
@@ -1126,6 +1169,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
     <tr>
       <td>Wan2.2</td>
@@ -1135,6 +1179,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+      <td>√(一键量化)</td>
     </tr>
     <tr>
       <td>Qwen-Image-Edit</td>
@@ -1144,6 +1189,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    <td>-</td>
     </tr>
   </tbody>
 </table>
