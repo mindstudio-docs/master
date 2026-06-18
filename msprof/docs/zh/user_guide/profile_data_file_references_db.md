@@ -3,16 +3,16 @@
 msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_\{时间戳\}.db表结构文件，该文件推荐使用MindStudio Insight工具查看，也可以使用Navicat Premium等数据库开发工具直接打开。当前db文件汇总的性能数据如下：
 
 >[!NOTE] 
->db文件均以表格形式展示性能数据，且所有数据均以数字映射（例如opName字段下的算子名显示为194），数字与名称的映射表为[STRING\_IDS](#STRING_IDS)。
+>db文件均以表格形式展示性能数据，且所有数据均以数字映射（例如opName字段下的算子名显示为194），数字与名称的映射表为[STRING\_IDS](#zh-cn_topic_0000002076410600_section116561584178)。
 
-**单位相关**
+**单位相关<a name="zh-cn_topic_0000002076410600_section1053014715533"></a>**
 
 1. 时间相关，统一使用纳秒（ns），且为本地Unix时间。
 2. 内存相关，统一使用字节（Byte）。
 3. 带宽相关，统一使用Byte/s。
 4. 频率相关，统一使用MHz。
 
-## ENUM_API_TYPE
+**ENUM\_API\_TYPE<a name="zh-cn_topic_0000002076410600_section8466235152619"></a>**
 
 枚举表。
 
@@ -39,20 +39,20 @@ msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_
 |50003|trace|
 |50004|mstx|
 
-## ENUM\_MODULE
+**ENUM\_MODULE<a name="zh-cn_topic_0000002076410600_section15914131919911"></a>**
 
 枚举表。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 3**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|索引，ID|
 |name|TEXT|组件名|
 
-**表 2**  内容
+**表 4**  内容
 
 |id|name|
 |--|--|
@@ -123,20 +123,20 @@ msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_
 |76|MBUFF|
 |77|CUSTOM|
 
-## ENUM\_HCCL\_DATA\_TYPE
+**ENUM\_HCCL\_DATA\_TYPE<a name="zh-cn_topic_0000002076410600_section899062216107"></a>**
 
 枚举表。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 5**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|索引，ID|
 |name|TEXT|通信数据类型|
 
-**表 2**  内容
+**表 6**  内容
 
 |id|name|
 |--|--|
@@ -153,28 +153,24 @@ msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_
 |10|FP64|
 |11|BFP16|
 |12|INT128|
-|14|HIF8|
-|15|FP8E4M3|
-|16|FP8E5M2|
-|17|FP8E8M0|
 |255|RESERVED|
 |65534|N/A|
 |65535|INVALID_TYPE|
 
-## ENUM\_HCCL\_LINK\_TYPE
+**ENUM\_HCCL\_LINK\_TYPE<a name="zh-cn_topic_0000002076410600_section1843687151113"></a>**
 
 枚举表。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 7**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|索引，ID|
 |name|TEXT|通信链路类型|
 
-**表 2**  内容
+**表 8**  内容
 
 |id|name|
 |--|--|
@@ -185,52 +181,48 @@ msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_
 |4|SIO|
 |5|HCCS_SW|
 |6|STANDARD_ROCE|
-|7|UB|
-|8|UBoE|
 |255|RESERVED|
 |65534|N/A|
 |65535|INVALID_TYPE|
 
-## ENUM\_HCCL\_TRANSPORT\_TYPE
+**ENUM\_HCCL\_TRANSPORT\_TYPE<a name="zh-cn_topic_0000002076410600_section64765193176"></a>**
 
 枚举表。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 9**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|索引，ID|
 |name|TEXT|通信传输类型|
 
-**表 2**  内容
+**表 10**  内容
 
 |id|name|
 |--|--|
 |0|SDMA|
 |1|RDMA|
 |2|LOCAL|
-|3|UB|
-|4|ROCE|
 |255|RESERVED|
 |65534|N/A|
 |65535|INVALID_TYPE|
 
-## ENUM\_HCCL\_RDMA\_TYPE
+**ENUM\_HCCL\_RDMA\_TYPE<a name="zh-cn_topic_0000002076410600_section2375181481718"></a>**
 
 枚举表。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 11**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|索引，ID|
 |name|TEXT|通信RDMA类型|
 
-**表 2**  内容
+**表 12**  内容
 
 |id|name|
 |--|--|
@@ -240,20 +232,20 @@ msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_
 |65534|N/A|
 |65535|INVALID_TYPE|
 
-## ENUM\_MSTX\_EVENT\_TYPE
+**ENUM\_MSTX\_EVENT\_TYPE<a name="zh-cn_topic_0000002076410600_section1752102012146"></a>**
 
 枚举表。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 13**  格式
 
 |字段名| 类型     |含义|
 |--|--------|--|
 |id| INTEGER |索引，Host侧tx打点数据event类型对应的ID|
 |name| TEXT   |Host侧tx打点数据event类型|
 
-**表 2**  内容
+**表 14**  内容
 
 |id|name|
 |--|--|
@@ -262,20 +254,20 @@ msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_
 |2|start/end|
 |3|marker_ex|
 
-## ENUM\_MEMCPY\_OPERATION
+**ENUM\_MEMCPY\_OPERATION<a name="zh-cn_topic_0000002076410600_section1663131744913"></a>**
 
 枚举表。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 15**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|主键，ID|
 |name|TEXT|拷贝类型|
 
-**表 2**  内容
+**表 16**  内容
 
 |id|name|
 |--|--|
@@ -289,65 +281,65 @@ msprof命令执行完成后，会生成一个汇总所有性能数据的msprof\_
 |7|device to host ex|
 |65535|other|
 
-## STRING\_IDS
+**STRING\_IDS<a name="zh-cn_topic_0000002076410600_section116561584178"></a>**
 
 映射表，用于存储ID和字符串映射关系。
 
 无对应开关。
 
-**表 1**  格式
+**表 17**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|索引，string ID|
 |value|TEXT|string value|
 
-## SESSION\_TIME\_INFO
+**SESSION\_TIME\_INFO<a name="zh-cn_topic_0000002076410600_section153758441710"></a>**
 
 时间表，用于存储性能数据中的开始结束时间。在采集未正常退出时，默认结束时间为：开始时间 + 30 min。
 
 无对应开关。
 
-**表 2**  格式
+**表 18**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |startTimeNs|INTEGER|任务开启时的Unix时间，单位ns|
 |endTimeNs|INTEGER|任务结束时的Unix时间，单位ns|
 
-## NPU\_INFO
+**NPU\_INFO<a name="zh-cn_topic_0000002076410600_section966211019179"></a>**
 
 对应deviceId的芯片型号。
 
 无对应开关。
 
-**表 1**  格式
+**表 19**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |id|INTEGER|设备ID，显示为-1时表示未采集到deviceId|
 |name|TEXT|设备对应的芯片型号|
 
-## HOST\_INFO
+**HOST\_INFO<a name="zh-cn_topic_0000002076410600_section57348569166"></a>**
 
 hostUid及名称。
 
 无对应开关。
 
-**表 2**  格式
+**表 20**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |hostUid|TEXT|标识Host的唯一ID|
 |hostName|TEXT|Host主机名称，如localhost|
 
-## TASK
+**TASK<a name="zh-cn_topic_0000002076410600_section16993252171612"></a>**
 
 task数据，呈现所有硬件执行的算子信息。
 
 由--task-time开关控制。
 
-**表 1**  格式
+**表 21**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -363,13 +355,13 @@ task数据，呈现所有硬件执行的算子信息。
 |taskId|INTEGER|算子任务对应的taskId|
 |modelId|INTEGER|算子任务对应的modelId|
 
-## COMPUTE\_TASK\_INFO
+**COMPUTE\_TASK\_INFO<a name="zh-cn_topic_0000002076410600_section1724311477163"></a>**
 
 计算算子描述信息。
 
 由--task-time开关控制。
 
-**表 1**  格式
+**表 22**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -388,16 +380,14 @@ task数据，呈现所有硬件执行的算子信息。
 |attrInfo|INTEGER|算子的attr信息，用来映射算子shape，算子自定义的参数等，STRING_IDS(attrInfo)|
 |opState|INTEGER|算子的动静态信息，dynamic表示动态算子，static表示静态算子，N/A表示该场景或该算子不识别，STRING_IDS(opState)|
 |hf32Eligible|INTEGER|标识是否使用HF32精度标记，YES表示使用，NO表示未使用，N/A表示该场景或该算子不识别，STRING_IDS(hf32Eligible)|
-|gridDim|INTEGER|体现SIMT线程模型的线程块网络（Grid）中启用的线程块个数，同一时刻一个AIV核只执行一个线程块任务。仅Atlas 350 加速卡支持该字段。STRING_IDS(gridDim)|
-|blockDim|INTEGER|体现SIMT线程模型的线程块（Thread Block）启用的线程个数，一个线程块最多可以启用2048个线程。仅Atlas 350 加速卡支持该字段。STRING_IDS(blockDim)|
 
-## COMMUNICATION\_TASK\_INFO
+**COMMUNICATION\_TASK\_INFO<a name="zh-cn_topic_0000002076410600_section1656344215167"></a>**
 
 描述通信小算子信息。
 
 由--task-time、--hccl、--ascendcl开关控制对应数据的采集。配置--task-time为非l0时数据有效。有通信数据的场景下默认生成该表。
 
-**表 1**  格式
+**表 23**  格式
 
 |字段名|类型| 含义                                                                     |
 |--|--|------------------------------------------------------------------------|
@@ -418,13 +408,13 @@ task数据，呈现所有硬件执行的算子信息。
 |isMaster|INTEGER| 标记主从流通信算子，分析时以主流算子为准，取值为：<br>0：从流<br>1：主流                                     |
 |bandwidth|NUMERIC| 该通信小算子的带宽数据，单位Byte / s                                                 |
 
-## COMMUNICATION\_OP
+**COMMUNICATION\_OP<a name="zh-cn_topic_0000002076410600_section1238183491611"></a>**
 
 描述通信大算子信息。
 
 由--task-time、--hccl开关控制对应数据的采集。有通信数据的场景下默认生成该表。
 
-**表 1**  格式
+**表 24**  格式
 
 | 字段名         |类型|含义|
 |-------------|--|--|
@@ -442,13 +432,13 @@ task数据，呈现所有硬件执行的算子信息。
 | opType      |INTEGER|算子类型，STRING_IDS(opType)，例：hcom_broadcast_|
 | deviceId    |INTEGER|设备ID|
 
-## CANN\_API
+**CANN\_API<a name="zh-cn_topic_0000002076410600_section2740528151615"></a>**
 
 CANN API数据。
 
 由--ascendcl开关控制。
 
-**表 1**  格式
+**表 25**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -459,13 +449,13 @@ CANN API数据。
 |connectionId|INTEGER|索引，用于关联TASK表和COMMUNICATION_OP表|
 |name|INTEGER|API的名称，STRING_IDS(name)|
 
-## QOS
+**QOS<a name="zh-cn_topic_0000002076410600_section74321720145411"></a>**
 
 保存QoS的数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 26**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -474,28 +464,27 @@ CANN API数据。
 |bandwidth|NUMERIC|QoS对应时间的带宽，单位Byte / s|
 |timestampNs|NUMERIC|本地时间，单位ns|
 
-## AICORE\_FREQ
+**AICORE\_FREQ<a name="zh-cn_topic_0000002076410600_section12814131518375"></a>**
 
 AI Core频率信息。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 27**  格式
 
 | 字段名         |类型|含义|
 |-------------|--|--|
 | deviceId    |INTEGER|设备ID|
 | timestampNs |NUMERIC|频率变化时的本地时间，单位ns|
 | freq        |INTEGER|AI Core频率值，单位MHz|
-| dieId |INTEGER|用于区分芯片场景的dieId，仅Atlas 350 加速卡支持<br>对于Atlas 200I/500 A2 推理产品和Atlas A2 训练系列产品/Atlas A2 推理系列产品不支持区分芯片场景，默认为-1，标识当前芯片场景无dieId内容区分|
 
-## ACC\_PMU
+**ACC\_PMU<a name="zh-cn_topic_0000002076410600_section68271524191613"></a>**
 
 ACC\_PMU数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 28**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -507,13 +496,13 @@ ACC\_PMU数据。
 |timestampNs|NUMERIC|本地时间，单位ns|
 |deviceId|INTEGER|设备ID|
 
-## SOC\_BANDWIDTH\_LEVEL
+**SOC\_BANDWIDTH\_LEVEL<a name="zh-cn_topic_0000002076410600_section14551151619160"></a>**
 
 SoC带宽等级信息。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 29**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -522,7 +511,7 @@ SoC带宽等级信息。
 |timestampNs|NUMERIC|本地时间，单位ns|
 |deviceId|INTEGER|设备ID|
 
-## NIC
+**NIC<a name="zh-cn_topic_0000002076410600_section65681562168"></a>**
 
 每个时间节点网络信息数据。
 
@@ -531,7 +520,7 @@ SoC带宽等级信息。
 - msprof命令的--sys-io-profiling、--sys-io-sampling-freq
 - Ascend PyTorch Profiler的sys\_io
 
-**表 1**  格式
+**表 30**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -552,7 +541,7 @@ SoC带宽等级信息。
 |txDropped|INTEGER|累计发送丢包数量，单位packet|
 |funcId|INTEGER|端口号|
 
-## ROCE
+**ROCE<a name="zh-cn_topic_0000002076410600_section1246285716152"></a>**
 
 RoCE通信接口带宽数据。
 
@@ -561,7 +550,7 @@ RoCE通信接口带宽数据。
 - msprof命令的--sys-io-profiling、--sys-io-sampling-freq
 - Ascend PyTorch Profiler的sys\_io
 
-**表 1**  格式
+**表 31**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -582,13 +571,13 @@ RoCE通信接口带宽数据。
 |txDropped|INTEGER|累计发送丢包数量，单位packet|
 |funcId|INTEGER|端口号|
 
-## LLC
+**LLC<a name="zh-cn_topic_0000002076410600_section119051348181519"></a>**
 
 三级缓存带宽数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 32**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -599,7 +588,7 @@ RoCE通信接口带宽数据。
 |throughput|NUMERIC|三级缓存吞吐量，单位Byte/s|
 |mode|INTEGER|模式，用于区分是读或写，STRING_IDS(mode)|
 
-## TASK\_PMU\_INFO
+**TASK\_PMU\_INFO<a name="zh-cn_topic_0000002076410600_section72694413158"></a>**
 
 计算算子的PMU数据。
 
@@ -611,7 +600,7 @@ RoCE通信接口带宽数据。
 
 仅Atlas 200I/500 A2 推理产品和Atlas A2 训练系列产品/Atlas A2 推理系列产品支持采集该数据。
 
-**表 1**  格式
+**表 33**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -619,7 +608,7 @@ RoCE通信接口带宽数据。
 |name|INTEGER|PMU metric指标名，STRING_IDS(name)|
 |value|NUMERIC|对应指标名的数值|
 
-## SAMPLE\_PMU\_TIMELINE
+**SAMPLE\_PMU\_TIMELINE<a name="zh-cn_topic_0000002076410600_section166020382157"></a>**
 
 sample-based的PMU数据，用于timeline类的数据呈现。
 
@@ -629,7 +618,7 @@ sample-based的PMU数据，用于timeline类的数据呈现。
 - Ascend PyTorch Profiler的aic\_metrics
 - MindSpore Profiler的aic\_metrics
 
-**表 1**  格式
+**表 34**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -641,7 +630,7 @@ sample-based的PMU数据，用于timeline类的数据呈现。
 |coreId|INTEGER|coreId|
 |coreType|INTEGER|core类型(AIC或AIV)，STRING_IDS(coreType)|
 
-## SAMPLE\_PMU\_SUMMARY
+**SAMPLE\_PMU\_SUMMARY<a name="zh-cn_topic_0000002076410600_section233113319159"></a>**
 
 sample-based的PMU数据，用于summary类的数据呈现。
 
@@ -651,7 +640,7 @@ sample-based的PMU数据，用于summary类的数据呈现。
 - Ascend PyTorch Profiler的aic\_metrics
 - MindSpore Profiler的aic\_metrics
 
-**表 1**  格式
+**表 35**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -661,13 +650,13 @@ sample-based的PMU数据，用于summary类的数据呈现。
 |coreId|INTEGER|coreId|
 |coreType|INTEGER|core类型(AIC或AIV)，STRING_IDS(coreType)|
 
-## NPU\_MEM
+**NPU\_MEM<a name="zh-cn_topic_0000002076410600_section29991927141518"></a>**
 
 NPU内存占用数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 36**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -677,13 +666,13 @@ NPU内存占用数据。
 |timestampNs|INTEGER|本地时间，单位ns|
 |deviceId|INTEGER|设备ID|
 
-## NPU\_MODULE\_MEM
+**NPU\_MODULE\_MEM<a name="zh-cn_topic_0000002076410600_section1612492317150"></a>**
 
 NPU组件内存占用数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 37**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -692,13 +681,13 @@ NPU组件内存占用数据。
 |totalReserved|NUMERIC|内存占用大小，单位Byte|
 |deviceId|INTEGER|设备ID|
 
-## NPU\_OP\_MEM
+**NPU\_OP\_MEM<a name="zh-cn_topic_0000002076410600_section138661911511"></a>**
 
 CANN算子内存占用数据，仅GE算子支持。
 
 由--task-memory开关控制。
 
-**表 1**  格式
+**表 38**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -713,13 +702,13 @@ CANN算子内存占用数据，仅GE算子支持。
 |component|INTEGER|组件名，STRING_IDS(component)|
 |deviceId|INTEGER|设备ID|
 
-## HBM
+**HBM<a name="zh-cn_topic_0000002076410600_section1045421312151"></a>**
 
 片上内存读写速率数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 39**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -729,13 +718,13 @@ CANN算子内存占用数据，仅GE算子支持。
 |hbmId|INTEGER|内存访问单元ID|
 |type|INTEGER|用于区分读或写，STRING_IDS(type)|
 
-## DDR
+**DDR<a name="zh-cn_topic_0000002076410600_section56231221154"></a>**
 
 片上内存读写速率数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
-**表 1**  格式
+**表 40**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -744,7 +733,7 @@ CANN算子内存占用数据，仅GE算子支持。
 |read|NUMERIC|内存读取带宽，单位Byte/s|
 |write|NUMERIC|内存写入带宽，单位Byte/s|
 
-## HCCS
+**HCCS<a name="zh-cn_topic_0000002076410600_section81241447141420"></a>**
 
 HCCS集合通信带宽数据。
 
@@ -753,7 +742,7 @@ HCCS集合通信带宽数据。
 - msprof命令的--sys-interconnection-profiling、--sys-interconnection-freq
 - Ascend PyTorch Profiler的sys\_interconnection
 
-**表 1**  格式
+**表 41**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -762,93 +751,7 @@ HCCS集合通信带宽数据。
 |txThroughput|NUMERIC|发送带宽，单位Byte/s|
 |rxThroughput|NUMERIC|接收带宽，单位Byte/s|
 
-## UB
-
-保存UB带宽数据。
-
-控制开关：
-
-- msprof命令的--sys-interconnection-profiling、--sys-interconnection-freq
-- Ascend PyTorch Profiler的sys\_interconnection
-
-**表 1**  格式
-
-| 字段名      | 类型    | 含义                 |
-| ----------- | ------- | -------------------- |
-| deviceId    | NUMERIC | 设备ID               |
-| portId      | NUMERIC | 端口ID               |
-| timestampNs | NUMERIC | 本地时间，单位ns     |
-| rxUdmaBind  | NUMERIC | 请求流通道的接收带宽 |
-| txUdmaBind  | NUMERIC | 请求流通道的发送带宽 |
-
-## SIO
-
-保存SIO数据。
-
-控制开关：
-
-- msprof命令的--sys-interconnection-profiling、--sys-interconnection-freq
-- Ascend PyTorch Profiler的sys\_interconnection
-
-**表 1**  格式
-
-| 字段名      | 类型    | 含义                              |
-| ----------- | ------- | --------------------------------- |
-| deviceId    | NUMERIC | 设备ID                            |
-| name        | INTEGER | CCU小算子的名称，STRING_IDS(name) |
-| timestampNs | NUMERIC | 本地时间，单位ns                  |
-| rxReq       | NUMERIC | 请求流通道的接收带宽              |
-| rxRsp       | NUMERIC | 回应流通道的接收带宽              |
-| rxSnp       | NUMERIC | 侦听流通道的接收带宽              |
-| rxDat       | NUMERIC | 数据流通道的接收带宽              |
-| txReq       | NUMERIC | 请求流通道的发送带宽              |
-| txRsp       | NUMERIC | 回应流通道的发送带宽              |
-| txSnp       | NUMERIC | 侦听流通道的发送带宽              |
-| txDat       | NUMERIC | 数据流通道的发送带宽              |
-
-## CCU
-
-保存CCU小算子数据。
-
-控制开关：
-
-- msprof命令的--sys-interconnection-profiling、--sys-interconnection-freq
-- Ascend PyTorch Profiler的sys\_interconnection
-
-**表 1**  格式
-
-| 字段名       | 类型    | 含义                                               |
-| ------------ | ------- | -------------------------------------------------- |
-| deviceId     | NUMERIC | 设备ID                                             |
-| globalTaskId | NUMERIC | 对应CCU算子的全局Task ID                           |
-| name         | INTEGER | CCU小算子的名称，STRING_IDS(name)                  |
-| startNs      | NUMERIC | CCU小算子的运行开始时间，单位ns                    |
-| endNs        | NUMERIC | CCU小算子的运行结束时间，单位ns                    |
-| args         | INTEGER | 元数据，格式以json字符串形式保存，STRING_IDS(args) |
-
-## DPU_TASK
-
-DPU下算子的执行耗时信息。
-
-控制开关：
-
-无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
-
-**表 1**  格式
-
-| 字段名       | 类型    | 含义                                               |
-| ------------ | ------- | -------------------------------------------------- |
-| dpuDeviceId  | NUMERIC | DPU设备ID                                          |
-| globalTid    | NUMERIC | 线程ID                                             |
-| startNs      | NUMERIC | 算子运行的开始时间，单位ns                         |
-| endNs        | NUMERIC | 算子运行的结束时间，单位ns                         |
-| globalTaskId | NUMERIC | 全局Task ID                                        |
-| streamId     | NUMERIC | DPU下的Stream ID                                   |
-| taskId       | NUMERIC | DPU下的Task ID                                     |
-| opName       | INTEGER | 对应算子的名称，STRING_IDS(opName)                 |
-| args         | INTEGER | 元数据，格式以json字符串形式保存，STRING_IDS(args) |
-
-## PCIE
+**PCIE<a name="zh-cn_topic_0000002076410600_section760424014146"></a>**
 
 PCIe带宽数据。
 
@@ -857,7 +760,7 @@ PCIe带宽数据。
 - msprof命令的--sys-interconnection-profiling、--sys-interconnection-freq
 - Ascend PyTorch Profiler的sys\_interconnection
 
-**表 1**  格式
+**表 42**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -885,20 +788,20 @@ PCIe带宽数据。
 |rxCplMax|NUMERIC|接收端收到写请求的完成数据包最大值，单位Byte/s|
 |rxCplAvg|NUMERIC|接收端收到写请求的完成数据包平均值，单位Byte/s|
 
-## META\_DATA
+**META\_DATA<a name="zh-cn_topic_0000002076410600_section13792933201413"></a>**
 
 基础数据，当前仅保存版本号信息。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。
 
-**表 1**  格式
+**表 43**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |name|TEXT|字段名|
 |value|TEXT|数值|
 
-**表 2**  内容
+**表 44**  内容
 
 |name|含义|
 |--|--|
@@ -907,13 +810,13 @@ PCIe带宽数据。
 |SCHEMA_VERSION_MINOR|中版本号，如0，当更改列或类型时更改，存在兼容性问题|
 |SCHEMA_VERSION_MICRO|小版本号，如2，当更新表时都会更改，不具有兼容性问题|
 
-## MSTX\_EVENTS
+**MSTX\_EVENTS<a name="zh-cn_topic_0000002076410600_section13564192610142"></a>**
 
 mstx接口采集的Host侧数据，Device侧数据在TASK表中整合。
 
 由--msproftx开关控制表格输出，mstx接口控制数据的采集。
 
-**表 1**  格式
+**表 45**  格式
 
 | 字段名          |类型|含义|
 |--------------|--|--|
@@ -928,13 +831,13 @@ mstx接口采集的Host侧数据，Device侧数据在TASK表中整合。
 | domainId     |INTEGER|Host侧tx打点数据所属域的域ID|
 | connectionId |INTEGER|Host侧tx打点数据的关联ID，TASK(connectionId)|
 
-## COMMUNICATION\_SCHEDULE\_TASK\_INFO
+**COMMUNICATION\_SCHEDULE\_TASK\_INFO<a name="zh-cn_topic_0000002076410600_section16366112743116"></a>**
 
 通信调度描述信息，当前仅针对AI CPU通信算子的描述。
 
 无对应开关，导出msprof\_\{时间戳\}.db文件时默认生成。需要采集环境中包含AI CPU通信算子。
 
-**表 1**  格式
+**表 46**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -943,13 +846,13 @@ mstx接口采集的Host侧数据，Device侧数据在TASK表中整合。
 |taskType|INTEGER|Host执行该算子的加速器类型，STRING_IDS(taskType)|
 |opType|INTEGER|算子类型，STRING_IDS(opType)|
 
-## MEMCPY\_INFO
+**MEMCPY\_INFO<a name="zh-cn_topic_0000002076410600_section190813398529"></a>**
 
 描述memcpy相关算子的拷贝数据量和拷贝方向。
 
 由--runtime-api开关控制。
 
-**表 1**  格式
+**表 47**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -957,13 +860,13 @@ mstx接口采集的Host侧数据，Device侧数据在TASK表中整合。
 |size|NUMERIC|拷贝的数据量|
 |memcpyOperation|NUMERIC|拷贝类型，STRING_IDS(memcpyDirection)|
 
-## CPU\_USAGE
+**CPU\_USAGE<a name="zh-cn_topic_0000002076410600_section730161613343"></a>**
 
 Host侧CPU利用率数据。
 
 由--host-sys=cpu开关控制。
 
-**表 1**  格式
+**表 48**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -971,26 +874,26 @@ Host侧CPU利用率数据。
 |cpuId|NUMERIC|cpu编号|
 |usage|NUMERIC|利用率(%)|
 
-## HOST\_MEM\_USAGE
+**HOST\_MEM\_USAGE<a name="zh-cn_topic_0000002076410600_section17298155016408"></a>**
 
 Host侧内存利用率数据。
 
 由--host-sys=mem开关控制。
 
-**表 1**  格式
+**表 49**  格式
 
 |字段名|类型|含义|
 |--|--|--|
 |timestampNs|NUMERIC|采样时的本地时间，单位ns|
 |usage|NUMERIC|利用率(%)|
 
-## HOST\_DISK\_USAGE
+**HOST\_DISK\_USAGE<a name="zh-cn_topic_0000002076410600_section32136221402"></a>**
 
 Host侧磁盘I/O利用率数据。
 
 由--host-sys=disk开关控制。
 
-**表 1**  格式
+**表 50**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -999,13 +902,13 @@ Host侧磁盘I/O利用率数据。
 |writeRate|NUMERIC|磁盘写速率，单位B/s|
 |usage|NUMERIC|利用率(%)|
 
-## HOST\_NETWORK\_USAGE
+**HOST\_NETWORK\_USAGE<a name="zh-cn_topic_0000002076410600_section223093643915"></a>**
 
 Host侧系统级别的网络I/O利用率数据。
 
 由--host-sys=network开关控制。
 
-**表 1**  格式
+**表 51**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -1013,13 +916,13 @@ Host侧系统级别的网络I/O利用率数据。
 |usage|NUMERIC|利用率(%)|
 |speed|NUMERIC|网络使用速率，单位B/s|
 
-## OSRT\_API
+**OSRT\_API<a name="zh-cn_topic_0000002076410600_section7238121863614"></a>**
 
 Host侧syscall和pthreadcall数据。
 
 由--host-sys=osrt开关控制。
 
-**表 1**  格式
+**表 52**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -1028,7 +931,7 @@ Host侧syscall和pthreadcall数据。
 |startNs|INTEGER|API的开始时间，单位ns|
 |endNs|INTEGER|API的结束时间，单位ns|
 
-## NETDEV\_STATS
+**NETDEV\_STATS<a name="zh-cn_topic_0000002076410600_section2080324381117"></a>**
 
 通过硬件采样带宽能力，可以部分识别通信问题，作为总览项，初步排查通信问题，如出现通信耗时异常，即可优先排查是否为网络拥塞导致。
 
@@ -1038,7 +941,7 @@ Host侧syscall和pthreadcall数据。
 - Ascend PyTorch Profiler的sys\_io
 - MindSpore Profiler的sys\_io
 
-**表 1**  格式
+**表 53**  格式
 
 |字段名|类型|含义|
 |--|--|--|
@@ -1064,13 +967,13 @@ Host侧syscall和pthreadcall数据。
 |nicRxByte|INTEGER|NIC接收的字节数|
 |nicRxBandwidth|NUMERIC|NIC接收带宽，单位Byte / s|
 
-## RANK\_DEVICE\_MAP
+**RANK\_DEVICE\_MAP<a name="zh-cn_topic_0000002076410600_section75444171535"></a>**
 
 rankId和deviceId的映射关系数据。
 
 无对应开关，导出ascend\_pytorch\_profiler\_\{Rank\_ID\}.db文件时默认生成。
 
-**表 1**  格式
+**表 54**  格式
 
 |字段名|类型|含义|
 |--|--|--|

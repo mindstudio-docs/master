@@ -1,23 +1,23 @@
 # 自动调优配置协议说明
 
-## 1. 概述
+## 概述
 
-### 1.1 配置协议简介
+### 配置协议简介
 
 自动调优配置协议采用分层结构设计，顶层包含两个核心字段。
 
 - **strategy**: 调优策略配置，定义量化配置生成策略和量化基础配置。
 - **evaluation**: 评估服务配置，定义模型精度评估的方式和量化模型服务化拉起相关参数。
 
-### 1.2 配置文件位置
+### 配置文件位置
 
 用户需要自定义调优配置文件，可以参考 [example](./example) 目录下的配置文件格式进行自定义。
 
-### 1.3 基础配置结构
+### 基础配置结构
 
 ```yaml
 strategy:
-  type: <strategy_type>  # 调优策略类型，如 standing_high、standing_high_with_experience、binary_fallback
+  type: <strategy_type>  # 调优策略类型，如 standing_high、standing_high_with_experience
   # 不同策略有不同的配置字段与语义，详见各策略文档
 
 evaluation:
@@ -32,9 +32,9 @@ evaluation:
     # 推理引擎配置
 ```
 
-## 2. 配置字段详解
+## 配置字段详解
 
-### 2.1 strategy - 调优策略配置
+### strategy - 调优策略配置
 
 **作用**: 定义调优策略的类型、参数和量化基础配置。
 
@@ -44,31 +44,16 @@ evaluation:
 
 **类型**: `string`
 
-**可选值**: 根据已实现的调优策略而定，例如 `standing_high`、`standing_high_with_experience`、`binary_fallback`。
-
-**模型适配（按策略）**
-
-若调优策略需**自动运行敏感层分析**（生成回退候选），模型适配器须实现 **`ModelSlimPipelineInterfaceV1`**（即 `core/runner/pipeline_interface.py` 中的 `PipelineInterface`，与 CLI `msmodelslim analyze` 及 《[敏感层分析使用说明](../sensitive_layer_analysis/usage.md)》 要求相同）。策略内由领域层 `PipelineAnalysisService` 调用 `init_model`、`handle_dataset` 及 visit/forward pipeline；**不会在策略侧预先 `load_model`**。
-
-各策略在自动敏感层分析之上的**额外**要求如下：
-
-| 策略 | 模型适配器要求 |
-|------|----------------|
-| `standing_high` | **`ModelSlimPipelineInterfaceV1`**（始终自动敏感层分析） |
-| `standing_high_with_experience` | 上表接口 + **`StandingHighWithExperienceInterface`**（`load_model`，离群值抑制能力探测） |
-| `binary_fallback` | 配置了非空 `rollback_candidates` 时无额外要求（跳过敏感层分析）；否则须 **`ModelSlimPipelineInterfaceV1`** |
-
-详见各策略文档「适用要求 / 模型适配」章节及 《[LLM 大模型接入指南](../../developer_guide/integrating_models.md#自动调优与敏感层分析)》。
+**可选值**: 根据已实现的调优策略而定，例如 `standing_high`、`standing_high_with_experience`。
 
 **策略特有配置字段**
 
 不同调优策略的配置字段差异较大，详细的配置项请参考相应算法文档的「YAML 配置字段详解」章节。目前已支持的算法如下：
 
-- 《[Standing High 调优算法](../../quantization_algorithms/auto_tuning_strategies/standing_high.md)》
-- 《[Standing High With Experience 调优算法](../../quantization_algorithms/auto_tuning_strategies/standing_high_with_experience.md)》
-- 《[Binary Fallback 调优算法](../../quantization_algorithms/auto_tuning_strategies/binary_fallback.md)》
+- [Standing High 调优算法](../../quantization_algorithms/auto_tuning_strategies/standing_high.md)
+- [Standing High With Experience 调优算法](../../quantization_algorithms/auto_tuning_strategies/standing_high_with_experience.md)
 
-### 2.2 evaluation - 评估服务配置
+### evaluation - 评估服务配置
 
 **作用**: 定义模型精度评估的配置，包括评估服务类型、测评工具配置和推理引擎配置。
 
@@ -81,7 +66,7 @@ evaluation:
 | evaluation | 测评工具配置 | object | 必选 | 定义测评工具的配置参数 |
 | inference_engine | 推理引擎配置 | object | 必选 | 定义推理引擎的配置参数，用于将量化后的模型以服务化方式启动 |
 
-#### 2.2.1 type - 评估服务类型
+#### type - 评估服务类型
 
 **作用**: 指定评估服务的类型。
 
@@ -89,7 +74,7 @@ evaluation:
 
 **可选值**: `service_oriented`（面向服务的评估，通过服务化方式启动模型进行评估）
 
-#### 2.2.2 demand - 精度需求配置
+#### demand - 精度需求配置
 
 **作用**: 定义模型精度评估的精度需求，包括数据集、目标精度和容差。
 
@@ -138,7 +123,7 @@ demand:
 - **精度目标设置说明**：文档中给出的精度数据仅供参考，请根据实际浮点模型的精度进行配置。理论上量化后模型不会超过原始浮点模型的精度，因此建议将精度目标设置为略低于或等于浮点模型的精度。
 - 支持配置多个数据集的精度需求，每个数据集可以设置不同的目标精度和容差。
 
-#### 2.2.3 evaluation - 测评工具配置
+#### evaluation - 测评工具配置
 
 **作用**: 定义测评工具的配置参数。
 
@@ -199,7 +184,7 @@ evaluation:
   served_model_name: served_model_name
 ```
 
-##### 2.2.3.1 aisbench - AISBench 测评工具配置
+##### aisbench - AISBench 测评工具配置
 
 **作用**：配置 AISBench 的命令行与测评运行参数（如 `timeout`、`batch_size`、`generation_kwargs` 等）。
 
@@ -239,7 +224,7 @@ AISBench 测评工具的详细配置参数：
 
 **注意**: 上面大部分参数来自于 AISBench 命令行参数与服务化推理后端参数，可以参考 [AISBench 详细参数说明](https://ais-bench-benchmark.readthedocs.io/zh-cn/latest/base_tutorials/all_params/index.html) 进行配置。
 
-##### 2.2.3.2 datasets - 数据集配置
+##### datasets - 数据集配置
 
 **作用**：配置待评估数据集及每个数据集在 AISBench 中的参数；必须至少包含 `demand.expectations` 中出现的所有数据集。
 
@@ -259,7 +244,7 @@ AISBench 测评工具的详细配置参数：
 | api_chat_type | 指定该数据集使用的 API Chat 类型 | string | 可选 | 该字段需与 AISBench 对应数据集配置所要求的 API/请求格式保持一致。默认值：`"VLLMCustomAPIChat"` |
 | extra_args | 添加该数据集的额外命令行参数 | list | 可选 | 额外的命令行参数列表。默认值：`[]` |
 
-##### 2.2.3.3 precheck - 预检查配置（可选）
+##### precheck - 预检查配置（可选）
 
 **作用**: 定义正式评估前的预检查配置，用于在每次迭代的模型评估前对量化后的模型进行预验证。
 
@@ -318,7 +303,7 @@ precheck:
 - **仅支持英文问答**：预检查功能目前仅支持英文问答，测试消息和期望答案应使用英文。
 - 如果不配置 `precheck` 字段或配置为空列表，将跳过预检查直接进行正式评估。
 
-#### 2.2.4 inference_engine - 推理引擎配置
+#### inference_engine - 推理引擎配置
 
 **作用**: 定义推理引擎的配置参数，用于将量化后的模型以服务化方式启动。
 
@@ -370,10 +355,9 @@ inference_engine:
       enable_weight_nz_layout: true
 ```
 
-### 2.3 使用示例
+### 使用示例
 
 完整的自动调优配置示例请参考：
 
 - standing_high 调优策略配置：[standing_high.yaml](./example/standing_high.yaml)
 - standing_high_with_experience 调优策略配置：[standing_high_with_experience.yaml](./example/standing_high_with_experience.yaml)
-- binary_fallback 调优策略配置：[binary_fallback.yaml](./example/binary_fallback.yaml)

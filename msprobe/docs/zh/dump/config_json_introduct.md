@@ -17,16 +17,16 @@
 
 | 参数                | 可选/必选 | 解释                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 |-------------------| -------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| task              | 可选     | dump的任务类型，str类型。可选参数：<br/>&#8226; "statistics"：仅采集统计信息。<br/>&#8226; "tensor"：采集统计信息和完全复刻整网的真实数据。<br/>&#8226; "acc_check"：精度预检，仅PyTorch场景支持，采集数据时勿选。<br/>&#8226; "overflow_check"：溢出检测。<br/>&#8226; "nan_check"：NaN/Inf检测（检测寄存器状态是否为NaN或Inf），仅PyTorch场景支持。<br/>&#8226; "structure"：仅采集模型结构以及调用栈信息，不采集具体数据。<br/>默认值为"statistics"。<br/>根据task参数取值的不同，可以配置不同场景参数，详细介绍请参见：<br/>&#8226; [task配置为statistics](#task配置为statistics)<br/>&#8226; [task配置为tensor](#task配置为tensor)<br/>&#8226; [task配置为acc_check](#task配置为acc_check)<br/>&#8226; [task配置为overflow_check](#task配置为overflow_check)<br/>&#8226; [task配置为nan_check](#task配置为nan_check)<br/>&#8226; [task配置为structure](#task配置为structure)<br/>&#8226; [task配置为exception_dump](#task配置为exception_dump)<br/>配置示例："task": "tensor"。                                            |
+| task              | 可选     | dump的任务类型，str类型。可选参数：<br/>&#8226; "statistics"：仅采集统计信息。<br/>&#8226; "tensor"：采集统计信息和完全复刻整网的真实数据。<br/>&#8226; "acc_check"：精度预检，仅PyTorch场景支持，采集数据时勿选。<br/>&#8226; "overflow_check"：溢出检测。<br/>&#8226; "structure"：仅采集模型结构以及调用栈信息，不采集具体数据。<br/>默认值为"statistics"。<br/>根据task参数取值的不同，可以配置不同场景参数，详细介绍请参见：<br/>&#8226; [task配置为statistics](#task配置为statistics)<br/>&#8226; [task配置为tensor](#task配置为tensor)<br/>&#8226; [task配置为acc_check](#task配置为acc_check)<br/>&#8226; [task配置为overflow_check](#task配置为overflow_check)<br/>&#8226; [task配置为structure](#task配置为structure)<br/>&#8226; [task配置为exception_dump](#task配置为exception_dump)<br/>配置示例："task": "tensor"。                                            |
 | dump_path         | 必选     | 设置dump数据目录路径，str类型。<br/>配置示例："dump_path": "./dump_path"。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | rank              | 可选     | 指定对某张卡上的数据进行采集，list[Union[int, str]]类型，默认未配置（表示采集所有卡的数据），应配置元素为≥ 0的整数或类似"4-6"的字符串，且须配置实际可用的Rank ID。<br/>&#8226; PyTorch场景：Rank ID从0开始计数，最大取值为所有节点可用卡总数-1，若所配置的值大于实际训练所运行的卡的Rank ID，则dump数据为空，比如当前环境Rank ID为0到7，实际训练运行0到3卡，此时若配置Rank ID为4或不存在的10等其他值，dump数据为空。<br/>&#8226; MindSpore场景：所有节点的Rank ID均从0开始计数，最大取值为每个节点可用卡总数-1，config.json配置一次rank参数对所有节点同时生效。静态图L0级别dump暂不支持指定rank。<br/>单卡训练时，rank必须为[]，即空列表，不能指定rank。<br/>配置示例："rank": [1, "4-6"]。                                                                                                                                                                                                                                                     |
-| step              | 可选     | 指定采集某个step的数据，list[Union[int, str]]类型。默认未配置，表示采集所有step数据。采集特定step时，须指定为训练脚本中存在的step，可逐个配置，也可以指定范围。<br/>配置示例："step": [0, 1, 2, "4-6"]。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| step              | 可选     | 指定采集某个step的数据，list[Union[int, str]]类型。默认未配置，表示采集所有step数据。采集特定step时，须指定为训练脚本中存在的step，可逐个配置，也可以指定范围。<br/>配置示例："step": [0, 1 , 2, "4-6"]。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | level             | 可选 | dump级别，str类型，根据不同级别采集不同数据。可选参数：<br/>&#8226; "L0"：dump模块级精度数据，使用背景详细介绍请参见[模块级精度数据dump说明](#模块级精度数据dump说明)。<br/>&#8226; "L1"：dump API级精度数据，默认值，仅PyTorch、MSAdapter以及MindSpore动态图场景支持。<br/>&#8226; "L2"：dump kernel级精度数据，PyTorch场景详细介绍见[PyTorch场景kernel精度数据采集](./pytorch_kernel_dump_instruct.md)；MindSpore动态图场景详细介绍请参见[MindSpore动态图场景kernel精度数据采集](./mindspore_kernel_dump_instruct.md)；MindSpore静态图场景详细介绍请参见《MindSpore场景精度数据采集》中的 ["静态图场景精度数据采集功能介绍"](./mindspore_data_dump_instruct.md#静态图场景精度数据采集功能介绍)小节。<br/>&#8226; "mix"：dump module模块级和API级精度数据，即"L0"+"L1"，仅PyTorch、MSAdapter以及MindSpore动态图场景支持。<br/>&#8226; "debug"：单点保存功能，详细介绍请参见[单点保存工具](./debugger_save_instruct.md)。<br/>配置示例："level": "L1"。 |
 | async_dump        | 可选     | 异步dump开关，bool类型，支持task为tensor或statistics模式，level支持L0、L1、mix、debug模式。可选参数true（开启）或false（关闭），默认为false。<br/>配置为true后开启异步dump，即采集的精度数据会在当前step训练结束后统一落盘，训练过程中工具不触发同步操作。<br/>由于使用该模式有**显存溢出**的风险，当task配置为tensor时，即真实数据的异步dump模式，必须配置[list](#task配置为tensor)参数，指定需要dump的tensor 。<br/>该模式下，summary_mode不支持md5值，也不支持复数类型tensor的统计量计算。                                                                                                                                                                                                                                                                                                                                                                         |
 | dump_enable       | 可选     | dump功能开关，用于控制PrecisionDebugger dump的启动和停止，bool类型。可选参数：<br/>&#8226; true：允许执行dump采集。<br/>&#8226; false：关闭dump采集。<br/>该参数支持动态启停，即在dump任务运行过程中，可以随时启动和停止dump进程。<br/>默认未配置，表示不对dump数据进行控制，按照静态配置dump数据。<br/>更多配置说明请参见：[dump_enable参数配置说明](#dump_enable参数配置说明)。<br/>配置示例："dump_enable": true。                                                                                                                                                                                                                                                                                                                                                                                                             |
 | extra_info        | 可选     | 控制是否采集并输出额外信息文件（`stack.json`和`construct.json`），bool类型。可选参数：<br/>&#8226; true：采集并输出`stack.json`和`construct.json`。<br/>&#8226; false：不采集额外信息，且不生成`stack.json`和`construct.json`。<br/>默认值为true。<br/>配置示例："extra_info": false。                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| precision         | 可选     | 控制统计值计算所用精度，str类型，可选值["high", "low"]，默认值为"low"。选择"high"时，统计量使用float32进行计算，会增加device内存占用，精度更高，但在处理较大数值时可能会导致**显存溢出**；为"low"时使用与原始数据相同的类型进行计算，device内存占用较少。<br/>支持PyTorch、MindSpore动态图和MindSpore静态图O0/O1场景。<br/>支持task配置为statistics或tensor，level配置为L0、L1、mix、debug。                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| risk_level        | 可选     | API风险级别过滤，str类型，仅PyTorch场景且level配置为L1以及mix时生效。可选参数：<br/>&#8226; "ALL"：dump所有API的数据。<br/>&#8226; "CORE"：仅dump核心（高风险，易出现精度问题）API的数据，包括融合计算、通信、精密计算等。<br/>&#8226; "FOCUS"：dump核心API和关注API的数据，排除低风险API（如reshape、transpose、permute、to、view等形状变换类API）。<br/>默认值为"FOCUS"。<br/>配置示例："risk_level": "CORE"。                                                                                                                                                                                                                                                                                                                                                                                         |
+| precision         | 可选     | 控制统计值计算所用精度，str类型，可选值["high", "low"]，默认值为"low"。选择"high"时，统计量使用float32进行计算，会增加device内存占用，精度更高，但在处理较大数值时可能会导致**显存溢出**；为"low"时使用与原始数据相同的类型进行计算，device内存占用较少。<br/>支持PyTorch、MindSpore动态图和MindSpore静态图O0/O1场景。<br/>支持task配置为statistics或tensor，level配置为L0，L1，mix，debug。                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| risk_level        | 可选     | API风险级别过滤，str类型，仅PyTorch场景且level配置为L1以及mix时生效。可选参数：<br/>&#8226; "ALL"：dump所有API的数据。<br/>&#8226; "CORE"：仅dump核心（高风险，易出现精度问题）API的数据，包括融合计算、通信、精密计算等。<br/>&#8226; "FOCUS"：dump核心API和关注API的数据，排除低风险API（如reshape、transpose、permute、to、view等形状变换类API），**默认值**。<br/>配置示例："risk_level": "CORE"。                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 #### 模块级精度数据dump说明
 
@@ -187,51 +187,6 @@ MindSpore静态图场景下，"level"须为"L2"，且模型编译优化等级（
 | ------------- | -------- | ---------------------- |
 | check_mode    | 可选     | 溢出类型，str类型，仅MindSpore v2.3.0以下版本的静态图场景支持，可选参数：<br/>&#8226; "aicore"：开启AI Core的溢出检测。<br/>&#8226; "atomic"：开启Atomic的溢出检测。<br/>&#8226; "all"：开启算子的溢出检测。<br/>默认值为all。<br/>配置示例："check_mode": "all"。 |
 
-### task配置为nan_check
-
-**配置样例**
-
-```json
-{
-    "task": "nan_check",
-    "dump_path": "/home/data_dump",
-    "rank": [],
-    "step": [],
-    "level": "L1",
-
-    "nan_check": {
-      "list": [],
-      "scope": [],
-      "tensor_list": [],
-      "data_mode": ["all"] 
-    }
-}
-```
-
-支持场景：
-
- - PyTorch场景
-
-**注意事项**
-
- - 使用前请确保使用编译时带有`--include-mod=nan_check`参数的msProbe工具包。
- - 该任务类型在昇腾NPU设备上运行，适配的CANN版本要求8.5.0及以上。
- - 采集config中level须配置为"L1"。
- - 使用前需设置环境变量：INF_NAN_MODE_FORCE_DISABLE=1。
- - 由于检测结果通过读取寄存器状态获得，因此可能出现tensor输出正常，但nan_check模式检测结果为溢出的情况，说明该API存在过程溢出（过程溢出为正常情况）。
- - 由于硬件底层不支持int64类型（通过软件实现），因此本接口获取的硬件寄存器状态无法保证在int64类型上的结果准确性。
-
-**参数说明**
-
-nan_check模式通过读取NPU寄存器状态，检测模型中的API运行时是否存在NaN或Inf的情况。
-
-| 参数 | 可选/必选 | 解释 |
-| ---- | --------- | ---- |
-| scope | 可选 | PyTorch场景dump范围，list[str]类型，默认未配置（list也未配置时表示dump所有API的数据）。详细配置方法请参见[scope参数配置说明](#scope参数配置说明)。 |
-| list  | 可选 | 自定义采集的算子列表，list[str]类型，默认未配置（scope也未配置时表示dump所有API的数据）。详细配置方法请参见[list参数配置说明](#list参数配置说明)。 |
-| tensor_list | 可选 | 指定需要额外触发`npu_nan_test`的API关键字列表，`list[str]`类型。详细配置方法请参见[tensor_list参数配置说明](#tensor_list参数配置说明)。 |
-| data_mode | 可选 | dump数据过滤，list[str]类型。详细配置方法请参见[data_mode参数配置说明](#data_mode参数配置说明)。<br/><br/>**注意**：nan_check任务场景下，data_mode中指定"input"时，需同时配置"output"。
-
 ### task配置为structure
 
 structure模式仅采集模型结构，无其他特殊配置。
@@ -285,7 +240,7 @@ MindSpore动态图场景下，"level"须为"L2"; MindSpore静态图场景下，"
 - `dump_enable`用于控制`PrecisionDebugger`的dump动态启停能力：取值为`true`时执行dump采集，取值为`false`时关闭dump采集。建议仅在需要动态控制采集时配置该参数，初始值设为`false`。
 - PyTorch场景下，当`PrecisionDebugger`初始化时配置了该字段，工具会在执行过程中自动读取`config_path`并刷新配置。
 - 推荐流程：常规训练/推理阶段保持关闭；需要定位问题时改为开启采集；完成定位后再关闭，以减少对业务流程的干扰。
-- `vLLM`场景下，如果有`level`切换的需要，建议先设置`level`的初始值为`L0`，这样能保证后续的`level`可以任意切换；如果`level`的初始值不是`L0`可能会导致切换`level`失败。
+- `vllm`场景下，如果有`level`切换的需要，建议先设置`level`的初始值为`L0`，这样能保证后续的`level`可以任意切换；如果`level`的初始值不是`L0`可能会导致切换`level`失败。
 
 **配置样例**：
 
@@ -339,18 +294,7 @@ MindSpore动态图场景下，"level"须为"L2"; MindSpore静态图场景下，"
 
 ### tensor_list参数配置说明
 
-- 通用行为
-
-  - PyTorch、MSAdapter以及MindSpore动态图场景指定某一类API或模块，即会dump这一类API或模块输入输出的统计量信息和完整的tensor数据。
-
-  - 配置示例："tensor_list": ["relu"]。
-
-- nan_check 任务下的特殊说明：`nan_check` 任务默认检测所有 API 是否存在 NaN/Inf 溢出。当需要进一步定位某个 API 内部的具体溢出位置时，可通过 `tensor_list` 指定需要深入分析的 API，当发生溢出时，工具会触发`Exception`，对这些 API 生成额外的详细数据文件，并落盘至当前目录下的 `extra-info` 子目录中，供 [Tensor 解析工具](https://www.hiascend.com/document/detail/zh/canncommercial/900/maintenref/troubleshooting/troubleshooting_0532.html) 进行逐元素级分析。
-  - 匹配方式：匹配方式为子串匹配，不区分大小写。例如配置 `["truediv"]` 时，所有名称中包含 "truediv" 的 API（如 `truediv`、`__truediv__`）均会被命中。
-
-  - 使用建议
-    - `nan_check` 默认已覆盖全量 API 的基础溢出检测，仅在需要深入定位特定 API 的溢出根因时才建议配置 `tensor_list`，以控制额外开销。
-    - 配置时建议使用较具体的关键字（如 `truediv`、`softmax`），避免过短字符串导致误匹配。需要缩小范围时，可配合 `scope` 或 `list` 共同限制。
+PyTorch、MSAdapter以及MindSpore动态图场景指定某一类API或模块，即会dump这一类API或模块输入输出的统计量信息和完整的tensor数据。<br/>配置示例："tensor_list": ["relu"]。<br/>
 
 ### data_mode参数配置说明
 
@@ -374,9 +318,7 @@ MindSpore动态图场景下，"level"须为"L2"; MindSpore静态图场景下，"
   - statistics：dump仅输出包含API统计信息的dump.json文件。默认值为statistics。
   - xor：仅PyTorch场景支持。dump输出仅包含XOR校验值（字段名为md5），不输出max、min、mean、L2norm统计信息。
 
-  配置示例："summary_mode": "md5"。如需使用轻量XOR校验，配置示例："summary_mode": "xor"。
-
-  若用户希望降低大张量场景下的采集开销，可使用编译时包含`--include-mod=xor_checksum`参数的msProbe工具包，安装方法请参见[安装基础工具包和xor_checksum加速算子](../msprobe_install_guide.md#install-xor-checksum)。配置`summary_mode`为`xor`后，工具会优先使用编译生成的C++加速算子在设备侧计算XOR校验值，可带来数倍性能提升；当加速算子不可用、加载失败或执行异常时，会自动回退到通用实现，采集流程不会中断。
+  配置示例："summary_mode": "md5"。
 
 - MindSpore静态图场景
 

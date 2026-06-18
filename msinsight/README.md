@@ -1,122 +1,224 @@
-<h1 align="center">MindStudio Insight</h1>
+# **MindStudio Insight**
 
-<div align="center">
-  <img src="./modules/framework/public/favicon.ico" width="160" alt="MindStudio Insight Logo">
-  <p><b><span style="font-size:24px;">昇腾 AI 全流程可视化调优利器</span></b></p>
+## 最新消息
 
-  [![快速入门](https://badgen.net/badge/快速入门/QuickStart/blue)](./docs/zh/quick_start/system_tuning_quick_start.md)
-  [![AI问答(DeepWiki)](https://badgen.net/badge/AI问答/DeepWiki/blue)](https://deepwiki.com/mindstudio-docs/master)
-  [![AI问答(ZRead)](https://badgen.net/badge/AI问答/ZRead/blue)](https://zread.ai/mindstudio-docs/master)
-  [![精确搜索](https://badgen.net/badge/精确搜索/ReadTheDocs/blue)](https://msinsight.readthedocs.io/zh-cn/latest/)
-  [![昇腾社区](https://badgen.net/badge/昇腾社区/Community/blue)](https://www.hiascend.com/cn/developer/software/mindstudio)
-  [![报告问题](https://badgen.net/badge/报告问题/Issues/blue)](https://gitcode.com/Ascend/msinsight/issues)
-  [![Version](https://badgen.net/badge/Version/26.0.0/blue)](https://gitcode.com/Ascend/msinsight/releases)
-</div>
+- [2025.12.30]：MindStudio Insight项目首次上线
 
-## ✨ 最新消息
+## 简介
 
-<span style="font-size:14px;">
+### 概述
 
-🔹 **[2026.04.29]**：MindStudio Insight 26.0.0 版本上线，支持 Host Bound 问题定位、RL 性能分析和 Snapshot 内存大数据分析。
+MindStudio Insight是面向昇腾AI开发者的可视化调优工具，支持系统调优、算子调优、服务化调优和内存调优的能力，帮助开发者在训练、推理以及算子开发场景快速完成性能优化。
 
-</span>
+MindStudio Insight提供了丰富的调优分析手段，能够可视化呈现真实软硬件运行数据，多维度分析性能瓶颈点，支持百卡、千卡及以上规模的可视化集群性能分析，助力开发者在天级时间内完成性能调优。
 
-## ℹ️ 简介
+### 优势
 
-**MindStudio Insight** 是面向昇腾 AI 开发者的可视化性能调优分析工具。它通过图形化方式呈现真实软硬件运行数据，帮助开发者快速定位系统、算子、服务化和内存等性能瓶颈。
+- MindStudio Insight支持在时间线（Timeline）查看集群场景下的Profiling数据，并以单卡维度进行展示，且可以自动遍历输入路径下的db文件，或者所有的trace_view.json文件（PyTorch场景和MindSpore场景）和msprof*.json文件（TensorFlow场景和离线推理场景），无需手动合并文件，操作简单。
 
-| 核心价值 | 说明 |
-| --- | --- |
-| **全场景覆盖** | 支持系统调优、算子调优、服务化调优和内存调优。 |
-| **大规模分析** | 支持百卡、千卡级集群分析，适配 20GB+ 性能数据处理。 |
-| **便捷导入** | 自动遍历 Profiling 数据，减少手工合并和数据预处理成本。 |
+- MindStudio Insight借助于数据库支持超大性能数据处理，可以支持20GB的集群性能数据分析，并且能够支持大模型场景下的性能调优。
 
-<div align="left">
-  <h4>▶️ 核心能力快速演示</h4>
-  <img src="./assets/demo-system.gif" alt="系统调优演示" width="800">
-  <p><sup>图示：系统调优数据导入与性能分析过程演示</sup></p>
-</div>
+## 目录结构
 
-## ⚙️ 功能介绍
+```tex
+├── build                              # 构建脚本 
+├── docs                               # 项目文档介绍 
+├── e2e                                # 测试用例
+├── modules                            # 模块目录
+│   ├── build                          # 构建脚本
+│   ├── cluster                        # 概览、通信模块
+│   ├── compute                        # 算子调优模块
+│   ├── framework                      # 前端主框架模块
+│   ├── leaks                          # 内存泄露模块
+│   ├── lib                            # 公共目录
+│   ├── memory                         # 内存模块
+│   ├── operator                       # 算子模块
+│   ├── reinforcement-learning         # 强化学习模块
+│   ├── statistic                      # 服务化调优模块
+│   ├── timeline                       # 时间线模块
+├── platform                           # 底座目录 
+├── plugins                            # 插件目录
+├── scripts                            # 脚本目录 
+├── server                             # 后端服务模块
+│   ├── build                          # 构建脚本
+│   ├── cmake                          # 开源软件构建脚本
+│   ├── src                      
+│   │   ├── channel                    # 网络通讯
+│   │   ├── defs                       # 全局定义
+│   │  ├── entry                       # 编译模块
+│   │   │   ├── server       
+│   │   │      ├── bin                 # server模块
+│   │   ├── protocol                   # 消息定义
+│   │   ├── module       
+│   │   │   ├── base                   # 模块共用基类 
+│   │   │   ├── global                 # 全局消息
+│   │   │   ├── timeline               # timeline消息处理
+│   │   │   │   ├── core               # 核心处理逻辑
+│   │   │   │   ├── handler            # 消息处理
+│   │   │   │   ├──protocol            # 消息格式转换
+│   │   │   ├── ...      
+│   │   ├── server                     # server服务
+│   │   ├── utils                      # 工具类
+│   ├── third_party                    # 开源软件 
+```
 
-MindStudio Insight 围绕昇腾 AI 性能分析主路径提供多维可视化调优能力：
+## 环境部署
 
-| 功能名称 | 功能描述 | 详细说明 |
-| --- | --- | --- |
-| **系统调优** | 分析 Timeline、通信、内存、算子耗时等系统性能瓶颈。 | 《[系统调优](./docs/zh/user_guide/system_tuning.md)》 |
-| **算子调优** | 展示指令流水、源码映射、负载分析和 Cache 等算子性能信息。 | 《[算子调优](./docs/zh/user_guide/operator_tuning.md)》 |
-| **服务化调优** | 通过请求端到端 Timeline 和性能曲线定位推理服务化瓶颈。 | 《[服务化调优](./docs/zh/user_guide/service_optimization.md)》 |
-| **内存调优** | 展示 device 侧内存分配、调用栈和标签信息，辅助定位内存问题。 | 《[内存调优](./docs/zh/user_guide/memory_tuning.md)》 |
+MindStudio Insight工具支持在Windows、Linux，以及macOS系统中安装使用，并且支持通过插件方式安装，具体安装操作可参见[MindStudio Insight安装指南](./docs/zh/user_guide/mindstudio_insight_install_guide.md)。
 
-## 🚀 快速入门
+## 工具限制与注意事项
 
-快速体验 MindStudio Insight 核心调优能力，请参见：<br>
-🔹 《[系统调优快速入门](./docs/zh/quick_start/system_tuning_quick_start.md)》：学习如何使用概览、通信、时间线页签分析模型系统性能。<br>
-🔹 《[算子调优快速入门](./docs/zh/quick_start/operator_tuning_quick_start.md)》：学习如何使用详情、时间线、源码页签分析算子性能。
+MindStudio Insight工具支持导入并展示多种格式的性能数据文件，并对文件规格给出了指导性建议和限制要求。
 
-## 📦 安装指南
+| 文件类型 | 指导建议                                            | 规格限制               |
+| ----------- | --------------------------------------------- | ---------------------- |
+| json文件 | 建议单文件大小不超过1GB，多个文件总大小不超过20GB。          | 单文件大小不超过10GB。 |
+| bin文件  | 建议单文件大小不超过500MB。                                 | 单文件大小不超过10GB。 |
+| db文件   | - 系统调优：建议单文件大小不超过1GB。<br> - 服务化调优：建议单文件大小不超过1GB。 | - 系统调优：单文件大小不超过20GB。<br> - 服务化调优：单文件大小不超过10GB。 |
+| csv文件  | csv格式的文件存在于text数据中，建议单文件大小不超过500MB。     | 单文件大小不超过2GB。  |
 
-介绍 MindStudio Insight 的环境依赖、软件包获取和安装方法，请参见《[MindStudio Insight 安装指南](./docs/zh/install_guide/mindstudio_insight_install_guide.md)》。
+## 基础操作
 
-## 📘 使用指南
+介绍MindStudio Insight工具的基础设置，数据导入，快捷键使用等基础操作。具体请参见[MindStudio Insight基础操作](./docs/zh/user_guide/basic_operations.md)。
 
-工具的详细使用方法和功能说明，请参见以下文档：<br>
-🔹 《[产品概览](./docs/zh/user_guide/overview.md)》<br>
-🔹 《[基础操作](./docs/zh/user_guide/basic_operations.md)》<br>
-🔹 《[系统调优](./docs/zh/user_guide/system_tuning.md)》<br>
-🔹 《[算子调优](./docs/zh/user_guide/operator_tuning.md)》<br>
-🔹 《[服务化调优](./docs/zh/user_guide/service_optimization.md)》<br>
-🔹 《[内存调优](./docs/zh/user_guide/memory_tuning.md)》
+## 特性介绍
 
-## 💡 典型案例
+MindStudio Insight工具支持系统调优、算子调优、服务化调优和内存调优，可视化呈现数据情况，助力开发者快速完成性能调优。
 
-通过典型问题场景帮助用户理解并掌握工具使用：<br>
-🔹 《[Host Bound 问题分析](./docs/zh/best_practices/Host_Bound_Analysis_with_Linux_Kernel_Trace.md)》<br>
-🔹 《[Jupyter 插件安装指南](./docs/zh/best_practices/Jupyter_Plugin_Installation_Guide.md)》<br>
-🔹 《[快捷键使用案例](./docs/zh/best_practices/Keyboard_Shortcuts.md)》<br>
-🔹 《[Timeline 常见泳道与接口](./docs/zh/best_practices/Timeline_Common_Lanes_and_Interface.md)》<br>
-🔹 《[verl Memory Snapshot 采集与分析](./docs/zh/best_practices/verl_Memory_Snapshot_Collection_and_Analysis.md)》
+- 系统调优
 
-## ❓ FAQ
+  MindStudio Insight提供时间线视图、内存、算子耗时、通信瓶颈分析等功能，帮助开发者快速定位模型性能瓶颈，进行深度调优。具体内容请参见[系统调优](./docs/zh/user_guide/system_tuning.md)。
 
-常见问题及解决方案，请参见《[MindStudio Insight FAQ](./docs/zh/support/faq.md)》。
+  | 功能界面              | 介绍                                                         | 场景说明                         |
+  | --------------------- | ------------------------------------------------------------ | -------------------------------- |
+  | 时间线（Timeline）    | 以时间线视图方式为用户提供全流程在线推理/训练过程中的运行情况，并按照调度流程来呈现整体的运行状况，支持集群时间线（Timeline）展示、系统视图详情查看等功能。 | -                                |
+  | 内存（Memory）        | 提供采集过程中内存信息的可视化呈现。通过算子内存折线图直观清晰了解算子内存趋势。 | -                                |
+  | 算子（Operator）      | 提供算子耗时统计和分析。                                     | -                                |
+  | 概览（Summary）       | 展示计算算子和通信算子的耗时分析，并以柱状图、折线图以及数据窗格等呈现方式显示分析结果。 | 支持PyTorch集群场景。 |
+  | 通信（Communication） | 展示集群中全网链路性能以及所有节点的通信性能，通过集群通信与计算重叠时间的分析可以找出集群训练中的慢主机或慢节点。 | 支持PyTorch集群场景。 |
+  | 强化学习（RL）        | 基于采集数据进行高层次抽象，可视化展示控制流的时序关系，帮助快速定位耗时任务与空泡，并支持进一步的性能分析。 | -                                |
 
-## 🌌 智能检索
+- 算子调优
 
-为提升文档查阅效率，我们提供多种高效检索方式：<br>
-🔹 [AI 问答（DeepWiki）](https://deepwiki.com/mindstudio-docs/master)：自然语言问答，快速把握项目架构与模块关系。<br>
-🔹 [AI 问答（ZRead）](https://zread.ai/mindstudio-docs/master)：中文问答体验更优，精准定位功能用法与细节。<br>
-🔹 [精确搜索（ReadTheDocs）](https://msinsight.readthedocs.io/zh-cn/latest/)：关键词全文检索，直达安装、使用、FAQ 等文档。
+  MindStudio Insight提供指令流水视图、算子源码视图以及算子运行负载分析视图，直观地将运行在昇腾AI处理器上的算子的关键性能指标进行可视化呈现，帮助用户快速定位算子的软硬件性能瓶颈，提升算子性能分析的效率。具体内容请参见[算子调优](./docs/zh/user_guide/operator_tuning.md)。
 
-## 🛠️ 贡献指南
+  | 功能界面           | 介绍                                                         | 备注                                     |
+    | ------------------ | ------------------------------------------------------------ | ---------------------------------------- |
+    | 时间线（Timeline） | 以时间线视图方式为用户提供指令在昇腾处理器上的运行情况，并按照调度流程来呈现整体的运行状况，支持查看指令详情、搜索指令等功能。 | -                                        |
+    | 源码（Source）     | 展示算子指令热点图，支持查看算子源码与指令集的映射关系和耗时情况。 | 支持msprof采集的算子Profiling的bin文件。 |
+    | 详情（Details）    | 展示算子基础信息、计算负载分析和内存负载分析，并以图形和数据窗格呈现方式展示分析结果。 | 支持msprof采集的算子Profiling的bin文件。 |
+    | 缓存（Cache）      | 展示用户程序Kernel函数内的L2 Cache访问情况，以便用户优化Cache命中率。 | 支持msprof采集的算子Profiling的bin文件。 |
 
-欢迎参与 MindStudio Insight 项目建设：<br>
-🔹 贡献流程请参见《[贡献指南](./CONTRIBUTING.md)》。<br>
-🔹 开发环境、构建方式和项目结构说明请参见《[开发指南](./docs/zh/development_guide/develop_guide.md)》。
+- 服务化调优
 
-## ⚖️ 相关说明
+  MindStudio Insight工具以时间线（Timeline）的呈现方式，将请求端到端的执行情况平铺在时间轴上，直观体现请求在各个关键阶段的耗时情况以及当下请求的状态信息，可帮助用户快速识别服务化性能瓶颈，并根据问题现象，调整调优策略。具体内容请参见[服务化调优](./docs/zh/user_guide/service_optimization.md)。
 
-🔹 《[版本说明](./docs/zh/release_notes/release_notes.md)》<br>
-🔹 《[项目许可证](./License)》<br>
-🔹 《[文档许可证](./docs/LICENSE)》<br>
-🔹 《[安全声明](./docs/zh/legal/security_statement.md)》<br>
-🔹 《[免责声明](./DISCLAIMER.md)》
+  | 功能界面           | 介绍                                                         | 场景说明                                |
+  | ------------------ | ------------------------------------------------------------ | --------------------------------------- |
+  | 时间线（Timeline） | 以时间线视图方式为用户提供请求端到端的执行情况，直观地查看请求在各个关键阶段的耗时情况以及当下请求的状态信息。 | 支持推理服务化请求trace数据的json文件。 |
+  | 折线图（Curve）    | 以折线图和数据详情表的形式展示推理服务化进程中端到端的性能情况。 | 支持profiler.db文件。                   |
 
-## 🤝 建议与交流
+- 内存调优
 
-欢迎大家为社区做贡献。如果有任何疑问或建议，请提交 [Issues](https://gitcode.com/Ascend/msinsight/issues)，我们会尽快回复。感谢您的支持。
-诚邀参与[满意度问卷调查](https://rdccucd.wjx.cn/vm/PKPfKqO.aspx)抽取惊喜好礼😎。
+  MindStudio Insight工具以图形化形式呈现device侧内存详细分配情况，并结合Python调用栈及自定义打点标签标记各种内存申请使用详情，进行内存问题的详细定位及调优。具体内容请参见[内存调优](./docs/zh/user_guide/memory_tuning.md)。
 
-|                                                  即时互动（微信群）                                                  |                                                 官方资讯（公众号）                                                 | 深度支持（助手/论坛）                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|:-----------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <img src="./docs/zh/user_guide/figures/readme/officialGroupChat.png" width="120"><br><sub>*扫码加入技术交流群*</sub> | <img src="./docs/zh/user_guide/figures/readme/officialAccount.png" width="120"><br><sub>*扫码关注官方公众号*</sub> | 扫码入群并关注公众号，直达 MindStudio 用户与开发者交流平台：<br>**快速提问：** 与社区小伙伴即时探讨技术问题<br>**掌握动态：** 第一时间获取版本发布与功能更新通知<br>**经验共享：** 与广大开发者交流最佳实践与实战心得<br><br>**更多支持渠道**：👉 昇腾助手 [![WeChat](https://img.shields.io/badge/WeChat-07C160?style=flat-square&logo=wechat&logoColor=white)](https://gitcode.com/Ascend/msit/blob/master/docs/zh/figures/readme/xiaozhushou.png) 👉 昇腾论坛：[![Website](https://img.shields.io/badge/Website-%231e37ff?style=flat-square&logo=RSS&logoColor=white)](https://www.hiascend.com/forum/) |
+  | 功能界面          | 介绍                                                         | 场景说明                                      |
+  | ----------------- | ------------------------------------------------------------ | --------------------------------------------- |
+  | 内存详情（Leaks） | 通过调用栈图、折线块图和内存拆解图，将内存情况直观地呈现出来，便于开发者分析定位内存问题，有效缩短定位时间。 | 支持msLeaks工具采集到的db格式的内存结果文件。 |
 
-## 🙏 致谢
+## FAQ
 
-MindStudio Insight 由华为公司的下列部门联合贡献：<br>
-🔹 计算产品线 <br>
-🔹 2012 实验室
+FAQ汇总了在使用MindStudio Insight工具过程中可能遇到的典型问题及其解决方案，具体内容请参见[FAQ](./docs/zh/user_guide/FAQ.md)。
 
-感谢来自社区的每一个 PR，欢迎贡献 MindStudio Insight！
+## 安全声明
 
-华为 MindStudio 全流程开发工具链团队致力于提供端到端的昇腾 AI 应用开发解决方案，使能开发者高效完成训练开发、推理开发和算子开发。
+介绍了MindStudio Insight工具安全相关信息和通信矩阵信息等，具体内容请参见[MindStudio Insight安全声明](./docs/zh/user_guide/security_statement.md)。
+
+## 免责声明
+
+### 开源精神与现状提供
+
+MindStudio Insight（以下称“本工具”）是一款基于开源技术栈构建的大模型集群性能调优跟算子级调优可视化工具。本工具及其生成的所有分析结果（包括但不限于可视化图表、性能报告、优化建议，统称“分析输出”）均按“AS IS”（按现状）提供，不附带任何形式的保证。
+
+### 技术特性与固有局限
+
+本工具旨在辅助诊断与优化，其设计与实现存在固有的技术边界与局限，您确认已理解并接受以下关键事实：
+
+- [x] 数据处理方法：为应对海量性能数据，本工具可能采用流式处理、采样、统计聚合或数据降维等技术。分析输出代表的是经过处理的趋势、模式和统计摘要，而非原始事件的完全精确复现。
+
+- [x] 分析的指导性：本工具提供的性能洞察与优化建议基于对可观测指标的模式识别与启发式分析。这些输出是辅助性、探索性和建议性的，不应被视为根本原因的唯一或权威结论。所有生产环境的变更决策必须由用户基于完整上下文作出。
+
+- [x] 性能影响：在目标系统上启用数据收集功能可能引入额外的性能开销（Overhead）。用户有责任评估此开销的可接受性，并在非关键环境中进行充分测试。
+
+### 无保证声明
+
+在法律允许的最大范围内，华为技术有限公司（Huawei Technologies Co., Ltd.）及其贡献者（如适用）明确否认所有明示或暗示的保证，包括但不限于：
+
+- [x] 对适销性、特定用途适用性、不侵犯第三方权利的保证。
+
+- [x] 对分析输出的准确性、完整性、及时性、可靠性或持续性的保证。
+
+- [x] 对因使用本工具进行系统调优而达成的任何特定性能提升或业务成果的保证。
+
+### 用户责任与专业义务
+
+您作为本工具的专业用户，是自身系统与数据的最终责任方。您应自行承担使用本工具的全部风险，并承诺：
+
+- [x] 独立验证与专业判断：对任何拟用于生产环境的配置变更或优化措施，进行独立的、基于专业知识的验证与测试。本工具的输出不能替代您的专业判断。
+
+- [x] 遵守许可与合规：确保您的使用方式符合本工具所涉及的所有开源许可证（如Mulan PSL v2等）条款，以及您所在辖区的法律法规。
+
+- [x] 接受固有风险：理解系统性能分析的复杂性，接受数据延迟、采样偏差、分析误报/漏报等固有风险。
+
+### 知识产权与第三方组件
+
+本工具可能包含或依赖由第三方提供的开源软件组件。这些组件受其各自的开源许可证保护。相关许可证文本通常可在项目的LICENSE、NOTICE文件或源代码中获得。
+
+如果您认为本工具侵犯了您的知识产权，请依据适用的开源许可证规定或法律程序提出主张。对于涉及本工具中开源组件的权利主张，我们可能将您引导至相应的上游开源社区。
+
+### 责任限制
+
+在任何情况下，我们及本工具的贡献者均不对因使用或无法使用本工具所引起的任何直接、间接、附带、特殊、惩罚性或后果性损害（包括但不限于数据或利润损失、业务中断、信息泄露等）承担责任，无论该等损害基于合同、侵权（包括过失）或其他法律理论，且即使已被告知发生此类损害的可能性。
+
+### 最终救济
+
+您理解并同意，如对本工具或其条款有任何不满，您唯一且排他的救济方式是停止使用本工具的全部功能。
+
+## License
+
+MindStudio Insight工具的使用许可证，具体情参见[LICENSE](./License)。
+
+MindStudio Insight工具docs目录下的文档适用CC-BY 4.0许可证，具体请参见[LICENSE](./docs/LICENSE)。
+
+## 贡献声明
+
+1. **提交错误报告**：如果您在MindStudio Insight中发现了一个不存在安全问题的漏洞，请在MindStudio Insight仓库中的Issues中搜索，以防该漏洞已被提交，如果找不到漏洞可以创建一个新的Issues。如果发现了一个安全问题请不要将其公开，请参阅安全问题处理方式。提交错误报告时应该包含完整信息。
+2. **安全问题处理**：本项目中对安全问题处理的形式，请通过邮箱通知项目核心人员确认编辑。
+3. **解决现有问题**：通过查看仓库的Issues列表可以发现需要处理的问题信息, 可以尝试解决其中的某个问题。
+4. **如何提出新功能**：请使用Issues的Feature标签进行标记，我们会定期处理和确认开发。
+5. **开始贡献：**
+   1. Fork本项目的仓库。
+   2. Clone到本地。
+   3. 创建开发分支。
+   4. 本地测试：提交前请通过所有单元测试，包括新增的测试用例。
+   5. 提交代码。
+   6. 新建Pull Request。
+   7. 代码检视：您需要根据评审意见修改代码，并重新提交更新。此流程可能涉及多轮迭代。
+   8. 当您的PR获得足够数量的检视者批准后，Committer会进行最终审核。
+   9. 审核和测试通过后，CI会将您的PR合并到项目的主干分支。
+6. **开发者测试相关要求**：合入后端代码时，有开发者测试的相关要求。
+    1. 后端DT使用测试框架GoogleTest，DT代码位置是server/src/test，Linux系统上，在build目录下执行命令`bash cpp_coverage.sh`即可生成覆盖率。后端覆盖率的要求是行覆盖率达到80%，分支覆盖率达到60%。后端合入新特性代码时，要求同时补充DT。详细步骤可以参考[开发指南](./docs/zh/developer_guide/development_guide.md)的3.3.3节。
+7. **预冒烟测试相关要求**：合入前端代码或后端代码时，有预冒烟测试的相关要求。
+    1. 预冒烟测试是端到端的测试，用于验证软件的主要功能是否正常运行，涉及前端和后端。预冒烟测试使用测试框架Playwright。详细步骤可以参考[开发指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/developer_guide/development_guide.md)的3.5节。
+
+## 建议与交流
+
+欢迎大家为社区做贡献。如果有任何疑问或建议，请提交[Issues](https://gitcode.com/Ascend/msinsight/issues)，我们会尽快回复。感谢您的支持。
+
+## 致谢
+
+MindStudio Insight由华为公司的下列部门联合贡献：
+
+- 计算产品线
+
+感谢来自社区的每一个PR，欢迎贡献MindStudio Insight！

@@ -1,0 +1,515 @@
+# 典型案例
+
+
+## 检测内核调用符方式的Ascend C算子
+
+**操作步骤<a name="zh-cn_topic_0000001748881321_section159973367464"></a>**
+
+1.  <a name="zh-cn_topic_0000001748881321_li81191943134016"></a>请参考《mssanitizer\_user\_guide》中的“使用前准备\>开启全量检测\>内核调用符场景准备”，完成使用前准备。
+2.  参考《mssanitizer\_user\_guide》中的“使用前准备”完成相关环境变量的配置。
+3.  构建单算子可执行文件。
+
+    以Add算子为例，可执行文件的构建命令示例如下：
+
+    ```
+    bash run.sh -r npu -v <soc_version> 
+    ```
+
+    一键式编译运行脚本完成后，在工程目录下生成NPU侧可执行文件_<kernel\_name\>\_npu_。
+
+4.  使用msSanitizer检测工具拉起单算子可执行文件（以_add\_npu_为例）。
+
+    -   内存检测执行以下命令，具体参数说明请参考《mssanitizer\_user\_guide》中的“工具概述\>命令汇总\>通用参数说明表”和《mssanitizer\_user\_guide》中的“工具概述\>命令汇总\>内存检测参数说明表”，内存检测请参考[内存检测示例说明](#zh-cn_topic_0000001748881321_section59511855135614)。
+
+        ```
+        mssanitizer --tool=memcheck ./add_npu   # 内存检测需指定 --tool=memcheck
+        ```
+
+    -   竞争检测执行以下命令，具体参数说明请参考《mssanitizer\_user\_guide》中的“工具概述\>命令汇总\>通用参数说明表”，竞争检测请参考[竞争检测示例说明](#zh-cn_topic_0000001748881321_section15332171054714)。
+
+        ```
+        mssanitizer --tool=racecheck ./add_npu  # 竞争检测需指定 --tool=racecheck
+        ```
+
+    单算子可执行文件所在路径可配置为绝对路径或相对路径，请根据实际环境配置。
+
+**内存检测示例说明<a name="zh-cn_topic_0000001748881321_section59511855135614"></a>**
+
+-   在[步骤1](#zh-cn_topic_0000001748881321_li81191943134016)之前，需要在Add算子中构造一个非法读写的场景，将DataCopy内存拷贝长度从TILE\_LENGTH改为2 \* TILE\_LENGTH，此时最后一次拷贝会发生内存读写越界。
+
+    ```
+      __aicore__ inline void CopyOut(int32_t progress)
+        {
+            // deque output tensor from VECOUT queue
+            LocalTensor<half> zLocal = outQueueZ.DeQue<half>();
+            // copy progress_th tile from local tensor to global tensor
+            // 构造非法读写场景
+            DataCopy(zGm[progress * TILE_LENGTH], zLocal, 2 * TILE_LENGTH);
+            // free output tensor for reuse
+            outQueueZ.FreeTensor(zLocal);
+        }
+    ```
+
+-   根据检测工具输出的报告，可以发现在**add\_custom.cpp**的65行对GM存在224字节的非法写操作，与我们构造的异常场景对应。
+
+    ```
+    $ mssanitizer --tool=memcheck ./add_npu
+    ====== ERROR: illegal write of size 224
+    ======    at 0x12c0c002ef00 on GM in add_custom_kernel
+    ======    in block aiv(7) on device 0
+    ======    code in pc current 0x1644 (serialNo:2342)
+    ======    #0 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/impl/dav_c220/kernel_operator_data_copy_impl.h:107:9
+    ======    #1 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/inner_interface/inner_kernel_operator_data_copy_intf.cppm:155:9
+    ======    #2 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/inner_interface/inner_kernel_operator_data_copy_intf.cppm:459:5
+    ======    #3 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:65:9
+    ======    #4 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:38:13
+    ======    #5 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:82:8
+    ```
+
+**竞争检测示例说明<a name="zh-cn_topic_0000001748881321_section15332171054714"></a>**
+
+-   在[步骤1](#zh-cn_topic_0000001748881321_li81191943134016)之前，需要在Add算子中构造一个核间竞争的场景，将DataCopy内存拷贝长度从TILE\_LENGTH改为2 \* TILE\_LENGTH，此时会在GM内存上存在核间竞争。
+
+    ```
+      __aicore__ inline void CopyOut(int32_t progress)
+        {
+            // deque output tensor from VECOUT queue
+            LocalTensor<half> zLocal = outQueueZ.DeQue<half>();
+            // copy progress_th tile from local tensor to global tensor
+            // 构造核间竞争场景
+            DataCopy(zGm[progress * TILE_LENGTH], zLocal, 2 * TILE_LENGTH);
+            // free output tensor for reuse
+            outQueueZ.FreeTensor(zLocal);
+        }
+    ```
+
+-   根据检测工具输出的报告，可以发现在**add\_kernel.cpp**的65行，AIV的0核和1核存在核间竞争，符合我们构造的异常场景。
+
+    ```
+    $ mssanitizer --tool=racecheck ./add_npu
+    ====== ERROR: Potential WAW hazard detected at GM in add_custom_kernel:
+    ======    PIPE_MTE3 Write at WAW()+0x12c0c0025f00 in block 0 (aiv) on device 0 at pc current 0x1644 (serialNo:305)
+    ======    #0 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/impl/dav_c220/kernel_operator_data_copy_impl.h:107:9
+    ======    #1 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/inner_interface/inner_kernel_operator_data_copy_intf.cppm:155:9
+    ======    #2 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/inner_interface/inner_kernel_operator_data_copy_intf.cppm:459:5
+    ======    #3 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:65:9
+    ======    #4 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:38:13
+    ======    #5 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:82:8
+    ======    PIPE_MTE3 Write at WAW()+0x12c0c0026000 in block 1 (aiv) on device 0 at pc current 0x1644 (serialNo:329)
+    ======    #0 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/impl/dav_c220/kernel_operator_data_copy_impl.h:107:9
+    ======    #1 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/inner_interface/inner_kernel_operator_data_copy_intf.cppm:155:9
+    ======    #2 ${ASCEND_HOME_PATH}/compiler/tikcpp/tikcfw/inner_interface/inner_kernel_operator_data_copy_intf.cppm:459:5
+    ======    #3 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:65:9
+    ======    #4 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:38:13
+    ======    #5 samples/operator/AddCustomSample/KernelLaunch/AddKernelInvocation/add_custom.cpp:82:8
+    ```
+
+## 检测API调用的单算子<a name="ZH-CN_TOPIC_0000002526767361"></a>
+
+完成自定义算子的开发部署后，通过单算子API执行的方式调用，添加检测相关编译选项重新编译算子并部署，使用msSanitizer工具运行可执行文件实现算子进行异常检测。
+
+**前提条件<a name="zh-cn_topic_0000001841651045_section109204917476"></a>**
+
+单击[Link](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AclNNInvocation)获取样例工程，为进行算子检测做准备。
+
+>[!NOTE] 说明
+>
+>-   此样例工程不支持Atlas A3 训练系列产品/Atlas A3 推理系列产品。
+>-   下载代码样例时，需执行以下命令指定分支版本。
+>   ```
+>   git clone https://gitee.com/ascend/samples.git -b v0.2-8.0.0.beta1
+>   ```
+
+**操作步骤<a name="zh-cn_topic_0000001933727046_section19053361583"></a>**
+
+1.  执行以下命令，生成自定义算子工程，并进行Host侧和Kernel侧的算子实现。
+
+    ```
+    bash install.sh -v Ascendxxxyy    # xxxyy为用户实际使用的具体芯片类型
+    ```
+
+2. 请参考《msopgen\_user\_guide》中的“算子编译部署”章节，完成算子的编译部署。
+
+   > [!NOTE] 说明  
+   > 在样例工程的$\{git\_clone\_path\}/samples/operator/ascendc/0\_introduction/1\_add\_frameworklaunch/CustomOp目录下，修改在op\_kernel/CMakeLists.txt文件，在Kernel侧实现中增加检测选项-sanitizer，以支持检测功能
+   >
+   >```
+   >add_ops_compile_options(ALL OPTIONS -sanitizer)
+   >```
+
+3.  单击[前提条件](#zh-cn_topic_0000001841651045_section109204917476)，获取验证代码的样例工程目录。
+
+    ```
+    ├──input                                                 // 存放脚本生成的输入数据目录
+    ├──output                                                // 存放算子运行输出数据和真值数据的目录
+    ├── inc                           // 头文件目录 
+    │   ├── common.h                 // 声明公共方法类，用于读取二进制文件 
+    │   ├── operator_desc.h          // 算子描述声明文件，包含算子输入/输出，算子类型以及输入描述与输出描述 
+    │   ├── op_runner.h              // 算子运行相关信息声明文件，包含算子输入/输出个数，输入/输出大小等 
+    ├── src 
+    │   ├── CMakeLists.txt    // 编译规则文件
+    │   ├── common.cpp         // 公共函数，读取二进制文件函数的实现文件
+    │   ├── main.cpp    // 单算子调用应用的入口
+    │   ├── operator_desc.cpp     // 构造算子的输入与输出描述 
+    │   ├── op_runner.cpp   // 单算子调用主体流程实现文件
+    ├── scripts
+    │   ├── verify_result.py    // 真值对比文件
+    │   ├── gen_data.py    // 输入数据和真值数据生成脚本文件
+    │   ├── acl.json    // acl配置文件
+    ```
+
+4.  使用检测工具拉起算子API运行脚本。
+
+    ```
+    mssanitizer --tool=memcheck bash run.sh  # 内存检测需指定 --tool=memcheck
+    mssanitizer --tool=racecheck bash run.sh # 竞争检测需指定 --tool=racecheck
+    ```
+
+5.  参考《mssanitizer\_user\_guide》中的“内存检测\>内存异常报告解析”、“竞争检测\>竞争异常报告解析”及“未初始化检测\>未初始化异常报告解析”分析异常行为。
+
+## 检测PyTorch接口调用的算子<a name="ZH-CN_TOPIC_0000002494647622"></a>
+
+**前提条件<a name="zh-cn_topic_0000001841651045_section109204917476"></a>**
+
+- 单击[Link](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom)获取样例工程，为进行算子检测做准备。
+
+  >[!NOTE] 说明
+  >
+  >-   此样例工程仅支持Python3.9，若要在其他Python版本上运行，需要修改$\{git\_clone\_path\}/samples/operator/ascendc/0\_introduction/1\_add\_frameworklaunch/PytorchInvocation目录下run\_op\_plugin.sh文件中的Python版本。
+  >-   此样例工程不支持Atlas A3 训练系列产品/Atlas A3 推理系列产品。
+  >-   下载代码样例时，需执行以下命令指定分支版本。
+  >   ```
+  >   git clone https://gitee.com/ascend/samples.git -b master
+  >   ```
+
+-   已参考《Ascend Extension for PyTorch 软件安装指南》，完成PyTorch框架和torch\_npu插件的安装。
+
+**操作步骤<a name="section14424912162216"></a>**
+
+1.  执行以下命令，生成自定义算子工程，并进行Host侧和Kernel侧的算子实现。
+
+    ```
+    bash install.sh -v Ascendxxxyy    # xxxyy为用户实际使用的具体芯片类型
+    ```
+
+2. 参考《msopgen\_user\_guide》中的“算子编译部署”章节，完成算子的编译部署。
+
+   >[!NOTE] 说明
+   >编辑样例工程目录$\{git\_clone\_path\}/samples/operator/ascendc/0\_introduction/1\_add\_frameworklaunch/CustomOp/op\_kernel下的CMakeLists.txt文件，增加编译选项-sanitizer。
+   >
+   >```
+   >add_ops_compile_options(ALL OPTIONS -sanitizer)
+   >```
+
+3.  进入[PyTorch接入工程](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/PytorchInvocation)，使用PyTorch调用方式调用AddCustom算子工程，并按照指导完成编译。
+
+    ```
+    PytorchInvocation
+    ├── op_plugin_patch         
+    ├── run_op_plugin.sh      //  [5.执行样例](#zh-cn_topic_0000001841651045_li10585181918520)时,需要使用
+    └── test_ops_custom.py    //  [步骤6](#zh-cn_topic_0000001841651045_li5970114116118)启动工具时,需要使用
+    ```
+
+4.  <a name="zh-cn_topic_0000001841651045_li10585181918520"></a>执行样例，样例执行过程中会自动生成测试数据，然后运行PyTorch样例，最后检验运行结果。
+
+    ```
+    bash run_op_plugin.sh
+    -- CMAKE_CCE_COMPILER: ${INSTALL_DIR}/toolkit/tools/ccec_compiler/bin/ccec
+    -- CMAKE_CURRENT_LIST_DIR: ${INSTALL_DIR}/AddKernelInvocation/cmake/Modules
+    -- ASCEND_PRODUCT_TYPE:
+      Ascendxxxyy
+    -- ASCEND_CORE_TYPE:
+      VectorCore
+    -- ASCEND_INSTALL_PATH:
+      /usr/local/Ascend/cann
+    -- The CXX compiler identification is GNU 10.3.1
+    -- Detecting CXX compiler ABI info
+    -- Detecting CXX compiler ABI info - done
+    -- Check for working CXX compiler: /usr/bin/c++ - skipped
+    -- Detecting CXX compile features
+    -- Detecting CXX compile features - done
+    -- Configuring done
+    -- Generating done
+    -- Build files have been written to: ${INSTALL_DIR}/AddKernelInvocation/build
+    Scanning dependencies of target add_npu
+    [ 33%] Building CCE object cmake/npu/CMakeFiles/add_npu.dir/__/__/add_custom.cpp.o
+    [ 66%] Building CCE object cmake/npu/CMakeFiles/add_npu.dir/__/__/main.cpp.o
+    [100%] Linking CCE executable ../../../add_npu
+    [100%] Built target add_npu
+    ${INSTALL_DIR}/AddKernelInvocation
+    INFO: compile op on ONBOARD succeed!
+    INFO: execute op on ONBOARD succeed!
+    test pass
+    ```
+
+5.  <a name="zh-cn_topic_0000001841651045_li5970114116118"></a>启动msSanitizer工具拉起Python程序，进行异常检测，异常检测功能的开启原则请参见《mssanitizer\_user\_guide》中的“工具概述\>异常检测功能启用原则”。
+6.  参考《mssanitizer\_user\_guide》中的“内存检测\>内存异常报告解析”、“竞争检测\>竞争异常报告解析”及“未初始化检测\>未初始化异常报告解析”分析异常行为。
+
+## 检测Triton算子<a name="ZH-CN_TOPIC_0000002526647391"></a>
+
+**前提条件<a name="zh-cn_topic_0000001841651045_section109204917476"></a>**
+
+-   参考[Link](https://gitcode.com/Ascend/triton-ascend)，完成Triton及Triton-Ascend插件的安装和配置。
+-   为了防止未重新编译的算子造成影响，建议您启用以下环境变量：
+
+    ```
+    export TRITON_ALWAYS_COMPILE=1
+    ```
+
+-   自备Triton算子实现文件。
+
+    若用户尚未准备Triton算子，可参考以下示例。本节将基于此示例来说明Triton算子的检测流程。
+
+    ```
+    # file name: sample.py
+    import triton
+    import triton.language as tl
+    import torch
+    
+    def torch_pointwise(x0, x1):
+        res = x0 + x1
+        return res
+    
+    
+    @triton.jit
+    def triton_add(in_ptr0, in_ptr1, out_ptr0, XBLOCK: tl.constexpr, XBLOCK_SUB: tl.constexpr):
+        offset = tl.program_id(0) * XBLOCK
+        base1 = tl.arange(0, XBLOCK_SUB)
+        loops1: tl.constexpr = (XBLOCK + XBLOCK_SUB - 1) // XBLOCK_SUB
+        for loop1 in range(loops1):
+            x0 = offset + (loop1 * XBLOCK_SUB) + base1
+            tmp0 = tl.load(in_ptr0 + (x0), None)
+            tmp1 = tl.load(in_ptr1 + (x0), None)
+            tmp2 = tmp0 + tmp1
+            tl.store(out_ptr0 + (x0), tmp2, None)
+    
+    
+    def test_case(dtype, shape, ncore, xblock, xblock_sub):
+        x0 = torch.randn(shape, dtype=dtype).npu()
+        x1 = torch.randn(shape, dtype=dtype).npu()
+        y_ref = torch_pointwise(x0, x1)
+        y_cal = torch.zeros(shape, dtype=dtype).npu()
+        triton_add[ncore, 1, 1](x0, x1, y_cal, xblock, xblock_sub)
+        print("Pass" if torch.equal(y_ref, y_cal) else "Failed")
+    
+    
+    if __name__ == "__main__":
+        test_case(torch.float32, (2, 4096, 8), 2, 32768, 1024)
+    ```
+
+**操作步骤<a name="section65341314105016"></a>**
+
+1.  请参考《mssanitizer\_user\_guide》中的“使用前准备\>开启全量检测\>Triton算子调用场景”准备，完成使用前准备。
+2.  关闭内存池。
+
+    样例中使用PyTorch创建Tensor，PyTorch框架内默认使用内存池的方式管理GM内存，会对内存检测产生干扰。因此，在检测前需要额外设置如下环境变量关闭内存池，以保证检测结果准确。
+
+    ```
+    export PYTORCH_NO_NPU_MEMORY_CACHING=1
+    ```
+
+3.  在Triton算子中构造一个非法读写的场景，将第一次load的内存向右偏移100个元素，此时会导致load在GM内存上发生非法读。
+
+    ```
+    def triton_add(in_ptr0, in_ptr1, out_ptr0, XBLOCK: tl.constexpr, XBLOCK_SUB: tl.constexpr):
+        offset = tl.program_id(0) * XBLOCK
+        base1 = tl.arange(0, XBLOCK_SUB)
+        loops1: tl.constexpr = (XBLOCK + XBLOCK_SUB - 1) // XBLOCK_SUB
+        for loop1 in range(loops1):
+            x0 = offset + (loop1 * XBLOCK_SUB) + base1
+            # ERROR: 构造非法读异常
+            tmp0 = tl.load(in_ptr0 + (x0) + 100, None)
+            tmp1 = tl.load(in_ptr1 + (x0), None)
+    ```
+
+4.  使用msSanitizer检测工具拉起Triton算子。具体参数说明请参考《mssanitizer\_user\_guide》中的“工具概述\>命令汇总\>通用参数说明表”和《mssanitizer\_user\_guide》中的“工具概述\>命令汇总\>内存检测参数说明表”，内存检测请参考《mssanitizer\_user\_guide》中的“内存检测”。
+
+    ```
+    mssanitizer -t memcheck -- python sample.py
+    ```
+
+**内存异常报告示例<a name="zh-cn_topic_0000001748881321_section59511855135614"></a>**
+
+根据检测工具输出的报告，可以发现在sample.py的18行对GM存在368字节的非法读操作，与构造的异常场景一致。
+
+```
+$ mssanitizer -t memcheck -- python sample.py
+[mssanitizer] logging to file: ./mindstudio_sanitizer_log/mssanitizer_20250522093805_922880.log
+Failed
+====== ERROR: illegal read of size 368
+======    at 0x12c0c0053190 on GM in triton_add
+======    in block aiv(1) on device 0
+======    code in pc current 0x1b0 (serialNo:524)
+======    #0 sample.py:18:45
+```
+
+## 检测CANN软件栈的内存<a name="ZH-CN_TOPIC_0000002494527738"></a>
+
+针对用户程序调用CANN软件栈接口可能出现的内存异常操作场景，msSanitizer检测工具提供了Device相关接口和AscendCL相关接口的内存检测能力，方便用户对程序内存异常操作位置的排查和定位。
+
+**内存泄漏检测使用原理<a name="zh-cn_topic_0000001748761501_section1251411199161"></a>**
+
+当**npu-smi info**命令查询到的设备内存不断增大时，可使用本工具进行内存泄漏定位定界，若AscendCL系列接口泄漏可支持定位到代码行。
+
+如[图1](#zh-cn_topic_0000001748761501_fig030518812432)所示，CANN软件栈内存操作接口包含两个层级，向下使用驱动侧提供的Device侧接口，向上提供了AscendCL系列接口供用户代码调用。
+
+**图 1**  内存检测<a name="zh-cn_topic_0000001748761501_fig030518812432"></a>  
+![](figures/内存检测.png "内存检测")
+
+内存泄漏定位可分为以下步骤：
+
+1.  使能Device系列接口进行泄漏检测，判断内存泄漏是否发生在Host侧。若没有，则定界到Device侧的应用出现泄漏；若有，则通过下一个步骤判断AscendCL接口调用是否发生泄漏；
+2.  使能AscendCL系列接口进行泄漏检测，判断用户代码调用AscendCL接口是否存在泄漏。若没有，则定界为非AscendCL接口调用问题；如果出现泄漏，则通过下一步定位到具体代码行；
+3.  使用msSanitizer检测工具中提供的新接口，对头文件重新编译，再用检测工具拉起检测程序，可定位到未释放内存的分配函数所对应的文件名与代码行号。新接口的详细说明请参见《mssanitizer\_api》。
+
+**排查步骤<a name="zh-cn_topic_0000001748761501_section1230331415306"></a>**
+
+1.  参考《mssanitizer\_user\_guide》中的“使用前准备”完成相关环境变量配置。
+2.  定界是否为Host侧泄漏。
+    1.  使用msSanitizer检测工具拉起待检测程序，命令示例如下：
+
+        ```
+        mssanitizer --check-device-heap=yes --leak-check=yes ./add_npu
+        ```
+
+        待检测程序（以_add\_custom\_npu_为例）所在路径可配置为绝对路径或相对路径，请根据实际环境配置。
+
+    2.  若无异常输出则说明检测程序运行成功，且Host侧不存在内存泄漏情况；若输出如下错误说明Host侧的应用出现了内存泄漏。
+
+        以下输出结果表明Host侧共有一处分配了内存但未释放，导致内存泄漏32800字节。
+
+        ```
+        ====== ERROR: LeakCheck: detected memory leaks
+          
+        ======    Direct leak of 32800 byte(s) 
+        ======      at 0x124080024000 on GM allocated in <unknown>:0 (serialNo:0)
+          
+        ====== SUMMARY: 32800 byte(s) leaked in 1 allocation(s)
+        ```
+
+3.  定界是否为AscendCL接口调用导致泄漏。
+    1.  使用msSanitizer检测工具拉起待检测程序，命令示例如下：
+
+        ```
+        mssanitizer --check-cann-heap=yes --leak-check=yes ./add_npu
+        ```
+
+    2.  若无异常输出则说明检测程序运行成功，且AscendCL接口调用不存在内存泄漏情况；若输出如下错误说明AscendCL接口调用出现了内存泄漏。
+
+        以下输出结果表明调用AscendCL接口时共有一处分配了内存但未释放，导致内存泄漏32768字节。
+
+        ```
+        ====== ERROR: LeakCheck: detected memory leaks
+        
+        ======    Direct leak of 32768 byte(s) 
+        ======      at 0x124080024000 on GM allocated in <unknown>:0 (serialNo:0)
+        
+        ====== SUMMARY: 32768 byte(s) leaked in 1 allocation(s)
+        ```
+
+4.  若存在泄漏，可通过msSanitizer工具中提供的msSanitizer API头文件“acl.h”和对应的动态库文件定位发生泄漏的代码文件和代码行。
+
+    定位发生泄漏的代码文件和代码行时，需要将用户代码中原有的“acl/acl.h”头文件替换为工具中提供的msSanitizer API头文件“acl.h”，并将动态库libascend\_acl\_hook.so文件链接至用户的应用工程中，并重新编译应用工程，具体操作步骤请参见[导入API头文件和链接动态库](#section1587150123812)。
+
+5.  使用msSanitizer工具重新拉起程序，命令示例如下：
+
+    ```
+    mssanitizer --check-cann-heap=yes --leak-check=yes ./add_npu
+    ```
+
+    以下输出结果表明在调用应用程序main.cpp的第55行存在一次内存分配但未释放，至此可定位到内存泄漏的原因。
+
+    ```
+    ====== ERROR: LeakCheck: detected memory leaks  
+    
+    ======    Direct leak of 32768 byte(s) 
+    ======     at 0x124080024000 on GM allocated in main.cpp:55 (serialNo:0)
+    
+    ====== SUMMARY: 32768 byte(s) leaked in 1 allocation(s)
+    ```
+
+**导入API头文件和链接动态库<a name="section1587150123812"></a>**
+
+本示例以Atlas A2 训练系列产品/Atlas A2 推理系列产品的内核调用符场景为例，说明导入msSanitizer API头文件“acl.h”和链接相对应的动态库文件的具体操作步骤，其他类型的自定义工程需根据用户实际构建的脚本进行调整。
+
+1. 单击[Link](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/3_add_kernellaunch/AddKernelInvocationNeo)，获取验证代码的样例工程。
+
+   >[!NOTE] 说明
+   >下载代码样例时，需执行以下命令指定分支版本。
+   >
+   >```
+   >git clone https://gitee.com/ascend/samples.git -b master
+   >```
+
+2. 在$\{git\_clone\_path\}/samples/operator/ascendc/0\_introduction/3\_add\_kernellaunch/AddKernelInvocationNeo目录中，将main.cpp文件引入的“acl/acl.h”头文件替换为msSanitizer工具提供的头文件“acl.h”。
+
+   >[!NOTE] 说明
+   >在模板库场景下，需将Ascend C模板库**/examples/common/helper.hpp**路径下的**\#include <acl/acl.h\>**替换为**\#include "acl.h"**，具体操作步骤如下。
+   >
+   >1.  执行以下命令，下载[Link](https://gitcode.com/cann/catlass/tree/catlass-v1-stable)中的Ascend C模板库。
+   >   ```
+   >   git clone https://gitcode.com/cann/catlass.git -b catlass-v1-stable
+   >   ```
+   >2.  进入**/examples/common/helper.hpp**代码目录。
+   >   ```
+   >   cd catlass/examples/common/helper.hpp
+   >   ```
+   >3.  将**\#include <acl/acl.h\>**替换为**\#include "acl.h"**。
+
+   ```
+   #include "data_utils.h"
+   #ifndef ASCENDC_CPU_DEBUG
+   // #include "acl/acl.h"
+   // acl/acl.h 替换为 acl.h
+   #include "acl.h"
+   extern void add_custom_do(uint32_t blockDim, void *stream, uint8_t *x, uint8_t *y, uint8_t *z);
+   #else
+   ```
+
+3. 在$\{git\_clone\_path\}/samples/operator/ascendc/0\_introduction/3\_add\_kernellaunch/AddKernelInvocationNeo目录下编辑CMakeLists.txt文件，导入API头文件路径  $\{INSTALL\_DIR\}/tools/mssanitizer/include/acl和动态库路径
+
+   $\{INSTALL\_DIR\}/tools/mssanitizer/lib64/libascend\_acl\_hook.so。
+
+   >[!NOTE] 说明
+   >
+   >-   模板库场景仅适用于Atlas A2 训练系列产品/Atlas A2 推理系列产品。
+   >-   模板库场景时，可通过以下方式增加检测编译选项。
+   >   ```
+   >   -I$ENV{ASCEND_HOME_PATH}/tools/mssanitizer/include/acl 
+   >   -L$ENV{ASCEND_HOME_PATH}/tools/mssanitizer/lib64 
+   >   -lascend_acl_hook 
+   >   ```
+
+   ```
+   add_executable(ascendc_kernels_bbit ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+   
+   target_compile_options(ascendc_kernels_bbit PRIVATE
+       $<BUILD_INTERFACE:$<$<STREQUAL:${RUN_MODE},cpu>:-g>>
+       -O2 -std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0 -Wall -Werror
+   )
+   # 算子可执行文件编译时，引入API头文件路径
+   target_include_directories(ascendc_kernels_bbit PUBLIC
+       $ENV{ASCEND_HOME_PATH}/tools/mssanitizer/include/acl)
+   # 算子可执行文件链接时，引入libascend_acl_hook.so动态库路径
+   target_link_directories(ascendc_kernels_bbit PRIVATE
+       $ENV{ASCEND_HOME_PATH}/tools/mssanitizer/lib64)
+   
+   target_link_libraries(ascendc_kernels_bbit PRIVATE
+       $<BUILD_INTERFACE:$<$<OR:$<STREQUAL:${RUN_MODE},npu>,$<STREQUAL:${RUN_MODE},sim>>:host_intf_pub>>
+       $<BUILD_INTERFACE:$<$<STREQUAL:${RUN_MODE},cpu>:ascendcl>>
+       ascendc_kernels_${RUN_MODE}
+       # 将算子可执行文件链接至libascend_acl_hook.so动态库
+       ascend_acl_hook
+   )
+   ```
+
+4.  导入环境变量，并重新编译算子。
+
+    >[!NOTE] 说明
+    >在安装昇腾AI处理器的服务器执行**npu-smi info**命令进行查询，获取**Chip Name**信息。实际配置值为AscendChip Name，例如**Chip Name**取值为_xxxyy_，实际配置值为Ascend_xxxyy_。
+
+    ```
+    export LD_LIBRARY_PATH=${ASCEND_HOME_PATH}/tools/mssanitizer/lib64:$LD_LIBRARY_PATH
+    mssanitizer --check-cann-heap=yes --leak-check=yes -- bash run.sh -r npu -v Ascendxxxyy
+    ```
+

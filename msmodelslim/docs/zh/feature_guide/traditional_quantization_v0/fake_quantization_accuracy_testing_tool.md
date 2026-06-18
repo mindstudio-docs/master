@@ -1,10 +1,12 @@
-# 伪量化精度测试工具（Precision Tool）
+# 伪量化精度测试工具
 
-## 1. 简介
+## Precision Tool
+
+### 简介
 
 Precision Tool为伪量化精度测试工具，在torch_npu路线下进行精度测试。
 
-## 2. 使用前准备
+### 使用前准备
 
 1.CANN包安装： 安装开发运行环境的昇腾 AI 推理相关驱动、固件、CANN 包，参照 [昇腾文档](https://www.hiascend.com/zh/document)
 2.设置 Python 环境变量
@@ -44,11 +46,11 @@ if __name__ == '__main__':
 
 ```
 
-## 3. 功能介绍
+### 功能介绍
 
-### 3.1 接口介绍
+### 接口介绍
 
-#### 3.1.1 实例创建接口
+#### 实例创建接口
 
 ```python
 def __init__(self, model, tokenizer, dataset, batch_size, hardware_type,
@@ -78,13 +80,13 @@ def __init__(self, model, tokenizer, dataset, batch_size, hardware_type,
   + tokenizer_return_type_id: 当输入 Bert 类型接口时需要传入 True，具体可以根据接口运行的反馈来确定
   + shot: 精度测试时使用的shot值，当前只对MMLU数据集生效
 
-#### 3.3.2 测试结果接口
+#### 测试结果接口
 
 ```python
 def test(self):
 ```
 
-## 4. 使用方法
+### 使用方法
 
 1.下载数据集，并修改成如下的样式
 

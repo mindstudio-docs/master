@@ -1,18 +1,10 @@
 # dyno使用说明
 
-## ℹ️ 简介
+## 简介
 
 dyno负责发送dyno CLI的RPC请求，触发nputrace和npu-monitor功能。
 
-## 📘 使用指南
-
-dyno命令的使用方式如下：
-
-```bash
-dyno [OPTIONS] --certs-dir <CERTS_DIR> <SUBCOMMAND> <SUBCOMMAND_ARGS>
-```
-
-## ⚙️ 功能介绍
+## dyno功能介绍
 
 **参数说明**
 
@@ -20,11 +12,11 @@ dyno [OPTIONS] --certs-dir <CERTS_DIR> <SUBCOMMAND> <SUBCOMMAND_ARGS>
 | ----------- | -------- | ------------------------------------------------------------ | :------: |
 | --hostname  | String   | dynolog daemon进程的主机名，默认值localhost。                |    N     |
 | --port      | i32      | dynolog daemon进程监听的端口号，默认值1778。                 |    N     |
-| --certs-dir | String   | 用于指定dyno与dynolog RPC通信时TLS证书的路径，当值为`NO_CERTS`时不使用证书校验，默认值`NO_CERTS`。 |    N     |
+| --certs-dir | String   | 用于指定dyno与dynolog RPC通信时TLS证书的路径，当值为`NO_CERTS`时不使用证书校验。 |    Y     |
 | --help      | action   | 用于获取dyno命令的使用帮助，查看所有可用选项和功能说明。     |    N     |
 | --version   | action   | 用于查询dyno CLI的版本信息。                                 |    N     |
 
-**常用子命令**
+- dyno常用子命令
 
 | 命令        | 说明                                                         |
 | ----------- | ------------------------------------------------------------ |
