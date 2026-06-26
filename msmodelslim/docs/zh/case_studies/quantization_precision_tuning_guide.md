@@ -1,4 +1,4 @@
-# 量化精度调优指南
+﻿# 量化精度调优指南
 
 ## 概述
 
@@ -28,12 +28,12 @@
 步骤5：量化回退（最终手段）
 ```
 
-**核心目标**：  
+**核心目标**：
 在可接受的精度损失内，实现模型的高效量化部署。
 
 ## 使用前准备
 
-安装 msModelSlim 工具，详情请参见[《msModelSlim工具安装指南》](../getting_started/install_guide.md)。
+安装 msModelSlim 工具，详情请参见[《msModelSlim工具安装指南》](../install_guide/install_guide.md)。
 
 ## 调优步骤详解
 
@@ -53,7 +53,7 @@
 
 **解决思路**：使用离群值抑制算法，将激活的量化难度“转移”到权重上。
 
-[离群值抑制算法对比](../quantization_algorithms/README.md#离群值抑制算法)
+[离群值抑制算法对比](../user_guide/quantization_algorithms/README.md#离群值抑制算法)
 
 #### 总结建议
 
@@ -66,7 +66,7 @@
 
 根据量化对象（权重/激活）和比特数选择合适算法。量化算法选择包括权重量化方法选择和激活量化方法选择两部分。
 
-[量化算法对比](../quantization_algorithms/README.md#量化算法)
+[量化算法对比](../user_guide/quantization_algorithms/README.md#量化算法)
 
 #### 权重量化
 
@@ -176,7 +176,7 @@
 
 ##### 第一步：敏感层分析
 
-使用msModelSlim提供的敏感层分析工具识别量化敏感层。详细使用方法请参考《[量化敏感层分析使用指南](../feature_guide/sensitive_layer_analysis/usage.md)》。
+使用msModelSlim提供的敏感层分析工具识别量化敏感层。详细使用方法请参考《[量化敏感层分析使用指南](../user_guide/feature_guide/sensitive_layer_analysis/usage.md)》。
 
 **功能说明**：
 

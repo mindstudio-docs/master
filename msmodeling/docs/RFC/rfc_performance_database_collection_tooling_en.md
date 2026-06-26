@@ -94,7 +94,6 @@ Recommended directory examples include:
 - `vllm0.13.0_torch2.8.0_cann8.3`
 - `vllm0.15.0_torch2.9.0_cann8.5`
 - `vllm0.18.0_torch2.9.0_cann8.5`
-- `vllm0.18.0_torch2.9.0_cann8.5_shape_generated`, a generated/staging example that should not be mistaken for a complete measured directory.
 
 Each compute directory owns one `op_mapping.yaml` for that stack. Communication CSVs are not copied into every compute directory; `op_mapping.yaml` points to the communication directory through `communication_data_ref`, for example:
 
@@ -273,7 +272,7 @@ Shared conventions:
 - `replay_framework.py` provides an `OpReplay` helper for standard API-style kernels.
 - `run_all_op.py` discovers `*_run.py`, supports `--execution-mode inprocess` for one outer `msprof` session, and writes `run_all_op_status.json`.
 - Each operator script reads the matching `{KernelType}.csv`, replays each row on NPU, prints concise `[OK]` messages, and deletes invalid rows when replay case construction fails.
-- When `--repeat-count` is omitted, `MSMODELING_OP_REPLAY_REPEAT_COUNT` can provide the default repeat count.
+- When `--repeat-count` is omitted, `common.py` applies the built-in default (`30`); repeat count is CLI-only and `MSMODELING_OP_REPLAY_REPEAT_COUNT` is no longer supported.
 - When adding or modifying `<KernelType>_run.py`, contributors should follow the Microbench Run Script Generator skill's core steps: read the target CSV, locate `torch_npu_reference.<KernelType>.microbench_api`, confirm the real API from upstream repo docs/tests, infer missing non-tensor arguments, reuse `common.py` / `replay_framework.py` conventions, and validate at least `py_compile` plus `--help`.
 
 Coverage limitation: replay coverage can expand incrementally. A CSV may exist without a corresponding replay script, and some scripts only support their target recorded shape/API patterns. Custom operators also require correct `ASCEND_CUSTOM_OPP_PATH` and `LD_LIBRARY_PATH`. Regular CI coverage for NPU-dependent replay is necessarily limited; most tests cover imports, CLI help, pure parsing logic, and writeback units.

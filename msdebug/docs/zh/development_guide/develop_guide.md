@@ -4,7 +4,7 @@
 
 ## 1. 预备知识
 
-请参考[《msDebug架构设计文档》](./architecture.md)学习代码框架及核心流程介绍。
+请参考《[msDebug架构设计文档](./architecture.md)》学习代码框架及核心流程介绍。
 
 ## 2. 开发环境准备
 
@@ -42,7 +42,7 @@ python download_dependencies.py
 ```shell
 mkdir build
 cd build
-cmake -G Ninja .. && ninja
+cmake -G Ninja .. && ninja 或者 cmake .. && make -j$(nproc)
 ```
 
 若 `output` 目录下的 `mindstudio-debugger_<version>_<arch>.run --run` 文件的生成时间已更新为当前编译时间，则表明编译与打包已成功完成。

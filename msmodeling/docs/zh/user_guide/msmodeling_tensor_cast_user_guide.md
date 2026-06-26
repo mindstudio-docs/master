@@ -171,6 +171,16 @@ Total time for analytic: 29.350s
 
 ## 详细用法
 
+### 模型来源安全建议
+
+推荐使用本地安全模式：先下载并审核模型仓库，然后将 `model_id` 填为完整本地绝对路径，例如
+`/data/models/Qwen3-32B`。本地路径加载会在运行前校验路径属主、软链接和权限；不建议使用软链接目录、
+共享可写目录或未审核来源中的模型文件。
+
+工具仍支持直接传入 Hugging Face 或 ModelScope 的 model id，例如 `Qwen/Qwen3-32B`，并可通过
+`--remote-source` 选择来源。该 model id 模式可能在 `trust_remote_code=True` fallback 时执行远端
+Python 代码，msmodeling 不对远端代码安全性做保证；运行时会打印 `trust_remote_code` 风险提示。
+
 ### 按指定 query 长度运行文本生成
 
 我们提供 `text_generate.py` 命令行接口来仿真文本生成。该脚本支持对一批具有相同输入长度、可选相同 context 长度的 query 进行文本生成仿真。默认提供算子性能分解的表格汇总。也可选择导出 Chrome trace。
@@ -181,7 +191,7 @@ Total time for analytic: 29.350s
 usage: text_generate.py [-h]
                         [--device {TEST_DEVICE,ATLAS_800_A2_376T_64G,ATLAS_800_A2_313T_64G,ATLAS_800_A2_280T_64G,ATLAS_800_A2_280T_64G_PCIE,ATLAS_800_A2_280T_32G_PCIE,ATLAS_800_A3_752T_128G_DIE,ATLAS_800_A3_560T_128G_DIE,ATLAS_800_A3_560T_128G_DIE_ROCE,ATLAS_350_425T_112G,ATLAS_350_425T_84G}]
                         [--num-devices NUM_DEVICES] [--reserved-memory-gb RESERVED_MEMORY_GB] [--log-level {debug,info,warning,error,critical}] --num-queries NUM_QUERIES --query-length QUERY_LENGTH
-                        [--context-length CONTEXT_LENGTH] [--decode] [--num-mtp-tokens NUM_MTP_TOKENS] [--disable-repetition] [--compile] [--compile-allow-graph-break]
+                        [--context-length CONTEXT_LENGTH] [--decode] [--num-mtp-tokens NUM_MTP_TOKENS] [--disable-repetition] [--compile] [--compile-allow-graph-break] [--enable-multistream]
                         [--quantize-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}]
                         [--quantize-non-expert-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}]
                         [--quantize-lmhead] [--mxfp4-group-size MXFP4_GROUP_SIZE]
@@ -189,12 +199,16 @@ usage: text_generate.py [-h]
                         [--num-hidden-layers-override NUM_HIDDEN_LAYERS_OVERRIDE] [--tp-size TP_SIZE] [--dp-size DP_SIZE] [--ep-size EP_SIZE] [--o-proj-tp-size O_PROJ_TP_SIZE]
                         [--o-proj-dp-size O_PROJ_DP_SIZE] [--mlp-tp-size MLP_TP_SIZE] [--mlp-dp-size MLP_DP_SIZE] [--lmhead-tp-size LMHEAD_TP_SIZE] [--lmhead-dp-size LMHEAD_DP_SIZE]
                         [--moe-tp-size MOE_TP_SIZE] [--moe-dp-size MOE_DP_SIZE] [--word-embedding-tp {col,row}] [--enable-redundant-experts] [--enable-external-shared-experts] [--host-external-shared-experts]
-                        [--image-batch-size IMAGE_BATCH_SIZE] [--image-height IMAGE_HEIGHT] [--image-width IMAGE_WIDTH] [--remote-source {huggingface,modelscope}] 
+                        [--image-batch-size IMAGE_BATCH_SIZE] [--image-height IMAGE_HEIGHT] [--image-width IMAGE_WIDTH] [--remote-source {huggingface,modelscope}]
                         [--performance-model {analytic,profiling}] [--profiling-database PROFILING_DATABASE]
                         model_id
 
 Run a simulated LLM inference pass and dump the perf result.
 ```
+
+`--enable-multistream` 用于在 `--compile` 路径启用编译期多流仿真。该能力默认开启，因此已有 compile 命令会保持当前行为。
+
+对于 VL 模型，可同时设置 `--image-batch-size`、`--image-height` 和 `--image-width` 来描述输入图像数量与分辨率；纯文本模型可省略这些参数。
 
 运行 `python -m cli.inference.text_generate --help` 查看详情。
 

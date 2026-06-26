@@ -157,6 +157,20 @@ For other hardware, define a custom device profile as a Python file under `tenso
 
 ## Detailed Usage
 
+### Model Source Security Recommendation
+
+We recommend local safe mode: download and review the model repository first,
+then pass `model_id` as a complete absolute local path, for example
+`/data/models/Qwen3-32B`. Local path loading validates ownership, symlinks, and
+permissions before use. Avoid symlinked directories, shared writable
+directories, or unreviewed model files.
+
+The tools still support Hugging Face or ModelScope model ids such as
+`Qwen/Qwen3-32B`, with `--remote-source` selecting the source. This model id
+mode may execute remote Python code when falling back to
+`trust_remote_code=True`; msmodeling does not provide security guarantees for
+remote model code, and the runtime prints a `trust_remote_code` risk warning.
+
 ### Run text generation with given query length
 
 We provide a `text_generate.py` command line interface to simulate the text generation. The script supports text generation with a batch of queries with the same input length and optionally same context length. The table summary of op performance breakdown is provided by default. An option is also provided to dump the chrome trace.
@@ -167,7 +181,7 @@ Its general usage is shown below:
 usage: text_generate.py [-h]
                         [--device {TEST_DEVICE,ATLAS_800_A2_376T_64G,ATLAS_800_A2_313T_64G,ATLAS_800_A2_280T_64G,ATLAS_800_A2_280T_64G_PCIE,ATLAS_800_A2_280T_32G_PCIE,ATLAS_800_A3_752T_128G_DIE,ATLAS_800_A3_560T_128G_DIE,ATLAS_800_A3_560T_128G_DIE_ROCE,ATLAS_350_425T_112G,ATLAS_350_425T_84G}]
                         [--num-devices NUM_DEVICES] [--reserved-memory-gb RESERVED_MEMORY_GB] [--log-level {debug,info,warning,error,critical}] --num-queries NUM_QUERIES --query-length QUERY_LENGTH
-                        [--context-length CONTEXT_LENGTH] [--decode] [--num-mtp-tokens NUM_MTP_TOKENS] [--disable-repetition] [--compile] [--compile-allow-graph-break]
+                        [--context-length CONTEXT_LENGTH] [--decode] [--num-mtp-tokens NUM_MTP_TOKENS] [--disable-repetition] [--compile] [--compile-allow-graph-break] [--enable-multistream]
                         [--quantize-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}]
                         [--quantize-non-expert-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}]
                         [--quantize-lmhead] [--mxfp4-group-size MXFP4_GROUP_SIZE]
@@ -175,12 +189,16 @@ usage: text_generate.py [-h]
                         [--num-hidden-layers-override NUM_HIDDEN_LAYERS_OVERRIDE] [--tp-size TP_SIZE] [--dp-size DP_SIZE] [--ep-size EP_SIZE] [--o-proj-tp-size O_PROJ_TP_SIZE]
                         [--o-proj-dp-size O_PROJ_DP_SIZE] [--mlp-tp-size MLP_TP_SIZE] [--mlp-dp-size MLP_DP_SIZE] [--lmhead-tp-size LMHEAD_TP_SIZE] [--lmhead-dp-size LMHEAD_DP_SIZE]
                         [--moe-tp-size MOE_TP_SIZE] [--moe-dp-size MOE_DP_SIZE] [--word-embedding-tp {col,row}] [--enable-redundant-experts] [--enable-external-shared-experts] [--host-external-shared-experts]
-                        [--image-batch-size IMAGE_BATCH_SIZE] [--image-height IMAGE_HEIGHT] [--image-width IMAGE_WIDTH] [--remote-source {huggingface,modelscope}] 
+                        [--image-batch-size IMAGE_BATCH_SIZE] [--image-height IMAGE_HEIGHT] [--image-width IMAGE_WIDTH] [--remote-source {huggingface,modelscope}]
                         [--performance-model {analytic,profiling}] [--profiling-database PROFILING_DATABASE]
                         model_id
 
 Run a simulated LLM inference pass and dump the perf result.
 ```
+
+`--enable-multistream` enables compiler-driven multi-stream simulation on the `--compile` path. It is enabled by default, so existing compile commands keep the same behavior.
+
+For VL models, use `--image-batch-size`, `--image-height`, and `--image-width` together to describe the number and resolution of input images. Omit them for text-only models.
 
 Run `python -m cli.inference.text_generate --help` for details.
 
@@ -195,13 +213,16 @@ usage: video_generate.py [-h]
                          [--device {TEST_DEVICE,ATLAS_800_A2_376T_64G,ATLAS_800_A2_313T_64G,ATLAS_800_A2_280T_64G,ATLAS_800_A2_280T_64G_PCIE,ATLAS_800_A2_280T_32G_PCIE,ATLAS_800_A3_752T_128G_DIE,ATLAS_800_A3_560T_128G_DIE,ATLAS_800_A3_560T_128G_DIE_ROCE,ATLAS_350_425T_112G,ATLAS_350_425T_84G}]
                          --batch-size BATCH_SIZE --seq-len SEQ_LEN [--chrome-trace CHROME_TRACE] [--height HEIGHT] [--width WIDTH] [--frame-num FRAME_NUM] [--sample-step SAMPLE_STEP]
                          [--log-level {debug,info,warning,error,critical}] [--dtype {float16,float32,bfloat16}]
-                         [--quantize-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}] [--use-cfg] [--world-size WORLD_SIZE]
+                         [--quantize-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}]
+                         [--quantize-attention-action {DISABLED,INT8,FP8}] [--use-cfg] [--world-size WORLD_SIZE]
                          [--ulysses-size ULYSSES_SIZE] [--cfg-parallel] [--dit-cache] [--cache-step-range CACHE_STEP_RANGE] [--cache-step-interval CACHE_STEP_INTERVAL]
                          [--cache-block-range CACHE_BLOCK_RANGE]
                          model_id
 
 Run a simulated diffusion transformer forward and dump perf stats.
 ```
+
+Use `--quantize-attention-action FP8` or `--quantize-attention-action INT8` to model quantized attention computation independently from linear layer quantization.
 
 Run `python -m cli.inference.video_generate --help` for details.
 

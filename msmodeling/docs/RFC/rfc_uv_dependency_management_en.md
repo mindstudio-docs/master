@@ -187,7 +187,7 @@ No public Python API changes. Integration surface is **project metadata**:
 
 1. **Install**: `uv sync` (add `--group lint` / `--group ci` as needed).
 2. **Add deps**: `uv add <package>` — updates `pyproject.toml` and `uv.lock`; use `uv add --editable ./path` for local packages; use `uv run --with <package> …` for one-off trials without lockfile changes.
-3. **Run**: `uv run python -m tensor_cast.scripts.text_generate ...` or rely on `scripts/*.sh` auto-detection.
+3. **Run**: `uv run python -m cli.inference.text_generate ...` or rely on `scripts/*.sh` auto-detection.
 4. **Upgrade deps**: `uv add` with new bounds or edit `pyproject.toml`, then `uv lock`, test, commit both files.
 5. **Constraints**: Prefer `uv sync` for development; pip + `requirements.txt` remains supported but without lockfile guarantees.
 
@@ -220,7 +220,7 @@ No public Python API changes. Integration surface is **project metadata**:
 # 7. Resolved Decisions
 
 1. **`requirements.txt`** — **Keep** as pip fallback; README documents uv (recommended) and pip (alternative). `uv.lock` is the reproducibility source of truth.
-2. **`check_dependencies()` auto pip install** — **Removed**; dependency versions are managed declaratively via uv / lockfile.
+2. **`check_dependencies()` auto pip install** — **Removed**; dependency versions are managed declaratively via uv / lockfile. Runtime CLI entry points, including `cli.inference.model_adapter`, must not call `tensor_cast.utils.check_dependencies()` because doing so can mutate the active environment after `uv sync --frozen` has established the reviewed dependency set.
 3. **Transformers upper bound** — **`<=5.8.0` intentional**; raise after regression covers newer releases.
 4. **Python upper bound** — **Not added**; stay at `requires-python = ">=3.10"` for now.
 5. **README / docs** — **Updated** in this change set (`README.md`, `docs/en/web_ui.md`, `docs/en/serving_cast_simulation.md`).
