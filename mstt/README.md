@@ -13,7 +13,7 @@
 <span style="font-size:14px;">
 
 🔹 **[2026.03.28]**：精度调试模块（debug 目录）正式日落下线，详情请参见 [公告](https://gitcode.com/Ascend/mstt/discussions/2)               
-🔹 **[2026.02.25]**：Tinker 并行策略自动寻优系统正式开源，详情请参见 [Tinker 项目](https://gitcode.com/Ascend/tinker)      
+🔹 **[2026.02.25]**：Tinker 并行策略自动寻优系统正式开源，详情请参见 [Tinker 项目](https://gitcode.com/Ascend/mstt/tree/master/profiler/tinker)      
 🔹 **[2026.01.12]**：本仓库许可证（License）变更，详情请参见 [公告](https://gitcode.com/Ascend/mstt/discussions/1)     
 🔹 **[2025.12.31]**：MindStudio 训练开发工具链全面开源    
 
@@ -58,7 +58,7 @@ MindStudio Training Tools（msTT）训练开发工具链，聚焦训练开发中
 
 ## 📘 使用指南
 
-各工具的详细使用说明请参阅其源码仓库中的 README，也可通过上方功能介绍表格中的链接直接跳转。
+请查阅《[msTT 使用指南](./docs/zh/user_guide/mstt_user_guide.md)》，根据具体应用场景选用相应工具，详细使用说明请参见其源码仓库中的 README 文件。
 
 ## 🛠️ 贡献指南
 

@@ -1,4 +1,4 @@
-﻿# 大模型支持矩阵
+﻿﻿# 大模型支持矩阵
 
 **说明：**
 
@@ -314,7 +314,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
     <tr>
       <td rowspan="3"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3-MOE/README.md">Qwen3-MOE系列</a></strong></td>
       <td>Qwen3-30B-A3B</td>
-      <td>transformers==4.51.0</td>
+      <td>transformers==4.57.6</td>
       <td>-</td>
       <td>√(一键量化)</td>
       <td>√(一键量化)</td>
@@ -327,7 +327,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
     </tr>
     <tr>
       <td>Qwen3-235B-A22B</td>
-      <td>transformers==4.51.0</td>
+      <td>transformers==4.57.6</td>
       <td>-</td>
       <td>√</td>
       <td>√(一键量化)</td>
@@ -340,7 +340,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
     </tr>
     <tr>
       <td>Qwen3-Coder-480B-A35B</td>
-      <td>transformers==4.51.0</td>
+      <td>transformers==4.57.6</td>
       <td>-</td>
       <td>-</td>
       <td>√(一键量化)</td>
@@ -631,9 +631,9 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM-5/README.md">GLM5-MOE系列</a></strong></td>
+      <td rowspan="2"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM-5/README.md">GLM5-MOE系列</a></strong></td>
       <td>GLM-5</td>
-      <td>transformers==5.2.0</td>
+      <td>transformers==5.4.0</td>
       <td>-</td>
       <td>√</td>
       <td>√</td>
@@ -643,6 +643,19 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>-</td>
+    </tr>
+    <tr>
+      <td>GLM-5.1</td>
+      <td>transformers==5.4.0</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>√</td>
+      <td>√</td>
+      <td>-</td>
+      <td>-</td>
+      <td>√</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM/README.md">GLM系列</a></strong></td>
@@ -659,7 +672,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="3"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM4-MOE/README.md">GLM4-MOE系列</a></strong></td>
+      <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM4-MOE/README.md">GLM4-MOE系列</a></strong></td>
       <td>GLM-4.7</td>
       <td>transformers==4.57.3</td>
       <td>-</td>
@@ -673,8 +686,18 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-    </tr>
-    <tr>
+      <td rowspan="1"><strong>GLM4-MOE-LITE系列</strong></td>
+      <td>GLM-4.7-Flash</td>
+      <td>transformers==5.3.0</td>
+      <td>-</td>
+      <td>√(一键量化，仅sglang支持)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/HunYuan/README.md">HunYuan系列</a></strong></td>

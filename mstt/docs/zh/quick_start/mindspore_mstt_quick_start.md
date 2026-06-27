@@ -428,7 +428,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
 
    ```ColdFusion
    ...
-   The result excel file path is: /xxx/compare_result/accuracy_compare/compare_result_{timestamp}.xlsx
+   The result file path is: /xxx/compare_result/accuracy_compare/compare_result_{timestamp}.csv
    ...
    ************************************************************************************
    *                        msprobe compare ends successfully.                        *
@@ -439,7 +439,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
 
    compare会在./compare_result/accuracy_compare生成如下文件。
 
-   compare_result_{timestamp}.xlsx：文件列出了所有执行精度比对的API详细信息和比对结果，可通过比对结果（Result）、错误信息提示（Err_Message）定位可疑算子，但鉴于每种指标都有对应的判定标准，还需要结合实际情况进行判断。
+   compare_result_{timestamp}.csv：文件列出了所有执行精度比对的API详细信息和比对结果，可通过比对结果（Result）、错误信息提示（Err_Message）定位可疑算子，但鉴于每种指标都有对应的判定标准，还需要结合实际情况进行判断。
 
    示例如下：
 
@@ -705,7 +705,7 @@ msprof-analyze compare -d $HOME/2.7.0/profiling_data/*_ascend_ms -bp $HOME/2.6.0
 
 1. 安装MindStudio Insight。
 
-   参见《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/mindstudio_insight_install_guide.md)》下载并安装MindStudio Insight。
+   参见《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/install_guide/mindstudio_insight_install_guide.md)》下载并安装MindStudio Insight。
 
    MindStudio Insight可视化工具推荐在Windows环境使用。
 
