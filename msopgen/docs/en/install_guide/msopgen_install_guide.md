@@ -10,6 +10,15 @@ If CANN is not installed in your environment, see [CANN Quick Installation](http
 
 To upgrade the tool separately or use the latest version, you can choose one of the following installation methods: [Online Installation](#21-online-installation), [Offline Installation](#22-offline-installation), or [Source Installation](#23-source-installation).
 
+> [!WARNING]
+>
+> **Installation Path Risk Notice**: When installing msopgen/msopst `.whl` packages to a CANN environment directory (e.g., `$ASCEND_HOME_PATH`) or other non-isolated Python environment directories, the installation process will **clear all existing files in the `bin/` directory** under that path, retaining only the scripts from the current installation package (e.g., `msopgen`, `msopst`). This may cause the executables of other CANN tools or third-party tools in that `bin/` directory to be inadvertently deleted, affecting the normal use of other tools.
+>
+> **Recommendations**:
+>
+> - Preferably use an isolated Python virtual environment (e.g., `conda create` or `python -m venv`) for installation.
+> - If installation to a CANN directory is unavoidable, back up the files in the `bin/` directory before installation and restore them as needed afterwards.
+
 ## 2. Installation Methods
 
 ### 2.1 Online Installation
@@ -52,6 +61,9 @@ python build.py
 ```
 
 ##### 2.3.2.2 Install the .whl Packages
+
+> [!WARNING]
+> If you use `pip install --target <CANN directory>` to install `.whl` packages to a CANN environment directory, the installation process will clear all existing files in the `bin/` directory under the target path, retaining only the scripts from the current package. It is recommended to use an isolated Python virtual environment for installation.
 
 ```sh
 cd output
