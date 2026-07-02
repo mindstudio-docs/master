@@ -16,7 +16,7 @@
 
 ### 2.2 离线安装
 
-对处于企业内网等无外网环境的设备，请先在可联网的机器上下载完整的离线安装包，再将其传输至目标设备进行安装。请参见昇腾社区MindStudio[下载](https://www.hiascend.com/developer/software/mindstudio/download)页面，选择对应的CANN版本，并在安装方式中选择“离线安装”，获取对应的安装包及操作指引。
+对处于企业内网等无外网环境的设备，请先在可联网的机器上下载完整的离线安装包，再将其传输至目标设备进行安装。请参见昇腾社区MindStudio[下载](https://www.hiascend.com/developer/software/mindstudio/download?versionId=145&ids=45%2C26958bcc909e4cd48fa56d4c4a43ebec%2C90%2C50%2C)页面，选择对应的CANN版本，并在安装方式中选择“离线安装”，获取对应的安装包及操作指引。
 
 ### 2.3 源码安装
 
@@ -60,7 +60,7 @@
    打印如下信息，表示编译成功，生成build文件夹。
 
    ```ColdFusion
-   build created successfully
+   [100%] Built target compress_excutor
    ```
 
 3. 上一步编译操作会得到build文件夹，给build文件夹相关权限。
@@ -81,7 +81,7 @@
 msmodelslim --help
 ```
 
-若输出不报错，且能显示版本信息，则表明安装成功。
+若输出不报错，且能显示帮助信息，则表明安装成功。
 
 ## 4. 卸载
 
