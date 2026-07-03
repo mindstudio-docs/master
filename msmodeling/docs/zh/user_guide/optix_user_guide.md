@@ -1,4 +1,4 @@
-# 服务化自动寻优工具
+# OptiX 使用指南
 
 ## 简介
 
@@ -114,7 +114,6 @@ msmodeling optix [options]
 |参数|可选/必选|说明|
 |---|---|---|
 |-lb或--load_breakpoint|可选|控制是否从断点恢复寻优过程，配置本参数表示开启，默认未配置表示关闭。|
-|-d或--deploy_policy|可选|设置部署策略，即单机或多机部署，可取值：<br>&#8226;single：单机部署<br>&#8226;multiple：多机部署。<br/>默认值为`single`。|
 |--backup|可选|决定是否在寻优过程中备份数据，配置本参数表示开启备份，可取值：<br>&#8226;True：开启备份<br>&#8226;False：不开启备份。<br/>默认值为`False`。|
 |-b或--benchmark_policy|可选|指定测评工具，可取值：<br>&#8226;vllm_benchmark：使用vllm_benchmark作为测试工具 <br/>&#8226;ais_bench：使用AISBench作为测试工具<br/>默认值为`ais_bench`。<br/>用户需自行选择适配的推理框架以及测试框架。|
 |-e或--engine|可选|指定推理框架，可取值：<br>&#8226;vllm：使用VLLM作为推理框架<br>&#8226;mindie：使用MindIE作为推理框架<br/>默认值为`vllm`。|
@@ -342,11 +341,11 @@ others = "$COMPILATION_CONFIG"
 
 ```toml
 [[mindie.target_field]]
-name = "max_batch_size"    # 服务化参数名称
-config_position = "BackendConfig.ScheduleConfig.maxBatchSize"    # 服务化参数在MindIE Server中的位置
-min = 10    # 最小值
-max = 400    # 最大值
-dtype = "int"    # 数据类型
+name = "max_batch_size" # 服务化参数名称
+config_position = "BackendConfig.ScheduleConfig.maxBatchSize" # 服务化参数在MindIE Server中的位置
+min = 10 # 最小值
+max = 400 # 最大值
+dtype = "int" # 数据类型
 ```
 
 此外，也可设置参数与另一参数相关，如 `max_prefill_batch_size` 与 `max_batch_size` 相关，`max_prefill_batch_size = ratio * max_batch_size (0 < ratio < 1)`则可设置：
@@ -358,7 +357,7 @@ config_position = "BackendConfig.ScheduleConfig.maxPrefillBatchSize"
 min = 0
 max = 1
 dtype = "ratio"
-dtype_param = "max_batch_size"    # 表明该参数与max_batch_size相关
+dtype_param = "max_batch_size" # 表明该参数与max_batch_size相关
 ```
 
 此外，`target_field` 支持的所有 `dtype` 类型如下：
