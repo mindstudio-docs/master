@@ -34,52 +34,19 @@ Atlas A2 训练系列产品/Atlas A2 推理系列产品硬件环境
     git clone https://gitcode.com/Ascend/msoptuner.git
     ```
 
-- 命令行方式  
-  执行如下命令下载项目构建依赖的子仓库，并更新依赖到最新代码：
-
-  ```shell
-  cd msoptuner
-  python download_dependencies.py
-  ```
-
-  执行如下命令，构建软件包。
-
-    ```shell
-    mkdir build && cd build
-    cmake .. -DBUILD_TESTS=ON
-    make -j$(nproc)
-    ```
-
-- 一键式脚本方式  
+- 一键式脚本方式
   通过一键式脚本构建软件包。
 
     ```shell
     python build.py
     ```
 
-    > [!NOTE]  
+    > [!NOTE]
     > 如果本地更改了依赖子仓库中的代码，不想构建过程中执行更新动作，可以执行`python build.py local`。
 
 ### 测试
 
-- 命令行方式  
-    通过以下脚本下载UT构建依赖的子仓库，并更新依赖到最新代码：
-
-    ```shell
-    python download_dependencies.py test
-    ```
-
-    然后通过如下命令构建并执行UT测试：
-
-    ```shell
-    mkdir build && cd build
-    cmake .. -DBUILD_TESTS=ON
-    make -j$(nproc)
-    cd ../test/
-    python test_mstuner.py
-    ```
-
-- 一键式脚本方式  
+- 一键式脚本方式
     调用一键式脚本完成UT构建依赖仓下载和UT测试流程：
 
     ```shell

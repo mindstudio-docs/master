@@ -28,21 +28,6 @@ source /path/to/Ascend/cann/set_env.sh
 
 ### Project Build
 
-- Command-line method
-  Run the following command to download the sub-repositories required for project build and update the dependencies to the latest code:
-  
-  ```shell
-  python download_dependencies.py
-  ```
-
-  Run the following command to build the software package.
-
-    ```shell
-    mkdir build && cd build
-    cmake .. -DBUILD_TESTS=ON
-    make -j$(nproc)
-    ```
-
 - One-click script method
 Build the software package using the one-click script.
 
@@ -54,23 +39,6 @@ Build the software package using the one-click script.
 > If you have modified the code in the dependent sub-repositories locally and do not want the update action to be executed during the build process, run `python build.py local`.
 
 ## Testing
-
-- Command-line method
-Run the following script to download the sub-repositories required for UT build dependencies and update the dependencies to the latest code:
-
-    ```shell
-    python download_dependencies.py test
-    ```
-
-    Then build and execute UT tests by running the following command:
-
-    ```shell
-    mkdir build && cd build
-    cmake .. -DBUILD_TESTS=ON
-    make -j$(nproc)
-    cd ../test/
-    python test_mstuner.py
-    ```
 
 - One-click script method
     Run the one-click script to download UT build dependencies and execute UT tests:
