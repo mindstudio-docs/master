@@ -271,7 +271,7 @@ pip install mindstudio-probe --pre
 
    ![img](../figures/5.png)
 
-   输出结果详细介绍请参见“[输出结果](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/monitor_v2_instruct.md#输出结果)”。
+   输出结果详细介绍请参见“[输出结果](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/user_guide/monitor_v2_instruct.md#输出结果)”。
 
 ### 精度数据采集
 
@@ -395,7 +395,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
 
 ![img](../figures/zh-cn_image_0000002446706776.png)
 
-预检结果详细介绍请参见“[预检结果](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/accuracy_checker/mindspore_accuracy_checker_instruct.md#%E9%A2%84%E6%A3%80%E7%BB%93%E6%9E%9C)”。
+预检结果详细介绍请参见“[预检结果](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/user_guide/accuracy_checker/mindspore_accuracy_checker_instruct.md#%E9%A2%84%E6%A3%80%E7%BB%93%E6%9E%9C)”。
 
 ### 精度比对
 
@@ -421,7 +421,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
    命令如下：
 
    ```bash
-   msprobe compare -tp /home/dump/dump_data_2.7.0/step0/proc1280779/dump.json -gp /home/dump/dump_data_2.6.0/step0/proc128077/dump.json -o ./compare_result/accuracy_compare
+   msprobe compare -tp /home/dump/dump_data_2.7.0/step0/proc1280779/dump.json -gp /home/dump/dump_data_2.6.0/step0/proc1280778/dump.json -o ./compare_result/accuracy_compare
    ```
 
    出现如下打印说明比对成功：
@@ -455,7 +455,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
    
    ![img](../figures/8.png)
    
-   更多比对结果分析请参见“[输出结果文件说明](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/accuracy_compare/pytorch_accuracy_compare_instruct.md#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)”。
+   更多比对结果分析请参见“[输出结果文件说明](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/user_guide/accuracy_compare/pytorch_accuracy_compare_instruct.md#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)”。
 
 #### 分级可视化构图比对
 
@@ -497,7 +497,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
    TensorBoard 2.20.0 at http://ubuntu:6006/ (Press CTRL+C to quit)
    ```
 
-   需要在Windows环境下打开浏览器，访问地址`http://ubuntu:6006/`，其中ubuntu修改为服务器的IP地址，例如`http://192.168.1.10:6006/`。
+   可以在任意操作系统的浏览器中打开，访问地址`http://ubuntu:6006/`，其中ubuntu修改为服务器的IP地址，例如`http://192.168.1.10:6006/`。
 
    访问地址成功后页面显示TensorBoard界面，如下所示。
 
@@ -634,7 +634,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
    Successfully installed msprof-analyze-{version}
    ```
 
-   msprof-analyze工具详细介绍请参见《[msprof-analyze](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/getting_started/quick_start.md)》。
+   msprof-analyze工具详细介绍请参见《[msprof-analyze](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/quick_start/msprof-analyze_quick_start.md)》。
 
 **执行msprof-analyze分析**<a name="执行msprof-analyze分析"></a>
 
@@ -642,7 +642,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
 >
 > 以下仅提供操作指导，无具体数据分析。
 
-msprof-analyze主要对基于通信域的迭代内耗时分析、通信时间分析以及通信矩阵分析为主，从而定位慢卡、慢节点以及慢链路问题。
+msprof-analyze主要以基于通信域的迭代内耗时分析、通信时间分析以及通信矩阵分析为主，从而定位慢卡、慢节点以及慢链路问题。
 
 操作如下：
 
@@ -658,7 +658,7 @@ msprof-analyze主要对基于通信域的迭代内耗时分析、通信时间分
 
    分析结果在-d参数指定目录下生成cluster_analysis_output文件夹并输出cluster_step_trace_time.csv、cluster_communication_matrix.json、cluster_communication.json文件。
 
-   更多介绍请参见《[msprof-analyze](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/getting_started/quick_start.md)》。
+   更多介绍请参见《[msprof-analyze](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/quick_start/msprof-analyze_quick_start.md)》。
 
    集群分析工具的交付件通过MindStudio Insight工具展示，详细操作请参见[使用MindStudio Insight工具可视化性能数据](#使用MindStudio Insight工具可视化性能数据)。
 

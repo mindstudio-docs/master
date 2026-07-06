@@ -17,4 +17,4 @@ MindStudio Training Tools（msTT）训练开发工具链，聚焦训练开发中
 |        我想做MindSpeed-LLM训练任务并行策略的自动寻优         | [**Tinker**](https://gitcode.com/Ascend/mstt/tree/master/profiler/tinker) | 按训练脚本做单节点NPU测评并推荐高性能并行方案                |
 |             我想在HostBound场景做CPU绑核提升性能             | [**bind_core**](https://gitcode.com/Ascend/mstt/tree/master/profiler/affinity_cpu_bind) | 无需侵入修改工程即可按CPU亲和性策略绑核                      |
 |           我想通过Profiling API在线获取NPU性能数据           | [**msPTI**](https://gitcode.com/Ascend/mspti)                | 提供在线获取NPU性能数据的基础能力                            |
-|             我想在通过线监控轻量获取集群性能数据             | [**msMonitor**](https://gitcode.com/Ascend/msmonitor)        | 一站式监控，支持落盘与在线采集，面向集群的监测与问题定位     |
+|             我想在通过在线监控轻量获取集群性能数据             | [**msMonitor**](https://gitcode.com/Ascend/msmonitor)        | 一站式监控，支持落盘与在线采集，面向集群的监测与问题定位     |
