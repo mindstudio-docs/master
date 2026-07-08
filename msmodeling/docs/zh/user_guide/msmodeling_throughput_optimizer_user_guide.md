@@ -1,11 +1,13 @@
-# 吞吐优化仿真 使用指南
+# 服务化性能仿真 使用指南
 
 ## 1 简介
 
 吞吐优化器（throughput optimizer）是一款在 SLO（Service Level Objective，服务级别目标）约束下优化吞吐量的工具。它会在指定的 SLO 约束（例如对 TTFT、TPOT 的上限）下自动搜索最优模型配置（并行策略、批大小），以最大化 token 吞吐量。
-本文适用于需要评估模型服务吞吐、并行策略和 SLO 约束配置的开发者或性能工程师。开始前请先完成《[msModeling 安装指南](../install_guide/msmodeling_install_guide.md)》中的环境搭建，并确认目标模型配置可被加载。
+本文适用于需要评估大模型服务部署方案、模型服务吞吐、并行策略和 SLO 约束配置的开发者、性能工程师和容量规划人员。开始前请先完成《[msModeling 安装指南](../install_guide/msmodeling_install_guide.md)》中的环境搭建，并确认目标模型配置可被加载。
 
 ## 2 主要场景
+
+吞吐优化器可用于硬件规划、SLO 约束下的吞吐寻优，以及 PD 分离部署设计。按部署形态划分，主要支持以下三类场景：
 
 | 模式 | 适用场景 | 关键参数 |
 | --- | --- | --- |
@@ -326,6 +328,12 @@ Debug Options:
   --chrome-trace CHROME_TRACE
                         Generate chrome trace file for visualization, for example trace.json. (default: None)
 
+Performance Model Options:
+  --performance-model {analytic,profiling}
+                        Performance model type(s). 'analytic': Roofline model (default). 'profiling': empirical model backed by measured CSV data (requires --profiling-database). May be specified multiple times. (default: None)
+  --profiling-database PROFILING_DATABASE
+                        Path to the profiling CSV database directory for 'profiling' mode. e.g. tensor_cast/performance_model/profiling_database/data/ATLAS_800_A3_752T_128G_DIE/vllm_ascend/vllm0.18.0_torch2.9.0_cann8.5/ (default: None)
+
 Service Options:
   --ttft-limits TTFT_LIMITS
                         TTFT constraints under which to search for the best throughput. None means no constraint. (default: None)
@@ -395,6 +403,8 @@ PD Ratio Optimization Options:
 | `--enable-sequence-parallel` | Model & Quantization Options | 可选 | 编译期间启用 sequence parallel 图改写 pass。<br>1. 类型：Bool。<br>2. 取值范围：开关参数。<br>3. 默认值：`False`。 |
 | `--enable-dispatch-ffn-combine` | Model & Quantization Options | 可选 | 编译期间启用 dispatch_ffn_combine 融合模式。<br>1. 类型：Bool。<br>2. 取值范围：开关参数。<br>3. 默认值：`False`。 |
 | `--word-embedding-tp` | Model & Quantization Options | 可选 | 启用 word embedding 张量并行并指定并行模式。<br>1. 类型：Str。<br>2. 参考值：`col`、`row`。<br>3. 默认值：`None`，表示不启用 embedding TP。 |
+| `--performance-model` | Performance Model Options | 可选 | 指定性能模型类型，可重复指定以对比多个模型。<br>1. 类型：Str。<br>2. 参考值：`analytic`、`profiling`。<br>3. 默认值：`None`，未指定时取 `analytic`。<br>4. `profiling` 模式需配合 `--profiling-database` 使用。 |
+| `--profiling-database` | Performance Model Options | 条件必选 | 指定 profiling 模式使用的实测算子 CSV 数据库目录。<br>1. 类型：Str。<br>2. 取值范围：数据库目录路径，例如 `tensor_cast/performance_model/profiling_database/data/ATLAS_800_A3_752T_128G_DIE/vllm_ascend/vllm0.18.0_torch2.9.0_cann8.5/`。<br>3. 默认值：`None`；使用 `--performance-model profiling` 时必填。 |
 | `--chrome-trace` | Debug Options | 可选 | 生成 Chrome Trace 文件，用于可视化分析算子级性能。<br>1. 类型：Str。<br>2. 参考值：Trace 文件路径，例如 `trace.json`。<br>3. 默认值：`None`，表示不生成 Chrome Trace 文件。 |
 | `--ttft-limits` | Service Options | 可选 | 指定 TTFT 约束，用于在约束内搜索最优吞吐。<br>1. 类型：Float。<br>2. 取值范围：正数，单位 ms。<br>3. 默认值：`None`，表示不限制 TTFT。 |
 | `--tpot-limits` | Service Options | 可选 | 指定 TPOT 约束，用于在约束内搜索最优吞吐。<br>1. 类型：Float。<br>2. 取值范围：正数，单位 ms。<br>3. 默认值：`None`，表示不限制 TPOT。 |
@@ -445,6 +455,23 @@ python -m cli.inference.throughput_optimizer Qwen/Qwen3-30B-A3B --device TEST_DE
 
 # 仅搜索 EP（显式范围）
 python -m cli.inference.throughput_optimizer Qwen/Qwen3-30B-A3B --device TEST_DEVICE --num-devices 8 --input-length 3500 --output-length 1500 --tpot-limits 50 --ep-sizes 1 2 4 8
+```
+
+### 性能模型选择
+
+`throughput_optimizer` 默认使用解析（Roofline）模型估算算子延迟。通过 `--performance-model` 可切换为基于实测算子 CSV 数据的 profiling 模型：
+
+- `--performance-model analytic`（默认）：纯解析 Roofline 模型，无需额外数据。
+- `--performance-model profiling`：使用实测算子数据建模，**必须同时指定 `--profiling-database <目录>`**，否则启动时报错。当某算子 shape 在 CSV 中缺失时，先尝试插值，仍无法命中时回退到解析模型。
+
+`--performance-model` 可重复指定（如同时传 `analytic` 与 `profiling`）以便对比不同模型的结果。
+
+示例：
+
+```bash
+python -m cli.inference.throughput_optimizer Qwen/Qwen3-30B-A3B --device ATLAS_800_A3_752T_128G_DIE --num-devices 8 --input-length 3500 --output-length 1500 --tpot-limits 50 \
+    --performance-model profiling \
+    --profiling-database tensor_cast/performance_model/profiling_database/data/ATLAS_800_A3_752T_128G_DIE/vllm_ascend/vllm0.18.0_torch2.9.0_cann8.5/
 ```
 
 ## 5 补充说明
