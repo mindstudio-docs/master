@@ -2,7 +2,7 @@
 
 <br>
 
-## 概述
+## 1. 概述
 
 本文介绍训练场景开发工具快速入门，主要针对训练开发流程中的模型开发&迁移、模型精度调试和模型性能调优环节分别使用的开发工具进行介绍。
 
@@ -70,14 +70,14 @@
 
    MindSpore训练场景以安装2.6.0和2.7.0版本为例，具体操作请参见《[MindSpore安装指南](https://www.mindspore.cn/install/)》。
 
-## 模型开发&迁移
+## 2. 模型开发&迁移
 
 MindSpore训练场景暂未提供迁移工具，本文以直接在Ascend环境开发的训练脚本为例。
 
 **前提条件**
 
 1. 完成[环境准备](#环境准备)。
-2. 以“mindspore_main.py”命名为例，创建训练脚本文件，脚本内容直接拷贝[MindSpore昇腾NPU环境训练脚本样例](#mindspore昇腾npu环境训练脚本样例)。
+2. 以“mindspore_main.py”命名为例，创建训练脚本文件，脚本内容直接拷贝[MindSpore昇腾NPU环境训练脚本样例](#51-mindspore昇腾npu环境训练脚本样例)。
 3. 将“mindspore_main.py”文件上传至训练服务器的任意目录下（需保证该目录下文件的读写权限）。
 
 **执行训练**
@@ -94,9 +94,9 @@ python mindspore_main.py
 train finish
 ```
 
-## 模型精度调试
+## 3. 模型精度调试
 
-### 训练前配置检查
+### 3.1 训练前配置检查
 
 根据本手册的样例，需要将工具接口添加到训练脚本中进行配置检查。
 
@@ -107,15 +107,17 @@ train finish
 **前提条件**
 
 - 完成[环境准备](#环境准备)。
-- 完成[模型开发&迁移](#模型开发迁移)，确保在所有示例的环境可正常完成训练任务。
+- 完成[模型开发&迁移](#2-模型开发迁移)，确保在所有示例的环境可正常完成训练任务。
 
 **工具安装**
 
 在昇腾NPU环境下安装msProbe工具，执行如下命令：
 
 ```bash
-pip install mindstudio-probe --pre
+pip install mindstudio-probe
 ```
+
+具体请参见《[msProbe工具安装指南](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/install_guide/msprobe_install_guide.md)》。
 
 **执行检查**
 
@@ -127,7 +129,7 @@ pip install mindstudio-probe --pre
 
    > [!NOTE] 
    >
-   > 可直接拷贝[MindSpore训练前配置检查代码样例](#mindspore训练前配置检查代码样例)中的完整代码执行，下列仅为说明工具接口在脚本中添加的位置。
+   > 可直接拷贝[MindSpore训练前配置检查代码样例](#52-mindspore训练前配置检查代码样例)中的完整代码执行，下列仅为说明工具接口在脚本中添加的位置。
 
    1. 在训练流程执行到的第一个Python脚本开始处插入如下代码。
 
@@ -196,12 +198,12 @@ pip install mindstudio-probe --pre
    
    此处MindSpore场景本身就是分别以MindSpore 2.6.0和MindSpore 2.7.0版本为例，所以这里的pip检查第三方库版本显示error。
 
-### 训练状态监测
+### 3.2 训练状态监测
 
 **前提条件**
 
 - 完成[环境准备](#环境准备)。
-- 完成[训练前配置检查](#训练前配置检查)。
+- 完成[训练前配置检查](#31-训练前配置检查)。
 
 **操作步骤**
 
@@ -235,7 +237,7 @@ pip install mindstudio-probe --pre
 
    > [!NOTE]
    >
-   > 可直接拷贝[MindSpore训练状态监测代码样例](#mindspore训练状态监测代码样例)中的完整代码执行，下列仅为说明脚本中需要添加的工具接口。
+   > 可直接拷贝[MindSpore训练状态监测代码样例](#53-mindspore训练状态监测代码样例)中的完整代码执行，下列仅为说明脚本中需要添加的工具接口。
 
    ```python
    ...
@@ -273,12 +275,12 @@ pip install mindstudio-probe --pre
 
    输出结果详细介绍请参见“[输出结果](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/user_guide/monitor_v2_instruct.md#输出结果)”。
 
-### 精度数据采集
+### 3.3 精度数据采集
 
 **前提条件**
 
 - 完成[环境准备](#环境准备)。
-- 完成[训练前配置检查](#训练前配置检查)。
+- 完成[训练前配置检查](#31-训练前配置检查)。
 
 **执行采集**
 
@@ -306,7 +308,7 @@ pip install mindstudio-probe --pre
 
    > [!NOTE]
    >
-   > 可直接拷贝[MindSpore精度数据采集代码样例](#mindspore精度数据采集代码样例)中的完整代码执行，下列仅为说明工具接口在脚本中添加的位置。
+   > 可直接拷贝[MindSpore精度数据采集代码样例](#54-mindspore精度数据采集代码样例)中的完整代码执行，下列仅为说明工具接口在脚本中添加的位置。
 
    ```python
    ...
@@ -366,14 +368,14 @@ dump_data/
 ...
 ```
 
-采集后的数据需要用[精度预检](#精度预检)和[精度比对](#精度比对)等工具进行进一步分析。
+采集后的数据需要用[精度预检](#34-精度预检)和[精度比对](#35-精度比对)等工具进行进一步分析。
 
-### 精度预检
+### 3.4 精度预检
 
 **前提条件**
 
 - 完成[环境准备](#环境准备)。
-- 完成[精度数据采集](#精度数据采集)，得到MindSpore训练场景昇腾NPU环境的精度数据。
+- 完成[精度数据采集](#33-精度数据采集)，得到MindSpore训练场景昇腾NPU环境的精度数据。
 
 **执行预检**
 
@@ -397,14 +399,14 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
 
 预检结果详细介绍请参见“[预检结果](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/user_guide/accuracy_checker/mindspore_accuracy_checker_instruct.md#%E9%A2%84%E6%A3%80%E7%BB%93%E6%9E%9C)”。
 
-### 精度比对
+### 3.5 精度比对
 
-#### compare精度比对
+#### 3.5.1 compare精度比对
 
 **前提条件**
 
 - 完成[环境准备](#环境准备)。
-- 以MindSpore框架内，不同版本下的cell模块比对场景为例，参见[精度数据采集](#精度数据采集)，完成不同框架版本的cell模块dump，其中不同框架版本以MindSpore 2.6.0和MindSpore 2.7.0为例。
+- 以MindSpore框架内，不同版本下的cell模块比对场景为例，参见[精度数据采集](#33-精度数据采集)，完成不同框架版本的cell模块dump，其中不同框架版本以MindSpore 2.6.0和MindSpore 2.7.0为例。
 
 **执行比对**
 
@@ -457,13 +459,13 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
    
    更多比对结果分析请参见“[输出结果文件说明](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/user_guide/accuracy_compare/pytorch_accuracy_compare_instruct.md#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)”。
 
-#### 分级可视化构图比对
+#### 3.5.2 分级可视化构图比对
 
 **前提条件**
 
 - 完成[环境准备](#环境准备)。
 
-- 以MindSpore框架内，不同版本下的cell模块比对场景为例，参见[精度数据采集](#精度数据采集)，完成不同框架版本的cell模块dump，其中不同框架版本以MindSpore 2.6.0和MindSpore 2.7.0为例。
+- 以MindSpore框架内，不同版本下的cell模块比对场景为例，参见[精度数据采集](#33-精度数据采集)，完成不同框架版本的cell模块dump，其中不同框架版本以MindSpore 2.6.0和MindSpore 2.7.0为例。
 
 **执行比对**
 
@@ -507,18 +509,18 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
 
    由于本样例在dump数据时"level"配置为"L1"，故采集到模型结构数据为空，分级可视化构图时无数据，如上图为其他数据示例。
 
-## 模型性能调优
+## 4. 模型性能调优
 
-### 性能数据采集
+### 4.1 性能数据采集
 
 **前提条件**
 
 - 完成[环境准备](#环境准备)。
-- 根据[模型开发&迁移](#模型开发迁移)中的MindSpore部分，完成MindSpore场景的训练任务。
+- 根据[模型开发&迁移](#2-模型开发迁移)中的MindSpore部分，完成MindSpore场景的训练任务。
 
-> [!NOTICE]
+> [!NOTE]
 >
-> 在执行性能数据采集前请先将训练脚本（mindspore_main.py文件）中的[精度数据采集](#精度数据采集)相关接口删除，因为精度数据采集和性能数据采集不可同时执行。
+> 在执行性能数据采集前请先将训练脚本（mindspore_main.py文件）中的[精度数据采集](#33-精度数据采集)相关接口删除，因为精度数据采集和性能数据采集不可同时执行。
 
 **执行采集**
 
@@ -528,7 +530,7 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
 
    > [!NOTE]
    >
-   > 可直接拷贝[MindSpore Profiler接口采集性能数据代码样例](#mindspore-profiler接口采集性能数据代码样例)中的完整代码执行，下列仅为说明工具接口在脚本中添加的位置。
+   > 可直接拷贝[MindSpore Profiler接口采集性能数据代码样例](#55-mindspore-profiler接口采集性能数据代码样例)中的完整代码执行，下列仅为说明工具接口在脚本中添加的位置。
 
    ```python
     ...
@@ -610,17 +612,17 @@ accuracy_checking_result\_{timestamp}.csv标明每个API是否通过测试。对
    └── profiler_info_0.json
    ```
    
-   MindSpore Profiler接口采集的性能数据可以使用msTT的msprof-analyze工具进行辅助分析，也可以直接使用MindStudio Insight工具进行可视化分析，详细操作请参见[使用msprof-analyze工具分析性能数据](#使用msprof-analyze工具分析性能数据)和[使用MindStudio Insight工具可视化性能数据](#使用MindStudio Insight工具可视化性能数据)。
+   MindSpore Profiler接口采集的性能数据可以使用msTT的msprof-analyze工具进行辅助分析，也可以直接使用MindStudio Insight工具进行可视化分析，详细操作请参见[使用msprof-analyze工具分析性能数据](#421-使用msprof-analyze工具分析性能数据)和[使用MindStudio Insight工具可视化性能数据](#422-使用mindstudio-insight工具可视化性能数据)。
 
-### 性能数据分析
+### 4.2 性能数据分析
 
-#### 使用msprof-analyze工具分析性能数据
+#### 4.2.1 使用msprof-analyze工具分析性能数据
 
 **前提条件**
 
 1. 完成[环境准备](#环境准备)。
 
-2. 完成[性能数据采集](#性能数据采集)，得到昇腾NPU环境的性能数据。
+2. 完成[性能数据采集](#41-性能数据采集)，得到昇腾NPU环境的性能数据。
 
 3. 安装msprof-analyze，命令如下：
 
@@ -660,7 +662,7 @@ msprof-analyze主要以基于通信域的迭代内耗时分析、通信时间分
 
    更多介绍请参见《[msprof-analyze](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/quick_start/msprof-analyze_quick_start.md)》。
 
-   集群分析工具的交付件通过MindStudio Insight工具展示，详细操作请参见[使用MindStudio Insight工具可视化性能数据](#使用MindStudio Insight工具可视化性能数据)。
+   集群分析工具的交付件通过MindStudio Insight工具展示，详细操作请参见[使用MindStudio Insight工具可视化性能数据](#422-使用mindstudio-insight工具可视化性能数据)。
 
 **执行advisor分析**
 
@@ -692,14 +694,14 @@ msprof-analyze compare -d $HOME/2.7.0/profiling_data/*_ascend_ms -bp $HOME/2.6.0
 
 性能比对工具将总体性能拆解为训练耗时和内存占用，其中训练耗时可拆分为算子（包括nn.Module）、通信、调度三个维度，并打印输出总体指标，帮助用户定位劣化的方向。与此同时，工具还会在“performance_comparison_result_{timestamp}.xlsx”文件中展示每个算子在执行耗时、通信耗时、内存占用的优劣，可通过DIFF列大于0筛选出劣化算子。此处不提供示例，详细结果介绍请参见《[性能比对工具](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/user_guide/compare_tool_instruct.md)》中的“[输出结果文件说明](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/user_guide/compare_tool_instruct.md#%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E)”。
 
-#### 使用MindStudio Insight工具可视化性能数据
+#### 4.2.2 使用MindStudio Insight工具可视化性能数据
 
-- [性能数据采集](#性能数据采集)生成的性能数据均可以使用MindStudio Insight工具将性能数据可视化。
+- [性能数据采集](#41-性能数据采集)生成的性能数据均可以使用MindStudio Insight工具将性能数据可视化。
 - [执行msprof-analyze分析](#执行msprof-analyze分析)时，输出的交付件需要使用MindStudio Insight工具将数据可视化。
 
 **前提条件**
 
-完成[性能数据采集](#性能数据采集)或[执行msprof-analyze分析](#执行msprof-analyze分析)，获取对应交付件。
+完成[性能数据采集](#41-性能数据采集)或[执行msprof-analyze分析](#执行msprof-analyze分析)，获取对应交付件。
 
 **操作步骤**
 
@@ -713,7 +715,7 @@ msprof-analyze compare -d $HOME/2.7.0/profiling_data/*_ascend_ms -bp $HOME/2.6.0
 
 3. 导入性能数据。
 
-   1. 将[性能数据采集](#性能数据采集)或[执行msprof-analyze分析](#执行msprof-analyze分析)的性能数据拷贝至Windows环境。
+   1. 将[性能数据采集](#41-性能数据采集)或[执行msprof-analyze分析](#执行msprof-analyze分析)的性能数据拷贝至Windows环境。
 
    2. 单击MindStudio Insight界面左上方“导入数据”，在弹框中选择性能数据文件或目录，然后单击“确认”进行导入，导入结果如下图所示。
 
@@ -725,9 +727,9 @@ msprof-analyze compare -d $HOME/2.7.0/profiling_data/*_ascend_ms -bp $HOME/2.6.0
 
    MindStudio Insight工具将性能数据可视化后可以更直观地分析性能瓶颈，详细分析方法请参见《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/README.md)》。
 
-## 代码样例
+## 5. 代码样例
 
-### MindSpore昇腾NPU环境训练脚本样例
+### 5.1 MindSpore昇腾NPU环境训练脚本样例
 
 ```python
 import mindspore as ms
@@ -784,7 +786,7 @@ if __name__ == "__main__":
     print("train finish")
 ```
 
-### MindSpore训练前配置检查代码样例
+### 5.2 MindSpore训练前配置检查代码样例
 
 ```python
 from msprobe.core.config_check import ConfigChecker
@@ -845,7 +847,7 @@ if __name__ == "__main__":
     print("train finish")
 ```
 
-### MindSpore训练状态监测代码样例
+### 5.3 MindSpore训练状态监测代码样例
 
 ```python
 import mindspore as ms
@@ -907,7 +909,7 @@ if __name__ == "__main__":
     print("train finish")
 ```
 
-### MindSpore精度数据采集代码样例
+### 5.4 MindSpore精度数据采集代码样例
 
 ```python
 import mindspore as ms
@@ -969,7 +971,7 @@ if __name__ == "__main__":
     print("train finish")
 ```
 
-### MindSpore Profiler接口采集性能数据代码样例
+### 5.5 MindSpore Profiler接口采集性能数据代码样例
 
 ```python
 import mindspore as ms
