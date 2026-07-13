@@ -76,7 +76,7 @@
 
 3. 命令执行完毕，会在指定目录下生成如下算子工程目录。
 
-    ```tex
+    ```text
     MatmulCustom/
     ├── build.sh         // 编译入口脚本
     ├── CMakeLists.txt   // 算子工程的CMakeLists.txt

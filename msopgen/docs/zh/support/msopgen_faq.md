@@ -11,6 +11,7 @@
 **原因分析**
 
 算子部署时，头文件未正确安装到 `op_api/include` 目录。常见原因包括：
+
 - 环境变量 `ASCEND_CUSTOM_OPP_PATH` 值不正确
 - 存在多个以冒号分隔的路径，但头文件仅拷贝到了第一个路径
 
@@ -41,8 +42,9 @@
 **原因分析**
 
 可能原因包括：
+
 - NPU 设备繁忙或硬件故障
-- `/dev/hisi_hdc` 设备异常（如容器内未成功挂载、缺乏访问权限）
+- `/dev/hisi_hdc` 或 `--device=/dev/davinciX` 设备异常（如容器内未成功挂载、缺乏访问权限）
 - 驱动/固件版本不匹配
 - 系统资源（如内存）不足
 
@@ -50,7 +52,7 @@
 
 1. 使用 `npu-smi info` 检查 NPU 状态
 2. 尝试切换 NPU 设备：通过 `-d <device_id>` 指定其他空闲设备
-3. 容器环境中确认 `--device=/dev/davinciX` 已正确挂载
+3. 容器环境中确认 `/dev/hisi_hdc` 或 `--device=/dev/davinciX` 已正确挂载
 4. 检查驱动安装是否正确，参考《[CANN 软件安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1/softwareinst/instg/instg_0000.html)》
 5. 错误码详见《[ACL错误码表](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/API/appdevgapi/aclcppdevg_03_1345.html)》
 
@@ -63,6 +65,7 @@
 **原因分析**
 
 常见原因包括：
+
 - Kernel 侧代码中 EnQue/DeQue 流水线同步错误
 - DataCopy 的数据长度（repeatTimes）与实际数据量不匹配
 - Tiling 分块计算参数（totalLength、tileNum）有误
