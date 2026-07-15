@@ -49,7 +49,7 @@ model = AutoModelForCausalLM.from_pretrained(
 
 ### 1.5 使用样例
 
-[Deepseek w8a8量化示例](https://gitcode.com/Ascend/msmodelslim/blob/master/example/DeepSeek/README.md)
+《[Deepseek w8a8量化示例](../../../../../example/DeepSeek/README.md)》
 
 ## 2. 混合校准数据集使用方法说明
 
@@ -133,10 +133,10 @@ class CustomizedProcessor(DatasetProcessorBase):
 
     def process_data(self, indexs):
         """用于获取一组样本，输出为[{"prompt": prompt1, "ans": ans1},{"prompt": prompt2, "ans": ans2}]"""
-        prmpts_anses = []
+        prompts_anses = []
         for idx in indexs:
-            prmpts_anses.append({"prompt": self.ori_prompts[idx], "ans": self.ori_answers[idx]})
-        return prmpts_anses
+            prompts_anses.append({"prompt": self.ori_prompts[idx], "ans": self.ori_answers[idx]})
+        return prompts_anses
 
     def verify_positive_prompt(self, prompts, labels):
         """用于验证一组prompts中的正样本，labels为对应标签，输出为[{"prompt": prompt1, "ans": ans1},{"prompt": prompt2, "ans": ans2}]"""
@@ -152,9 +152,9 @@ class CustomizedProcessor(DatasetProcessorBase):
                 answers.append(response)
             answers = [answer.lstrip()[0] if answer.lstrip() else "-1" for answer in answers]
 
-            for ans, label, prmpt in zip(answers, labels, prompts):
+            for ans, label, prompt in zip(answers, labels, prompts):
                 if ans == label:
-                    prpt_ans.append({"prompt": prmpt, "ans": ans})
+                    prpt_ans.append({"prompt": prompt, "ans": ans})
 
         return prpt_ans
 
@@ -264,7 +264,7 @@ def get_calib_dataset(tokenizer, mixed_dataset, device='npu'):
 
 - `model_type`可从config文件中查询，下附Qwen2.5-72B权重config。
 
-```python
+```json
 {
   "architectures": [
     "Qwen2ForCausalLM"
@@ -537,7 +537,7 @@ from transformers.models.qwen2.configuration_qwen2 import Qwen2Config
 
 - safetensors中储存格式为字典，包含量化权重和量化不修改的浮点权重。其中量化权重的key值为各层Linear的名字加上对应权重的名字，module.weight和module.bias对应anti_fp_norm.npy，weight对应quant_weight.npy，quant_bias对应quant_bias.npy等以此类推。例如Qwen2.5-7B模型的model.layers.0.self_attn.q_proj.deq_scale对应npy格式权重中deq_scale.npy中的model.layers.0.self_attn.q_proj;
 
-```python
+```json
 # qwen模型量化生成的权重文件部分内容
 {
   "model.embed_tokens.weight": tensor([...]),
@@ -560,7 +560,7 @@ from transformers.models.qwen2.configuration_qwen2 import Qwen2Config
 
 - json描述文件中储存的量化权重的总体类型model_quant_type，是否启用FA3量化fa_quant_type，和其中各个权重的类型，来自原始浮点权重则为FLOAT，来自W8A8量化则为W8A8。
 
-```python
+```json
 {
   "model_quant_type": "W8A8",                                # 整体量化类型为W8A8量化
   "fa_quant_type": "FAQuant",                         # 量化过程开启了FA3量化
@@ -590,8 +590,8 @@ from transformers.models.qwen2.configuration_qwen2 import Qwen2Config
 
 | 脚本文件                                          | 参考资料                                                     |
 | ------------------------------------------------- | ------------------------------------------------------------ |
-| [quant_qwen.py](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen/quant_qwen.py)    | [Qwen2.5-72B 支持Attention量化](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen/README.md#qwen25-72b-支持attention量化) |
-| [quant_llama.py](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Llama/quant_llama.py) | [Llama3.1-70B W8A8量化搭配Attention量化](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Llama/README.md#llama31-70b-w8a8量化搭配attention量化) |
+| [quant_qwen.py](../../../../../example/Qwen/quant_qwen.py)    | [Qwen2.5-72B 支持Attention量化](../../../../../example/Qwen/README.md#qwen25-72b-支持attention量化) |
+| [quant_llama.py](../../../../../example/Llama/quant_llama.py) | [Llama3.1-70B W8A8量化搭配Attention量化](../../../../../example/Llama/README.md#llama31-70b-w8a8量化搭配attention量化) |
 
 #### 本文仅给出FA3场景下Llama3.1-70B和Qwen2.5-72B的量化推荐配置，可按实际情况进行参数调整，详见《[精度调优策略](../../../best_practices/w8a8_accuracy_tuning_policy.md)》
 

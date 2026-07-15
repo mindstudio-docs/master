@@ -63,9 +63,9 @@ toc_depth: 3
 **重要提示**：在使用自动调优功能之前，请确保使用的模型是支持的。需要同时满足以下条件：
 
 1. **模型类型限制**：当前自动调优服务仅支持**大语言模型（LLM）**，且对 **MoE** 模型支持有限（MoE 通常包含大量专家非共享子层，回退/搜索空间更大，导致迭代优化轮次更多，整体调优耗时更长）。
-2. **量化工具支持**：模型需要在量化工具的支持列表中，可以通过查看 [config/config.ini](https://gitcode.com/Ascend/msmodelslim/blob/master/config/config.ini) 中的 `[ModelAdapter]` 确定模型是否支持，其中包含了当前支持的模型适配器及其支持的模型名。如果模型不在支持列表中，需要先进行模型适配，实现相应的模型接口后才能使用自动调优功能。模型适配说明可参考 《[LLM 大模型接入指南](../../../development_guide/integrating_models.md)》。
+2. **量化工具支持**：模型需要在量化工具的支持列表中，可以通过查看 [config/config.ini](../../../../../config/config.ini) 中的 `[ModelAdapter]` 确定模型是否支持，其中包含了当前支持的模型适配器及其支持的模型名。如果模型不在支持列表中，需要先进行模型适配，实现相应的模型接口后才能使用自动调优功能。模型适配说明可参考 《[LLM 大模型接入指南](../../../development_guide/integrating_models.md)》。
 3. **vLLM-Ascend 支持**：模型需要被 vLLM-Ascend 支持，能够将量化后的模型以服务化方式启动。请先确定 vLLM-Ascend 是否支持量化后模型服务化启动。
-4. **transformers 版本兼容**：量化工具与推理引擎（vLLM-Ascend）对 `transformers` 的版本有各自的要求，需确保当前环境中的版本能同时满足二者。若某一模型在使用的过程中，量化工具与推理引擎所需的 `transformers` 版本不一致，且**不存在一个 transformers 版本能同时满足两边要求**，则无法在该环境下启动自动调优服务。使用前，请参照双方依赖说明确认当前环境中的 `transformers` 版本兼容：**量化工具侧**各模型对 transformers 等依赖的版本要求见 [config/config.ini](https://gitcode.com/Ascend/msmodelslim/blob/master/config/config.ini) 中的 `[ModelAdapterDependencies]` 配置项；**推理引擎侧**各版本 vLLM-Ascend 的依赖要求见 [vLLM-Ascend 发布说明](https://docs.vllm.ai/projects/vllm-ascend-cn/zh-cn/latest/user_guide/release_notes.html#id5) 中各版本的 Dependencies 小节。
+4. **transformers 版本兼容**：量化工具与推理引擎（vLLM-Ascend）对 `transformers` 的版本有各自的要求，需确保当前环境中的版本能同时满足二者。若某一模型在使用的过程中，量化工具与推理引擎所需的 `transformers` 版本不一致，且**不存在一个 transformers 版本能同时满足两边要求**，则无法在该环境下启动自动调优服务。使用前，请参照双方依赖说明确认当前环境中的 `transformers` 版本兼容：**量化工具侧**各模型对 transformers 等依赖的版本要求见 [config/config.ini](../../../../../config/config.ini) 中的 `[ModelAdapterDependencies]` 配置项；**推理引擎侧**各版本 vLLM-Ascend 的依赖要求见 [vLLM-Ascend 发布说明](https://docs.vllm.ai/projects/vllm-ascend-cn/zh-cn/latest/user_guide/release_notes.html#id5) 中各版本的 Dependencies 小节。
 5. **单机服务化**：当前自动调优服务不支持跨机部署。对于需要跨机才能完成服务化启动的超大规模模型，暂时无法使用自动调优功能。
 
 ### 3.3 命令格式
@@ -109,7 +109,7 @@ msmodelslim tune --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --config ${
 | model_path        | 模型路径      | 必选                | 类型：Str                                                                               |
 | save_path         | 调优结果保存路径  | 必选                | 类型：Str                                                                               |
 | config            | 调优配置文件路径  | 必选                | 1. 类型：Str <br>2. 配置文件路径，必须为完整的文件路径 <br>3. 配置文件格式为 YAML，配置协议说明见 《[自动调优配置协议说明](configuration_protocols.md)》，示例配置见 [example](example) |
-| device            | 量化设备      | 可选                | 1. 类型：Str <br>2. 参考值：'npu','npu:0,1,2,3','cpu' <br>3. 默认值为"npu"（单设备）<br>4. 指定多个设备时（如：'npu:0,1,2,3'），系统可启动分布式逐层量化（DP）。算法支持范围与配置方式详见《[一键量化使用说明](../quick_quantization_v1/usage.md#51-逐层量化及分布式逐层量化)》 |
+| device            | 量化设备      | 可选                | 1. 类型：Str <br>2. 参考值：'npu','npu:0,1,2,3','cpu' <br>3. 默认值为"npu"（单设备）<br>4. 指定多个设备时（如：'npu:0,1,2,3'），系统可启动分布式逐层量化（DP）。算法支持范围与配置方式详见《[一键量化使用说明](../quick_quantization_v1/usage.md#41-逐层量化及分布式逐层量化)》 |
 | model_type        | 模型名称      | 可选                | 1. 类型：Str <br>2. 默认值为"default" <br>3. 大小写敏感，请参考《[大模型支持矩阵](../../model_support/foundation_model_support_matrix.md)》 |
 | timeout           | 调优超时时间    | 可选                | 1. 类型：Str <br>2. 格式：`<天数>D`、`<小时数>H` 或 `<天数>D<小时数>H` <br>3. 示例：'1D'、'2H'、'3D4H' <br>4. 默认值：None（无超时限制） |
 | trust_remote_code | 是否信任自定义代码 | 可选                | 1. 类型：Bool，默认值：False <br>2. 请确保加载的自定义代码文件的安全性，设置为True有安全风险。                          |

@@ -14,9 +14,9 @@
 
 | msModelSlim版本 | CANN版本 | PyTorch版本         | TorchNPU版本    | Python版本         | Transformers版本 |
 |---------------|--------|-------------------|----------------|------------------|----------------|
-| 26.0.0.alpha02         | 不依赖特定版本 | 与具体模型有关，请参考相关模型资料 | 与具体模型有关，请参考相关模型资料 | Python 3.10、3.11 | 与具体模型有关，请参考[example](https://gitcode.com/Ascend/msmodelslim/tree/master/example)目录下对应模型的案例说明 |
-| 26.0.0.alpha01         | 不依赖特定版本 | 与具体模型有关，请参考相关模型资料 | 与具体模型有关，请参考相关模型资料 | Python 3.10、3.11 | 与具体模型有关，请参考[example](https://gitcode.com/Ascend/msmodelslim/tree/master/example)目录下对应模型的案例说明 |
-| 8.3.0         | 8.2.RC1及以上版本 | 与具体模型有关，请参考相关模型资料 | 与具体模型有关，请参考相关模型资料 | Python 3.10、3.11 | 与具体模型有关，请参考[example](https://gitcode.com/Ascend/msmodelslim/tree/master/example)目录下对应模型的案例说明 |
+| 26.0.0.alpha02         | 不依赖特定版本 | 与具体模型有关，请参考相关模型资料 | 与具体模型有关，请参考相关模型资料 | Python 3.10、3.11 | 与具体模型有关，请参考[example](../../../example)目录下对应模型的案例说明 |
+| 26.0.0.alpha01         | 不依赖特定版本 | 与具体模型有关，请参考相关模型资料 | 与具体模型有关，请参考相关模型资料 | Python 3.10、3.11 | 与具体模型有关，请参考[example](../../../example)目录下对应模型的案例说明 |
+| 8.3.0         | 8.2.RC1及以上版本 | 与具体模型有关，请参考相关模型资料 | 与具体模型有关，请参考相关模型资料 | Python 3.10、3.11 | 与具体模型有关，请参考[example](../../../example)目录下对应模型的案例说明 |
 
 ### whl包获取
 
@@ -38,7 +38,7 @@
 1. 支持通过 entry point 引入自定义 practice 目录，搭建model_adapter插件化能力基础
 2. 优化自动调优功能
 3. 支持Qwen3-Coder-480B模型W4A8量化、Qwen3.5 MOE模型W8A8量化
-4. 支持GLM-4.7模型W8A8量化、GLM-5模型W4A8模型量化
+4. 支持GLM-4.7模型W8A8量化、GLM-5模型W4A8量化
 5. 支持Qwen2.5-Omni-7B模型W8A8量化、Qwen3-Omni-30B-A3B模型W8A8量化
 
 ### 26.0.0.alpha01

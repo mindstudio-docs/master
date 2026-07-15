@@ -138,7 +138,7 @@ python3 example/Qwen/quant_qwen.py \
 
 ### 4.1 一键量化输出目录
 
-```yaml
+```tex
 ├── config.json                          # 原始模型配置文件
 ├── generation_config.json               # 原始生成配置文件
 ├── quant_model_description.json         # 量化权重描述文件
@@ -151,7 +151,7 @@ python3 example/Qwen/quant_qwen.py \
 
 ### 4.2 传统量化输出目录
 
-```yaml
+```tex
 ├── config.json                          # 原始模型配置文件
 ├── generation_config.json               # 原始生成配置文件
 ├── quant_model_description.json         # 量化权重描述文件
@@ -177,7 +177,7 @@ python3 example/Qwen/quant_qwen.py \
 
 ### 5.1 在 vllm-ascend 中使用
 
-可参考 vllm-ascend 官方文档 [Qwen3-32B-W4A4 教程](https://docs.vllm.ai/projects/ascend/en/latest/tutorials/models/Qwen3-32B-W4A4.html)运行Docker容器。
+可参考 vllm-ascend 官方文档 [Qwen3-32B-W4A4 教程](https://docs.vllm.ai/projects/ascend/zh-cn/v0.18.0/tutorials/models/Qwen3-32B-W4A4.html)运行Docker容器。
 
 #### 5.1.1 环境准备与模型目录结构
 
@@ -274,7 +274,7 @@ for output in outputs:
 
 对于过大的模型（7B 及以上），如果遇到显存不足的问题，可以尝试：
 
-1. **使用逐层量化**：在一键量化中默认生效《[逐层量化](../user_guide/feature_guide/quick_quantization_v1/usage.md#51-逐层量化及分布式逐层量化)》，传统量化中不支持。
+1. **使用逐层量化**：在一键量化中默认生效《[逐层量化](../user_guide/feature_guide/quick_quantization_v1/usage.md#41-逐层量化及分布式逐层量化)》，传统量化中不支持。
 2. **使用 CPU 量化**：设置 `--device cpu`（一键量化）或 `--device_type cpu`（传统量化），速度较慢但显存占用低。
 
 ### 6.3 支持的量化算法

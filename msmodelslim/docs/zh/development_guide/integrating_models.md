@@ -13,7 +13,7 @@ msModelSlim认识到量化机制和算法都有适用范围和局限性，而新
 
 * 接口在量化机制和算法等组件中定义，描述了对应组件对模型的诉求，接口定义和使用请参考对应组件的文档和代码
 * 仅当使用到对应组件时才需要实现对应接口
-* 接口汇总：[`msmodelslim/model/interface_hub.py`](https://gitcode.com/Ascend/msmodelslim/blob/master/msmodelslim/model/interface_hub.py)
+* 接口汇总：[`msmodelslim/model/interface_hub.py`](../../../msmodelslim/model/interface_hub.py)
 
 ### 模型适配器
 
@@ -23,17 +23,17 @@ msModelSlim认识到量化机制和算法都有适用范围和局限性，而新
 
 ## 模型接入
 
-以下内容将以 [`Qwen3-32B`](https://gitcode.com/Ascend/msmodelslim/blob/master/msmodelslim/model/qwen3/model_adapter.py) W8A8动态量化场景（简称“场景示例”）的模型接入为例：
+以下内容将以 [`Qwen3-32B`](../../../msmodelslim/model/qwen3/model_adapter.py) W8A8动态量化场景（简称“场景示例”）的模型接入为例：
 
 ### 新建模型适配器`py`文件
 
-建议放在[`msmodelslim/model/`](https://gitcode.com/Ascend/msmodelslim/tree/master/msmodelslim/model) 下，命名如 `qwen3.py`。
+建议放在[`msmodelslim/model/`](../../../msmodelslim/model) 下，命名如 `qwen3.py`。
 
 ### 理清量化过程涉及的组件，以组件接口组合定义适配器类
 
-模型适配器类必须继承自[`BaseModelAdapter`](https://gitcode.com/Ascend/msmodelslim/blob/master/msmodelslim/model/base.py)。
+模型适配器类必须继承自[`BaseModelAdapter`](../../../msmodelslim/model/base.py)。
 
-根据经验，W8A8动态量化的精度损失很小，无需搭配离群值抑制算法，也很少需要回退；因此，在场景示例中，我们仅需支持量化调度，无需支持离群值量化、敏感层分析等额外功能。需要接入其他算法可以参考[`算法总览`](https://msmodelslim.readthedocs.io/zh-cn/latest/zh/user_guide/quantization_algorithms/)
+根据经验，W8A8动态量化的精度损失很小，无需搭配离群值抑制算法，也很少需要回退；因此，在场景示例中，我们仅需支持量化调度，无需支持离群值量化、敏感层分析等额外功能。需要接入其他算法可以参考《[`算法总览`](../user_guide/quantization_algorithms/README.md)》。
 
 ```python
 from msmodelslim.model.interface_hub import ModelSlimPipelineInterfaceV1
@@ -90,7 +90,7 @@ class Qwen3ModelAdapter(TransformersModel,
 
 ### 注册模型
 
-在配置文件 [`config.ini`](https://gitcode.com/Ascend/msmodelslim/blob/master/config/config.ini) 中注册模型名称，便于同一系列的模型复用一个模型适配器。
+在配置文件 [`config.ini`](../../../config/config.ini) 中注册模型名称，便于同一系列的模型复用一个模型适配器。
 
 ```ini
 # 在ModelAdapter中的qwen3系列注册Qwen3-32B模型，qwen3对应下面的Qwen3ModelAdapter模型适配器
@@ -168,7 +168,7 @@ spec:
       part_file_size: 4 # 每个safetensors权重文件最大4G
 ```
 
-### 量化自有模型
+### 运行一键量化
 
 可通过如下命令完成自有模型量化，请注意`trust_remote_code`为`True`时可能执行浮点模型权重中的代码文件，请确保浮点模型来源安全可靠。其中 `${MODEL_PATH}` 为原始浮点权重路径，`${SAVE_PATH}` 为用户自定义的量化权重保存路径，`${MODEL_TYPE}` 为注册的模型名称，`${CONFIG_PATH}` 为YAML配置文件路径。
 
