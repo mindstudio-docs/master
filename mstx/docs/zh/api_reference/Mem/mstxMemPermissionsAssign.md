@@ -4,7 +4,7 @@
 
 |产品|是否支持|
 |--|:-:|
-|Atlas 350 加速卡|√|
+|Ascend 950 系列产品|√|
 |Atlas A3 训练系列产品/Atlas A3 推理系列产品|√|
 |Atlas A2 训练系列产品/Atlas A2 推理系列产品|√|
 |Atlas 200I/500 A2 推理产品|√|
@@ -107,5 +107,7 @@ perms[1].region.refType = MSTX_MEM_REGION_REF_TYPE_HANDLE;
 perms[1].region.handle = handles[0];
 permBatch.regionCount = 2;
 permBatch.regionDescArray = perms;
+
+//假定 globalDomain 已由 mstxMemRegionsRegister 初始化
 mstxMemPermissionsAssign(globalDomain, &permBatch);
 ```

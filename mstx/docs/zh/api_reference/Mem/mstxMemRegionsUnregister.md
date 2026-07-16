@@ -4,7 +4,7 @@
 
 |产品|是否支持|
 |--|:-:|
-|Atlas 350 加速卡|√|
+|Ascend 950 系列产品|√|
 |Atlas A3 训练系列产品/Atlas A3 推理系列产品|√|
 |Atlas A2 训练系列产品/Atlas A2 推理系列产品|√|
 |Atlas 200I/500 A2 推理产品|√|
@@ -79,7 +79,7 @@ typedef struct mstxMemRegionsUnregisterBatch_t {
 **调用示例<a id="zh-cn_topic_0000002180600118_section377820328555"></a>**
 
 ```c
-mstxMemRegionsUnregisterBatch_t refsDesc = {}
+mstxMemRegionsUnregisterBatch_t refsDesc = {};
 refsDesc.refCount = 1;
 refsDesc.refArray = regionRef;
 mstxMemRegionsUnregister(globalDomain, &refsDesc);                   // 注销二次分配

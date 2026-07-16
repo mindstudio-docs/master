@@ -4,7 +4,7 @@
 
 |产品|是否支持|
 |--|:-:|
-|Atlas 350 加速卡|√|
+|Ascend 950 系列产品|√|
 |Atlas A3 训练系列产品/Atlas A3 推理系列产品|√|
 |Atlas A2 训练系列产品/Atlas A2 推理系列产品|√|
 |Atlas 200I/500 A2 推理产品|√|
@@ -35,7 +35,7 @@ mstx.range_start(message, stream)
 
 |参数|输入/输出|说明|
 |--|--|--|
-|message|输入|message为标记的文字，携带打点信息。<br>C/C++中数据类型：const char *。<br>Python中，message为字符串。默认None。<br>传入的message字符串长度要求：MSPTI场景：不能超过255字节。<br>非MSPTI场景（例如msprof命令行、Ascend PyTorch Profiler）：不能超过156字节。<br>message不能传入空指针。|
+|message|输入|message为标记的文字，携带打点信息。<br>C/C++中数据类型：const char *。<br>Python中，message为字符串。默认None。<br>传入的message字符串长度要求：MSPTI场景：不能超过255字节。<br>message不能传入空指针。|
 |stream|输入|stream表示使用mark的线程。<br>C/C++中数据类型：aclrtStream。<br>Python中stream是aclrtStream对象。默认None。<br>配置为nullptr时，只标记Host侧的瞬时事件。<br>配置为有效的stream时，标识Host侧和对应Device侧的瞬时事件。|
 
 **返回值说明<a id="zh-cn_topic_0000002016210401_section16621124213476"></a>**
@@ -58,8 +58,7 @@ mstx.range_start(message, stream)
     // Run op
     if
     (!opRunner.RunOp()) {
-    ERROR_LOG("Run
-    op failed");
+    ERROR_LOG("Run op failed");
     return false;
     }
     mstxRangeEnd(id);
@@ -73,7 +72,7 @@ mstx.range_start(message, stream)
 
     ```py
     import mstx
-    mstx.range_start("aaa")
+    mstx.range_start("aaa", None)
     print(1)
     mstx.range_end(1)
     import torch

@@ -68,7 +68,17 @@ cd output
 pip3 install mstx-xxxxx.whl
 ```
 
-## 3. 卸载
+## 3. 验证安装
+
+安装完成后，执行以下命令验证工具是否安装成功：
+
+```shell
+pip show mstx
+```
+
+若输出不报错，且能显示相关信息，则表明安装成功。
+
+## 4. 卸载
 
 可通过如下步骤卸载：
 
@@ -93,10 +103,12 @@ pip3 install mstx-xxxxx.whl
 
    卸载成功打印如下信息：
 
-   ```ColdFusion
+   ```text
    Successfully uninstalled 1 tool ({tools_name})
    ```
 
-## 4. 升级
+## 5. 升级
 
 升级即“先卸后装”。直接执行安装命令，工具将自动卸载旧版本，并引导您完成覆盖安装。
+
+可通过`pip show mstx`命令查看当前环境的版本信息，再选择需要升级的版本。

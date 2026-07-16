@@ -4,7 +4,7 @@
 
 |产品|是否支持|
 |--|:-:|
-|Atlas 350 加速卡|√|
+|Ascend 950 系列产品|√|
 |Atlas A3 训练系列产品/Atlas A3 推理系列产品|√|
 |Atlas A2 训练系列产品/Atlas A2 推理系列产品|√|
 |Atlas 200I/500 A2 推理产品|√|
@@ -77,5 +77,5 @@ regionsDesc.regionType = MSTX_MEM_TYPE_VIRTUAL_ADDRESS;
 regionsDesc.regionCount = 1;
 regionsDesc.regionDescArray = rangesDesc;
 regionsDesc.regionHandleArrayOut = regionHandles;
-mstxMemRegionsRegister(globalDomain, regionsDesc);              // 二次分配注册 
+mstxMemRegionsRegister(globalDomain, &regionsDesc);              // 二次分配注册 
 ```

@@ -4,10 +4,10 @@
 
 默认情况下msTX API无任何功能，需要在用户应用程序中调用msTX API后，根据不同场景使能msTX打点功能，例如使用msopprof命令行采集时配置--mstx=on、使用AscendCL API采集时配置ACL_PROF_MSPROFTX以及Ascend PyTorch Profiler接口采集时配置mstx=True等。
 
-- 库文件libms_tools_ext.so路径：**\$\{INSTALL_DIR\}**/lib64/。
-- 使用头文件编译时，用户程序编译时需链接dl库。头文件ms_tools_ext.h路径：**\$\{INSTALL_DIR\}**/include/mstx。
+- 库文件libms_tools_ext.so路径：**${INSTALL_DIR}**/lib64/。
+- 使用头文件编译时，用户程序编译时需链接dl库。头文件ms_tools_ext.h路径：**${INSTALL_DIR}**/include/mstx。
 
-\$\{INSTALL_DIR\}请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
+`${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
 
 **接口列表<a id="section6371427124715"></a>**
 
