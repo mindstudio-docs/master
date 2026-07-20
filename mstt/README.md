@@ -3,7 +3,7 @@
 <div align="center">
 <p><b><span style="font-size: 24px;">昇腾 AI 训练开发工具链</span></b></p>
 
- [![快速入门](https://badgen.net/badge/快速入门/QuickStart/blue)](docs/zh/quick_start/pytorch_mstt_quick_start.md)
+ [![快速入门](https://badgen.net/badge/快速入门/QuickStart/blue)](docs/zh/quick_start/mstt_quick_start.md)
  [![AI问答(DeepWiki)](https://badgen.net/badge/AI问答/DeepWiki/blue)](https://deepwiki.com/mindstudio-docs/master) 
  [![AI问答(ZRead)](https://badgen.net/badge/AI问答/ZRead/blue)](https://zread.ai/mindstudio-docs/master) 
  [![精确搜索](https://badgen.net/badge/精确搜索/ReadTheDocs/blue)](https://mindstudio-docs-master.readthedocs.io) 
@@ -49,20 +49,15 @@ MindStudio Training Tools（msTT）训练开发工具链，聚焦训练开发中
 
 ## 🚀 快速入门
 
-面向 PyTorch 与 MindSpore 场景，通过可执行样例串联迁移分析、精度调试与性能调优，助力用户快速上手端到端训练优化。
-
-| 训练框架      | 快速入门指南 |
-|-----------|----------------|
-| PyTorch   | 《[PyTorch 场景 msTT 工具快速入门](docs/zh/quick_start/pytorch_mstt_quick_start.md)》 |
-| MindSpore | 《[MindSpore 场景 msTT 工具快速入门](docs/zh/quick_start/mindspore_mstt_quick_start.md)》 |
+如需快速上手各工具，请参见《[训练开发工具链快速入门](docs/zh/quick_start/mstt_quick_start.md)》。
 
 ## 📦 安装指南
 
-各工具的安装指南请参阅其源码仓库中的安装指南，可通过上方功能介绍表格中的链接跳转到源码仓后进入 docs/zh 目录找到对应的 install_guide 文档。
+请通过上方表格链接进入对应源码仓库，参见 README 中的《安装指南》。
 
 ## 📘 使用指南
 
-请查阅《[msTT 使用指南](./docs/zh/user_guide/mstt_user_guide.md)》，根据具体应用场景选用相应工具，详细使用说明请参见其源码仓库中的 README 文件。
+请通过上方表格链接进入对应源码仓库，参见 README 中的《使用指南》；若需按场景选择工具，请参见《[msTT 工具选型指南](./docs/zh/user_guide/mstt_user_guide.md)》。
 
 ## 🌌 智能检索
 
