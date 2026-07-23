@@ -22,7 +22,7 @@ Python APIs can be used to collect memory events and Python Trace events, while 
 
 - Environment variables set in export mode take effect only in the current window. If you do not need to use msMemScope after setting environment variables, you are advised to restore **LD_PRELOAD** and **LD_LIBRARY_PATH** to the previous settings.
 - If **events** is set to **traceback**, Python Trace events are collected. After this function is enabled, a .csv file (**python_trace_{*TID*}_{*timestamp*}.csv**) is flushed to the drive. For details, see [Output File Specifications](./output_file_spec.md).
-- To disable a collection item, leave the value of the collection item empty. For example, to disable Python Trace collection, set **events** to **""**.
+- To disable a collection item, use the **none** keyword. For example, to disable event collection, set **events** to **"none"**; to disable analysis, set **analysis** to **"none"**.
 - Python APIs can be used to customize and set multiple collection scopes.
 
 ### Usage Example
@@ -31,22 +31,24 @@ Python APIs can be used to collect memory events and Python Trace events, while 
 
 1. Set environment variables.
 
-    Run the following commands to set **LD_PRELOAD** and **LD_LIBRARY_PATH**.
+    Run the following command to set environment variables required for Python APIs usage.
 
     ```shell
-    export LD_PRELOAD=${memscope_install_path}/lib64/{so_name}:${memscope_install_path}/lib64/{so_name}
-    export LD_LIBRARY_PATH=${memscope_install_path}/lib64/:${LD_LIBRARY_PATH}
+    source msmemscope --load-api-env
     ```
 
-    For details about the parameters, see [**Table 1** Parameter description](#parameter-description).
+    > [!NOTE]
+    >
+    > After you finish using msMemScope, run `source msmemscope --unload-api-env` to remove only the msMemScope-related entries without affecting other tools' configurations.
+
+    For details about the subcommands, see [**Table 1** Parameter description](#parameter-description).
 
     **Table 1** Parameter description <a id="Parameter description "></a>
 
     |Parameter|Description|
     |--|--|
-    |memscope_install_path|Installation path of msMemScope|
-    |so_name|Name of the SO package to be configured. SO packages are separated by half-width colons (:). The SO packages to be configured include **libascend_kernel_hook.so**, **libascend_mstx_hook.so**, **libatb_abi_0_hook.so**, **libatb_abi_1_hook.so**, and **libleaks_ascend_hal_hook.so**.|
-    |LD_LIBRARY_PATH|Environment variable|
+    |--load-api-env|Sets environment variables required for API usage. Must be executed via `source`.|
+    |--unload-api-env|Removes msMemScope-related entries, preserving other tools' values. Must be executed via `source`.|
 
 2. Collect the memory.
 
@@ -61,7 +63,7 @@ Python APIs can be used to collect memory events and Python Trace events, while 
     msmemscope.stop()    # Stop collection.
     ```
 
-    > [!NOTE]NOTE 
+    > [!NOTE]NOTE
     > OOM usually occurs in the memory collection scope. Once OOM occurs, the snapshot information before and after OOM is flushed to the drive. For details about the flushed information, see [memscope_dump_{timestamp}.csv](./output_file_spec.md#memory_compare_{_timestamp_}.csv-fields) in *Output File Specifications*. If **Event** is **SNAPSHOT**, check the **Attr** and **Call Stack** fields.
 
 **Python Trace Collection**
@@ -70,7 +72,7 @@ Python APIs can be used to collect memory events and Python Trace events, while 
 
     msMemScope can collect Trace data of Python code through Python APIs and align the data with memory events on a unified timeline. This helps optimization personnel quickly associate memory events with full-link code and accurately locate problems.
 
-    > [!NOTE]NOTE 
+    > [!NOTE]NOTE
     > The Python Trace collection will be removed from MindStudio 26.0.0. You can set **events="traceback"** to collect Python Trace events. For details, see [Collection via Python APIs](#collection-via-python-apis).
 
     1. Python APIs are added to msMemScope to enable and disable the **Tracer** function. Python code executed between **start** and **stop** will have its Trace data written to the specified path. The code example is as follows:
@@ -138,7 +140,7 @@ msmemscope.take_snapshot(device_mask=0)   # Collect a memory snapshot.
 After the collection is complete, the result is flushed to the **memscope_dump_{_timestamp_}.csv** file.
 
 > [!NOTE]NOTE
-> 
+>
 > - `msmemscope.take_snapshot` can be called independently to collect data, without depending on `msmemscope.start` and `msmemscope.stop`.
 > - `msmemscope.take_snapshot` can be used together with `msmemscope.config`. When they are used together, the path for saving the result file is the value of the first call and does not change.
 
@@ -210,10 +212,10 @@ Refer to the following to start msMemScope and collect memory data.
 |--steps|Selects the step ID of memory information to be collected. The values must be integers within the actual step range. You can configure one or more step IDs, with a maximum of 5 currently supported. The input step IDs are separated by a full-width or half-width comma (,). If this parameter is not set, the memory information of all steps is collected by default. Example: **--steps=1,2,3**.|No|
 |--device|Collects device information. The options are **npu** and **npu:{*id*}**. The default value is **npu**. The value cannot be empty. You can select multiple values at the same time. Use a full-width or half-width comma (,) to separate the values. Example: **--device=npu**.<br>  If the value contains both **npu** and **npu:{*id*}**, the memory information of all NPUs is collected by default, and **npu:{*id*}** does not take effect.<br> - **npu**: collects the memory information of all NPUs.<br> - **npu:{*id*}**: collects the NPU memory information of a specified ID. The value of **id** is the specified ID number. The value range is [0, 31]. The memory information of multiple IDs can be collected. Use a full-width or half-width comma (,) to separate the values. Example: **--device=npu:2,npu:7**.|No|
 |--level|Collects operator information. The options are **0** (default) and **1**. Example: **--level=0**.<br> - **0**: The value can also be represented by **op**, which collects information about operators.<br> - **1**: The value can also be represented by **kernel**, which collects information about kernels.<br>In MindStudio 9.0.0, the values **0** and **1** are changed to **op** and **kernel**.|No|
-|--events|Collects events. The options are **alloc**, **free**, **launch**, and **access**, with **alloc**, **free**, or **launch** by default. The values are separated by a full-width or half-width comma (,). Example: **--events=alloc,free,launch**.<br> - **alloc**: collects memory allocation events.<br>- **free**: collects memory deallocation events.<br> - **launch**: collects operator/kernel dispatch events.<br> - **access**: collects memory access events. Currently, only memory access events in the operator scenarios of ATB and Ascend Extension for PyTorch can be collected.<br> - **traceback**: collects Python Trace events.<br>Note that when **--events=alloc** is set, **free** is added by default. The actual collection items are **alloc** and **free**. When **--events=free** is set, **alloc** is added by default. The actual collection items are **alloc** and **free**. When **--events=access** is set, **alloc** and **free** are added by default. The actual collection items are **access**, **alloc**, and **free**.|No|
+|--events|Collects events. The options are **alloc**, **free**, **launch**, **access**, **traceback**, and **none**, with **alloc**, **free**, or **launch** by default. The values are separated by a full-width or half-width comma (,). Example: **--events=alloc,free,launch**.<br> - **alloc**: collects memory allocation events.<br>- **free**: collects memory deallocation events.<br> - **launch**: collects operator/kernel dispatch events.<br> - **access**: collects memory access events. Currently, only memory access events in the operator scenarios of ATB and Ascend Extension for PyTorch can be collected.<br> - **traceback**: collects Python Trace events.<br> - **none**: disables collection of all event types. If **none** is used together with other event types, **none** takes effect (clearing all event types) and a warning is displayed. |No|
 |--call-stack|Collects call stacks. The options are **python** and **c**. You can select both of them and separate them with a full-width or half-width comma (,). You can set the call stack collection depth. Enter a number after the option. The option and the number are separated by a colon (:), indicating the collection depth. The value range is [0, 1000]. The default value is **50**. Example: **--call-stack=python, --call-stack=c:20,python:10**.<br> - **python**: collects the Python call stack.<br> - **c**: collects the C call stack.|No|
 |--collect-mode|Specifies a memory collection mode. The options are **immediate** (default) and **deferred**. Only one value can be selected. Example: **--collect-mode=immediate**.<br> - **immediate**: collects memory information immediately when the user script starts to run, and stops collecting when the user script stops running. You can also use the Python custom collection interface to control the collection scope.<br> - **deferred**: collects data after the **msleaks.start()** script is executed. You need to use the Python custom collection interface. If only **--collect-mode** is set to **deferred** and the custom Python API for collection is not used, no data (except for a small amount of system data) is collected by default.|No|
-|--analysis|Enables the related memory analysis function. The default value is **leaks**. If the value of **--analysis** is empty, no analysis function is enabled. You can select multiple values and separate them with a full-width or half-width comma (,). Example: **--analysis=leaks,decompose**.<br> - **leaks**: identifies memory leak events.<br> - **inefficient**: identifies inefficient memory. Inefficient memory can be identified in ATB LLM and Ascend Extension for PyTorch single-operator scenarios. This operation can be done through APIs. For details, see [API Reference](../api_reference/api.md).<br> - **decompose**: enables the memory decomposition function.<br>Note that when **--analysis** is set to **leaks** or **decompose**, **alloc** and **free** of **--events** are enabled by default, that is, **--events=alloc,free**. When **--analysis** is set to **inefficient**, **alloc**, **free**, **access**, and **launch** of **--events** are enabled by default, that is, **--events=alloc,free,access,launch**.|No|
+|--analysis|Enables the related memory analysis function. The default value is **leaks**. Use the **none** keyword to disable all analysis features. You can select multiple values and separate them with a full-width or half-width comma (,). Example: **--analysis=leaks,decompose**.<br> - **leaks**: identifies memory leak events.<br> - **inefficient**: identifies inefficient memory. Inefficient memory can be identified in ATB LLM and Ascend Extension for PyTorch single-operator scenarios. This operation can be done through APIs. For details, see [API Reference](../api_reference/api.md).<br> - **decompose**: enables the memory decomposition function.<br> - **none**: disables all analysis features. If **none** is used together with other analysis types, **none** takes effect (clearing all analysis types) and a warning is displayed. |No|
 |--data-format|Specifies output file formats. The options are **db** and **csv**. Select a format as required. The value cannot be empty, with **csv** by default. Example: **--data-format=db**.<br> If the output file is in .db format, you can use MindStudio Insight to display the file. For details, see [MindStudio Insight Memory Tuning](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/memory_tuning.md)<br> - **db**: .db files<br> - **csv**: .csv files|No|
 |--watch|Monitors memory blocks. The options are **start**, **out{*id*}**, **end** (mandatory), and **full-content**. You can select multiple values and separate them with a full-width or half-width comma (,). The parameter setting format is **--watch=start:out{*id*},end,full-content**. Example: **--watch=op0,op1,full-content**.<br> - **start**: optional. The value is a string, indicating an operator. The format varies depending on the framework. **start** is mandatory when **out{*id*}** needs to be set.<br> - **out{**id**}**: optional. It indicates the output ID of an operator. When the tensor is a list, you can specify the tensor that needs to be dumped to a given path. The value is the subscript number of the tensor in the list.<br> - **end**: mandatory. The value is a string, indicating an operator. The format varies depending on the framework.<br> - **full-content**: optional. If this value is selected, the complete tensor data is dumped to the specified path. If this value is not selected, the hash value of the tensor is dumped to the specified path.|No|
 |--output|Specifies the dump path of the output file. The maximum length of the path is 4,096 characters. The default dump path is **memscopeDumpResults**. Example: **--output=/home/projects/output**.|No|
@@ -222,7 +224,7 @@ Refer to the following to start msMemScope and collect memory data.
 |--input|Specifies the absolute directory of the comparison files. You need to enter the directories of the baseline file and comparison file and separate them with a full-width or half-width comma (,). This parameter is valid only when the **compare** function is enabled. The maximum length of the path is 4,096 characters. Example: **--input=/home/projects/input1,/home/projects/input2**.<br> This parameter is mandatory only when memory comparison is enabled.|No|
 
 > [!NOTE]NOTE
-> 
+>
 > - When **--events** is set to **launch** and Aten operator dispatch and access events need to be collected, this function can be used only when the PyTorch version under Ascend Extension for PyTorch framework is 2.3.1 or later.
 > - If **--analysis** contains **decompose**, the **Attr** parameter in the **memscope\_dump\_\{_timestamp_\}.csv** file contains the memory type and component name.
 > - If **--analysis** contains **decompose**, memory decomposition is enabled. Currently, the memory pools of Ascend Extension for PyTorch, MindSpore, and ATB operator frameworks can be classified, and the memory pools of MindSpore framework and ATB operator frameworks do not support fine-grained classification. In the Ascend Extension for PyTorch framework, **aten**, **weight, gradient**, and **optimizer_state** can be classified finely. **weight**, **gradient**, and **optimizer_state** are used only in PyTorch training scenarios (that is, the **optimizer.step\(\)** API call scenario). **aten** is the memory allocated in Aten operators. The PyTorch version must be 2.3.1 or later, and the value of **--level** must contain **0**.
@@ -253,7 +255,7 @@ The following uses a Python script and a C script as examples to describe how to
 
     ```python
     import mstx
-    for epoch in range(15): 
+    for epoch in range(15):
         id = mstx.range_start("step start", None) # Mark the start of a step and enable memory analysis.
         ....
         ....
@@ -277,7 +279,7 @@ The following uses a Python script and a C script as examples to describe how to
     ```
 
 > [!NOTE]NOTE
-> 
+>
 > - Only the memory data of a single card can be collected.
 > - You can configure **PYTHONMALLOC=malloc** before running the target user program. **PYTHONMALLOC=malloc** is a Python environment variable, which indicates that the default memory allocator of Python is not used. All memory allocations are performed using **malloc**. This configuration has some impact on small memory allocations.
 
