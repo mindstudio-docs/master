@@ -12,15 +12,17 @@
 
 ## 2. 开发环境准备
 
- 请按照以下文档进行环境配置：[《算子工具开发环境安装指导》](https://gitcode.com/Ascend/msot/blob/master/docs/zh/common/dev_env_setup.md)。
+按照《[msOpGen工具安装指南 安装指南 — 编译环境准备](../install_guide/msopgen_install_guide.md#231-环境准备)》章节完成编译和测试环境的搭建。
+
+> **说明：** 环境镜像的构建方法及配套软件版本由 MindStudio 统一镜像制作指南维护，本仓库不重复定义。
 
 ## 3. 一键式构建
 
 ```shell
-python build.py
+python3 build.py
 ```
 
-生成的 whl 包位于 `output/` 目录，包含 `mindstudio_opgen` 和 `mindstudio_opst` 两个包。
+生成的 whl 包位于 `artifacts/` 目录，包含 `mindstudio_opgen` 和 `mindstudio_opst` 两个包。
 
 ## 4. 项目目录结构
 
@@ -28,8 +30,8 @@ python build.py
 ├── msopgen/          // msopgen 源码目录（核心引擎）
 ├── tools/msopst/     // msopst 源码目录（ST 测试工具）
 ├── test/
-│   ├── msopgen/      // msopgen 单元测试
-│   └── msopst/       // msopst 单元测试
+│   ├── test_msopgen/ // msopgen 单元测试
+│   └── test_msopst/  // msopst 单元测试
 ├── example/          // 工具样例
 ├── docs/             // 项目文档
 ├── setup.py          // msopgen whl 包构建脚本
@@ -40,7 +42,7 @@ python build.py
 ## 5. UT 测试
 
 ```shell
-python build.py test
+python3 build.py test
 ```
 
 ### 5.1 测试覆盖范围
