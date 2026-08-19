@@ -465,17 +465,17 @@ The collected data needs to be further analyzed through [accuracy pre-check](#ac
 
      **Figure 1** api_precision_compare_result_{timestamp}
 
-     ![img](../figures/en-us_image_0000002446546936.png)
+     ![img](../figures/zh-cn_image_0000002446546936.png)
 
    - The **api_precision_compare_details_{timestamp}.csv** file indicates whether each API passes the test, as shown in the following example.
 
      **Figure 2** api_precision_compare_details_1
 
-     ![img](../figures/en-us_image_0000002480026577.png)
+     ![img](../figures/zh-cn_image_0000002480026577.png)
 
      **Figure 3** api_precision_compare_details_2
 
-     ![img](../figures/en-us_image_0000002479906833.png)
+     ![img](../figures/zh-cn_image_0000002479906833.png)
 
      For details about the meanings of more comparison result fields, see the [pre-check result comparison](https://gitcode.com/Ascend/msprobe/blob/master/docs/en/accuracy_checker/pytorch_accuracy_checker_instruct.md)".
 
@@ -586,7 +586,7 @@ Hierarchical visualization requires the `level` parameter in the **config.json**
 
    **Figure 1** Hierarchical visualization graph comparison
 
-   ![img](../figures/en-us_image_0000002446706788.png)
+   ![img](../figures/zh-cn_image_0000002446706788.png)
 
    Since `level` is set to `L1` when dumping data in this example, the collected model structure data is empty, and there is no data for hierarchical visualization graph. The figure above shows an example of other data.
 
@@ -781,7 +781,7 @@ Complete [performance data collection](#performance-data-collection) or [msprof-
 
 1. Install MindStudio Insight.
 
-   For details, see the [MindStudio Insight Tool User Guide](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/mindstudio_insight_install_guide.md) to download and install MindStudio Insight.
+   For details, see the [MindStudio Insight Tool User Guide](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/mindstudio_insight_install_guide.md) to download and install MindStudio Insight.
 
    The MindStudio Insight visualization tool is recommended for use in a Windows environment.
 
@@ -795,7 +795,7 @@ Complete [performance data collection](#performance-data-collection) or [msprof-
 
       **Figure 1** Visualized performance data
 
-      ![img](../figures/en-us_image_0000002446706840.png)
+      ![img](../figures/zh-cn_image_0000002446706840.png)
 
 4. Analyze the performance data.
 

@@ -43,10 +43,11 @@ Modeling is a simulation tool for model inference performance analysis. Its core
 The most relevant entry points in the repository are as follows:
 
 | Entry Point | Purpose | Recommended Scenario |
-|---|---|---|
+| --- | --- | --- |
 | `python web_ui/main.py` | Launch the Vue 3 + FastAPI Web UI (single launcher starts both frontend and backend) | Interactive configuration, result visualization, non-developer users |
 | `python -m cli.inference.text_generate` | LLM / VL forward inference simulation | One-off or scripted LLM/VL performance analysis |
 | `python -m cli.inference.video_generate` | Video generation model simulation | Diffusion Transformer / Wan / HunyuanVideo scenarios |
+| `python -m cli.inference.image_generate` | Image generation model simulation (Transformer denoising stage) | Diffusion Transformer / FLUX / Qwen-Image-Edit scenarios |
 | `python -m cli.inference.throughput_optimizer` | Service throughput tuning | Finding optimal parallel and batch under TTFT/TPOT/SLO constraints |
 
 ---
@@ -62,6 +63,7 @@ If the environment is already set up, launching the Web UI from the repository r
 The Web UI uses a frontend-backend separation architecture. In addition to the Python dependencies above, you also need to install frontend dependencies:
 
 **Backend dependencies** (already included in the repository root `pyproject.toml`, installed with the main project):
+
 - FastAPI, uvicorn, sqlmodel, alembic, pydantic, etc.
 
 **Frontend dependencies** (requires Node.js ≥ 18 and npm):
@@ -118,7 +120,7 @@ The frontend Vite dev server will automatically proxy `/api` requests to the bac
 The Web UI is a single-page application (SPA). The top navigation bar provides the following:
 
 | Navigation Button | Description |
-|---|---|
+| --- | --- |
 | Home | Return to the workspace (Console) |
 | Docs | Embedded user guide |
 | History | View submitted job history, status, and results |
@@ -128,12 +130,13 @@ The Web UI is a single-page application (SPA). The top navigation bar provides t
 The main workspace **Console** uses a **Tab + vertical split** layout. Three modules share the same page:
 
 | Tab | Capabilities |
-|---|---|
+| --- | --- |
 | Text Generation | LLM / VL forward inference simulation, supporting concurrency list, TP list, quantization, MTP, Prefix Cache, parallel breakdown, operator and memory analysis |
 | Video Generation | Video generation model inference simulation, supporting Ulysses, CFG, DiT Cache, Chrome Trace and other parameters |
 | Throughput Optimizer | Service throughput tuning, supporting three deployment modes: `PD Aggregated`, `PD Disaggregated`, `PD Ratio` |
 
 Each Tab's workspace is divided into two parts:
+
 - **Upper part**: Configuration form (fields dynamically generated from TypeScript config, grouped into collapsible sections, hover over field names to see bilingual tooltips)
 - **Lower part**: Result pane (changes with job status: idle placeholder → running → success result / failure details)
 - A draggable divider between them allows resizing the form and result areas
@@ -167,7 +170,7 @@ where VL adds image input parameters on top of the LLM simulation.
 ### 4.1 Key Concepts
 
 | Concept | Description |
-|---|---|
+| --- | --- |
 | `num-queries` | Number of concurrent requests, affecting batch, KV Cache, memory, and throughput |
 | `query-length` | Number of newly added tokens. Prefill is usually large; decode is usually 1 or a small value |
 | `context-length` | Existing context length, affecting KV Cache and attention cost |
@@ -177,9 +180,9 @@ where VL adds image input parameters on top of the LLM simulation.
 | `ep-size` | Expert Parallel size, commonly used for MoE models |
 | `num-mtp-tokens` | Number of MTP tokens, available for models that support MTP such as DeepSeek |
 | `prefix-cache-hit-rate` | Prefix Cache hit rate, value range `[0,1)`, used to estimate the benefit of prefill token reuse |
-| `quantize-linear-action` | Linear layer quantization method, such as `W8A8_DYNAMIC`, `FP8`, `MXFP4` |
+| `quantize-linear-action` | Linear layer quantization method, such as `W8A8_DYNAMIC`, `fp8`, `mxfp4` |
 | `quantize-non-expert-linear-action` | Non-expert Linear layer quantization override, mainly used for DeepSeek V4; applies to attention projections, dense MLP, and shared experts; routed MoE experts still use `quantize-linear-action` |
-| `quantize-attention-action` | KV Cache / Attention quantization method, such as `DISABLED`, `INT8`, `FP8` |
+| `quantize-attention-action` | KV Cache / Attention quantization method, such as `disabled`, `int8`, `fp8` |
 | `image-height/image-width` | VL image dimensions |
 
 ### 4.2 Minimal LLM Example: Single-Chip Decode
@@ -193,7 +196,7 @@ python -m cli.inference.text_generate Qwen/Qwen3-32B \
   --context-length 4500 \
   --decode \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action DISABLED
+  --quantize-attention-action disabled
 ```
 
 Suitable for quickly observing single-device inference time, TPS/Device, memory usage, and operator breakdown for a given chip under a typical decode scenario.
@@ -210,7 +213,7 @@ python -m cli.inference.text_generate Qwen/Qwen3-32B \
   --compile \
   --tp-size 8 \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action INT8
+  --quantize-attention-action int8
 ```
 
 This scenario focuses on the cost of processing the first input segment, suitable for comparing:
@@ -242,8 +245,8 @@ for nq in 16 32 64; do
     --context-length 4500 \
     --decode \
     --tp-size 1 \
-    --quantize-linear-action MXFP4 \
-    --quantize-attention-action DISABLED
+    --quantize-linear-action mxfp4 \
+    --quantize-attention-action disabled
 done
 ```
 
@@ -278,7 +281,7 @@ TP list: [1,2]
 The tool will sweep concurrency for each TP and output a concurrency curve for each TP. The results can be understood as:
 
 | TP | Cases that will run |
-|---|---|
+| --- | --- |
 | 1 | Concurrency 16, 32, 64 |
 | 2 | Concurrency 16, 32, 64 |
 
@@ -336,7 +339,7 @@ python -m cli.inference.text_generate Qwen/Qwen3-VL-235B-A22B-Instruct \
   --image-height 720 \
   --image-width 1080 \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action INT8
+  --quantize-attention-action int8
 ```
 
 For VL scenarios, it is recommended to focus on:
@@ -362,15 +365,15 @@ This tool simulates the Diffusion Transformer forward process, commonly used for
 ### 5.1 Key Parameters
 
 | Parameter | Description |
-|---|---|
+| --- | --- |
 | `--batch-size` | Video generation batch |
 | `--seq-len` | Text prompt token length |
 | `--height / --width` | Video resolution |
 | `--frame-num` | Number of frames |
 | `--sample-step` | Number of denoise steps |
 | `--dtype` | `float16`, `float32`, `bfloat16` |
-| `--world-size` | Total number of devices |
-| `--ulysses-size` | Ulysses sequence parallel size, must evenly divide `world-size` |
+| `--num-devices` | Total number of devices |
+| `--ulysses-size` | Ulysses sequence parallel size, must evenly divide `--num-devices` |
 | `--use-cfg` | Enable CFG |
 | `--cfg-parallel` | Use CFG parallel |
 | `--dit-cache` | Enable DiT block cache |
@@ -404,7 +407,7 @@ python -m cli.inference.video_generate Wan-AI/Wan2.2-T2V-A14B-Diffusers \
   --width 1280 \
   --frame-num 129 \
   --sample-step 50 \
-  --world-size 8 \
+  --num-devices 8 \
   --ulysses-size 4 \
   --dtype float16
 ```
@@ -428,7 +431,7 @@ python -m cli.inference.video_generate Wan-AI/Wan2.2-T2V-A14B-Diffusers \
   --width 1280 \
   --frame-num 81 \
   --sample-step 30 \
-  --world-size 8 \
+  --num-devices 8 \
   --ulysses-size 4 \
   --use-cfg \
   --cfg-parallel
@@ -466,7 +469,7 @@ python -m cli.inference.video_generate Wan-AI/Wan2.2-T2V-A14B-Diffusers \
   --device ATLAS_800_A2_280T_32G_PCIE \
   --batch-size 1 \
   --seq-len 128 \
-  --chrome-trace trace/video.json
+  --chrome-trace-file trace/video.json
 ```
 
 After generation, you can open it in the Chrome browser:
@@ -494,7 +497,7 @@ The Optimizer does not just run a single fixed parallel configuration; instead, 
 The deployment mode names in the Web UI are:
 
 | Web UI Name | CLI Parameter | Applicable Scenario |
-|---|---|---|
+| --- | --- | --- |
 | `PD Aggregated` | Default, without `--disagg`, without `--enable-optimize-prefill-decode-ratio` | Prefill and Decode are co-deployed in the same instance type; suitable for baselines and cross-chip comparisons |
 | `PD Disaggregated` | Add `--disagg` | Prefill and Decode disaggregated analysis; separately evaluating capacity under TTFT or TPOT constraints |
 | `PD Ratio` | Add `--enable-optimize-prefill-decode-ratio`, and specify the number of devices per P/D instance | Under a PD disaggregated architecture, finding the optimal Prefill-to-Decode instance ratio |
@@ -511,7 +514,7 @@ python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B \
   --output-length 1500 \
   --compile \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action INT8
+  --quantize-attention-action int8
 ```
 
 Suitable for answering:
@@ -532,9 +535,9 @@ python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B \
   --output-length 1500 \
   --compile \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action INT8 \
-  --ttft-limits 2000 \
-  --tpot-limits 50
+  --quantize-attention-action int8 \
+  --ttft-limit 2000 \
+  --tpot-limit 50
 ```
 
 Suitable for online service capacity evaluation:
@@ -567,7 +570,7 @@ In the Web UI, the `TP Parallel Size List` can be filled in as:
 `batch-range` supports two meanings:
 
 | Syntax | Meaning |
-|---|---|
+| --- | --- |
 | `--batch-range 256` | min defaults to 1, max is 256 |
 | `--batch-range 1 256` | min is 1, max is 256 |
 
@@ -581,9 +584,9 @@ python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B \
   --output-length 1500 \
   --compile \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action DISABLED \
+  --quantize-attention-action disabled \
   --disagg \
-  --ttft-limits 2000
+  --ttft-limit 2000
 ```
 
 This mode focuses on how many requests the Prefill stage can handle under TTFT constraints.
@@ -598,9 +601,9 @@ python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B \
   --output-length 1500 \
   --compile \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action DISABLED \
+  --quantize-attention-action disabled \
   --disagg \
-  --tpot-limits 50
+  --tpot-limit 50
 ```
 
 This mode focuses on the sustained output capability of the Decode stage under TPOT constraints.
@@ -615,12 +618,12 @@ python -m cli.inference.throughput_optimizer deepseek-ai/DeepSeek-V3.1 \
   --output-length 1500 \
   --compile \
   --quantize-linear-action W8A8_DYNAMIC \
-  --quantize-attention-action DISABLED \
+  --quantize-attention-action disabled \
   --enable-optimize-prefill-decode-ratio \
   --prefill-devices-per-instance 4 \
   --decode-devices-per-instance 2 \
-  --ttft-limits 2000 \
-  --tpot-limits 50 \
+  --ttft-limit 2000 \
+  --tpot-limit 50 \
   --log-level info
 ```
 
@@ -642,7 +645,7 @@ When `PD Ratio > 1`, the Decode side is relatively stronger, and more Prefill in
 Typical output includes:
 
 | Field | Description |
-|---|---|
+| --- | --- |
 | `Best Throughput` | Optimal token/s under the current constraints |
 | `TTFT` | Time To First Token, first-token latency |
 | `TPOT` | Time Per Output Token, per-output-token latency |
@@ -678,7 +681,7 @@ The result pane displays the following from top to bottom:
 4. **Memory distribution chart**: visual breakdown of total_device / model_weight / kv_cache / peak_usage / available.
 5. **Operator bottleneck distribution (OpBound)**: compact text showing memory bound / communication bound / compute bound proportions.
 6. **Operator timing table**: Name / total / avg / # of Calls, sorted by total latency descending, with expandable input shapes and bound analysis.
-7. **Chrome Trace downloads**: JSON download links per case / seq index (requires `--chrome-trace`).
+7. **Chrome Trace downloads**: JSON download links per case / seq index (requires `--chrome-trace-file`).
 
 If multi-value fields are configured (multiple devices, multiple quantization methods, concurrency lists, etc.), the result automatically switches to the **multi-case view**: a Summary table lists core metrics for each case; click to drill down to the full single-case result.
 
@@ -699,27 +702,32 @@ Multi-case results also show a Summary table + drill-down.
 The Optimizer displays different views depending on the deployment mode:
 
 **PD Aggregated (AggregatedView)**:
+
 - Scatter plot: Throughput vs Concurrency / TPOT, colored by parallel strategy
 - Cross-device optimal throughput comparison bar chart (for multi-device cases)
 - Sweep ranking table: rank / throughput / TTFT / TPOT / concurrency / num_devices / parallel / batch_size
 - CSV export
 
 **PD Disaggregated (DisaggregatedView)**:
+
 - Prefill table (TTFT-oriented) + Best configuration card
 - Decode table (TPOT-oriented) + Best configuration card
 - CSV export
 
 **PD Ratio (PDRatioView)**:
+
 - PD Ratio table: PD Ratio / Balanced QPS / P/D QPS / TTFT / TPOT / parallel configuration
 - Best PD ratio card
 
 **Scatter Plot (OptimizerCurves)**:
+
 - Data source: all raw exploration points (raw records), colored by parallel strategy
 - Automatically filters out-of-memory points (OOM) and duplicate rows
 - Mode-aware: 2 charts for Aggregated / 4 charts for Disaggregated / 2 charts for PD Ratio
 - Light / dark theme auto-adaptation
 
 **Multi-case View (ThroughputMultiCaseResult)**:
+
 - Summary table (one row per case: device + metrics)
 - Click to drill down to single-case full results (scatter plot + mode view)
 
@@ -728,7 +736,7 @@ The Optimizer displays different views depending on the deployment mode:
 Click the "Logs" button in the workspace or job status page to open the log drawer (JobLogDrawer):
 
 | Feature | Description |
-|---|---|
+| --- | --- |
 | Full log | Main job log (banner + all cases interleaved output) |
 | Per-case log | Independent log filtered by case (radio switch) |
 | Log search | Case-insensitive line filter (shows matching lines / total lines) |
@@ -739,7 +747,7 @@ Click the "Logs" button in the workspace or job status page to open the log draw
 Click **History** in the top navigation bar to enter the History page:
 
 | Feature | Description |
-|---|---|
+| --- | --- |
 | Job list | Table display: Job ID / Module / Label / Status / Created / Completed |
 | Status labels | Color-coded: success (green) / failed (red) / running (blue) / cancelled (yellow) |
 | Filtering | Filter by module / status; search by Job ID / label |
@@ -762,7 +770,7 @@ context-length: 4500
 decode: true
 tp-size: 8
 quantize-linear-action: W8A8_DYNAMIC
-quantize-attention-action: DISABLED
+quantize-attention-action: disabled
 ```
 
 LLM prefill initial values:
@@ -775,7 +783,7 @@ context-length: 0
 decode: false
 tp-size: 8
 quantize-linear-action: W8A8_DYNAMIC
-quantize-attention-action: INT8
+quantize-attention-action: int8
 ```
 
 Optimizer online service initial values:
@@ -814,11 +822,11 @@ It is recommended to use `[16,32,64,128]` for the first round, then perform a fi
 ### 8.4 How to Choose Quantization
 
 | Scenario | Recommendation |
-|---|---|
+| --- | --- |
 | Quick baseline | `W8A8_DYNAMIC` |
-| Do not want to introduce quantization effects | `DISABLED` |
-| Significant memory pressure | Try `INT8` attention or `FP8` |
-| MXFP4 solution evaluation | Use `MXFP4`, adjust `mxfp4-group-size` if necessary |
+| Do not want to introduce quantization effects | `disabled` |
+| Significant memory pressure | Try `int8` attention or `fp8` |
+| mxfp4 solution evaluation | Use `mxfp4`, adjust `mxfp4-group-size` if necessary |
 
 Note: The simulation tool focuses on performance and resource estimation, and does not replace real accuracy evaluation. Model quality after quantization must still be verified through accuracy testing.
 
@@ -941,5 +949,5 @@ python -m cli.inference.video_generate Wan-AI/Wan2.2-T2V-A14B-Diffusers --device
 Optimizer:
 
 ```bash
-python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B --device ATLAS_800_A2_280T_32G_PCIE --num-devices 8 --input-length 3500 --output-length 1500 --tp-sizes 1 2 4 8 --batch-range 1 256 --ttft-limits 2000 --tpot-limits 50
+python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B --device ATLAS_800_A2_280T_32G_PCIE --num-devices 8 --input-length 3500 --output-length 1500 --tp-sizes 1 2 4 8 --batch-range 1 256 --ttft-limit 2000 --tpot-limit 50
 ```

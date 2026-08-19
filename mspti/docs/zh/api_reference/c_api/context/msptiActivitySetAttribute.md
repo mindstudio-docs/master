@@ -10,12 +10,12 @@
 
 | 产品类型                                    | 是否支持 |
 | ------------------------------------------- | :------: |
-| Ascend 950 系列产品                         |    √     |
-| Atlas A3 训练系列产品/Atlas A3 推理系列产品 |    √     |
-| Atlas A2 训练系列产品/Atlas A2 推理系列产品 |    √     |
-| Atlas 200I/500 A2 推理产品                  |    √     |
-| Atlas 推理系列产品                          |    ×     |
-| Atlas 训练系列产品                          |    ×     |
+| 昇腾950PR&950DT系列产品                         |    √     |
+| 昇腾A3系列产品 |    √     |
+| 昇腾A2系列产品 |    √     |
+| 昇腾310B系列产品                  |    √     |
+| 昇腾310P系列产品                          |    ×     |
+| 昇腾910系列产品                          |    ×     |
 
 ## 功能说明<a name="section20806203412478"></a>
 
@@ -41,7 +41,7 @@ msptiResult msptiActivitySetAttribute(msptiActivityAttribute attr, size_t *value
 | 参数名 | 输入/输出 | 说明 |
 | --- | --- | --- |
 | attr | 输入 | 需要设置的Activity属性，配置为[msptiActivityAttribute](./msptiActivityAttribute.md)的枚举值。 |
-| valueSize | 输入 | 指定value缓冲区的大小，单位为Byte。值与attr对应属性所需大小不一致时，接口返回MSPTI\_ERROR\_PARAMETER\_SIZE\_NOT\_SUFFICIENT。 |
+| valueSize | 输入 | 指定value缓冲区的大小，单位为Byte。值小于attr对应属性所需大小时，接口返回MSPTI\_ERROR\_PARAMETER\_SIZE\_NOT\_SUFFICIENT。 |
 | value | 输入 | 指向待设置的属性值缓冲区，缓冲区大小由valueSize指定。 |
 
 ## 返回值说明<a name="section16621124213476"></a>

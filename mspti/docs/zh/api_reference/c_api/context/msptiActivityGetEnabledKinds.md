@@ -10,12 +10,12 @@
 
 | 产品类型                                    | 是否支持 |
 | ------------------------------------------- | :------: |
-| Ascend 950 系列产品                         |    √     |
-| Atlas A3 训练系列产品/Atlas A3 推理系列产品 |    √     |
-| Atlas A2 训练系列产品/Atlas A2 推理系列产品 |    √     |
-| Atlas 200I/500 A2 推理产品                  |    √     |
-| Atlas 推理系列产品                          |    ×     |
-| Atlas 训练系列产品                          |    ×     |
+| 昇腾950PR&950DT系列产品                         |    √     |
+| 昇腾A3系列产品 |    √     |
+| 昇腾A2系列产品 |    √     |
+| 昇腾310B系列产品                  |    √     |
+| 昇腾310P系列产品                          |    ×     |
+| 昇腾910系列产品                          |    ×     |
 
 ## 功能说明<a name="section20806203412478"></a>
 
@@ -42,4 +42,4 @@ msptiResult msptiActivityGetEnabledKinds(msptiSubscriberHandle subscriber, mspti
 
 ## 返回值说明<a name="section16621124213476"></a>
 
-返回MSPTI\_SUCCESS表示成功；enabledKindsCount为空时返回MSPTI\_ERROR\_INVALID\_PARAMETER，表示失败；buffer不为NULL且bufferSize为NULL时返回MSPTI\_ERROR\_INVALID\_PARAMETER，表示失败。
+返回MSPTI\_SUCCESS表示成功；enabledKindsCount为NULL时返回MSPTI\_ERROR\_INVALID\_PARAMETER，表示失败；buffer不为NULL且bufferSize为NULL时返回MSPTI\_ERROR\_INVALID\_PARAMETER，表示失败。
