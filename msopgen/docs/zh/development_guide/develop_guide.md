@@ -12,9 +12,10 @@
 
 ## 2. 开发环境准备
 
-按照《[msOpGen工具安装指南 安装指南 — 编译环境准备](../install_guide/msopgen_install_guide.md#231-环境准备)》章节完成编译和测试环境的搭建。
+按照《[msOpGen工具安装指南](../install_guide/msopgen_install_guide.md#231-环境准备)》编译环境准备章节完成编译和测试环境的搭建。
 
-> **说明：** 环境镜像的构建方法及配套软件版本由 MindStudio 统一镜像制作指南维护，本仓库不重复定义。
+> **说明：**
+> 环境镜像的构建方法及配套软件版本由 MindStudio 统一镜像制作指南维护，本仓库不重复定义。
 
 ## 3. 一键式构建
 
@@ -48,11 +49,11 @@ python3 build.py test
 ### 5.1 测试覆盖范围
 
 UT 测试覆盖以下核心功能：
+
 - 算子工程模板生成（`msopgen gen`）
 - 仿真流水图解析（`msopgen sim`）
 - ST 测试用例生成（`msopst create`）
 - ST 测试用例执行（`msopst run`）
-
 
 ## 6. 代码规范
 

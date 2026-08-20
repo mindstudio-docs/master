@@ -1,4 +1,4 @@
-﻿# 大模型支持矩阵
+# 大模型支持矩阵
 
 **说明：**
 
@@ -25,8 +25,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
 
 ## 大语言模型支持列表
 
-!!! info "提示"
-    下表内容较多，若显示不全，您可以**按住鼠标滚轮**或使用**底部滚动条**左右拖动查看。
+> **提示**：下表内容较多，若显示不全，您可以**按住鼠标滚轮**或使用**底部滚动条**左右拖动查看。
 
 <div class="custom-table">
 
@@ -657,7 +656,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="2"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM-5/README.md">GLM5-MOE系列</a></strong></td>
+      <td rowspan="3"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM-5/README.md">GLM5-MOE系列</a></strong></td>
       <td>GLM-5</td>
       <td>transformers==5.4.0</td>
       <td>-</td>
@@ -682,6 +681,19 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>-</td>
       <td>√</td>
+    </tr>
+    <tr>
+      <td>GLM-5.2</td>
+      <td>transformers==5.12.0</td>
+      <td>-</td>
+      <td>√(一键量化)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>√(一键量化)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
     </tr>
     <tr>
       <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM/README.md">GLM系列</a></strong></td>

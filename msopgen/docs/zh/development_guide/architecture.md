@@ -102,6 +102,7 @@ msOpGen 根据 JSON 原型定义中的算子名称、输入输出参数类型和
 ### 4.2 命名规则
 
 算子类型（OpType）与文件名、核函数名之间存在严格的转换规则：
+
 - 大驼峰（PascalCase）→ 下划线命名（snake_case）
 - 例如：`AddCustom` → `add_custom.cpp` / `add_custom`
 
