@@ -16,7 +16,7 @@ git config --global credential.helper store
 
 ### 环境准备
 
-Atlas A2 训练系列产品/Atlas A2 推理系列产品硬件环境
+昇腾A2系列产品硬件环境
 
   开始构建之前，需要确保已安装bisheng编译器，并且其可执行文件所在路径在环境变量$PATH中（如果已安装cann算子工具包，可在工具包安装路径下执行source set_env.sh）。
 

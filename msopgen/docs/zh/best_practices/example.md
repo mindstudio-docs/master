@@ -67,7 +67,8 @@
 
 2. 使用msOpGen工具执行以下命令，创建算子工程。
 
-    > [!NOTE]   
+    > [!NOTE]
+    > 
     > msOpGen工具仅生成空的算子工程模板，需要用户自行添加算子实现，具体请参见《[Ascend C算子开发指南](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/opdevg/Ascendcopdevg/atlas_ascendc_10_0059.html)》中的“算子实现\>工程化算子开发”章节。
 
     ```sh

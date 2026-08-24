@@ -67,7 +67,8 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
 
 2. Use the msOpGen tool to run the following command to generate an operator project:
 
-    > [!NOTE]NOTE  
+    > [!NOTE]
+    > 
     > The msOpGen tool generates only an empty operator project template. You need to add operators. For details, see "Operator Implementation" > "Project-based Operator Development" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/opdevg/Ascendcopdevg/atlas_ascendc_10_0059.html).
 
     ```sh

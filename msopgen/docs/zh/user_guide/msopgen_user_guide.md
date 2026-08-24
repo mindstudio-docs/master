@@ -486,7 +486,8 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     </tbody>
     </table>
 
-    > [!NOTE]  
+    > [!NOTE]
+    > 
     >- json文件可以配置多个算子，json文件为列表，列表中每一个元素为一个算子。
     >- 若input_desc或output_desc中存在相同name参数，则后一个会覆盖前一参数。
     >- input_desc，output_desc中的type需按顺序一一对应匹配，format也需按顺序一一对应匹配。
@@ -736,7 +737,8 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 
     编译成功后，会在当前目录下创建build_out目录，并在build_out目录下生成自定义算子安装包**custom\_opp\_**<target\_os\>\_<target\_architecture\>**.run**。
 
-    > [!NOTE]  
+    > [!NOTE]
+    > 
     > 注册算子类型后，框架会根据算子类型获取算子注册信息，同时在编译和运行时按照一定的规则匹配算子实现文件名称和Kernel侧核函数名称。为了保证正确匹配，算子类型、算子实现文件名称和核函数名称需要遵循如下定义规则。通常情况下，开发者只需要保证创建算子工程时原型定义json文件中算子类型op的参数值为大驼峰命名方式即可，工程创建后自动生成的代码即满足该规则。在手动编写算子原型定义和算子实现文件时需要按照如下规则定义。
     >算子类型需要采用大驼峰的命名方式，即采用大写字符区分不同的语义。
     >算子实现文件名称、核函数名称需相同，均为算子类型转换为下划线命名方式后的值。下文描述了通过算子类型转换成算子实现文件名称和核函数名称的过程：
@@ -761,13 +763,15 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 
     - 默认安装场景，不配置--install-path参数，安装成功后会将编译生成的自定义算子相关文件部署到`${INSTALL_DIR}/opp/vendors/<vendor_name>`目录。`${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。例如，若安装的Ascend-cann-toolkit软件包，安装后文件存储路径示例为：`$HOME/Ascend/cann`。
 
-        > [!NOTE]  
+        > [!NOTE]
+        > 
         > 自定义算子包默认安装路径`${INSTALL_DIR}/opp/vendors`的目录权限与CANN软件包安装用户和安装配置有关。如果因权限不足导致自定义算子包安装失败，可使用--install-path参数并配置环境变量ASCEND_CUSTOM_OPP_PATH来指定安装目录（参考[指定目录安装场景](#zh-cn_topic_0000001691887130_li1652971821912)）或者联系CANN软件包的安装用户修改vendors目录权限来解决。详细的案例请参考《Ascend C算子开发指南》中“FAQ \>[调用算子时出现无法打开config.ini的报错及算子包部署时出现权限不足报错](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/opdevg/Ascendcopdevg/atlas_ascendc_10_00003.html)”章节。
 
     - <a id="zh-cn_topic_0000001691887130_li1652971821912"></a>指定目录安装场景，配置--install-path参数，安装成功后会将编译生成的自定义算子相关文件部署到`<path>/vendors/<vendor_name>`目录，并在`<path>/vendors/<vendor_name>/bin`目录下新增set_env.bash，写入当前自定义算子包相关的环境变量。
 
-        > [!NOTE]    
-        >如果部署算子包时通过配置--install-path参数指定了算子包的安装目录，则在使用自定义算子前，需要执行`source  <path>/vendors/<vendor_name>/bin/set_env.bash`命令，set_env.bash脚本中将自定义算子包的安装路径追加到环境变量`ASCEND_CUSTOM_OPP_PATH`中，使自定义算子在当前环境中生效。
+        > [!NOTE]
+        > 
+        > 如果部署算子包时通过配置--install-path参数指定了算子包的安装目录，则在使用自定义算子前，需要执行`source  <path>/vendors/<vendor_name>/bin/set_env.bash`命令，set_env.bash脚本中将自定义算子包的安装路径追加到环境变量`ASCEND_CUSTOM_OPP_PATH`中，使自定义算子在当前环境中生效。
 
     命令执行成功后，自定义算子包中的相关文件将部署至当前环境中。
 
@@ -859,7 +863,8 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
 1. 参考[链接](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch)，在`${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch`路径下运行install.sh文件，并生成CustomOp文件夹。
 
-    > [!NOTE]  
+    > [!NOTE]
+    > 
     > 此样例工程不支持昇腾A3系列产品和昇腾910系列产品。
 
     ```sh
@@ -870,7 +875,8 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
     1. 参考[编译前准备](#section4684858183614)章节，完成编译相关配置。
     2. 在算子工程目录CustomOp下，执行如下命令，进行算子工程编译。
 
-        > [!NOTE]  
+        > [!NOTE]
+        > 
         > 若要生成算子仿真流水图，需要将当前目录下CMakePresets.json文件中CMAKE_BUILD_TYPE修改为“Debug”。
 
         编译完成后，将会在build_out目录生成.run算子包。
@@ -1365,7 +1371,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
     可以单击[链接](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom)获取文档中对应的Host侧算子实现文件add_custom.cpp进行参考。
 
-    > [!NOTE]  
+    > [!NOTE]
+    > 
     > 此样例工程不支持昇腾A3系列产品。
 
     ```text
@@ -1384,7 +1391,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     ```
 
-    > [!NOTE]  
+    > [!NOTE]
+    > 
     > 示例如下：
     > 以AddCustom算子为例，执行如下命令:
     > 
@@ -1809,7 +1817,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
             return [res, ]
         ```
 
-        > [!NOTE]  
+        > [!NOTE]
+        > 
         > 用户需根据开发的自定义算子完成算子期望数据生成函数。测试用例定义文件中的全部Input、Output、Attr的name作为算子期望数据生成函数的输入参数，若Input是可选输入，请将该输入指定默认值传参。
 
         例如，某算子输入中的x3为可选输入时，定义该算子的期望数据生成函数如下。
@@ -1848,7 +1857,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     export NPU_HOST_LIB=${INSTALL_DIR}/${arch-os}/devlib
     ```
 
-    > [!NOTE]  
+    > [!NOTE]
+    > 
     >- `${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
     >- {arch-os}中arch表示操作系统架构，os表示操作系统。
 
@@ -1861,8 +1871,9 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     - msopst.ini文件的路径为：`${INSTALL_DIR}/python/site-packages/bin/`。
     - msopst.ini文件参数说明如下表所示。
 
-        > [!NOTE]  
-        >msopst.ini文件默认使用FP16精度模式，如需使用其他精度模式需手动修改[表1 msopst.ini文件参数说明](#zh-cn_topic_0000001821790281_table17358154319919)中atc_singleop_advance_option的--precision_mode参数。
+        > [!NOTE]
+        > 
+        > msopst.ini文件默认使用FP16精度模式，如需使用其他精度模式需手动修改[表1 msopst.ini文件参数说明](#zh-cn_topic_0000001821790281_table17358154319919)中atc_singleop_advance_option的--precision_mode参数。
 
         **表 1**  msopst.ini文件参数说明
 
@@ -2037,7 +2048,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
                 msopst run -i xx/AddCustom_case_timestamp.json -soc {soc version} -out ./output -conf xx/msopst.ini
                 ```
 
-            > [!NOTE]  
+            > [!NOTE]
+            > 
             > 若执行失败，请参见以下文档进行排查：
             >- 请参见“[aclError](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/API/appdevgapi/aclcppdevg_03_1345.html)”查看aclError的含义。
             >- 请参见“[错误码参考](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/maintenref/troubleshooting/troubleshooting_0225.html)”。
@@ -2247,7 +2259,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
             export NPU_HOST_LIB=${INSTALL_DIR}/{arch-os}/devlib
             ```
 
-        > [!NOTE]  
+        > [!NOTE]
+        > 
         >- `${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
         >- {arch-os}中arch表示操作系统架构（需根据运行环境的架构选择），os表示操作系统（需根据运行环境的操作系统选择）。
 
@@ -2294,7 +2307,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
 通过指定Ascend C算子的ST测试用例定义文件（.json）和实现文件kernel_name.cpp，自动生成调用核函数的上板测试框架，进行算子的测试验证，最终查看输出结果确认算子功能是否正确。
 
-> [!NOTE]  
+> [!NOTE]
 > 
 >- 该功能仅支持昇腾310P系列产品和昇腾910系列产品，不支持昇腾A2系列产品和昇腾A3系列产品。
 >- 所有参数不支持输入addr及tiling属性。

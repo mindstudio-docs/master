@@ -48,7 +48,8 @@ rm -rf ~/ot_demo/workspace/src && mkdir -p ~/ot_demo/workspace/src && cd ~/ot_de
 
 #### 2.2.2 开发算子定义配置文件
 
-> [!NOTE]   
+> [!NOTE]
+> 
 > **知识点（可选阅读）：msOpGen输入配置文件**   
 > 自定义格式的JSON配置文件，可以简单类比理解为定义了一个C语言函数的声明，包括：函数名、入参及返回值的类型信息。
 > 比如 msopgen_demo.json 中定义了算子的名字、输入输出变量的名字、类型、数据排布格式。
@@ -113,9 +114,10 @@ rm -rf ~/ot_demo/workspace/src && mkdir -p ~/ot_demo/workspace/src && cd ~/ot_de
 msopgen gen -i msopgen_demo.json -c xxx -lan cpp -out AddCustom
 ```
 
-#### 2.2.4 查看生成的结果   
+#### 2.2.4 查看生成的结果
 
-> [!NOTE]   
+> [!NOTE]
+> 
 > **知识点（可选阅读）：关键概念**       
 > Host侧：运行于CPU的代码，负责数据预处理、任务调度及算子调用；   
 > Kernel侧：运行于NPU的代码，负责执行实际的大规模并行计算逻辑；   
@@ -142,7 +144,8 @@ AddCustom
 
 ### 2.3 实现核心逻辑
 
-> [!NOTE]    
+> [!NOTE]
+> 
 > **知识点（可选阅读）：算子核心代码文件实现原理**  
 > op_host/add_custom.cpp：实现Host侧的Tiling计算逻辑与算子原型注册；   
 > op_kernel/add_custom_tiling.h：定义Tiling分块策略的数据结构；  
@@ -493,7 +496,8 @@ bash ./build.sh
 
 **2. 部署算子**   
 
-> [!NOTE]   
+> [!NOTE]
+> 
 > **知识点（可选阅读）：什么是部署算子**  
 > 部署算子是指将算子注册到CANN框架中，本质上是将算子的二进制文件拷贝至系统公共目录，使其他程序能够通过标准接口（如CANN API或PyTorch等）
 > 自动发现并调用该算子。\*.run格式的部署包可以简单理解为一种自解压的压缩包。

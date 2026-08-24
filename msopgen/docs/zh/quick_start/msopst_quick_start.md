@@ -17,7 +17,8 @@ msOpST工具用于算子开发完成后，对算子功能进行初步测试，�
 - 安装配套版本的CANN Toolkit开发套件包和ops算子包并配置CANN环境变量，具体请参见《[CANN 软件安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1/softwareinst/instg/instg_0000.html)》。
 - 若要使用MindStudio Insight进行查看时，需要单独安装MindStudio Insight软件包，具体下载链接请参见《[MindStudio Insight工具用户指南](https://www.hiascend.com/document/detail/zh/mindstudio/82RC1/GUI_baseddevelopmenttool/msascendinsightug/Insight_userguide_0002.html)》的"安装与卸载"章节。
 
-> [!NOTE]  
+> [!NOTE]
+> 
 > 在安装昇腾AI处理器的服务器执行`npu-smi info`命令进行查询，获取**Chip Name**信息。实际配置值为AscendChip Name，例如**Chip Name**取值为xxxyy，实际配置值为Ascendxxxyy。当Ascendxxxyy为代码样例路径时，需要配置Ascendxxxyy。
 
 ## 常用命令速查
@@ -76,5 +77,6 @@ msOpST工具用于算子开发完成后，对算子功能进行初步测试，�
         - `-d, --device_id`：NPU 设备 ID，可选（默认 0）
         - `-err_thr, --error_threshold`：自定义精度标准，可选（默认 "[0.01,0.05]"）
 
-        > [!NOTE]   
+        > [!NOTE]
+        > 
         > `${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：/usr/local/Ascend/cann。
