@@ -34,7 +34,7 @@
 | --- | --- | --- | --- | --- |
 | 输入 | 浮点权重 | [Kimi-K3](https://huggingface.co/moonshotai/Kimi-K3) | 权重文件完整 | 下载完成且哈希值匹配 |
 | 交付件 | 模型适配器代码 | [`msmodelslim/model/kimi_k3/`](../../../msmodelslim/model/kimi_k3/) | 适配器需实现量化流水线所需接口 | 命令行指定 `--model_type Kimi-K3` 可命中适配器 |
-| 交付件 | 量化最佳实践 | [`lab_practice/kimi_k3/kimi_k3_w4a8.yaml`](../../../lab_practice/kimi_k3/kimi_k3_w4a8.yaml) | 遵循[量化配置协议](../user_guide/usage_quick_quantization.md#5-量化配置协议详解) | 命令行参数 `--config_path` 指定量化配置文件 |
+| 交付件 | 量化最佳实践 | [`lab_practice/kimi_k3/kimi_k3_w4a8.yaml`](../../../lab_practice/kimi_k3/kimi_k3_w4a8.yaml) | 遵循[量化配置协议](../user_guide/usage_quick_quantization.md#5-量化配置协议详解) | 命令行参数 `--config` 指定量化配置文件 |
 | 交付件 | 量化权重目录 | 命令行参数 `--save_path` 指定保存位置 | 遵循[AscendV1 格式](../knowledge_base/quantization_format/ascendv1/ascendv1_usage.md) | 量化权重精度测试达标 |
 
 ## 4. 操作步骤
@@ -121,14 +121,16 @@
 2. 执行一键量化：
 
    ```bash
-   cd ..  # 返回上级目录，msmodelslim 命令需在源码目录外执行
+   # 返回上级目录，msmodelslim 命令需在源码目录外执行
+   cd ..
+   # ${MODEL_PATH} 替换为模型路径; ${SAVE_PATH} 替换为量化权重保存路径; ${YAML_PATH} 替换为量化配置文件路径
    msmodelslim quant \
-       --model_path ${MODEL_PATH} \  # ${MODEL_PATH} 替换为模型路径
-       --save_path ${SAVE_PATH} \  # ${SAVE_PATH} 替换为量化权重保存路径
+       --model_path ${MODEL_PATH} \
+       --save_path ${SAVE_PATH} \
        --device npu --device_id 0 1 2 3 4 5 6 7 \
        --model_type Kimi-K3 \
-       --config ${YAML_PATH} \  # ${YAML_PATH} 替换为量化配置文件路径
-       --trust_remote_code True
+       --config ${YAML_PATH} \
+       --trust_remote_code true
    ```
 
 **输出**：
@@ -212,6 +214,6 @@
 
 - **适配器未生效（`--model_type` 无法识别）**：确认 [`config/config.ini`](../../../config/config.ini) 已参照[步骤 1](#步骤-1模型适配)注册 `ModelAdapterEntryPoints`，并在源代码目录重新执行 `bash install.sh` 使修改生效。
 
-## 7. [OPTIONAL] 附录
+## 7. 附录
 
 - 相关 PR：[[feature] support kimi_k3 model adapter](https://gitcode.com/Ascend/msmodelslim/pull/789)
