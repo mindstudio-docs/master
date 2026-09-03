@@ -10,7 +10,7 @@
 
 | 组件名称 | 功能描述 |
 | --- | --- |
-| **mindstudio-boost** | 亲和性调度器，提供线程绑核优化能力，通过优化CPU调度, 解决host侧性能瓶颈 |
+| **msboost** | 统一 Python Wheel，包含 `affinity_sched` 亲和性调度器与 `kaot` 自动优化工具 |
 
 ## ⚙️ 功能介绍
 
