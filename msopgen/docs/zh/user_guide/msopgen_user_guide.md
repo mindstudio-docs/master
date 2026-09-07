@@ -201,6 +201,13 @@ msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out 
 <td class="cellrowborder" valign="top" width="13.83%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001740005677_p148290452572"><a id="zh-cn_topic_0000001740005677_p148290452572"></a><a id="zh-cn_topic_0000001740005677_p148290452572"></a>否</p>
 </td>
 </tr>
+<tr id="zh-cn_topic_0000001740005677_row14828134575713"><td class="cellrowborder" valign="top" width="19.220000000000002%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001740005677_p19828445195713"><a id="zh-cn_topic_0000001740005677_p19828445195713"></a><a id="zh-cn_topic_0000001740005677_p19828445195713"></a>-h，--help</p>
+</td>
+<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001740005677_p382904515711"><a id="zh-cn_topic_0000001740005677_p382904515711"></a><a id="zh-cn_topic_0000001740005677_p382904515711"></a>输出帮助信息。</p>
+</td>
+<td class="cellrowborder" valign="top" width="13.83%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001740005677_p148290452573"><a id="zh-cn_topic_0000001740005677_p148290452573"></a><a id="zh-cn_topic_0000001740005677_p148290452573"></a>否</p>
+</td>
+</tr>
 </tbody>
 </table>
 
@@ -213,6 +220,8 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 |参数名称|参数描述|说明|
 |------|-------|-------|
 |compile|编译TBE&AI CPU算子工程时使用。|具体请参见[算子交付件独立编译](https://www.hiascend.com/document/detail/zh/mindstudio/830/ODtools/Operatordevelopmenttools/atlasopdev_10_0090.html#ZH-CN_TOPIC_0000002505040674)。|
+|-V，--version | 查询msOpGen工具的版本信息。|参数用法：`msopgen -V`。|
+| -h，--help | 输出帮助信息。| 参数用法：`msopgen -h`。|
 
 ### 使用示例<a id="ZH-CN_TOPIC_0000002539399341"></a>
 
