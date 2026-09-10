@@ -11,10 +11,10 @@
 
 ### Related Product Versions
 
-| msOpGen| CANN| Python
-|----------|-----------------|----------
-| 26.0.0 | 9.0.0 or later (recommended)| Python 3.7 or later (recommended)
-| 8.3.0 | 8.2.RC1 or later| Python 3.7 or later (recommended)
+| msOpGen| CANN| Python|
+|----------|-----------------|----------|
+| 26.0.0 | 9.0.0 or later (recommended)| Python 3.7 or later (recommended)|
+| 8.3.0 | 8.2.RC1 or later| Python 3.7 or later (recommended)|
 
 ## Version Compatibility
 
@@ -40,7 +40,7 @@ None
 
 #### 1. New Features
 
-This issue is the first official release. The following features are added:
+This version is the first official release. The following features are added:
 
 1. Output operator projects based on the operator prototype definition.
 2. Output the operator simulation pipeline file based on the dump data file generated in the performance simulation environment.

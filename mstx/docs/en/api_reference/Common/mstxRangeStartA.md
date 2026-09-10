@@ -4,7 +4,7 @@
 
 |Product|Supported|
 |--|:-:|
-|Ascend 910_95 AI Processors|√|
+|Ascend 950 products|√|
 |Atlas A3 training products/Atlas A3 inference products|√|
 |Atlas A2 training products/Atlas A2 inference products|√|
 |Atlas 200I/500 A2 inference products|√|
@@ -35,7 +35,7 @@ mstx.range_start(message, stream)
 
 |Parameter|Input/Output|Description|
 |--|--|--|
-|message|Input|message is a text marker that carries trace information.<br>Data type in C/C++: const char *.<br>In Python, message is a string. Defaults to None.<br>Length requirement for the input message string: MSPTI scenario: cannot exceed 255 bytes.<br>Non-MSPTI scenario (for example, msprof command line, Ascend PyTorch Profiler): cannot exceed 156 bytes.<br>message cannot be a null pointer.|
+|message|Input|message is a text marker that carries trace information.<br>Data type in C/C++: const char *.<br>In Python, message is a string. Defaults to None.<br>Length requirement for the input message string: MSPTI scenario: cannot exceed 255 Byte.<br>message cannot be a null pointer.|
 |stream|Input|stream indicates the thread that uses the mark.<br>Data type in C/C++: aclrtStream.<br>In Python, stream is an aclrtStream object. Defaults to None.<br>When set to nullptr, only the instantaneous event on the Host side is marked.<br>When set to a valid stream, the instantaneous events on the Host side and the corresponding Device side are marked.|
 
 **Returns<a id="zh-cn_topic_0000002016210401_section16621124213476"></a>**
@@ -58,8 +58,7 @@ If 0 is returned, it indicates failure.
     // Run op
     if
     (!opRunner.RunOp()) {
-    ERROR_LOG("Run
-    op failed");
+    ERROR_LOG("Run op failed");
     return false;
     }
     mstxRangeEnd(id);
@@ -73,7 +72,7 @@ If 0 is returned, it indicates failure.
 
     ```py
     import mstx
-    mstx.range_start("aaa")
+    mstx.range_start("aaa", None)
     print(1)
     mstx.range_end(1)
     import torch

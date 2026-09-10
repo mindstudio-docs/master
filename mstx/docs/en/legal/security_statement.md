@@ -14,15 +14,15 @@ echo 2 > /proc/sys/kernel/randomize_va_space
 
 2. If a tool depends on CANN, use the CANN package installed by the same non-privileged user. After running the `source` command, do not modify environment variables in `set_env.sh`.
 
-3. Before using any tool in this repository, you are advised to set `umask` to `0027` or a more restrictive value to ensure that generated files meet the minimum permission security requirements.
+3. Before using any tool in this repository, you are advised to set `umask` to 0027 or a more restrictive value to ensure that generated files meet the minimum permission security requirements.
 
 ## File Permission Control
 
 1. When providing input files to the tool as command inputs, it is recommended that the file owner match the process owner of the tool and that file permissions restrict write access for `group` and `others`. By default, tool files written to the drive are not writable by others. You can manually control the permissions for the generated files as needed.
 
-2. Proper permission control is essential during installation and use. For details, see the following table.
+2. Proper permission control is essential during installation and use. You are advised to set permissions by referring to the [File Permission Reference](#file-permission-reference).
 
-## File Permission Reference
+**File Permission Reference**<a id="file-permission-reference"></a>
 
 | Type                              | Maximum Linux Permission|
 | ---------------------------------- | ------------------- |
@@ -62,13 +62,15 @@ This tool supports source code compilation and installation. During compilation,
 
 2. During tool usage, no security validation is performed on user input programs. You need to ensure the security of the programs yourself.
 
+3. During operation, the tool loads `.so` files from `LD_LIBRARY_PATH`. Before using the tool, you need to ensure that the contents of the `LD_LIBRARY_PATH` environment variable are secure and trustworthy, the paths it points to do not involve symbolic links, and the permissions and owners meet security expectations and cannot be tampered with by third parties. Otherwise, there is a risk of arbitrary code injection.
+
 ## Public Network Address Statement
 
 The tool does not involve the use of public IP addresses.
 
 ## Public API Statement
 
-This project is developed in Python with source code released. It is recommended to use the public APIs specified in the documentation. Directly calling source code APIs that are not explicitly disclosed is not recommended.
+This project is developed in Python with source code released. You are advised to use the public APIs specified in the documentation. Directly calling source code APIs that are not explicitly disclosed is not recommended.
 
 ## Usage of Secure Functions
 

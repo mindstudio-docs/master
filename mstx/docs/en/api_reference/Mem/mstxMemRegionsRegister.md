@@ -4,7 +4,7 @@
 
 |Product|Supported|
 |--|:-:|
-|Ascend 910_95 AI Processors|√|
+|Ascend 950 products|√|
 |Atlas A3 training products/Atlas A3 inference products|√|
 |Atlas A2 training products/Atlas A2 inference products|√|
 |Atlas 200I/500 A2 inference products|√|
@@ -77,5 +77,5 @@ regionsDesc.regionType = MSTX_MEM_TYPE_VIRTUAL_ADDRESS;
 regionsDesc.regionCount = 1;
 regionsDesc.regionDescArray = rangesDesc;
 regionsDesc.regionHandleArrayOut = regionHandles;
-mstxMemRegionsRegister(globalDomain, regionsDesc);              // Secondary allocation registrationry Allocation Registration
+mstxMemRegionsRegister(globalDomain, &regionsDesc);              // Secondary allocation registration
 ```

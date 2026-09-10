@@ -1,34 +1,40 @@
-# msOpGen Quick Start
+# MindStudio Ops Generator Quick Start
 
 <br>
 
 ## 1. Overview
 
-msOpGen automatically generates a custom operator project during operator development, allowing users to focus on the core logic and algorithmic implementation of the operator. This eliminates time-consuming, repetitive tasks such as build and configuration, thereby significantly improving development efficiency.  
+MindStudio Ops Generator (msOpGen) automatically generates a custom operator project during operator development, allowing users to focus on the core logic and algorithmic implementation of the operator. This eliminates time-consuming, repetitive tasks such as build and configuration, thereby significantly improving development efficiency.
+
 This document demonstrates the core functions of msOpGen based on the simple addition operator developed in the introductory tutorial. It helps beginners intuitively experience the efficiency and convenience the tool brings to the operator development process.
 
-### 1.1 Recommendations
-
-This document assumes that you have completed all operations in <a href="https://gitcode.com/Ascend/msot/blob/master/docs/en/quick_start/op_tool_quick_start.md" target="_blank">Ascend Operator Development Toolchain Quick Start</a>. If you have not done so, complete that guide first for a better learning experience.
-
-### 1.2 Environment Setup
-
-Strictly follow the <a href="https://gitcode.com/Ascend/msot/blob/master/docs/en/quick_start/installation_guide.md" target="_blank">Ascend AI Operator Development Toolchain Learning Environment Installation Guide</a> to complete the environment installation and workspace configuration.
-Even if you have a similar environment, perform the steps in the guide again to ensure that all dependent components and environment variables are complete and consistent.
+This document assumes that you have completed all operations in <a href="https://gitcode.com/Ascend/msot/blob/master/docs/en/quick_start/op_tool_quick_start.md" target="_blank">Quick Start of Operator Development Toolchain</a>. If you have not done so, complete that guide first for a better learning experience.
 
 ## 2. Procedure
 
-### 2.1 [Environment] Pre-checking the Runtime Environment
+### 2.1 [Environment] Essential Environment Preparation (Mandatory Prerequisite ⚠️)
 
-#### 2.1.1 Verifying Installation of Python Dependencies
+🛑 **This section is a mandatory prerequisite step! Skipping it will cause many failures in subsequent operations.**  
+This tutorial **only supports** a standardized CANN container environment and is not compatible with bare-metal servers, virtual machines, or other non-standard container deployments.
 
-Run the following command. If `All is OK` is displayed, the required Python packages and their versions meet the specifications:
+#### 2.1.1 Installing the CANN Container Environment
 
-```shell
-python3 -c "import numpy, sympy, scipy, attrs, psutil, decorator; from packaging import version; assert version.parse(numpy.__version__) <= version.parse('1.26.4'); print('All is OK')"
+✅ **Strictly follow the guide below to complete the environment installation:**  
+👉 **<a href="https://gitcode.com/Ascend/msot/blob/master/docs/en/quick_start/installation_guide.md" target="_blank">Ascend AI Operator Development Toolchain Learning Environment Installation Guide</a>**
+
+> ⏱️ **Estimated time in an environment with external network access: about 3 minutes**  
+> After installation, you will obtain a standardized container environment preinstalled with all operator tools, sample code, and dependent libraries.
+
+#### 2.1.2 Running the Environment Self-check Script (Must Pass!)
+
+Before the following experience, **copy the entire script below** and paste it into the terminal. Continue only when all outputs are displayed as [PASS]:
+
+```bash
+# 1. Container environment check
+[ -f /.dockerenv ] && [ -n "$ASCEND_HOME_PATH" ] && [ -n "$ATB_HOME_PATH" ] && echo -e "\033[32m[PASS] CANN container environment OK \033[0m" || echo -e "\033[31m[FAIL] Non-standard container or container not entered!\033[0m"
+# 2. Sample code repository check
+[ -d ~/ot_demo/msot/example/quick_start ] && echo -e "\033[32m[PASS] Sample code repository OK\033[0m" || echo -e "\033[31m[FAIL] Code repository missing\033[0m"
 ```
-
-If an error occurs, refer to [Section 1.2](#12-environment-setup) for correct installation.
 
 ### 2.2 [Development] Building an Operator Project (msOpGen)
 
@@ -44,10 +50,10 @@ rm -rf ~/ot_demo/workspace/src && mkdir -p ~/ot_demo/workspace/src && cd ~/ot_de
 
 #### 2.2.2 Developing the Operator Definition Configuration File
 
->[!NOTE]
+> [!NOTE]
 > 
-> **(Optional) Knowledge Point: msOpGen Input Configuration File**  
-> This is a JSON configuration file in a custom format, which can be simply understood as a declaration of a C language function, including the function name, input parameters, and return value type.
+> **(Optional) Knowledge point: msOpGen input configuration file**  
+> This is a JSON configuration file in a custom format, which can be simply understood as a declaration of a C-language function, including the function name, input parameters, and return value type.
 > For example, the `msopgen_demo.json` file defines the operator name and names, types, and data layout format of input and output variables.
 > The declaration code for operator functions is automatically generated by the tool. The tool produces an empty function, including the function name, input parameters, and return value. The function body must be implemented by the user.
 
@@ -99,9 +105,9 @@ Save the following content as the `msopgen_demo.json` file:
 #### 2.2.3 Generating a Code Framework Based on Configuration
 
 **1. Obtain the chip model and concatenate the parameters.**  
-Refer to <a href="https://gitcode.com/Ascend/msot/blob/master/docs/en/quick_start/get_chip_soc_type.md" target="_blank"> Chip SoC Type Obtaining Method</a> to obtain the chip type, for example, Ascend910B4.
+Run the following command to obtain the SoC type: `python3 -c "import acl; print(acl.get_soc_name())"`.
 
-Option `-c`: chip type. The format is `aicpu`/`ai_core-{SoC_model_in_lowercase}`. Examples: `ai_core-ascend910B4` and `ai_core-ascend910_9392`.  
+Option `-c`: chip type. The format is `aicpu/ai_core-{SoC_model_in_lowercase}`. Examples: `ai_core-ascend910B4` and `ai_core-ascend910_9392`.
 
 **2. Generate an Ascend C operator project.**  
 Run the following command and replace the value of the `-c` option with the concatenated value queried in the previous step (<span style="color:#e60000;">**Note**</span>: **Ensure that the hyphen and underscore are correct. Example: ai<span style="color:#e60000;">_</span>core<span style="color:#e60000;">-</span>ascend910B4**):
@@ -124,33 +130,31 @@ The generated project structure appears large and complex, but you only need to 
 ```text
 AddCustom
 ├── build.sh                 // Entry script for the build
-├── cmake                    // Build script
-├── CMakeLists.txt           // Build script of the operator project.
-├── scripts                  // Directory of scripts used for custom operator project packing
-├── framework                // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored.
+├── CMakeLists.txt           // Build script of the operator project
+├── framework                // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored
 │   ├── CMakeLists.txt
 │   └── tf_plugin
-├── op_host                  // Implementation file on the host.
-│   ├── add_custom.cpp       // [User extension point] Content file for operator prototype registration, shape derivation, information library, and tiling implementation.
-│   ├── add_custom_tiling.h  // [User extension point] Operator tiling definition file.
+├── op_host                  // Implementation file on the host
+│   ├── add_custom.cpp       // [User extension point] Content file for operator prototype registration, shape derivation, information library, and tiling implementation
 │   └── CMakeLists.txt
 ├── op_kernel                // Implementation file on the kernel
-│   ├── add_custom.cpp       // [User extension point] Operator code implementation file.
+│   ├── add_custom.cpp       // [User extension point] Operator code implementation file
+│   ├── add_custom_tiling.h  // [User extension point] Operator tiling definition file
 │   └── CMakeLists.txt
 └── CMakePresets.json        // Build configuration item
 ```
 
 ### 2.3 Implementing the Core Logic
 
->[!NOTE]
+> [!NOTE]
 > 
 > **(Optional) Knowledge point: implementation principles of core operator code files**  
-> `op_host/add_custom_tiling.h`: defines the tiling policy.  
-> `op_host/add_custom.cpp`: implements the tiling compute logic and operator prototype registration on the host.  
-> `op_kernel/add_custom.cpp`: implements the compute logic of the addition operator on the kernel (GM → UB transfer → vector addition → UB → GM write-back).  
+> `op_host/add_custom.cpp`: Implements the tiling compute logic and operator prototype registration on the host.  
+> `op_kernel/add_custom_tiling.h`: Defines the data structure of the tiling policy.  
+> `op_kernel/add_custom.cpp`: Implements the compute logic of the addition operator on the kernel (GM → UB transfer → vector addition → UB → GM write-back).  
 > To further understand the functions and collaboration mechanisms of the preceding three files, you are advised to read <a href="https://www.hiascend.com/developer/blog/details/0239124507827469022" target="_blank">Ascend C Programming Guide</a>.
 
-#### 2.3.1 Developing op_host/add_custom_tiling.h
+#### 2.3.1 Developing `op_kernel/add_custom_tiling.h`
 
 Modify the code as follows. For details about the code implementation principles, see the code comments or read <a href="https://www.hiascend.com/developer/blog/details/0239124507827469022" target="_blank">Ascend C Programming Guide</a>.
 
@@ -170,13 +174,13 @@ Modify the code as follows. For details about the code implementation principles
 
 namespace optiling {
 
-    // Define the tiling algorithm structure, such as the total data length/TileNum. The structure is designed by developers and transferred by the framework.
-    BEGIN_TILING_DATA_DEF(TilingData) // Declare the name of the tiling structure.
-        TILING_DATA_FIELD_DEF(uint32_t, totalLength);  // Define the type and name of a structure member: total amount of data to be computed.
-        TILING_DATA_FIELD_DEF(uint32_t, tileNum);      // Define the type and name of a structure member: total number of data tiles computed on each core.
+    // Define the tiling algorithm structure, such as the total data length/TileNum. The structure is designed by developers and transferred by the framework
+    BEGIN_TILING_DATA_DEF(TilingData) // Declare the name of the tiling structure
+        TILING_DATA_FIELD_DEF(uint32_t, totalLength);  // Define the type and name of a structure member: total amount of data to be computed
+        TILING_DATA_FIELD_DEF(uint32_t, tileNum);      // Define the type and name of a structure member: total number of data tiles computed on each core
     END_TILING_DATA_DEF;
 
-    // Register the TilingData class with the corresponding AddCustom operator.
+    // Register the TilingData class with the corresponding AddCustom operator
     REGISTER_TILING_DATA_CLASS(AddCustom, TilingData)
 
   } // namespace optiling
@@ -184,7 +188,7 @@ namespace optiling {
 #endif // ADD_CUSTOM_TILING_H
 ```
 
-#### 2.3.2 Developing op_host/add_custom.cpp
+#### 2.3.2 Developing `op_host/add_custom.cpp`
 
 Open the generated `op_host/add_custom.cpp` file, locate and extract the code lines that contain `this->AICore().AddConfig`, and save them.
 
@@ -204,7 +208,7 @@ Modify the code as follows, but replace the code lines that involve `this->AICor
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#include "add_custom_tiling.h"
+#include "../op_kernel/add_custom_tiling.h"
 #include "register/op_def_registry.h"
 
 namespace optiling {
@@ -223,17 +227,17 @@ namespace optiling {
      */
     static ge::graphStatus TilingFunc(gert::TilingContext *context)
     {
-        // Step 1: Set the tiling information (total data length and number of tiles) in the context.
-        uint32_t totalLength = context->GetInputShape(0)->GetOriginShape().GetShapeSize(); // Obtain the total length of the input data.
-        const uint32_t TILE_NUM = 8;  // Each core is divided into eight tiles for computation.
+        // Step 1: Set the tiling information (total data length and number of tiles) in the context
+        uint32_t totalLength = context->GetInputShape(0)->GetOriginShape().GetShapeSize(); // Obtain the total length of the input data
+        const uint32_t TILE_NUM = 8;  // Each core is divided into eight tiles for computation
         TilingData tiling;
         tiling.set_totalLength(totalLength);
         tiling.set_tileNum(TILE_NUM);
         tiling.SaveToBuffer(context->GetRawTilingData()->GetData(), context->GetRawTilingData()->GetCapacity());
-        context->GetRawTilingData()->SetDataSize(tiling.GetDataSize()); // Save the tiling data structure to the context structure.
+        context->GetRawTilingData()->SetDataSize(tiling.GetDataSize()); // Save the tiling data structure to the context structure
 
-        // Step 2: Set the number of AI Cores used for computation in the context.
-        const uint32_t BLOCK_DIM = 8; // Use eight cores for computation.
+        // Step 2: Set the number of AI Cores used for computation in the context
+        const uint32_t BLOCK_DIM = 8; // Use eight cores for computation
         context->SetBlockDim(BLOCK_DIM);
         
         return ge::GRAPH_SUCCESS;
@@ -252,36 +256,36 @@ namespace ops {
     public:
         explicit AddCustom(const char *name) : OpDef(name)
         {
-            // Configure the first required input x. The data type is FLOAT16, and the format is ND.
+            // Configure the first required input x. The data type is FLOAT16, and the format is ND
             this->Input("x")
                 .ParamType(REQUIRED)
                 .DataType({ge::DT_FLOAT16})
                 .Format({ge::FORMAT_ND});
             
-            // Configure the second required input y. The data type is FLOAT16, and the format is ND.
+            // Configure the second required input y. The data type is FLOAT16, and the format is ND
             this->Input("y")
                 .ParamType(REQUIRED)
                 .DataType({ge::DT_FLOAT16})
                 .Format({ge::FORMAT_ND});
             
-            // Configure the required output z. The data type is FLOAT16, and the format is ND.
+            // Configure the required output z. The data type is FLOAT16, and the format is ND
             this->Output("z")
                 .ParamType(REQUIRED)
                 .DataType({ge::DT_FLOAT16})
                 .Format({ge::FORMAT_ND});
 
-            // Configure the AI Core compute unit, including the tilling policy and compatible SoC models.
+            // Configure the AI Core compute unit, including the tiling policy and compatible SoC models
             this->AICore().SetTiling(optiling::TilingFunc);
             this->AICore().AddConfig("ascend910b");
         }
     };
 
-    // Register the AddCustom operator with the operator library.
+    // Register the AddCustom operator with the operator library
     OP_ADD(AddCustom);
 } // namespace ops
 ```
 
-#### 2.3.3 Developing op_kernel/add_custom.cpp
+#### 2.3.3 Developing `op_kernel/add_custom.cpp`
 
 Modify the code as follows. For details about the code implementation principles, see the code comments or read <a href="https://www.hiascend.com/developer/blog/details/0239124507827469022" target="_blank">Ascend C Programming Guide</a>.
 
@@ -296,40 +300,40 @@ Modify the code as follows. For details about the code implementation principles
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #include "kernel_operator.h"
-constexpr int32_t BUFFER_NUM = 2; // tensor num for each queue
+constexpr int32_t BUFFER_NUM = 2; // Tensor num for each queue
 
 class KernelAdd {
 public:
     __aicore__ inline KernelAdd() {}
     /**
-     * @brief Initialization function, which is used to set the data tile length, number of tiles, global memory, and pipeline buffer.
+     * @brief Initialization function, which is used to set the data tile length, number of tiles, global memory, and pipeline buffer
      *
-     * @param x Start address of input x in the global memory.
-     * @param y Start address of input y in the global memory.
-     * @param z Start address of output z in the global memory.
-     * @param totalLength Total data length.
-     * @param tileNum Number of tiles.
+     * @param x Start address of input x in the global memory
+     * @param y Start address of input y in the global memory
+     * @param z Start address of output z in the global memory
+     * @param totalLength Total data length
+     * @param tileNum Number of tiles
      */
     __aicore__ inline void Init(GM_ADDR x, GM_ADDR y, GM_ADDR z, uint32_t totalLength, uint32_t tileNum)
     {
-        // Compute the data length to be processed by the current AI Core, evenly dividing the total length by the number of AI Cores.
+        // Compute the data length to be processed by the current AI Core, evenly dividing the total length by the number of AI Cores
         this->blockLength = totalLength / AscendC::GetBlockNum();
         this->tileNum = tileNum ? tileNum : 1;
-        // Compute the length of each tile, considering the division of BUFFER_NUM pipeline buffers.
+        // Compute the length of each tile, considering the division of BUFFER_NUM pipeline buffers
         this->tileLength = this->blockLength / this->tileNum / BUFFER_NUM;
 
-        // Set the global memory buffer and allocate the global memory area to the current AI Core.
+        // Set the global memory buffer and allocate the global memory area to the current AI Core
         xGm.SetGlobalBuffer((__gm__ DTYPE_X *)x + this->blockLength * AscendC::GetBlockIdx(), this->blockLength);
         yGm.SetGlobalBuffer((__gm__ DTYPE_Y *)y + this->blockLength * AscendC::GetBlockIdx(), this->blockLength);
         zGm.SetGlobalBuffer((__gm__ DTYPE_Z *)z + this->blockLength * AscendC::GetBlockIdx(), this->blockLength);
 
-        // Initialize the pipeline buffer and allocate memory space in the UB (local memory) for the input queues X and Y and the output queue Z.
+        // Initialize the pipeline buffer and allocate memory space in the UB (local memory) for the input queues X and Y and the output queue Z
         pipe.InitBuffer(inQueueX, BUFFER_NUM, this->tileLength * sizeof(DTYPE_X));
         pipe.InitBuffer(inQueueY, BUFFER_NUM, this->tileLength * sizeof(DTYPE_Y));
         pipe.InitBuffer(outQueueZ, BUFFER_NUM, this->tileLength * sizeof(DTYPE_Z));
     }
         /**
-         * @brief Core function for data processing, which executes the pipeline loop of data transfer, AI Core computation, and result writeback.
+         * @brief Core function for data processing, which executes the pipeline loop of data transfer, AI Core computation, and result writeback
          *
          * This function processes multiple tiles in a loop. Each loop consists of three phases:
          * 1. Call the CopyIn function to transfer data from the global memory to the UB (local memory).
@@ -337,14 +341,14 @@ public:
          * 3. Call the CopyOut function to write back the result from the UB (local memory) to the global memory.
          *
          * The number of loops is determined by the product of the member variable tileNum and the constant BUFFER_NUM.
-         *It indicates the total number of tiles to be processed.
+         * It indicates the total number of tiles to be processed.
          */
     __aicore__ inline void Process()
     {
-        // Compute the total number of pipeline loops.
+        // Compute the total number of pipeline loops
         int32_t loopCount = this->tileNum * BUFFER_NUM;
 
-        // Process each tile cyclically.
+        // Process each tile cyclically
         for (int32_t i = 0; i < loopCount; i++) {
             CopyIn(i);
             Compute(i);
@@ -354,65 +358,65 @@ public:
 
 private:
     /**
-        * @brief Transfer data tiles from the global memory to the local UB (local memory).
-        * @param progress Index of the current tile being processed, used to calculate the data offset in the global memory.
+        * @brief Transfer data tiles from the global memory to the local UB (local memory)
+        * @param progress Index of the current tile being processed, used to calculate the data offset in the global memory
         *
         * This function reads the tile specified by progress from the global memory and transfers it to the local tensor.
         * Then, the local tensor is enqueued into the corresponding input queue for subsequent AI Core computation.
         */
     __aicore__ inline void CopyIn(int32_t progress)
     {
-        // Allocate a local tensor to store the input data.
+        // Allocate a local tensor to store the input data
         AscendC::LocalTensor<DTYPE_X> xLocal = inQueueX.AllocTensor<DTYPE_X>();
         AscendC::LocalTensor<DTYPE_Y> yLocal = inQueueY.AllocTensor<DTYPE_Y>();
 
-        // Transfer data from the global memory to the local UB (local memory).
+        // Transfer data from the global memory to the local UB (local memory)
         AscendC::DataCopy(xLocal, xGm[progress * this->tileLength], this->tileLength);
         AscendC::DataCopy(yLocal, yGm[progress * this->tileLength], this->tileLength);
 
-        // Enqueue the local tensor for subsequent computation.
+        // Enqueue the local tensor for subsequent computation
         inQueueX.EnQue(xLocal);
         inQueueY.EnQue(yLocal);
     }
     /**
-        * @brief Core function for performing tensor addition computation.
-        * @param progress Flag, which is used to control the computation process.
+        * @brief Core function for performing tensor addition computation
+        * @param progress Flag, which is used to control the computation process
         *
         * This function obtains two local tensors from the input queue, performs vector addition, and stores the result in the output queue.
         * The process includes dequeuing data, allocating UB memory, performing vector addition on the AI Core, enqueuing the result, and releasing the UB memory.
         */
     __aicore__ inline void Compute(int32_t progress)
     {
-        // Obtain the first operand LocalTensor from the input queue.
+        // Obtain the first operand LocalTensor from the input queue
         AscendC::LocalTensor<DTYPE_X> xLocal = inQueueX.DeQue<DTYPE_X>();
-        // Obtain the second operand LocalTensor from the input queue.
+        // Obtain the second operand LocalTensor from the input queue
         AscendC::LocalTensor<DTYPE_Y> yLocal = inQueueY.DeQue<DTYPE_Y>();
-        // Allocate the UB memory space for the result LocalTensor from the output queue.
+        // Allocate the UB memory space for the result LocalTensor from the output queue
         AscendC::LocalTensor<DTYPE_Z> zLocal = outQueueZ.AllocTensor<DTYPE_Z>();
-        // Perform the AI Core vector addition operation: z = x + y.
+        // Perform the AI Core vector addition operation: z = x + y
         AscendC::Add(zLocal, xLocal, yLocal, this->tileLength);
-        // Store the computation result LocalTensor into the output queue.
+        // Store the computation result LocalTensor into the output queue
         outQueueZ.EnQue<DTYPE_Z>(zLocal);
-        // Free the UB memory resources of the first input LocalTensor.
+        // Free the UB memory resources of the first input LocalTensor
         inQueueX.FreeTensor(xLocal);
-        // Free the UB memory resources of the second input LocalTensor.
+        // Free the UB memory resources of the second input LocalTensor
         inQueueY.FreeTensor(yLocal);
     }
     /**
-     * @brief Write back the LocalTensor data to the output area of the global memory.
+     * @brief Write back the LocalTensor data to the output area of the global memory
      *
      * This function obtains a LocalTensor from the output queue, copies its data to a specified location in the global memory,
      * and then, frees the UB resources of the LocalTensor. This function is mainly used for outputting the results of AI Core operators.
      *
-     * @param progress Index of the current processing progress, used to calculate the target write location in the global memory.
+     * @param progress Index of the current processing progress, used to calculate the target write location in the global memory
      */
     __aicore__ inline void CopyOut(int32_t progress)
     {
-        // Obtain the LocalTensor from the output queue.
+        // Obtain the LocalTensor from the output queue
         AscendC::LocalTensor<DTYPE_Z> zLocal = outQueueZ.DeQue<DTYPE_Z>();
-        // Write back the LocalTensor data from the UB (local memory) to the global memory.
+        // Write back the LocalTensor data from the UB (local memory) to the global memory
         AscendC::DataCopy(zGm[progress * this->tileLength], zLocal, this->tileLength);
-        // Free the UB (local memory) resources of the LocalTensor.
+        // Free the UB (local memory) resources of the LocalTensor
         outQueueZ.FreeTensor(zLocal);
     }
 
@@ -429,53 +433,53 @@ private:
 };
 
 /**
- * @brief Define a custom addition kernel function to perform vector addition on the AI Core.
+ * @brief Define a custom addition kernel function to perform vector addition on the AI Core
  *
  * This function serves as the entry point for the Ascend AI Core operator, initializing the addition operation and handling tiling-based computation.
  * The function manages the collaborative processing of large-scale data across multiple AI Cores by parsing the tiling configuration.
  *
- * @param x Global memory address of input vector x.
- * @param y Global memory address of input vector y.
- * @param z Global memory address of output vector z.
- * @param workspace Memory address of the workspace, used for temporary storage (not used currently).
- * @param tiling Memory address of the tiling configuration, including the data tiling policy and scheduling parameters.
+ * @param x Global memory address of input vector x
+ * @param y Global memory address of input vector y
+ * @param z Global memory address of output vector z
+ * @param workspace Memory address of the workspace, used for temporary storage (not used currently)
+ * @param tiling Memory address of the tiling configuration, including the data tiling policy and scheduling parameters
  *
- * @note This function does not return a value. The computation result is directly written to the output address z.
+ * @note This function does not return a value. The computation result is directly written to the output address z
  */
 extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z, GM_ADDR workspace, GM_ADDR tiling)
 {
-    // Obtain the tiling configuration data.
+    // Obtain the tiling configuration data
     GET_TILING_DATA(tiling_data, tiling);
 
-    // Create and initialize the addition operator object.
+    // Create and initialize the addition operator object
     KernelAdd op;
     op.Init(x, y, z, tiling_data.totalLength, tiling_data.tileNum);
 
-    // Execute the addition computation pipeline.
+    // Execute the addition computation pipeline
     op.Process();
 }
 
 #ifndef ASCENDC_CPU_DEBUG
-// call of kernel function
+// Call of kernel function
 /**
- * @brief Start the AI Core kernel function of the custom vector addition operator.
+ * @brief Start the AI Core kernel function of the custom vector addition operator
  *
  * This function encapsulates the kernel function call on the Ascend AI Core to perform user-defined vector addition operations.
  * The tiling configuration, workspace, and device memory pointer are passed to schedule and execute the operator on the NPU.
  *
- * @param blockDim Number of AI Cores to be started this time.
- * @param l2ctrl Reserved.
- * @param stream Stream object, which is used for asynchronous task submission and execution dependency management.
- * @param x Device memory address (global memory) of input tensor x.
- * @param y Device memory address (global memory) of input tensor y.
- * @param z Device memory address (global memory) of output tensor z, which is used to store the result of x + y.
- * @param workspace Device address of the temporary workspace, which is used for intermediate computation inside the kernel function.
- * @param tiling Address of the tiling policy data structure, which defines the data tiling mode to optimize the AI Core compute throughput and memory bandwidth utilization.
+ * @param blockDim Number of AI Cores to be started this time
+ * @param l2ctrl Reserved
+ * @param stream Stream object, which is used for asynchronous task submission and execution dependency management
+ * @param x Device memory address (global memory) of input tensor x
+ * @param y Device memory address (global memory) of input tensor y
+ * @param z Device memory address (global memory) of output tensor z, which is used to store the result of x + y
+ * @param workspace Device address of the temporary workspace, which is used for intermediate computation inside the kernel function
+ * @param tiling Address of the tiling policy data structure, which defines the data tiling mode to optimize the AI Core compute throughput and memory bandwidth utilization
  */
 void add_custom_do(uint32_t blockDim, void *l2ctrl, void *stream, uint8_t *x, uint8_t *y, uint8_t *z,
                    uint8_t *workspace, uint8_t *tiling)
 {
-    // Start the AI Core to perform the custom addition operation.
+    // Start the AI Core to perform the custom addition operation
     add_custom<<<blockDim, l2ctrl, stream>>>(x, y, z, workspace, tiling);
 }
 #endif
@@ -494,11 +498,11 @@ bash ./build.sh
 
 **2. Deploy the operator.**  
 
->[!NOTE]
+> [!NOTE]
 > 
-> **(Optional) Knowledge point: What Does "Deploying the operator" Mean?**  
-> To deploy an operator means to register the operator with the CANN framework. In essence, this involves copying the operator's binary files to a system-wide public directory, enabling other programs to
-> automatically discover and invoke the operator through standard APIs (such as CANN or PyTorch APIs). A deployment package in .run format can be simply understood as a self-extracting compressed package.
+> **(Optional) Knowledge point: What does "deploying an operator" mean?**  
+> To deploy an operator means to register the operator with the CANN framework. In essence, this involves copying the binary files of the operator to a system-wide public directory, enabling other programs to
+> automatically discover and invoke the operator through standard APIs (such as CANN or PyTorch APIs). A deployment package in `.run` format can be simply understood as a self-extracting compressed package.
 
 The name of the operator deployment package varies slightly depending on the platform. Run the following script to automatically locate and execute the deployment package (in a fixed environment, this is equivalent to running a command similar to `./build_out/custom_opp_ubuntu_aarch64.run`):
 
@@ -516,15 +520,6 @@ echo "export LD_LIBRARY_PATH=${ASCEND_OPP_PATH}/vendors/customize/op_api/lib:$LD
 
 ### 2.5 Verifying the Operator Function
 
->[!CAUTION]NOTE  
->**Description of NPU device selection**  
->Run the following `run.sh` script to execute the operator. For ease of learning, assume that all NPU models in the environment are the same. The system randomly selects an idle NPU to execute the task.
->If you need to specify an NPU due to reasons such as faults on the randomly selected NPU, use the sequence number (value range: [0, Number of NPUs – 1]) based on the NPU information returned by the `npu-smi info` command as follows:
->
-> ```shell
-> bash ./run.sh 2
-> ```
-
 Execute the operator calling project to verify the operator function. (In this example, 1.0 + 2.0 is executed, and the expected result is 3.0.)
 
 ```shell
@@ -534,6 +529,16 @@ curl -fLO --retry 10 --retry-all-errors --retry-delay 3 -A "Mozilla/5.0 (Windows
 bash ./run.sh
 ```
 
+> [!NOTE]
+>
+> **NPU device selection**  
+> Run the preceding `run.sh` script to execute the operator. For ease of learning, assume that all NPU models in the environment are the same. The system randomly selects an idle NPU to execute the task.
+> If you need to specify an NPU due to reasons such as faults on the randomly selected NPU, use the sequence number (value range: [0, Number of NPUs – 1]) based on the NPU information returned by the `npu-smi info` command as follows:
+>
+> ```shell
+> bash ./run.sh 2
+> ```
+
 If the following information is displayed and the result is 3.0, the operator has been successfully loaded and the calculation is correct:
 
 ```text
@@ -542,18 +547,18 @@ result is:
 test pass
 ```
 
-If no result is returned within 30 seconds, the NPU may be busy. In this case, press Ctrl+C to stop the process and switch to another idle NPU. If an error similar to the following occurs, the possible causes are as follows: The NPU is abnormal (due to hardware faults, driver issues, etc.), the /dev/hisi_hdc device is abnormal (for example, the container fails to be mounted, the access permission is insufficient, or the device cannot be opened due to too many threads), or system resources such as memory are insufficient.  
-For details about the error code description, see [ACL Error Code Table](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/API/appdevgapi/aclcppdevg_03_1345.html).
-Rectify the NPU fault or replace the NPU with a normal one, and then continue the experience. (For details about how to specify the NPU, see the description of NPU device selection above.)
+If no result is returned within 30 seconds, the NPU may be busy. In this case, press Ctrl+C to stop the process and switch to another idle NPU. If an error similar to the following occurs, the possible causes are as follows: The NPU is abnormal (due to hardware faults, driver issues, and so on), the /dev/hisi_hdc device is abnormal (for example, the container fails to be mounted, the access permission is insufficient, or the device cannot be opened due to too many threads), or system resources such as memory are insufficient.
+
+For details about the error code description, see [ACL Error Code Table](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/API/runtimeapi/aclcppdevg_03_1345.html). Rectify the NPU fault or replace the NPU with a normal one, and then continue the experience. (For details about how to specify the NPU, see the description of NPU device selection above.)
 
 ```text
 aclrtSetDevice failed. ERROR: xxxxxx
 Init acl failed. ERROR: 1
 ```
 
-### 2.6 FAQs
+### 2.6 [FAQ] Common Error Solutions
 
-#### 2.6.1 What should I do if the following error is reported during the compilation of the operator calling program?
+#### 2.6.1 What Should I Do If the Following Error Is Reported During the Compilation of the Operator Calling Program?
 
 ```text
 -- Build files have been written to: /root/ot_demo/workspace/src/caller/build
@@ -566,5 +571,5 @@ gmake[2]: *** [CMakeFiles/execute_add_op.dir/build.make:76: CMakeFiles/execute_a
 gmake[1]: *** [CMakeFiles/Makefile2:83: CMakeFiles/execute_add_op.dir/all] Error 2
 ```
 
-**Cause:** During operator deployment, `op_api/include/aclnn_add_custom.h` is not deployed to the correct location. As a result, the header file cannot be found. The environment variable `ASCEND_CUSTOM_OPP_PATH` may be set to an incorrect value, or may contain multiple colon-separated paths. However, during deployment of header files, the copy operation only succeeds to the first path in the list; subsequent paths are not copied.  
+**Cause:** During operator deployment, `op_api/include/aclnn_add_custom.h` is not deployed to the correct location. As a result, the header file cannot be found. The environment variable `ASCEND_CUSTOM_OPP_PATH` may be set to an incorrect value, or may contain multiple colon-separated paths. However, during deployment of header files, the copy operation copies files only to the first path in the list. Subsequent paths are not copied.  
 **Solution:** Delete the environment variable, run the `unset ASCEND_CUSTOM_OPP_PATH` command, and deploy the operator again.  

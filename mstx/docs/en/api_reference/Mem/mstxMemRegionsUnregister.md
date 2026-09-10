@@ -4,7 +4,7 @@
 
 |Product|Supported|
 |--|:-:|
-|Ascend 910_95 AI Processors|√|
+|Ascend 950 products|√|
 |Atlas A3 training products/Atlas A3 inference products|√|
 |Atlas A2 training products/Atlas A2 inference products|√|
 |Atlas 200I/500 A2 inference products|√|
@@ -78,9 +78,9 @@ None
 
 **Example<a id="zh-cn_topic_0000002180600118_section377820328555"></a>**
 
-```python
-mstxMemRegionsUnregisterBatch_t refsDesc = {}
+```c
+mstxMemRegionsUnregisterBatch_t refsDesc = {};
 refsDesc.refCount = 1;
 refsDesc.refArray = regionRef;
-mstxMemRegionsUnregister(globalDomain, &refsDesc);                   // Unregister secondary allocationster Secondary Allocation
+mstxMemRegionsUnregister(globalDomain, &refsDesc);                   // Unregister secondary allocation
 ```

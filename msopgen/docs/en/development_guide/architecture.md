@@ -6,129 +6,128 @@
 
 ### 1.1 Background and Motivation
 
-Operator development involves extensive framework code (Host-side prototype registration, Tiling strategies, Kernel-side operator implementation, build configuration, etc.). Manually setting up operator projects is tedious and error-prone. msOpGen automatically generates a complete operator project framework from JSON prototype definition files, allowing developers to focus on core algorithm logic.
+Operator development involves a large amount of framework code, including host-side prototype registration, Tiling strategies, kernel-side operator implementation, and compilation configuration. Manually setting up an operator project is cumbersome and error-prone. msOpGen automatically generates a complete operator project framework from an operator prototype definition JSON file, allowing you to focus on the core algorithm logic.
 
 ### 1.2 Feature List
 
 | Type | Feature | Description |
-|-----|------|------|
-| Core | Operator Project Generation | Generates complete Ascend C/TBE/AI CPU operator projects from JSON prototypes |
-| Core | Multi-Framework Adaptation | Supports TensorFlow, PyTorch, MindSpore, ONNX frameworks and aclnn direct invocation |
-| Core | Operator Append | Supports appending new operators to existing projects (`-m 1` mode) |
-| Core | Simulation Pipeline Visualization | Parses performance simulation dump data to generate Chrome tracing views |
-| Core | Compilation & Deployment | Generates build.sh compilation scripts and .run deployment packages |
-| Support | ST Testing | msOpST tool auto-generates test cases and executes them on hardware |
-| Support | On-Board Test Framework | msOpST ascendc_test generates kernel direct-invoke test framework |
+|-----|---------|-------------|
+| Service feature | Operator project generation | Generates a complete AscendC/TBE/AI CPU operator project based on a JSON prototype definition. |
+| Service feature | Multi-framework support | Supports the TensorFlow, PyTorch, MindSpore, and ONNX frameworks. |
+| Service feature | Operator addition | Supports adding new operators to an existing operator project (`-m 1` mode). |
+| Service feature | Simulation pipeline graph parsing | Parses performance simulation dump data and generates a pipeline graph that can be viewed in Chrome tracing. |
+| Service feature | Compilation and deployment integration | Generates the `build.sh` compilation script and `.run` operator deployment package. |
+| Supporting tool | ST testing | The msOpST tool automatically generates test cases and runs them in a hardware environment. |
 
 ---
 
 ## 2 Design Goals
 
 | Design Goal | Description |
-|---------|------|
-| **Completeness** | Generated projects can be compiled and deployed directly without manual framework code |
-| **Multi-Framework Coverage** | Unified JSON interface adapts to multiple AI frameworks, reducing learning costs |
-| **Configurable Build** | Flexible configuration of build options, chip models, and distribution modes via CMakePresets.json |
-| **CLI Usability** | Clear and intuitive parameter design with sensible defaults |
+|------------|-------------|
+| **Project completeness** | The generated project can be compiled and deployed directly without manually adding framework code. |
+| **Multi-framework coverage** | A unified JSON interface supports multiple AI frameworks, reducing the learning cost. |
+| **Configurable compilation** | `CMakePresets.json` flexibly configures compilation options, chip models, and release modes. |
+| **CLI usability** | Parameters are clearly and intuitively designed, with support for default values and automatic inference. |
 
 ---
 
 ## 3 Architecture Overview
 
-### 3.1 System Architecture
+### 3.1 System Architecture Diagram
 
 ```text
 ┌──────────────────────────────────────────────┐
-│                CLI Layer                      │
-│   msopgen gen    msopgen sim    msopst        │
+│               CLI Entry Layer                │
+│   msopgen gen    msopgen sim    msopst         │
 └──────────────────┬───────────────────────────┘
                    │
 ┌──────────────────▼───────────────────────────┐
-│              Core Engine Layer                 │
+│              Core Engine Layer               │
 │  ┌──────────┐  ┌──────────┐  ┌────────────┐  │
 │  │ JSON     │  │ Template │  │ Dump       │  │
 │  │ Parser   │  │ Engine   │  │ Analyzer   │  │
 │  └──────────┘  └──────────┘  └────────────┘  │
 │  ┌──────────┐  ┌──────────────────────────┐  │
 │  │ ST Test  │  │ Project Builder          │  │
-│  │ Generator│  │ (CMake/Build Integration)│  │
+│  │ Generator│  │ (CMake/Compilation)      │  │
 │  └──────────┘  └──────────────────────────┘  │
 └──────────────────┬───────────────────────────┘
                    │
 ┌──────────────────▼───────────────────────────┐
-│                Output Layer                    │
-│  Operator project / .run package /             │
-│  trace.json / ST case.json / st_report.json   │
+│                 Output Layer                 │
+│ Operator project / .run package / trace.json │
+│  ST test case .json / st_report.json          │
 └──────────────────────────────────────────────┘
 ```
 
-### 3.2 Module Division
+### 3.2 Module Breakdown
 
-| Module | Responsibility | Input | Output |
-|------|------|------|------|
-| JSON Parser | Parse and validate operator prototype definition files | `*.json` prototype | Structured operator description |
-| Template Engine | Generate project templates from operator description and chip model | Operator description + soc_version | Complete operator project directory |
-| Dump Analyzer | Parse performance simulation dump data | Dump data files | trace.json pipeline visualization |
-| Project Builder | Generate CMakeLists.txt, CMakePresets.json, build.sh | Operator description + build options | Buildable project |
-| ST Test Generator | Parse Host-side source code to generate ST test cases | `op_host/*.cpp` | `*_case.json` |
-| ST Test Runner | Execute hardware tests and generate reports | `*_case.json` + soc | `st_report.json` |
+| Module | Responsibilities | Input | Output |
+|--------|------------------|-------|--------|
+| JSON Parser | Parses the operator prototype definition file and validates that the fields are valid. | `*.json` prototype definition | Structured operator description |
+| Template Engine | Generates a project template based on the operator description and chip model. | Operator description + `soc_version` | Complete operator project directory |
+| Dump Analyzer | Parses performance simulation dump data. | Dump data file | `trace.json` pipeline graph |
+| Project Builder | Generates `CMakeLists.txt`, `CMakePresets.json`, and `build.sh`. | Operator description + compilation options | Compilable project |
+| ST Test Generator | Parses host-side source code to generate ST test cases. | `op_host/*.cpp` | `*_case.json` |
+| ST Test Runner | Runs hardware tests and generates a report. | `*_case.json` + `soc` | `st_report.json` |
 
 ### 3.3 Data Flow
 
 ```text
-Operator JSON ──→ [JSON Parser] ──→ 算子描述结构体
-                                       │
-                                [Template Engine] ──→ 算子工程目录
-                                       │
-                                [用户编写 Kernel 实现]
-                                       │
-                              [build.sh 编译] ──→ .run 部署包
-                                       │                               
-                                [msopst create]                       
-                                       │                                     
-                                ST 用例 .json   
-                                       │                         
-                                [msopst run]                       
-                                       │                                 
-                                st_report.json                           
+Operator prototype JSON ──→ [JSON Parser] ──→ Operator description structure
+                                             │
+                                [Template Engine] ──→ Operator project directory
+                                             │
+                                [Your Kernel implementation]
+                                             │
+                              [build.sh compilation] ──→ .run deployment package
+                                             │
+                                [msopst create]
+                                             │
+                                ST test case .json
+                                [msopst run]
+                                             │
+                                st_report.json
 ```
 
 ---
 
 ## 4 Key Technical Points
 
-### 4.1 Template Substitution Mechanism
+### 4.1 Template Replacement Mechanism
 
-msOpGen uses a template engine to automatically replace placeholders in C++ source templates based on the operator name, input/output parameter types, and formats defined in the JSON prototype, generating both Host-side (prototype registration, Shape inference, Tiling, info library) and Kernel-side (operator logic) framework code.
+Based on the operator name and the types and formats of the input and output parameters in the JSON prototype definition, msOpGen uses a template engine to automatically replace placeholders in C++ source code templates and generate framework code for the host side (prototype registration, Shape inference, Tiling implementation, and information library) and the kernel side (operator computation logic).
 
 ### 4.2 Naming Rules
 
-Strict conversion rules between operator type (OpType) and file names / kernel function names:
+Strict conversion rules apply between the operator type (OpType), file names, and kernel function names:
+
 - PascalCase → snake_case
 - Example: `AddCustom` → `add_custom.cpp` / `add_custom`
 
-### 4.3 Distribution Modes
+### 4.3 Release Modes
 
-- **Source Distribution**: Retain kernel source .cpp files, supporting online compilation and ATC model conversion
-- **Binary Distribution**: Compile to .o and .json info files for direct operator binary invocation
+- **Source release**: Retains the Kernel source `.cpp` file and supports online compilation and ATC model conversion
+- **Binary release**: Compiles `.o` and `.json` information files and directly calls the operator binary
 
 ---
 
 ## 5 Directory Structure
 
 ```text
-├── example/       // Tool examples
+├── example/       // Tool example
 ├── docs/          // Project documentation
-├── msopgen/       // msopgen source code
-├── tools/msopst/  // msopst code
+├── msopgen/       // msopgen source code directory
+├── tools/msopst/  // msopst code directory
 ├── test/
 │   ├── msopgen/   // msopgen unit tests
 │   └── msopst/    // msopst unit tests
-├── output/        // WHL package output, test reports
-├── setup.py       // msopgen WHL build script
+├── output/        // WHL package output and test reports
+├── setup.py       // msopgen WHL package build script
 └── build.py       // Build entry script
 ```
 
 ## 6 msOpGen Class Diagram
 
-![image](../figures/msopgenclass.png)
+![alt text](../figures/msopgenclass.png)

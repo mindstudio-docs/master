@@ -2,48 +2,48 @@
 
 <br>
 
-## 1. Installation Overview
+## 1. Installation Description
 
-This tool is integrated into CANN. If CANN is already installed and you do not need to update this tool, you can use it directly without following this document.
+This tool has been integrated into CANN. If CANN has been installed and this tool does not need to be updated, you can directly use it without following the instructions in this document.
 
-If CANN is not installed in your environment, see [CANN Quick Installation](https://www.hiascend.com/cann/download) to install the Ascend NPU driver and CANN software (including the Toolkit and ops package), and configure the environment variables.
+If CANN has not been installed in your environment, install the Ascend NPU driver and CANN software (including the Toolkit and ops) by referring to [CANN Quick Installation](https://www.hiascend.com/en/cann/download), and configure environment variables.
 
-To upgrade the tool separately or use the latest version, you can choose one of the following installation methods: [Online Installation](#21-online-installation), [Offline Installation](#22-offline-installation), or [Source Installation](#23-source-installation).
+If you need to upgrade this tool separately or use the latest version, you can install it in any of the following ways: [Online Installation](#21-online-installation), [Offline Installation](#22-offline-installation), and [Source Installation](#23-source-installation).
 
 > [!WARNING]
 >
-> **Installation Path Risk Notice**: When installing msopgen/msopst `.whl` packages to a CANN environment directory (e.g., `$ASCEND_HOME_PATH`) or other non-isolated Python environment directories, the installation process will **clear all existing files in the `bin/` directory** under that path, retaining only the scripts from the current installation package (e.g., `msopgen`, `msopst`). This may cause the executables of other CANN tools or third-party tools in that `bin/` directory to be inadvertently deleted, affecting the normal use of other tools.
+> **Installation Path Risk**: If you install the `msopgen`/`msopst` `.whl` packages in the CANN environment directory, such as `$ASCEND_HOME_PATH`, or another directory that is not an independent Python virtual environment, the installation process deletes **all existing files** in the `bin/` directory and retains only the script files included in the current installation package, such as `msopgen` and `msopst`. This may accidentally delete the executable files of other CANN tools or third-party tools in the `bin/` directory and affect their normal use.
 >
-> **Recommendations**:
+> **Recommendation**:
 >
-> - Preferably use an isolated Python virtual environment (e.g., `conda create` or `python -m venv`) for installation.
-> - If installation to a CANN directory is unavoidable, back up the files in the `bin/` directory before installation and restore them as needed afterwards.
+> - You are advised to install the packages in an independent Python virtual environment, such as one created with `conda create` or `python -m venv`.
+> - If you must install the packages in the CANN directory, back up the files in the `bin/` directory before installation and restore them as needed after installation.
 
 ## 2. Installation Methods
 
 ### 2.1 Online Installation
 
-If your device has internet access, you can use a single command to automatically download and install the tool. Visit the MindStudio [download page](https://www.hiascend.com/developer/software/mindstudio/download) on the Ascend Community website, select the corresponding CANN version, choose "Online Installation", and follow the prompts to complete the operation.
+If your device has Internet access, you can run a single command to automatically download and install the tool. Visit the [Ascend community](https://www.hiascend.com/en/developer/software/mindstudio/download), select the target CANN version, and choose "Online" installation method. The system will guide you through the subsequent operations.
 
 ### 2.2 Offline Installation
 
-For devices in enterprise intranets or other environments without internet access, first download the complete offline installation package on a machine with internet access, then transfer it to the target device for installation. Visit the MindStudio [download page](https://www.hiascend.com/developer/software/mindstudio/download) on the Ascend Community website, select the corresponding CANN version, choose "Offline Installation", and obtain the corresponding installation package and operation instructions.
+For devices that are not connected to the Internet, such as those on an enterprise intranet, download the complete offline installation package on a device that has Internet access and then transfer the package to the target device for installation. Visit the [Ascend community](https://www.hiascend.com/en/developer/software/mindstudio/download), select the target CANN version, and choose "Offline" installation method. The system will guide you through the subsequent operations.
 
 ### 2.3 Source Installation
 
-If you need to use the latest code features or modify the source code to enhance functionality, download the repository code, compile and package the tool yourself, and complete the installation.
+To use the functions of the latest code or modify the source code to enhance functions, you can download the code from this repository, build and package the tool, and install it.
 
-#### 2.3.1 Environment Preparation
+#### 2.3.1 Preparing the Environment
 
-Follow the guide [Operator Tool Development Environment Setup Guide](https://gitcode.com/Ascend/msot/blob/26.0.0/docs/en/common/dev_env_setup.md) to configure the environment.
+Set up the environment by referring to [Operator Tool Development Environment Installation Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/dev_env_setup.md).
 
-- Clone the repository
+- Clone this repository.
 
     ```sh
     git clone https://gitcode.com/Ascend/msopgen.git
     ```
 
-- Install Python dependencies
+- Install the Python dependency.
 
     ```sh
     cd msopgen
@@ -52,18 +52,15 @@ Follow the guide [Operator Tool Development Environment Setup Guide](https://git
 
 #### 2.3.2 Installation
 
-##### 2.3.2.1 Build the Package
+##### 2.3.2.1 Building and Packaging
 
-Run the following command to generate `.whl` packages in the `output` directory, including both `mindstudio_opgen` and `mindstudio_opst`.
+After the following command is executed, the generated `.whl` packages (`mindstudio_opgen` and `mindstudio_opst`) are stored in the `output` directory.
 
 ```sh
 python build.py
 ```
 
-##### 2.3.2.2 Install the .whl Packages
-
-> [!WARNING]
-> If you use `pip install --target <CANN directory>` to install `.whl` packages to a CANN environment directory, the installation process will clear all existing files in the `bin/` directory under the target path, retaining only the scripts from the current package. It is recommended to use an isolated Python virtual environment for installation.
+##### 2.3.2.2 Installing the `.whl` Package
 
 ```sh
 cd output
@@ -71,42 +68,54 @@ pip install mindstudio_opgen-xxxxx.whl
 pip install mindstudio_opst-xxxxx.whl
 ```
 
-## 3. Uninstallation
+## 3. Installation Verification
 
-To uninstall, follow these steps:
+After the installation is complete, run the following command to check whether the tool is successfully installed:
+
+```shell
+msopgen --help
+```
+
+If no error is reported and the help information is displayed, the installation is successful.
+
+## 4. Uninstallation
+
+To uninstall the tool, perform the following steps:
 
 1. Download the script.
 
    ```bash
-   curl -O https://inst.obs.cn-north-4.myhuaweicloud.com/26.0.0/ms_install.py
+   curl -O https://inst.obs.cn-north-4.myhuaweicloud.com/26.1.0/ms_install.py
    ```
 
    > [!NOTE]
    >
-   > - An internet connection is required to download the script. If the environment does not have internet access or is offline, download the script on a machine with internet access and copy it to the target device.
-   > - If the command is unresponsive or a connection failure, SSL certificate error, or other problem occurs, see the [FAQ](https://www.hiascend.com/developer/blog/details/02176213671719317003).
+   > - Internet access is required to download the script. If your target environment is offline or does not allow Internet access, download the script on an Internet-connected device first, then copy it to the target device.
+   > - If the command does not respond, or you encounter connection failures, SSL certificate errors, or other issues, refer to the [FAQ](https://www.hiascend.com/developer/blog/details/02176213671719317003).
 
-2. Run the uninstall command.
+2. Uninstall the tool.
 
    ```bash
    python ms_install.py uninstall {tools_name}
    ```
 
-   Replace `{tools_name}` with the name of the tool you want to uninstall. You can query the tool name by running `python ms_install.py help`. Available tools are listed under the "Available Tools" field in the output.
+   Replace `{tools_name}` with the name of the tool to be uninstalled. You can run the `python ms_install.py help` command to query the tool name, which is displayed under the `Available Tools` field in the command output.
 
-   Upon successful uninstallation, the following message is displayed:
+   If the uninstallation is successful, the following information is displayed:
 
    ```text
    Successfully uninstalled 1 tool ({tools_name})
    ```
 
-## 4. Upgrade
+## 5. Upgrade
 
-Upgrade means "uninstall first, then install". Run the installation command directly. The tool will automatically uninstall the old version and guide you through the upgrade installation.
+Upgrades follow the "uninstall first, then install" process. Simply run the installation command. The tool will automatically remove the previous version and guide you through the upgrade process.
 
-## 5. Running UT and ST Test Cases
+You can run the `msopgen --version` command to view the version information of the current environment and then select the version to be upgraded. When upgrading the version, pay attention to the version mapping. For details, see [Release Notes](https://gitcode.com/Ascend/release-management/blob/master/MindStudio/master/release_notes_en.md).
 
-`3.7 <= Python version <= 3.11`. Replace `${INSTALL_DIR}` with the file storage path after the CANN software is installed. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation path is `$HOME/Ascend/cann`.
+## 6. Running UT and ST Cases
+
+`3.7 <= Python version <= 3.11`. Replace `${INSTALL_DIR}` with the path for storing the CANN installation files. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation directory is `$HOME/Ascend/cann`.
 
 ```shell
 source ${INSTALL_DIR}/set_env.sh
@@ -115,5 +124,6 @@ source ${INSTALL_DIR}/set_env.sh
 The test report is stored in the `output` directory.
 
 ```sh
+cd msopgen
 python build.py test
 ```

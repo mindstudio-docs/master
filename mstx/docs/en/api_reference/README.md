@@ -2,7 +2,7 @@
 
 This section describes the instrumentation APIs of the MindStudio Tools Extension Library (msTX). You can customize the collection period or the start and end timestamps of key functions to identify information such as key functions or iterations, enabling quick delimitation of performance and operator issues.
 
-By default, the msTX APIs have no functionality. After calling the msTX APIs in your user application, you need to enable the msTX instrumentation feature according to different scenarios, for example, configuring `--mstx=on` when collecting data using the msprof command line, configuring `ACL_PROF_MSPROFTX` when collecting data using the AscendCL API, and configuring `mstx=True` when collecting data using the Ascend PyTorch Profiler interface.
+By default, the msTX APIs have no functionality. After calling the msTX APIs in your user application, you need to enable the msTX instrumentation feature according to different scenarios, for example, configuring `--mstx=on` when collecting data using the msprof CLI, configuring `ACL_PROF_MSPROFTX` when collecting data using the AscendCL API, and configuring `mstx=True` when collecting data using the Ascend PyTorch Profiler interface.
 
 - Library file `libms_tools_ext.so` path: `${INSTALL_DIR}/lib64/`.
 - When compiling with the header file, the user program needs to link the dl library during compilation. Header file `ms_tools_ext.h` path: `${INSTALL_DIR}/include/mstx`.
@@ -28,3 +28,4 @@ Replace `${INSTALL_DIR}` with the file storage path after CANN software installa
 |[mstxMemRegionsRegister](./Mem/mstxMemRegionsRegister.md)|Registers secondary allocation of a memory pool.|
 |[mstxMemRegionsUnregister](./Mem/mstxMemRegionsUnregister.md)|Unregisters secondary allocation of a memory pool.|
 |[mstxMemHeapUnregister](./Mem/mstxMemHeapUnregister.md)|When a memory pool is unregistered, the associated regions are also unregistered.|
+|[mstxMemPermissionsAssign](./Mem/mstxMemPermissionsAssign.md)|Specify permissions for a virtual memory region.|

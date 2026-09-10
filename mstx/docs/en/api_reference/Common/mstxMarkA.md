@@ -4,7 +4,7 @@
 
 |Product|Supported|
 |--|:-:|
-|Ascend 910_95 AI Processors|√|
+|Ascend 950 products|√|
 |Atlas A3 training products/Atlas A3 inference products|√|
 |Atlas A2 training products/Atlas A2 inference products|√|
 |Atlas 200I/500 A2 inference products|√|
@@ -27,7 +27,7 @@ void mstxMarkA(const char *message, aclrtStream stream)
 
 |Parameter|Input/Output|Description|
 |--|--|--|
-|message|Input|Pointer to the string carrying information for the trace event.<br>Length requirement for the input message string: MSPTI scenario: cannot exceed 255 bytes.<br>Non-MSPTI scenario (for example, msprof command line, Ascend PyTorch Profiler): cannot exceed 156 bytes.<br>message cannot be a null pointer.|
+|message|Input|Pointer to the string carrying information for the trace event.<br>Length requirement for the input message string: MSPTI scenario: cannot exceed 255 bytes.<br>message cannot be a null pointer.|
 |stream|Input|Stream used to execute the trace task.<br>When set to nullptr, only marks the instantaneous event on the Host side.<br>When set to a valid stream, marks the instantaneous event on both the Host side and the corresponding Device side.|
 
 **Returns<a id="section16621124213476"></a>**

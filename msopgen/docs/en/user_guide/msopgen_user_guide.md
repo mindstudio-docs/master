@@ -24,29 +24,28 @@ For details, see [Figure 1 msOpGen workflow](#fig1120319585112).
 
 | Term | Description |
 |------|------|
-| Host Side | Code running on the CPU, responsible for data preprocessing, operator invocation scheduling, and Tiling computation |
-| Kernel Side | Code running on the NPU (AI Core/Vector Core), responsible for executing large-scale parallel computing |
-| Tiling | A technique for splitting large data into smaller blocks to fully utilize on-chip memory and optimize memory access |
-| GM | Global Memory, off-chip large-capacity storage on the NPU |
-| UB | Unified Buffer, on-chip fast local storage within each AI Core |
-| TQue / TPipe | Pipeline queue management objects in the Ascend C programming framework |
-| DataCopy | Ascend C data transfer API for moving data between GM and UB |
-| EnQue / DeQue | Pipeline synchronization operations for enqueuing and dequeuing data |
-| Soc Version | AI processor chip model identifier for specifying the target hardware platform |
-| aclnn | Single-operator API invocation method for Ascend C operators |
-
+| Host side | Code running on the CPU, responsible for data preprocessing, operator invocation and scheduling, and Tiling computation |
+| Kernel side | Code running on the NPU (AI Core/Vector Core), responsible for large-scale parallel computation |
+| Tiling | A technique for splitting large-scale data into small blocks for processing, to fully utilize on-chip memory and optimize memory access efficiency |
+| GM | Global Memory, the large-capacity storage outside the NPU die |
+| UB | Unified Buffer, the fast local storage inside each AI Core |
+| TQue/TPipe | Pipeline queue management objects in the Ascend C programming framework |
+| DataCopy | Ascend C data movement API for moving data between GM and UB |
+| EnQue/DeQue | Pipeline synchronization operations for enqueuing and dequeuing data |
+| Soc Version | AI processor chip model identifier used to specify the compilation target hardware platform |
+| aclnn | Single-operator API call mode of Ascend C operators |
 
 After the environment is set up according to the requirements, you can directly use msOpGen.
 
 **Environment Setup<a id="section16705155515116"></a>**
 
-Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see [CANN Software Installation Guide](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1/softwareinst/instg/instg_0000.html). No installation example is provided in this section.
+Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/softwareinst/instg/instg_0000.html?OS=openEuler&InstallType=netconda). No installation example is provided in this section.
 
 **Constraints<a id="section160697141319"></a>**
 
 - For security and least privilege purposes, you are advised to use a common user account instead of a high-permission user account (such as `root`) to run the tools in this code repository.
-- Before using the operator development tools, ensure that the running user's `umask` is `0027` or more restrictive. Failure to do so may result in excessively permissive permissions on the directories and files where profile data is stored.
-- Before using the operator development tools, ensure that the principle of least privilege is applied (for example, do not allow write access for `others` and avoid setting file permissions to `666` or `777`).
+- Before using the operator development tools, ensure that the running user's `umask` is 0027 or more restrictive. Failure to do so may result in excessively permissive permissions on the directories and files where profile data is stored.
+- Before using the operator development tools, ensure that the principle of least privilege is applied (for example, do not allow write access for `others` and avoid setting file permissions to 666 or 777).
 - You are not advised to configure or run custom scripts in directories of the `other` user to avoid privilege escalation.
 - When downloading the code sample, run the following command to specify the branch version:
 
@@ -76,7 +75,7 @@ msOpGen supports the following functions: operator project creation, operator im
 </tr>
 <tr id="zh-cn_topic_0000001691887174_row13521315132112"><td class="cellrowborder" valign="top" width="27.6%" headers="mcps1.2.3.1.1 "><p id="p648323893210"><a id="p648323893210"></a><a id="p648323893210"></a>Operator implementation (on both host and kernel)</p>
 </td>
-<td class="cellrowborder" valign="top" width="72.39999999999999%" headers="mcps1.2.3.1.2 "><p id="zh-cn_topic_0000001691887174_p25211015152117"><a id="zh-cn_topic_0000001691887174_p25211015152117"></a><a id="zh-cn_topic_0000001691887174_p25211015152117"></a><a href="#developing-an-operator">Developing an Operator</a></p
+<td class="cellrowborder" valign="top" width="72.39999999999999%" headers="mcps1.2.3.1.2 "><p id="zh-cn_topic_0000001691887174_p25211015152117"></p><a id="zh-cn_topic_0000001691887174_p25211015152117"></a><a id="zh-cn_topic_0000001691887174_p25211015152117"></a><a href="#developing-an-operator">Developing an Operator</a></p
 </td>
 </tr>
 <tr id="row333312710327"><td class="cellrowborder" valign="top" width="27.6%" headers="mcps1.2.3.1.1 "><p id="p133497193219"><a id="p133497193219"></a><a id="p133497193219"></a>Operator project build and deployment</p>
@@ -136,10 +135,9 @@ msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out 
 <tr id="zh-cn_topic_0000001740005677_row88264455577"><td class="cellrowborder" valign="top" width="19.220000000000002%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001740005677_p15826184516572"><a id="zh-cn_topic_0000001740005677_p15826184516572"></a><a id="zh-cn_topic_0000001740005677_p15826184516572"></a>-f, --framework</p>
 </td>
 <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001740005677_p48261745105714"><a id="zh-cn_topic_0000001740005677_p48261745105714"></a><a id="zh-cn_topic_0000001740005677_p48261745105714"></a>Framework type.</p>
-<a id="zh-cn_topic_0000001740005677_ul5826144515578"></a><a id="zh-cn_topic_0000001740005677_ul5826144515578"></a><ul id="zh-cn_topic_0000001740005677_ul5826144515578"><li>By default, the TensorFlow framework is used. Default value: tf or tensorflow</li><li>Caffe framework: <code>caffe</code><div class="note" id="note3645111616382"><a id="note3645111616382"></a><a id="note3645111616382"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p1364551663812"><a id="p1364551663812"></a><a id="p1364551663812"></a>Custom Ascend C operators do not support the Caffe framework.</p>
+<a id="zh-cn_topic_0000001740005677_ul5826144515578"></a><a id="zh-cn_topic_0000001740005677_ul5826144515578"></a><ul id="zh-cn_topic_0000001740005677_ul5826144515578"><li>By default, the TensorFlow framework is used. Default value: <code>tf</code> or <code>tensorflow</code></li><li>Caffe framework: <code>caffe</code><div class="note" id="note3645111616382"><a id="note3645111616382"></a><a id="note3645111616382"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p1364551663812"><a id="p1364551663812"></a><a id="p1364551663812"></a>Custom Ascend C operators do not support the Caffe framework.</p>
 </div></div>
-</li><li>PyTorch framework: pytorch</li><li>MindSpore framework: <code>ms</code>
- or <code>mindspore</code></li><li>ONNX framework: <code>onnx</code></li></ul>
+</li><li>PyTorch framework: <code>pytorch</code></li><li>MindSpore framework: <code>ms</code> or <code>mindspore</code></li><li>ONNX framework: <code>onnx</code></li><li>aclnn framework: <code>aclnn</code></li></ul>
 <div class="note" id="zh-cn_topic_0000001740005677_note75526525356"><a id="zh-cn_topic_0000001740005677_note75526525356"></a><a id="zh-cn_topic_0000001740005677_note75526525356"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="zh-cn_topic_0000001740005677_ul1483915433531"></a><a id="zh-cn_topic_0000001740005677_ul1483915433531"></a><ul id="zh-cn_topic_0000001740005677_ul1483915433531"><li>All values are case insensitive. </li><li>TBE&TIK do not support single-operator API call. By default, the TensorFlow framework is generated. </li><li>Ascend C operator projects support the TensorFlow framework, PyTorch framework, and single-operator API call. By default, the TensorFlow framework is generated. </li><li>When <code>-f aclnn</code> is used, an Ascend C operator project is generated.</li></ul>
 </div></div>
 </td>
@@ -151,8 +149,7 @@ msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out 
 <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001740005677_p885792872216"><a id="zh-cn_topic_0000001740005677_p885792872216"></a><a id="zh-cn_topic_0000001740005677_p885792872216"></a>Operator encoding language.</p>
 <a id="zh-cn_topic_0000001740005677_ul142592250248"></a><a id="zh-cn_topic_0000001740005677_ul142592250248"></a><ul id="zh-cn_topic_0000001740005677_ul142592250248"><li><code>cpp</code>: Use C/C++ for operator development based on the <span id="ph18765379559"><a id="ph18765379559"></a><a id="ph18765379559"></a>Ascend C</span> framework. </li><li><code>py</code>: Use Python for operator development based on the DSL and TIK frameworks.</li></ul>
 <p id="zh-cn_topic_0000001740005677_p1651012022614"><a id="zh-cn_topic_0000001740005677_p1651012022614"></a><a id="zh-cn_topic_0000001740005677_p1651012022614"></a>Default value: <code>py</code>.</p>
-<div class="note" id="note4520168111917"><a id="note4520168111917"></a><a id="note4520168111917"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p105204881911"><a id="p105204881911"></a><a id="p105204881911"></a><strong id="b1816821316196"><a id="b1816821316196"></a><a id="b1816821316196"></a><code>cpp</code>
-</strong> applies only to Ascend C operator development scenarios.</p>
+<div class="note" id="note4520168111917"><a id="note4520168111917"></a><a id="note4520168111917"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p105204881911"><a id="p105204881911"></a><a id="p105204881911"></a><code>cpp</code> applies only to Ascend C operator development scenarios.</p>
 </div></div>
 </td>
 <td class="cellrowborder" valign="top" width="13.83%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001740005677_p108571628192219"><a id="zh-cn_topic_0000001740005677_p108571628192219"></a><a id="zh-cn_topic_0000001740005677_p108571628192219"></a>Optional</p>
@@ -160,17 +157,16 @@ msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out 
 </tr>
 <tr id="zh-cn_topic_0000001740005677_row3827114535715"><td class="cellrowborder" valign="top" width="19.220000000000002%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001740005677_p9827945125719"><a id="zh-cn_topic_0000001740005677_p9827945125719"></a><a id="zh-cn_topic_0000001740005677_p9827945125719"></a>-c, --compute_unit</p>
 </td>
-<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001740005677_ul131481444164116"></a><a id="zh-cn_topic_0000001740005677_ul131481444164116"></a><ul id="zh-cn_topic_0000001740005677_ul131481444164116"><li>Compute resources used by the operator. <p id="zh-cn_topic_0000001740005677_p982910215314">Configuration format: <code>
-ai_core-{soc version}</code>. <code>ai_core</code> and <code>{soc version}</code> are connected by a hyphen (-).</p>
+<td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001740005677_ul131481444164116"></a><a id="zh-cn_topic_0000001740005677_ul131481444164116"></a><ul id="zh-cn_topic_0000001740005677_ul131481444164116"><li>Compute resources used by the operator. <p id="zh-cn_topic_0000001740005677_p982910215314">Configuration format: <code>ai_core-{soc version}</code>. <code>ai_core</code> and <code>{soc version}</code> are connected by a hyphen (-).</p>
 <p id="zh-cn_topic_0000001740005677_p109605188117">Select according to the actual AI processor version.</p>
 </li></ul>
 <div class="note" id="zh-cn_topic_0000001740005677_note481620356579"><a id="zh-cn_topic_0000001740005677_note481620356579"></a><a id="zh-cn_topic_0000001740005677_note481620356579"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001618617245_p15587811201611"><a id="zh-cn_topic_0000001618617245_p15587811201611"></a><a id="zh-cn_topic_0000001618617245_p15587811201611"></a>To determine the AI processor model <code>soc_version</code>, use the following method:</p>
-<a id="zh-cn_topic_0000001618617245_ul1124912113117"></a><a id="zh-cn_topic_0000001618617245_ul1124912113117"></a><ul id="zh-cn_topic_0000001618617245_ul1124912113117"><li>For servers other than<span id="zh-cn_topic_0000001740005657_ph11939124012202"><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><term id="zh-cn_topic_0000001312391781_term1253731311225"><a id="zh-cn_topic_0000001312391781_term1253731311225"></a><a id="zh-cn_topic_0000001312391781_term1253731311225"></a> the Atlas A3 training products</term>/<term id="zh-cn_topic_0000001312391781_term131434243115"><a id="zh-cn_topic_0000001312391781_term131434243115"></a><a id="zh-cn_topic_0000001312391781_term131434243115"></a>Atlas A3 inference products</term></span>: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="ph863263317817"><a id="ph863263317817"></a><a id="ph863263317817"></a><term id="zh-cn_topic_0000001312391781_term1253731311225_1"><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products</term>/<term id="zh-cn_topic_0000001312391781_term131434243115_1"><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a>Atlas A3 inference products</term></span>: Run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
-<a id="zh-cn_topic_0000001618617245_zh-cn_topic_0000001265392790_ul2747601334"></a><a id="zh-cn_topic_0000001618617245_zh-cn_topic_0000001265392790_ul2747601334"></a><ul id="zh-cn_topic_0000001618617245_zh-cn_topic_0000001265392790_ul2747601334"><li><code>id</code>: device ID, which is the NPU ID obtained by running the `npu-smi info -l` command. </li><li><code>chip_id</code>: chip ID, which is the same as the chip ID obtained by running the <code>npu-smi info -m</code> command.</li></ul>
+<a id="zh-cn_topic_0000001618617245_ul1124912113117"></a><a id="zh-cn_topic_0000001618617245_ul1124912113117"></a><ul id="zh-cn_topic_0000001618617245_ul1124912113117"><li>For servers other than<span id="zh-cn_topic_0000001740005657_ph11939124012202"><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001312391781_term1253731311225"></a><a id="zh-cn_topic_0000001312391781_term1253731311225"></a> the Atlas A3 training products/<a id="zh-cn_topic_0000001312391781_term131434243115"></a><a id="zh-cn_topic_0000001312391781_term131434243115"></a>Atlas A3 inference products</span>: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="ph863263317817"><a id="ph863263317817"></a><a id="ph863263317817"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products/<a id="zh-cn_topic_0000001312391781_term131434243115_1"></a><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a>Atlas A3 inference products</span>: Run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
+<a id="zh-cn_topic_0000001618617245_zh-cn_topic_0000001265392790_ul2747601334"></a><a id="zh-cn_topic_0000001618617245_zh-cn_topic_0000001265392790_ul2747601334"></a><ul id="zh-cn_topic_0000001618617245_zh-cn_topic_0000001265392790_ul2747601334"><li><code>id</code>: device ID, which is the NPU ID obtained by running the <code>npu-smi info -l</code> command. </li><li><code>chip_id</code>: chip ID, which is the same as the chip ID obtained by running the <code>npu-smi info -m</code> command.</li></ul>
 </li></ul>
 <p id="zh-cn_topic_0000001618617245_p127461720132915"><a id="zh-cn_topic_0000001618617245_p127461720132915"></a><a id="zh-cn_topic_0000001618617245_p127461720132915"></a>Basic functions (operator development, build, and deployment based on the project) are applicable across operator projects created based on AI processor models from the same series.</p>
 </div></div>
-<a id="zh-cn_topic_0000001740005677_ul372116472414"></a><a id="zh-cn_topic_0000001740005677_ul372116472414"></a><ul id="zh-cn_topic_0000001740005677_ul372116472414"><li>For AI CPU operators, set this parameter to <code>aicpu</code>. <div class="note" id="zh-cn_topic_0000001740005677_note17277141815425"><a id="zh-cn_topic_0000001740005677_note17277141815425"></a><a id="zh-cn_topic_0000001740005677_note17277141815425"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001740005677_p846511345444"><a id="zh-cn_topic_0000001740005677_p846511345444"></a><a id="zh-cn_topic_0000001740005677_p846511345444"></a><span id="zh-cn_topic_0000001740005677_ph13754548217"><a id="zh-cn_topic_0000001740005677_ph13754548217"></a><a id="zh-cn_topic_0000001740005677_ph13754548217"></a><term id="zh-cn_topic_0000001312391781_term1253731311225_2"><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a>For the Atlas A3 training products</term>/<term id="zh-cn_topic_0000001312391781_term131434243115_2"><a id="zh-cn_topic_0000001312391781_term131434243115_2"></a><a id="zh-cn_topic_0000001312391781_term131434243115_2"></a>Atlas A3 inference products</term></span>: Do not use the following compile options during compilation. Failure to comply may result in system malfunction.</p>
+<a id="zh-cn_topic_0000001740005677_ul372116472414"></a><a id="zh-cn_topic_0000001740005677_ul372116472414"></a><ul id="zh-cn_topic_0000001740005677_ul372116472414"><li>For AI CPU operators, set this parameter to <code>aicpu</code>. <div class="note" id="zh-cn_topic_0000001740005677_note17277141815425"><a id="zh-cn_topic_0000001740005677_note17277141815425"></a><a id="zh-cn_topic_0000001740005677_note17277141815425"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001740005677_p846511345444"><a id="zh-cn_topic_0000001740005677_p846511345444"></a><a id="zh-cn_topic_0000001740005677_p846511345444"></a><span id="zh-cn_topic_0000001740005677_ph13754548217"><a id="zh-cn_topic_0000001740005677_ph13754548217"></a><a id="zh-cn_topic_0000001740005677_ph13754548217"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a>For the Atlas A3 training products/<a id="zh-cn_topic_0000001312391781_term131434243115_2"></a><a id="zh-cn_topic_0000001312391781_term131434243115_2"></a>Atlas A3 inference products</span>: Do not use the following compile options during compilation. Failure to comply may result in system malfunction.</p>
 <a id="zh-cn_topic_0000001740005677_ul2040191714542"></a><a id="zh-cn_topic_0000001740005677_ul2040191714542"></a><ul id="zh-cn_topic_0000001740005677_ul2040191714542"><li>-march=armv8-a+lse</li><li>-march=armv8.1-a</li><li>-march=armv8.2-a</li><li>-march=armv8.3-a</li></ul>
 </div></div>
 </li></ul>
@@ -216,7 +212,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
 
 |Parameter|Description|Remarks|
 |------|-------|-------|
-|compile|Used when building a TBE&AI CPU operator project.|For details, see [Independent Compilation of Operator Deliverables](https://www.hiascend.com/document/detail/zh/mindstudio/830/ODtools/Operatordevelopmenttools/atlasopdev_10_0090.html#ZH-CN_TOPIC_0000002505040674).|
+|compile|Used when building a TBE&AI CPU operator project.|For details, see [Independent Building of Operator Deliverables](https://www.hiascend.com/document/detail/en/mindstudio/830/optools/Operatordevelopmenttools/atlasopdev_10_0090.html).|
 
 ### Example <a id="ZH-CN_TOPIC_0000002539399341"></a>
 
@@ -224,7 +220,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
 
 1. <a id="zh-cn_topic_0000001740005677_zh-cn_topic_0000001502825998_li1426528194416"></a>Compile the prototype definition JSON file of the operator to generate the operator development project. For details about the parameters in the JSON file, see [Table 1 Parameters in the JSON file](#Parameters_in_the_JSON_file).
 
-    For example, the JSON file of the AddCustom operator is named `add\_custom.json`, and the file content is as follows:
+    For example, the JSON file of the AddCustom operator is named `add_custom.json`, and the file content is as follows:
 
     ```json
     [
@@ -280,7 +276,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     ]
     ```
 
-    For example, the JSON file of the ReduceMaxCustom operator (including attributes) is named `reduce\_max\_custom.json`, and the file content is as follows:
+    For example, the JSON file of the ReduceMaxCustom operator (including attributes) is named `reduce_max_custom.json`, and the file content is as follows:
 
     ```json
     [
@@ -392,7 +388,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     </td>
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.2 "><p id="p132471493320"><a id="p132471493320"></a><a id="p132471493320"></a>Type of the operator parameter.</p>
     <a id="ul2066691961715"></a><a id="ul2066691961715"></a><ul id="ul2066691961715"><li><span id="ph1189182417255"><a id="ph1189182417255"></a><a id="ph1189182417255"></a>Ascend C or TBE operator: float, half, float16 (fp16), float32 (fp32), int8, int16, int32, int64, uint8, uint16, uint32, uint64, qint8, qint16, qint32, quint8, quint16, quint32, bool, double, string, resource, complex64, complex128, bf16, numbertype, realnumbertype, quantizedtype, all, BasicType, IndexNumberType, and bfloat16. </span></li><li><span id="ph51382781714"><a id="ph51382781714"></a><a id="ph51382781714"></a>MindSpore data: None_None, BOOL_None, BOOL_Default, BOOL_5HD, BOOL_FracZ, BOOL_FracNZ, BOOL_C1HWNCoC0, BOOL_NCHW, BOOL_NHWC, BOOL_NDHWC, I8_None, I8_Default, I8_5HD, I8_FracZ, I8_FracNZ, I8_C1HWNCoC0, I8_NCHW, I8_NHWC, I8_HWCN, I8_NDHWC, U8_None, U8_Default, U8_5HD, U8_FracZ, U8_FracNZ, U8_C1HWNCoC0, U8_NCHW, U8_NHWC, U8_HWCN, U8_NDHWC, I16_None, I16_Default, I16_5HD, I16_FracZ, I16_FracNZ, I16_C1HWNCoC0, I16_NCHW, I16_NHWC, I16_HWCN, I16_NDHWC, U16_None, U16_Default, U16_5HD, U16_FracZ, U16_FracNZ, U16_C1HWNCoC0, U16_NCHW, U16_NHWC, U16_HWCN, U16_NDHWC, I32_None, I32_Default, I32_5HD, I32_FracZ, I32_FracNZ, I32_C1HWNCoC0, I32_NCHW, I32_NHWC, I32_HWCN, I32_NDHWC, U32_None, U32_Default, U32_5HD, U32_FracZ, U32_FracNZ, U32_C1HWNCoC0, U32_NCHW, U32_NHWC, U32_HWCN, U32_NDHWC, I64_None, I64_Default, I64_5HD, I64_FracZ, I64_FracNZ, I64_C1HWNCoC0, I64_NCHW, I64_NHWC, I64_HWCN, I64_NDHWC, U64_None, U64_Default, U64_5HD, U64_FracZ, U64_FracNZ, U64_C1HWNCoC0, U64_NCHW, U64_NHWC, U64_HWCN, U64_NDHWC, F16_None, F16_Default, F16_5HD, F16_FracZ, F16_FracNZ, F16_C1HWNCoC0, F16_NCHW, F16_NHWC, F16_HWCN, F16_NDHWCi, F16_FracZNLSTM, F32_None, F32_Default, F32_5HD, F32_FracZ, F32_FracNZ, F32_C1HWNCoC0, F32_NCHW, F32_NHWC, F32_HWCN, F32_NDHWC, F32_FracZNLSTM, F64_None, F64_Default, F64_5HD, F64_FracZ, F64_FracNZ, F64_C1HWNCoC0, F64_NCHW, F64_NHWC, F64_HWCN, and F64_NDHWC.</span></li></ul>
-    <div class="note" id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"><a id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"></a><a id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul54891820181216"></a><a id="ul54891820181216"></a><ul id="ul54891820181216"><li>Different compute operations support different data types. For details, see <a href="https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/API/ascendcopapi/atlasascendc_api_07_0003.html" target="_blank" rel="noopener noreferrer">Ascend C Operator Development APIs</a>. </li><li><span id="ph1183323441317"><a id="ph1183323441317"></a><a id="ph1183323441317"></a><code>format</code> must match <code>type</code>. If one field is only populated with a unique value, msOpGen automatically scales that value to match the length of the other fully-populated field. For example, if you set <code>format:["ND"]</code> and <code>type:["fp16","float","int32"]</code>, msOpGen automatically scales the unique value (<code>ND</code>) of <code>format</code> to match the length of the <code>type</code> parameter, resulting in the configuration <code>format:["ND","ND","ND"]</code> and <code>type:["fp16","float","int32"]</code>.</span></li></ul>
+    <div class="note" id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"><a id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"></a><a id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul54891820181216"></a><a id="ul54891820181216"></a><ul id="ul54891820181216"><li>Different compute operations support different data types. For details, see <a href="https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/API/ascendcopapi/docs/api/api_list.md" target="_blank" rel="noopener noreferrer">Ascend C Operator Development APIs</a>. </li><li><span id="ph1183323441317"><a id="ph1183323441317"></a><a id="ph1183323441317"></a><code>format</code> must match <code>type</code>. If one field is only populated with a unique value, msOpGen automatically scales that value to match the length of the other fully-populated field. For example, if you set <code>format:["ND"]</code> and <code>type:["fp16","float","int32"]</code>, msOpGen automatically scales the unique value (<code>ND</code>) of <code>format</code> to match the length of the <code>type</code> parameter, resulting in the configuration <code>format:["ND","ND","ND"]</code> and <code>type:["fp16","float","int32"]</code>.</span></li></ul>
     </div></div>
     </td>
     </tr>
@@ -440,7 +436,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     </td>
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.2 "><p id="zh-cn_topic_0000001740005677_p98712521657"><a id="zh-cn_topic_0000001740005677_p98712521657"></a><a id="zh-cn_topic_0000001740005677_p98712521657"></a>Type of the operator parameter.</p>
     <a id="ul17864151012187"></a><a id="ul17864151012187"></a><ul id="ul17864151012187"><li><span id="ph15518186114510"><a id="ph15518186114510"></a><a id="ph15518186114510"></a>Ascend C or TBE operator: float, half, float16 (fp16), float32 (fp32), int8, int16, int32, int64, uint8, uint16, uint32, uint64, qint8, qint16, qint32, quint8, quint16, quint32, bool, double, string, resource, complex64, complex128, bf16, numbertype, realnumbertype, quantizedtype, all, BasicType, IndexNumberType, and bfloat16. </span></li><li><span id="ph192021333111720"><a id="ph192021333111720"></a><a id="ph192021333111720"></a>MindSpore data: None_None, BOOL_None, BOOL_Default, BOOL_5HD, BOOL_FracZ, BOOL_FracNZ, BOOL_C1HWNCoC0, BOOL_NCHW, BOOL_NHWC, BOOL_NDHWC, I8_None, I8_Default, I8_5HD, I8_FracZ, I8_FracNZ, I8_C1HWNCoC0, I8_NCHW, I8_NHWC, I8_HWCN, I8_NDHWC, U8_None, U8_Default, U8_5HD, U8_FracZ, U8_FracNZ, U8_C1HWNCoC0, U8_NCHW, U8_NHWC, U8_HWCN, U8_NDHWC, I16_None, I16_Default, I16_5HD, I16_FracZ, I16_FracNZ, I16_C1HWNCoC0, I16_NCHW, I16_NHWC, I16_HWCN, I16_NDHWC, U16_None, U16_Default, U16_5HD, U16_FracZ, U16_FracNZ, U16_C1HWNCoC0, U16_NCHW, U16_NHWC, U16_HWCN, U16_NDHWC, I32_None, I32_Default, I32_5HD, I32_FracZ, I32_FracNZ, I32_C1HWNCoC0, I32_NCHW, I32_NHWC, I32_HWCN, I32_NDHWC, U32_None, U32_Default, U32_5HD, U32_FracZ, U32_FracNZ, U32_C1HWNCoC0, U32_NCHW, U32_NHWC, U32_HWCN, U32_NDHWC, I64_None, I64_Default, I64_5HD, I64_FracZ, I64_FracNZ, I64_C1HWNCoC0, I64_NCHW, I64_NHWC, I64_HWCN, I64_NDHWC, U64_None, U64_Default, U64_5HD, U64_FracZ, U64_FracNZ, U64_C1HWNCoC0, U64_NCHW, U64_NHWC, U64_HWCN, U64_NDHWC, F16_None, F16_Default, F16_5HD, F16_FracZ, F16_FracNZ, F16_C1HWNCoC0, F16_NCHW, F16_NHWC, F16_HWCN, F16_NDHWCi, F16_FracZNLSTM, F32_None, F32_Default, F32_5HD, F32_FracZ, F32_FracNZ, F32_C1HWNCoC0, F32_NCHW, F32_NHWC, F32_HWCN, F32_NDHWC, F32_FracZNLSTM, F64_None, F64_Default, F64_5HD, F64_FracZ, F64_FracNZ, F64_C1HWNCoC0, F64_NCHW, F64_NHWC, F64_HWCN, and F64_NDHWC.</span></li></ul>
-    <div class="note" id="zh-cn_topic_0000001740005677_note1311920126217"><a id="zh-cn_topic_0000001740005677_note1311920126217"></a><a id="zh-cn_topic_0000001740005677_note1311920126217"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul135819481168"></a><a id="ul135819481168"></a><ul id="ul135819481168"><li>Different compute operations support different data types. For details, see <a href="https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/API/ascendcopapi/atlasascendc_api_07_0003.html" target="_blank" rel="noopener noreferrer">Ascend C Operator Development APIs</a>. </li><li><span id="ph52588526169"><a id="ph52588526169"></a><a id="ph52588526169"></a><code>format</code> must match <code>type</code>. If one field is only populated with a unique value, msOpGen automatically scales that value to match the length of the other fully-populated field. For example, if you set <code>format:["ND"]</code> and <code>type:["fp16","float","int32"]</code>, msOpGen automatically scales the unique value (<code>ND</code>) of <code>format</code> to match the length of the <code>type</code> parameter, resulting in the configuration <code>format:["ND","ND","ND"]</code> and <code>type:["fp16","float","int32"]</code>.</span></li></ul>
+    <div class="note" id="zh-cn_topic_0000001740005677_note1311920126217"><a id="zh-cn_topic_0000001740005677_note1311920126217"></a><a id="zh-cn_topic_0000001740005677_note1311920126217"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul135819481168"></a><a id="ul135819481168"></a><ul id="ul135819481168"><li>Different compute operations support different data types. For details, see <a href="https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/API/ascendcopapi/docs/api/api_list.md" target="_blank" rel="noopener noreferrer">Ascend C Operator Development APIs</a>. </li><li><span id="ph52588526169"><a id="ph52588526169"></a><a id="ph52588526169"></a><code>format</code> must match <code>type</code>. If one field is only populated with a unique value, msOpGen automatically scales that value to match the length of the other fully-populated field. For example, if you set <code>format:["ND"]</code> and <code>type:["fp16","float","int32"]</code>, msOpGen automatically scales the unique value (<code>ND</code>) of <code>format</code> to match the length of the <code>type</code> parameter, resulting in the configuration <code>format:["ND","ND","ND"]</code> and <code>type:["fp16","float","int32"]</code>.</span></li></ul>
     </div></div>
     </td>
     </tr>
@@ -477,7 +473,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     </td>
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.2 "><p id="zh-cn_topic_0000001740005677_p3994193815913"><a id="zh-cn_topic_0000001740005677_p3994193815913"></a><a id="zh-cn_topic_0000001740005677_p3994193815913"></a>Type of the operator parameter.</p>
     <p id="zh-cn_topic_0000001740005677_p15994133815914"><a id="zh-cn_topic_0000001740005677_p15994133815914"></a><a id="zh-cn_topic_0000001740005677_p15994133815914"></a>Values:</p>
-    <p id="p973243181319"><a id="p973243181319"></a><a id="p973243181319"></a>int, bool, float, string, list_int, list_float, list_bool, and list_list_int. For more details, see "Host APIs" > "Prototype Registration and Management" > "OpAttrDef" > "OpAttrDef" in <a href="https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/API/ascendcopapi/atlasascendc_api_07_0003.html" target="_blank" rel="noopener noreferrer">Ascend C Operator Development APIs</a>.</p>
+    <p id="p973243181319"><a id="p973243181319"></a><a id="p973243181319"></a>int, bool, float, string, list_int, list_float, list_bool, and list_list_int. For more details, see "Host APIs" > "Prototype Registration and Management" > "OpAttrDef" > "OpAttrDef" in <a href="https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/API/ascendcopapi/docs/api/api_list.md" target="_blank" rel="noopener noreferrer">Ascend C Operator Development APIs</a>.</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001740005677_row342716133411"><td class="cellrowborder" valign="top" headers="mcps1.2.6.1.1 "><p id="zh-cn_topic_0000001740005677_p994511381038"><a id="zh-cn_topic_0000001740005677_p994511381038"></a><a id="zh-cn_topic_0000001740005677_p994511381038"></a>default_value</p>
@@ -490,10 +486,11 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     </tbody>
     </table>
 
-    > [!NOTE]NOTE 
+    > [!NOTE]
+    > 
     >- Multiple operators can be configured in a JSON file, which contains a list, with each element representing an operator.
-    >- If the `input\_desc` or `output\_desc` parameter has the same `name`, the latter parameter overwrites the previous one.
-    >- The `type` and `format` fields in `input\_desc` and `output\_desc` must be matched in sequence.
+    >- If the `input_desc` or `output_desc` parameter has the same `name`, the latter parameter overwrites the previous one.
+    >- The `type` and `format` fields in `input_desc` and `output_desc` must be matched in sequence.
     >   For example, `type` of the first input x is set to `["int8","int32"]`, `type` of the second input y is set to `["fp16","fp32"]`, and `type` of the output z is set to `["int32","int64"]`. The operator supports the inputs `("int8","fp16")` to generate `int32` or the inputs `("int32","fp32")` to generate `int64`. That is, the `type` fields of inputs are vertically mapped to the `type` field of the output, and cannot overlap.
     >- The `type` and `format` fields in `input_desc` and `output_desc` must be matched in sequence, and the number of types must be the same as the number of formats. If the value of `type` is one of the followings (`numbertype`, `realnumbertype`, `quantizedtype`, `BasicType`, `IndexNumberType`, or `all`), check whether the number of types is the same as the number of formats. If they are different, an error message will be displayed when you create a project. In addition, the formats will be supplemented based on the number of types, and the operator project will continue to be generated. If the value of `type` is `int32` and the `type` and `format` items cannot match, an error message is displayed during project generation, which interrupts project running.
     >- The JSON file can be used to configure operator attributes. For details, see [compiling the prototype definition file](#zh-cn_topic_0000001740005677_zh-cn_topic_0000001502825998_li1426528194416).
@@ -514,14 +511,14 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     ├── build.sh         // Compilation entry script
     ├── CMakeLists.txt   // CMakeLists.txt script of the operator project
     ├── CMakePresets.json // Compilation configuration items
-    ├── framework        // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored.
-    ├── op_host                      // Implementation file on the host.
-    │   ├── add_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation.
+    ├── framework        // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored
+    ├── op_host                      // Implementation file on the host
+    │   ├── add_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation
     │   ├── CMakeLists.txt
     ├── op_kernel                   // Implementation file on the kernel
     │   ├── CMakeLists.txt   
     │   ├── add_custom.cpp        // Operator implementation file
-    │   ├── add_custom_tiling.h    // Operator tiling definition file.
+    │   ├── add_custom_tiling.h    // Operator tiling definition file
     ```
 
 4. Add an operator to an existing operator project. To add more custom operators to an existing operator project, include the `-m 1` option in the command line.
@@ -530,8 +527,8 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     msopgen gen -i json_path/*.json -f tf -c ai_core-{Soc Version} -out ./output_data -m 1
     ```
 
-    - -`i`: specifies the path of the operator prototype definition file `add_custom.json`.
-    - -`c`: The value of `{Soc Version}` is the model of the AI processor.
+    - `-i`: specifies the path of the operator prototype definition file `add_custom.json`.
+    - `-c`: The value of `{Soc Version}` is the model of the AI processor.
 
     The operator is added to the `*.json` file in the operator project directory. Only operators based on the MindSpore framework can be added to the MindSpore operator project.
 
@@ -541,7 +538,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
 
 **Procedure<a id="section7309175019420"></a>**
 
-1. Complete operator development and adaptation, including the development of the operator kernel function and tiling implementation. For details, see "Project-based Operator Development" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/zh/canncommercial/850/opdevg/Ascendcopdevg/atlas_ascendc_10_0059.html).
+1. Complete operator development and adaptation, including the development of the operator kernel function and tiling implementation. For details, see "Project-based Operator Development" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_10_0059.html).
 2. Refer to [AddCustom documentation](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom) to complete the implementation of `op_host/add_custom_tiling.h`, `op_host/add_custom.cpp`, and `op_kernel/add_custom.cpp`.
 3. After the operator is implemented, [build and deploy the operator](#building-and-deploying-an-operator).
 
@@ -561,7 +558,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
 
 **Build Process <a id="section06811210114115"></a>**
 
-After the operator kernel and host are developed, build the operator project to generate a custom operator installation package (.run). For details about the build process, see [Operator project build process](#zh-cn_topic_0000001691887130_fig11482161513267).
+After the operator kernel and host are developed, build the operator project to generate a custom operator installation package (`.run`). For details about the build process, see [Operator project build process](#zh-cn_topic_0000001691887130_fig11482161513267).
 
 **Figure 1** Operator project build process <a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>  
 ![](../figures/operator_project_build_process.png "Operator project build process")
@@ -618,11 +615,11 @@ After the operator kernel and host are developed, build the operator project to 
                         "type": "PATH",
                         "value": "${sourceDir}/build_out"
                     },
-                    "ENABLE_CROSS_COMPILE": {      // Enable cross compilation. Configure it based on the actual environment.
+                    "ENABLE_CROSS_COMPILE": {      /* Enable cross compilation. Configure it based on the actual environment */
                         "type": "BOOL",
                         "value": "False"
                     },
-                    "CMAKE_CROSS_PLATFORM_COMPILER": {     // Relace it with the actual path after the cross compilation tool is installed.
+                    "CMAKE_CROSS_PLATFORM_COMPILER": {     /* Replace it with the actual path after the cross compilation tool is installed */
                         "type": "PATH",
                         "value": "/usr/bin/aarch64-linux-gnu-g++"
                     },
@@ -683,7 +680,7 @@ After the operator kernel and host are developed, build the operator project to 
 
     Modify the `CMakeLists.txt` file in the `op_kernel` directory of the operator project and use `add_ops_compile_options` to add compile options.
 
-    ```tex
+    ```cmake
     add_ops_compile_options(OpType COMPUTE_UNIT soc_version1 soc_version2 ... OPTIONS option1 option2 ...)
     ```
 
@@ -711,7 +708,7 @@ After the operator kernel and host are developed, build the operator project to 
     </td>
     <td class="cellrowborder" valign="top" width="69.54695469546954%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001691887130_p3106516163017"><a id="zh-cn_topic_0000001691887130_p3106516163017"></a><a id="zh-cn_topic_0000001691887130_p3106516163017"></a>AI processor models on which the compile options take effect. Separate multiple models by spaces. If this parameter is not set, the configuration takes effect for all AI processor models.</p>
     <div class="note" id="zh-cn_topic_0000001691887130_note91342214442"><a id="zh-cn_topic_0000001691887130_note91342214442"></a><a id="zh-cn_topic_0000001691887130_note91342214442"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001691887130_p1189193714314"><a id="zh-cn_topic_0000001691887130_p1189193714314"></a><a id="zh-cn_topic_0000001691887130_p1189193714314"></a>COMPUTE_UNIT configuration:</p>
-    <a id="ul0242165319436"></a><a id="ul0242165319436"></a><ul id="ul0242165319436"><li>For servers other than the <span id="ph4604666416"><a id="ph4604666416"></a><a id="ph4604666416"></a><span id="zh-cn_topic_0000001740005657_ph11939124012202"><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><term id="zh-cn_topic_0000001312391781_term1253731311225"><a id="zh-cn_topic_0000001312391781_term1253731311225"></a><a id="zh-cn_topic_0000001312391781_term1253731311225"></a>Atlas A3 training products</term>/<term id="zh-cn_topic_0000001312391781_term131434243115"><a id="zh-cn_topic_0000001312391781_term131434243115"></a><a id="zh-cn_topic_0000001312391781_term131434243115"></a>Atlas A3 inference products</term></span></span>: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="ph31312041180"><a id="ph31312041180"></a><a id="ph31312041180"></a><term id="zh-cn_topic_0000001312391781_term1253731311225_1"><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products</term>/<term id="zh-cn_topic_0000001312391781_term131434243115_1"><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a>Atlas A3 inference products</term></span>: Run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
+    <a id="ul0242165319436"></a><a id="ul0242165319436"></a><ul id="ul0242165319436"><li>For servers other than the <span id="ph4604666416"><a id="ph4604666416"></a><a id="ph4604666416"></a><span id="zh-cn_topic_0000001740005657_ph11939124012202"><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001312391781_term1253731311225"></a><a id="zh-cn_topic_0000001312391781_term1253731311225"></a>Atlas A3 training products/<a id="zh-cn_topic_0000001312391781_term131434243115"></a><a id="zh-cn_topic_0000001312391781_term131434243115"></a>Atlas A3 inference products</span></span>: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="ph31312041180"><a id="ph31312041180"></a><a id="ph31312041180"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products/<a id="zh-cn_topic_0000001312391781_term131434243115_1"></a><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a>Atlas A3 inference products</span>: Run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
     <a id="ul9238121944"></a><a id="ul9238121944"></a><ul id="ul9238121944"><li><code>id</code>: device ID, which is the NPU ID obtained by running the <code>npu-smi info -l</code> command. </li><li><code>chip_id</code>: chip ID, which is obtained by running the <code>npu-smi info -m</code> command.</li></ul>
     </li></ul>
     </div></div>
@@ -722,7 +719,7 @@ After the operator kernel and host are developed, build the operator project to 
     <td class="cellrowborder" valign="top" width="13.47134713471347%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001691887130_p14579434123019"><a id="zh-cn_topic_0000001691887130_p14579434123019"></a><a id="zh-cn_topic_0000001691887130_p14579434123019"></a>Required</p>
     </td>
     <td class="cellrowborder" valign="top" width="69.54695469546954%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001691887130_p45791034113018"><a id="zh-cn_topic_0000001691887130_p45791034113018"></a><a id="zh-cn_topic_0000001691887130_p45791034113018"></a>Custom compile options. Multiple compile options are separated by spaces.</p>
-    <div class="note" id="note711712719212"><a id="note711712719212"></a><a id="note711712719212"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><ul id="zh-cn_topic_0000001691887130_ul19831524153414"><li>The compile option for debugging, such as <code>-sanitizer</code>, is added to enable the msSanitizer tool. For details, see section "Preparations" > "msOpGen Operator Project Compilation Scenarios" in MindStudio Sanitizer User Guide.<pre class="code_wrap" id="screen1234155718541"><a id="screen1234155718541"></a><a id="screen1234155718541"></a>add_ops_compile_options(ALL OPTIONS -sanitizer)</pre>
+    <div class="note" id="note711712719212"><a id="note711712719212"></a><a id="note711712719212"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><ul id="zh-cn_topic_0000001691887130_ul19831524153414"><li>The compile option for debugging, such as <code>-sanitizer</code>, is added to enable the msSanitizer tool. For details, see section "Preparations" > "msOpGen Operator Project Compilation Scenarios" in *MindStudio Sanitizer User Guide*.<pre class="code_wrap" id="screen1234155718541"><a id="screen1234155718541"></a><a id="screen1234155718541"></a>add_ops_compile_options(ALL OPTIONS -sanitizer)</pre>
     </li><li>Add compile options such as <code>-g</code> for debugging to enable the code call stack and hot spot map functions in the msprof op simulator scenario of the msProf tool.<pre class="code_wrap" id="zh-cn_topic_0000001691887130_screen18443326335"><a id="zh-cn_topic_0000001691887130_screen18443326335"></a><a id="zh-cn_topic_0000001691887130_screen18443326335"></a>add_ops_compile_options(ALL COMPUTE_UNIT Ascend<em id="zh-cn_topic_0000001691887130_i269111816425"><a id="zh-cn_topic_0000001691887130_i269111816425"></a><a id="zh-cn_topic_0000001691887130_i269111816425"></a>xxxyy</em> OPTIONS -g)</pre>
     </li><li>Add compilation options such as <code>-g -O0</code> for debugging to enable the msDebug tool.<pre class="code_wrap" id="zh-cn_topic_0000001691887130_screen179549733110"><a id="zh-cn_topic_0000001691887130_screen179549733110"></a><a id="zh-cn_topic_0000001691887130_screen179549733110"></a>add_ops_compile_options(ALL OPTIONS -g -O0)</pre>
     </li></ul>
@@ -738,9 +735,10 @@ After the operator kernel and host are developed, build the operator project to 
     ./build.sh
     ```
 
-    After the compilation is successful, the <code>build_out</code> directory is created in the current directory, and the custom operator installation package <code>custom_opp_<target_os>_<target_architecture>.run</code> is generated in the directory.
+    After the compilation is successful, the <code>build_out</code> directory is created in the current directory, and the custom operator installation package `custom_opp_<target_os>_<target_architecture>.run` is generated in the directory.
 
-    > [!NOTE]NOTE  
+    > [!NOTE]
+    > 
     > After the operator type is registered, the framework obtains the operator registration information based on the operator type and matches the operator implementation file name and kernel function name based on certain rules during compilation and running. To ensure correct matching, the operator type, operator implementation file name, and kernel function name must comply with the following rules. Generally, you only need to ensure that the value of the operator type in the JSON prototype definition file is in upper camel case. The code automatically generated after the project is created meets this rule. When manually writing the operator prototype definition and operator implementation file, comply with the following rules:
     >Name operator type in upper camel case and separate words with a single capitalized letter.
     >The operator implementation file name and kernel function name must be the same. They are the values after the operator type is converted using underscores (_). The following describes the process of converting the operator implementation file name and kernel function name through the operator type.
@@ -758,32 +756,32 @@ After the operator kernel and host are developed, build the operator project to 
     In the directory of the custom operator package, run the following command to install the operator package:
 
     ```sh
-    ./custom_opp_<target_os>_<target_architecture>.run --install-path=<path>  // --install-path is optional and is used to specify the installation directory of the custom operator package. An absolute path can be specified. The running user must have the read and write permissions on the specified installation path.
+    ./custom_opp_<target_os>_<target_architecture>.run --install-path=<path>  // --install-path is optional and is used to specify the installation directory of the custom operator package. An absolute path can be specified. The running user must have the read and write permissions on the specified installation path
     ```
 
     The `<vendor_name>` corresponds to the value of the `vendor_name` field defined in the `CMakePresets.json` configuration file of the operator project. If not explicitly configured, the default value is set to `customize`.
 
-    - In the default installation scenario, the `--install-path` option is not set. After the installation is successful, the custom operator files generated after building are deployed to the
+    - In the default installation scenario, the `--install-path` option is not set. After the installation is successful, the custom operator files generated after building are deployed to the `${INSTALL_DIR}/opp/vendors/<vendor_name>` directory. Replace `${INSTALL_DIR}` with the file storage path after the CANN software is installed. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation directory is `$HOME/Ascend/cann`.
 
-        `${INSTALL_DIR}/opp/vendors/<vendor_name>` directory. Replace `${INSTALL_DIR}` with the file storage path after the CANN software is installed. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation directory is `$HOME/Ascend/cann`.
-
-        > [!NOTE]NOTE  
-        > The permission on the default installation path `${INSTALL_DIR}/opp/vendors` of the custom operator package is related to the installation user and configuration of the CANN package. If the custom operator package fails to be installed due to insufficient permissions, use the `--install-path` option and configure the environment variable `ASCEND_CUSTOM_OPP_PATH` to specify the installation directory (see [Installation in a specified directory](#zh-cn_topic_0000001691887130_li1652971821912), or contact the CANN package installation user to modify the permission on the `vendors` directory. For details about cases, see "FAQs" > "[Failed to Open the config.ini File During Operator Calling and Insufficient Permission During Operator Package Deployment](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/opdevg/Ascendcopdevg/atlas_ascendc_10_00003.html)" in Ascend C Operator Development Guide.
+        > [!NOTE]
+        > 
+        > The permission on the default installation path `${INSTALL_DIR}/opp/vendors` of the custom operator package is related to the installation user and configuration of the CANN package. If the custom operator package fails to be installed due to insufficient permissions, use the `--install-path` option and configure the environment variable `ASCEND_CUSTOM_OPP_PATH` to specify the installation directory (see [Installation in a specified directory](#zh-cn_topic_0000001691887130_li1652971821912), or contact the CANN package installation user to modify the permission on the `vendors` directory. For details about cases, see "FAQs" > "[Failed to Open the config.ini File During Operator Calling and Insufficient Permission During Operator Package Deployment](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/guide/%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97/%E9%99%84%E5%BD%95/FAQ/%E8%B0%83%E7%94%A8%E7%AE%97%E5%AD%90%E6%97%B6%E5%87%BA%E7%8E%B0%E6%97%A0%E6%B3%95%E6%89%93%E5%BC%80config-ini%E7%9A%84%E6%8A%A5%E9%94%99.md)" in *Ascend C Operator Development Guide*.
 
     - <a id="zh-cn_topic_0000001691887130_li1652971821912"></a>For a specified directory installation scenario, configure the `--install-path` option. Upon successful installation, the files associated with the compiled custom operators will be deployed to the `<path>/vendors/<vendor_name>` directory. Additionally, a `set_env.bash` script will be created in the `<path>/vendors/<vendor_name>/bin` directory, which contains the environment variables required for the current custom operator package.
 
-        > [!NOTE]NOTE   
-        >If the `--install-path` option is configured to specify the installation directory of the operator package during deployment, run the `source <path>/vendors/<vendor_name>/bin/set_env.bash` command before using the custom operator. The `set_env.bash` script adds the installation path of the custom operator package to the environment variable `ASCEND_CUSTOM_operator package_PATH` so that the custom operator takes effect in the current environment.
+        > [!NOTE]
+        > 
+        > If the `--install-path` option is configured to specify the installation directory of the operator package during deployment, run the `source <path>/vendors/<vendor_name>/bin/set_env.bash` command before using the custom operator. The `set_env.bash` script adds the installation path of the custom operator package to the environment variable `ASCEND_CUSTOM_OPP_PATH` so that the custom operator takes effect in the current environment.
 
     After the command is executed successfully, related files in the custom operator package are deployed in the current environment.
 
 2. You can view the directory structure after the deployment. The following example is based on the default installation scenario:
 
-    ```tex
+    ```text
     ├── opp    // Operator library directory
     │   ├── vendors    // Directory of custom operators
     │       ├── config.ini
-    │       ├── vendor_name1   // Custom operator deployed by the storage vendor. The vendor_name is configured during the build of the custom operator installation package. If vendor_name is not configured, the default value customize is used.
+    │       └── vendor_name1   // Custom operator deployed by the storage vendor. The vendor_name is configured during the build of the custom operator installation package. If vendor_name is not configured, the default value customize is used
     │           ├── framework     // Custom operator plugin library
     │           ├── op_api
     │           │   ├── include
@@ -813,12 +811,13 @@ After the operator kernel and host are developed, build the operator project to 
     │       ├── vendor_name2   // Custom operator deployed by storage vendor vendor_name2
     ```
 
-    > [!NOTE]NOTE  
+    > [!NOTE]
+    > 
     >**Parameter value:** `<soc_version>`. The query method is as follows:
     >- For servers other than the Atlas A3 training products/Atlas A3 inference products: Run the `npu-smi info` command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by `AscendChip name`. For example, if the chip name is `xxxyy`, the actual value is `Ascendxxxyy`. If `Ascendxxxyy` is the path of the code sample, set this parameter to `ascendxxxyy`.
     >- For the Atlas A3 training products/Atlas A3 inference products, run the `npu-smi info -t board -i id -c chip_id` command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by `Chip name_NPU name`. For example, if the chip name is `Ascendxxx` and the NPU name is `1234`, the actual value is `Ascendxxx_1234`. If `Ascendxxx_1234` is the path of the code sample, set this parameter to `ascendxxx_1234`. 
     >  
-    >    - `id`: device ID, which is the NPU ID obtained by running the `npu-smi info -l` command.
+    >    - `id`: device ID, which is the NPU ID obtained by running the <code>npu-smi info -l</code> command.
     >    - `chip_id`: chip ID, which is the same as the chip ID obtained by running the `npu-smi info -m` command.
 
 3. Configure the priorities of custom operators.
@@ -827,7 +826,7 @@ After the operator kernel and host are developed, build the operator project to 
 
     - Default installation scenario
 
-        If custom operators of multiple vendors exist in the `opp/vendors` directory, you can configure the priority of the custom operator packages by configuring the `config.ini`·file in the `opp/vendors` directory.
+        If custom operators of multiple vendors exist in the `opp/vendors` directory, you can configure the priority of the custom operator packages by configuring the `config.ini` file in the `opp/vendors` directory.
 
         The following provides a configuration template of `config.ini`.
 
@@ -864,18 +863,20 @@ msOpGen parses dump files generated by users, and generates operator simulation 
 
 1. Run the `install.sh` file in the `${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch` directory and generate the `CustomOp` folder. For details, see [the document](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch).
 
-    > [!NOTE]NOTE  
+    > [!NOTE]
+    > 
     > This sample project does not support Atlas A3 training products, Atlas A3 inference products, or Atlas training products.
 
     ```sh
-    ./install.sh -v Ascendxxxyy   # xxxyy indicates the type of the chip used by the user.
+    ./install.sh -v Ascendxxxyy   # xxxyy indicates the type of the chip used by the user
     ```
 
 2. Build the operator project.
     1. Complete build configurations by referring to [Preparations](#section4684858183614).
     2. Run the following command in the `CustomOp` operator project directory to build the operator project:
 
-        > [!NOTE]NOTE  
+        > [!NOTE]
+        > 
         > To generate an operator simulation pipeline, change the value of `CMAKE_BUILD_TYPE` in the `CMakePresets.json` file in the current directory to `Debug`.
 
         After the build is complete, the .run operator package is generated in the `build_out` directory.
@@ -896,7 +897,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     ./run.sh
     ```
 
-5. After the environment variables are enabled, perform simulation by referring to the "Tool Usage" >"msprof op simulator" in msProf User Guide and generate dump data.
+5. After the environment variables are enabled, perform simulation by referring to the "Tool Usage" >"msprof op simulator" in *msProf User Guide* and generate dump data.
 
     ```sh
     export LD_LIBRARY_PATH=${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch/CustomOp/build_out/op_host/:$LD_LIBRARY_PATH
@@ -924,7 +925,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     <tbody><tr id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_row873118237358"><td class="cellrowborder" valign="top" width="19.2%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p12731223193511"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p12731223193511"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p12731223193511"></a>sim</p>
     </td>
     <td class="cellrowborder" valign="top" width="61.19%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1373162314351"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1373162314351"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1373162314351"></a>Simulation operation.</p>
-    <div class="note" id="note109501342173317"><a id="note109501342173317"></a><a id="note109501342173317"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p199501342193310"><a id="p199501342193310"></a><a id="p199501342193310"></a>The <code>msopgen sim</code> command will be removed from the next version of MindStudio. After the removal, you can use the simulation capability provided by msOpProf. For details, see "Tool Usage" in msProf User Guide.</p>
+    <div class="note" id="note109501342173317"><a id="note109501342173317"></a><a id="note109501342173317"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p199501342193310"><a id="p199501342193310"></a><a id="p199501342193310"></a>The <code>msopgen sim</code> command will be removed from the next version of MindStudio. After the removal, you can use the simulation capability provided by msOpProf. For details, see "Tool Usage" in *msProf User Guide*.</p>
     </div></div>
     </td>
     <td class="cellrowborder" valign="top" width="19.61%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p47317233358"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p47317233358"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p47317233358"></a>Required</p>
@@ -951,7 +952,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     <p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p8263141813152"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p8263141813152"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p8263141813152"></a>Specify the dump file to be parsed when the dump file name contains <code>veccore{id}</code> or <code>cubecore{id}</code>. For example, if the file name is <code>core0.veccore0.instr_log.dump</code>, then <code>veccore0</code> corresponds to the subcore ID.</p>
     </td>
     <td class="cellrowborder" rowspan="2" valign="top" width="19.61%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p18733112373515"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p18733112373515"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p18733112373515"></a>Select either one.</p>
-    <div class="note" id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_note340923217116"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_note340923217116"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_note340923217116"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p78031234195419"><a id="p78031234195419"></a><a id="p78031234195419"></a><span id="zh-cn_topic_0000001740005657_ph11939124012202"><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><term id="zh-cn_topic_0000001312391781_term1253731311225_1"><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>Only for Atlas A3 training/Atlas A3 inference products and Atlas A2 training/Atlas A2 inference products.</p>
+    <div class="note" id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_note340923217116"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_note340923217116"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_note340923217116"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p78031234195419"><a id="p78031234195419"></a><a id="p78031234195419"></a><span id="zh-cn_topic_0000001740005657_ph11939124012202"></span><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001740005657_ph11939124012202"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>Only for Atlas A3 training/Atlas A3 inference products and Atlas A2 training/Atlas A2 inference products.</p>
     </div></div>
     </td>
     </tr>
@@ -995,10 +996,10 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     msopgen sim -c core0 -d xx/{model}/ca/add_custom/add_custom_pre_static_add_custom -out ./output_data -subc cubecore0 -reloc xx/.o
     ```
 
-    - -`-c` specifies the core ID of the dump data file to be parsed, for example, `core0`.
-    - -`-d` specifies the path of the dump data file generated in the performance simulation environment, for example, `{model}/ca/add_custom/add_custom_pre_static_add_custom`.
-    - -`-subc`: specifies the subcore ID of the dump file to be parsed. For example, if the file name is `core0.cubecore0.instr_log.dump`, `cubecore0` is the subcore ID. (This parameter is required only for Atlas A3 training products/Atlas A3 inference products and Atlas A2 training products/Atlas A2 inference products.)
-    - -`-reloc` sets the value to the path of the .o file or executable file generated after operator compilation on the kernel.
+    - `-c` specifies the core ID of the dump data file to be parsed, for example, `core0`.
+    - `-d` specifies the path of the dump data file generated in the performance simulation environment, for example, `{model}/ca/add_custom/add_custom_pre_static_add_custom`.
+    - `-subc`: specifies the subcore ID of the dump file to be parsed. For example, if the file name is `core0.cubecore0.instr_log.dump`, `cubecore0` is the subcore ID. (This parameter is required only for Atlas A3 training products/Atlas A3 inference products and Atlas A2 training products/Atlas A2 inference products.)
+    - `-reloc` sets the value to the path of the .o file or executable file generated after operator compilation on the kernel.
 
     Example 2:
 
@@ -1006,13 +1007,13 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     msopgen sim -c core0 -d xx/{model}/ca/add_custom/add_custom_pre_static_add_custom -out ./output_data -mix
     ```
 
-    - -`-c` specifies the core ID of the dump data file to be parsed, for example, `core0`.
-    - -`-d` specifies the path of the dump data file generated in the performance simulation environment, for example, `{model}/ca/add_custom/add_custom_pre_static_add_custom`.
-    - -`-mix`: specifies that the Mix operator can be displayed.
+    - `-c` specifies the core ID of the dump data file to be parsed, for example, `core0`.
+    - `-d` specifies the path of the dump data file generated in the performance simulation environment, for example, `{model}/ca/add_custom/add_custom_pre_static_add_custom`.
+    - `-mix`: specifies that the Mix operator can be displayed.
 
 7. View the operator simulation pipeline file.
 
-    Enter **chrome://tracing** in the Chrome address bar, drag the `dump2trace_core*.json` file in the output path to the blank area to open it, and press the shortcut keys (**W**: zoom in; **S**: zoom out; **A**: move left; **D**: move right) to view the file.
+    Enter `chrome://tracing` in the Chrome address bar, drag the `dump2trace_core*.json` file in the output path to the blank area to open it, and press the shortcut keys (**W**: zoom in, **S**: zoom out, **A**: move left, **D**: move right) to view the file.
 
     **Figure 1** Display of a single sub-core <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a> 
     ![](../figures/display_of_a_single_sub_core.png "Display of a single sub-core")
@@ -1061,7 +1062,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     </tr>
     <tr id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_row1626016547413"><td class="cellrowborder" valign="top" width="23.79%" headers="mcps1.2.3.1.1 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p226095416411"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p226095416411"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p226095416411"></a>FIXP</p>
     </td>
-    <td class="cellrowborder" valign="top" width="76.21%" headers="mcps1.2.3.1.2 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p14442185072614"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p14442185072614"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p14442185072614"></a>Data transfer pipeline, from FIXPIPE L0C to OUT/L1. (This parameter is displayed only for Atlas A3 training products/Atlas A3 inference products and Atlas A2 training products/Atlas A2 inference products.)
+    <td class="cellrowborder" valign="top" width="76.21%" headers="mcps1.2.3.1.2 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p14442185072614"></p><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p14442185072614"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p14442185072614"></a>Data transfer pipeline, from FIXPIPE L0C to OUT/L1. (This parameter is displayed only for Atlas A3 training products/Atlas A3 inference products and Atlas A2 training products/Atlas A2 inference products.)
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_row22514515297"><td class="cellrowborder" valign="top" width="23.79%" headers="mcps1.2.3.1.1 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1225118582917"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1225118582917"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1225118582917"></a>FLOWCTRL</p>
@@ -1091,9 +1092,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
 
     You can view the `call count` and `cycles` fields in the file to view the number of times that a code line or instruction is called and the accumulated duration.
 
-# Operator Test (msOpST) <a id="ZH-CN_TOPIC_0000002494346934"></a>
-
-## Introduction <a id="ZH-CN_TOPIC_0000002526426581"></a>
+## Operator Test (msOpST) <a id="ZH-CN_TOPIC_0000002526426581"></a>
 
 After using msOpGen to [deploy the custom operator package](#zh-cn_topic_0000001691887130_section194771411171915), you can use MindStudio Ops System Test (msOpST) to perform the system test (ST) to test the input and output of an operator in a real-world hardware environment to check operator functions.
 
@@ -1103,15 +1102,15 @@ Test cases usually include various types of data inputs and expected outputs, as
 
 **Environment Requirements <a id="section78326397288"></a>**
 
-Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see [CANN Software Installation Guide](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1/softwareinst/instg/instg_0000.html). No installation example is provided in this section. After the configuration is complete, you can directly use the functions of the msOpST tool.
+Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/softwareinst/instg/instg_0000.html). No installation example is provided in this section. After the configuration is complete, you can directly use the functions of the msOpST tool.
 
 **Constraints <a id="section34178519565"></a>**
 
 - Before using this tool to generate operator test cases, ensure that the operator to be tested has been deployed into the operator library in advance. For details, see [Building and Deploying an Operator](#building-and-deploying-an-operator).
 - If an AI framework is required for performing operator ST, install the AI framework in advance.
-    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 1.15" in [TensorFlow 1.15 Model Porting Guide](https://www.hiascend.com/document/detail/zh/TensorFlowCommercial/83RC1/migration/tfmigr1/tfmigr1_000001.html).
-    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 2.6.5" in [TensorFlow 2.6.5 Model Porting Guide](https://www.hiascend.com/document/detail/zh/TensorFlowCommercial/83RC1/migration/tfmigr2/tfmigr2_000001.html).
-    - For details about how to install PyTorch, see [Ascend Extension for PyTorch Software Installation Guide](https://www.hiascend.com/document/detail/zh/Pytorch/720/configandinstg/instg/insg_0001.html).
+    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 1.15" in [TensorFlow 1.15 Model Porting Guide](https://www.hiascend.com/document/detail/en/TensorFlowCommunity/910/migration/tfmigr1/docs/en/tfadapter_1/introduction.md).
+    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 2.6.5" in [TensorFlow 2.6.5 Model Porting Guide](https://www.hiascend.com/document/detail/en/TensorFlowCommunity/910/migration/tfmigr2/docs/en/tfadapter_2/introduction.md).
+    - For details about how to install PyTorch, see [TorchNPU Software Installation](https://www.hiascend.com/document/detail/en/Pytorch/910/installguide/swinstall/docs/en/installation_guide/installation_description.md).
 
 ## Operator Test Functions <a id="ZH-CN_TOPIC_0000002539479311"></a>
 
@@ -1176,7 +1175,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <tr id="zh-cn_topic_0000001775029424_row785811554542"><td class="cellrowborder" valign="top" width="25.619999999999997%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p1285875516543"><a id="zh-cn_topic_0000001775029424_p1285875516543"></a><a id="zh-cn_topic_0000001775029424_p1285875516543"></a>-m, --model</p>
     </td>
     <td class="cellrowborder" valign="top" width="59.91%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p5858105535418"><a id="zh-cn_topic_0000001775029424_p5858105535418"></a><a id="zh-cn_topic_0000001775029424_p5858105535418"></a>Path to the TensorFlow model file, configurable as either an absolute path or a relative path.</p>
-    <p id="zh-cn_topic_0000001775029424_p7858185510541"><a id="zh-cn_topic_0000001775029424_p7858185510541"></a><a id="zh-cn_topic_0000001775029424_p7858185510541"></a>If this option is set, the tool retrieves the shape information of the first-layer operator from the TensorFlow model file and automatically dumps the operator's shape, dtype, and attribute values defined in the operator information library definition file. If the dumped value falls within the range defined in the operator information library definition file, it will be automatically populated into the generated operator test case definition file; otherwise, an error will be reported.</p>
+    <p id="zh-cn_topic_0000001775029424_p7858185510541"><a id="zh-cn_topic_0000001775029424_p7858185510541"></a><a id="zh-cn_topic_0000001775029424_p7858185510541"></a>If this option is set, the tool retrieves the shape information of the first-layer operator from the TensorFlow model file and automatically dumps the shape, dtype, and attribute values of the operator defined in the operator information library definition file. If the dumped value falls within the range defined in the operator information library definition file, it will be automatically populated into the generated operator test case definition file. Otherwise, an error will be reported.</p>
     <div class="note" id="note8299112854019"><a id="note8299112854019"></a><a id="note8299112854019"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p1285845525418"><a id="zh-cn_topic_0000001775029424_p1285845525418"></a><a id="zh-cn_topic_0000001775029424_p1285845525418"></a>If this option is set, TensorFlow version 1.15 or 2.6.5 must be installed in the system.</p>
     </div></div>
     </td>
@@ -1234,7 +1233,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <tr id="zh-cn_topic_0000001821790281_row935019433918"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p1834913432919"><a id="zh-cn_topic_0000001821790281_p1834913432919"></a><a id="zh-cn_topic_0000001821790281_p1834913432919"></a>-soc, --soc_version</p>
     </td>
     <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p106751081205"><a id="zh-cn_topic_0000001821790281_p106751081205"></a><a id="zh-cn_topic_0000001821790281_p106751081205"></a>AI processor type.</p>
-    <div class="note" id="zh-cn_topic_0000001821790281_note481620356579"><a id="zh-cn_topic_0000001821790281_note481620356579"></a><a id="zh-cn_topic_0000001821790281_note481620356579"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul1553919272419"></a><a id="ul1553919272419"></a><ul id="ul1553919272419"><li>For servers other than the Atlas A3 training products/Atlas A3 inference products: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="zh-cn_topic_0000002015877373_ph31312041180"><a id="zh-cn_topic_0000002015877373_ph31312041180"></a><a id="zh-cn_topic_0000002015877373_ph31312041180"></a><term id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products/Atlas A3 inference products, run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
+    <div class="note" id="zh-cn_topic_0000001821790281_note481620356579"><a id="zh-cn_topic_0000001821790281_note481620356579"></a><a id="zh-cn_topic_0000001821790281_note481620356579"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul1553919272419"></a><a id="ul1553919272419"></a><ul id="ul1553919272419"><li>For servers other than the Atlas A3 training products/Atlas A3 inference products: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="zh-cn_topic_0000002015877373_ph31312041180"></span><a id="zh-cn_topic_0000002015877373_ph31312041180"></a><a id="zh-cn_topic_0000002015877373_ph31312041180"></a><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products/Atlas A3 inference products, run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
     <a id="zh-cn_topic_0000002015877373_ul9238121944"></a><a id="zh-cn_topic_0000002015877373_ul9238121944"></a><ul id="zh-cn_topic_0000002015877373_ul9238121944"><li><code>id</code>: device ID, which is the NPU ID obtained by running the <code>npu-smi info -l</code> command. </li><li><code>chip_id</code>: chip ID, which is the same as the chip ID obtained by running the <code>npu-smi info -m</code> command.</li></ul>
     </li></ul>
     </div></div>
@@ -1251,7 +1250,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     </tr>
     <tr id="zh-cn_topic_0000001821790281_row835020431391"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p173501143596"><a id="zh-cn_topic_0000001821790281_p173501143596"></a><a id="zh-cn_topic_0000001821790281_p173501143596"></a>-c, --case_name</p>
     </td>
-    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001821790281_ul1635011439912"></a><a id="zh-cn_topic_0000001821790281_ul1635011439912"></a><ul id="zh-cn_topic_0000001821790281_ul1635011439912"><li>Names of the cases to run; for multiple cases, use commas as separators. </li><li>If it is set to <code>all</code> or not specified, all cases are executed.</li></ul>
+    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001821790281_ul1635011439912"></a><a id="zh-cn_topic_0000001821790281_ul1635011439912"></a><ul id="zh-cn_topic_0000001821790281_ul1635011439912"><li>Names of the cases to run. For multiple cases, use commas as separators. </li><li>If it is set to <code>all</code> or not specified, all cases are executed.</li></ul>
     </td>
     <td class="cellrowborder" valign="top" width="6.811326262527976%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p235034320911"><a id="zh-cn_topic_0000001821790281_p235034320911"></a><a id="zh-cn_topic_0000001821790281_p235034320911"></a>Optional</p>
     </td>
@@ -1266,7 +1265,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     </tr>
     <tr id="zh-cn_topic_0000001821790281_row143526431893"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p1135010432095"><a id="zh-cn_topic_0000001821790281_p1135010432095"></a><a id="zh-cn_topic_0000001821790281_p1135010432095"></a>-err_thr, --error_threshold</p>
     </td>
-    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1135044317916"><a id="zh-cn_topic_0000001821790281_p1135044317916"></a><a id="zh-cn_topic_0000001821790281_p1135044317916"></a>Custom precision criteria as a two-element list: <code>"[threshold1, threshold2]"</code>.</p>
+    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1135044317916"><a id="zh-cn_topic_0000001821790281_p1135044317916"></a><a id="zh-cn_topic_0000001821790281_p1135044317916"></a>Custom precision criteria as a two-element list: <code>"[threshold1,threshold2]"</code>.</p>
     <a id="zh-cn_topic_0000001821790281_ul203515431497"></a><a id="zh-cn_topic_0000001821790281_ul203515431497"></a><ul id="zh-cn_topic_0000001821790281_ul203515431497"><li><code>threshold1</code>: threshold of the error between the operator output result and the benchmark data. If the error is greater than this value, the data is recorded as error data. </li><li><code>threshold2</code>: threshold of the ratio of error data to all data. If the actual ratio is less than this threshold, the accuracy is deemed acceptable. Otherwise, the precision does not meet the requirement.</li></ul>
     <p id="zh-cn_topic_0000001821790281_p535114313912"><a id="zh-cn_topic_0000001821790281_p535114313912"></a><a id="zh-cn_topic_0000001821790281_p535114313912"></a>If this option is not set, the default value is <code>"[0.01,0.05]"</code>.</p>
     <p id="zh-cn_topic_0000001821790281_p193515432093"><a id="zh-cn_topic_0000001821790281_p193515432093"></a><a id="zh-cn_topic_0000001821790281_p193515432093"></a> Value range: <code>"[0.0,1.0]"</code>.</p>
@@ -1279,17 +1278,17 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <tr id="zh-cn_topic_0000001821790281_row1735319434917"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p13352174319915"><a id="zh-cn_topic_0000001821790281_p13352174319915"></a><a id="zh-cn_topic_0000001821790281_p13352174319915"></a>-conf, --config_file</p>
     </td>
     <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1035211432915"><a id="zh-cn_topic_0000001821790281_p1035211432915"></a><a id="zh-cn_topic_0000001821790281_p1035211432915"></a>Path to the ST advanced feature configuration file (msopst.ini), which can be specified as an absolute or relative path.</p>
-    <p id="zh-cn_topic_0000001821790281_p1335215433917"><a id="zh-cn_topic_0000001821790281_p1335215433917"></a><a id="zh-cn_topic_0000001821790281_p1335215433917"></a>Users can implement the following advanced features by modifying the <code>msopst.ini</code> configuration file.
+    <p id="zh-cn_topic_0000001821790281_p1335215433917"></p><a id="zh-cn_topic_0000001821790281_p1335215433917"></a><a id="zh-cn_topic_0000001821790281_p1335215433917"></a>Users can implement the following advanced features by modifying the <code>msopst.ini</code> configuration file.
     <a id="zh-cn_topic_0000001821790281_ul83525436917"></a><a id="zh-cn_topic_0000001821790281_ul83525436917"></a><ul id="zh-cn_topic_0000001821790281_ul83525436917"><li>Edit the ST source code. </li><li>Execute the edited ST source code. </li><li>Set the environment variable for the host log level. </li><li>Set whether to display logs on the console. </li><li>Set the log level for ATC model conversion. </li><li>Set the OS type and architecture of the operating environment for ATC model conversion. </li><li>Set the model accuracy. </li><li>Read profile data of the compute operator running on the AI processor.</li></ul>
-    <p id="p57016533264"><a id="p57016533264"></a><a id="p57016533264"></a>If <code>--config_file</code> is not specified, the model will forcibly use FP16 precision. For details about the <code>msopst.ini</code> file, see <a href="#zh-cn_topic_0000001821790281_table17358154319919">Table 1 Parameters in the msopst.ini file</a>.</p>
+    <p id="p57016533264"><a id="p57016533264"></a><a id="p57016533264"></a>If <code>--config_file</code> is not specified, the model will forcibly use <code>FP16</code> precision. For details about the <code>msopst.ini</code> file, see <a href="#zh-cn_topic_0000001821790281_table17358154319919">Table 1 Parameters in the msopst.ini file</a>.</p>
     </td>
     <td class="cellrowborder" valign="top" width="6.811326262527976%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p53531043896"><a id="zh-cn_topic_0000001821790281_p53531043896"></a><a id="zh-cn_topic_0000001821790281_p53531043896"></a>Optional</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001821790281_row113542043199"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p935324314920"><a id="zh-cn_topic_0000001821790281_p935324314920"></a><a id="zh-cn_topic_0000001821790281_p935324314920"></a>-err_report, --error_report</p>
     </td>
-    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p63534437916"><a id="zh-cn_topic_0000001821790281_p63534437916"></a><a id="zh-cn_topic_0000001821790281_p63534437916"></a>For comparison failure cases, retrieve the data where the operator's expected output mismatches the actual test execution result. If this option is not specified, the default value <code>false</code> is used.</p>
-    <a id="zh-cn_topic_0000001821790281_ul103532435917"></a><a id="zh-cn_topic_0000001821790281_ul103532435917"></a><ul id="zh-cn_topic_0000001821790281_ul103532435917"><li><code>true</code>: For comparison-failed cases, save the mismatched data between operator expected results and actual execution outputs to the <code>{case.name}_error_report.csv</code> file. </li><li><code>false</code>: No the comparison failure result is saved. <div class="note" id="zh-cn_topic_0000001821790281_note13535438920"><a id="zh-cn_topic_0000001821790281_note13535438920"></a><a id="zh-cn_topic_0000001821790281_note13535438920"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="zh-cn_topic_0000001821790281_ul8353184316913"></a><a id="zh-cn_topic_0000001821790281_ul8353184316913"></a><ul id="zh-cn_topic_0000001821790281_ul8353184316913"><li>When set to <code>true</code>, the comparison data generates a separate CSV file per case name, with the <code>{case.name}_error_report.csv</code> file located in the <code>{output_path}/{time_stamp}/{op_type}/run/out/test_data/data/st_error_reports</code> directory. </li><li>The maximum number of lines per CSV file is 50,000; when exceeded, additional rows are saved to new sequentially named files (e.g., <code>{case.name}_error_report0.csv</code>).</li></ul>
+    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p63534437916"><a id="zh-cn_topic_0000001821790281_p63534437916"></a><a id="zh-cn_topic_0000001821790281_p63534437916"></a>For comparison failure cases, retrieve the data where the expected output of the operator mismatches the actual test execution result. If this option is not specified, the default value <code>false</code> is used.</p>
+    <a id="zh-cn_topic_0000001821790281_ul103532435917"></a><a id="zh-cn_topic_0000001821790281_ul103532435917"></a><ul id="zh-cn_topic_0000001821790281_ul103532435917"><li><code>true</code>: For comparison-failed cases, save the mismatched data between operator expected results and actual execution outputs to the <code>{case.name}_error_report.csv</code> file. </li><li><code>false</code>: The comparison failure result is not saved. <div class="note" id="zh-cn_topic_0000001821790281_note13535438920"><a id="zh-cn_topic_0000001821790281_note13535438920"></a><a id="zh-cn_topic_0000001821790281_note13535438920"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="zh-cn_topic_0000001821790281_ul8353184316913"></a><a id="zh-cn_topic_0000001821790281_ul8353184316913"></a><ul id="zh-cn_topic_0000001821790281_ul8353184316913"><li>When set to <code>true</code>, the comparison data generates a separate CSV file per case name, with the <code>{case.name}_error_report.csv</code> file located in the <code>{output_path}/{time_stamp}/{op_type}/run/out/test_data/data/st_error_reports</code> directory. </li><li>The maximum number of lines per CSV file is 50,000. When exceeded, additional rows are saved to new sequentially named files (for example, <code>{case.name}_error_report0.csv</code>).</li></ul>
     </div></div>
     </li></ul>
     </td>
@@ -1371,14 +1370,15 @@ This section describes how to use the msOpST tool to generate the operator test 
 
     You can obtain the host-side operator implementation file [add_custom.cpp](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom) for reference.
 
-    > [!NOTE]NOTE  
+    > [!NOTE]
+    > 
     > This sample project does not support Atlas A3 training products and Atlas A3 inference products.
 
-    ```tex
-    ├── framework/tf_plugin        // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored.
-    ├── op_host                      // Implementation file on the host.
-    │   ├── add_custom_tiling.h    // Operator tiling definition file.
-    │   ├── add_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation.
+    ```text
+    ├── framework/tf_plugin        // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored
+    ├── op_host                      // Implementation file on the host
+    │   ├── add_custom_tiling.h    // Operator tiling definition file
+    │   ├── add_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation
     ├── op_kernel                   // Implementation file on the kernel
     │   ├── CMakeLists.txt   
     │   ├── add_custom.cpp        // Operator implementation file
@@ -1390,7 +1390,8 @@ This section describes how to use the msOpST tool to generate the operator test 
     msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     ```
 
-    > [!NOTE]NOTE  
+    > [!NOTE]
+    > 
     > Example:
     > The following command uses the AddCustom operator as an example.
     > 
@@ -1466,7 +1467,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="15.8%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p17317202536"><a id="zh-cn_topic_0000001775029424_p17317202536"></a><a id="zh-cn_topic_0000001775029424_p17317202536"></a>-</p>
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p9904567558"><a id="zh-cn_topic_0000001775029424_p9904567558"></a><a id="zh-cn_topic_0000001775029424_p9904567558"></a>Optional.</p>
-    <p id="zh-cn_topic_0000001775029424_p12169152811718"><a id="zh-cn_topic_0000001775029424_p12169152811718"></a><a id="zh-cn_topic_0000001775029424_p12169152811718"></a>Custom precision criteria as a two-element list: <code>"[threshold1, threshold2]"</code>.
+    <p id="zh-cn_topic_0000001775029424_p12169152811718"></p><a id="zh-cn_topic_0000001775029424_p12169152811718"></a><a id="zh-cn_topic_0000001775029424_p12169152811718"></a>Custom precision criteria as a two-element list: <code>"[threshold1,threshold2]"</code>.
     <a id="zh-cn_topic_0000001775029424_ul1224154073412"></a><a id="zh-cn_topic_0000001775029424_ul1224154073412"></a><ul id="zh-cn_topic_0000001775029424_ul1224154073412"><li><code>threshold1</code>: threshold of the error between the operator output result and the benchmark data. If the error is greater than this value, the data is recorded as error data. </li><li><code>threshold2</code>: threshold of the ratio of error data to all data. If the actual ratio is less than this threshold, the accuracy is deemed acceptable. Otherwise, the precision does not meet the requirement.</li></ul>
     <p id="p484194515317"><a id="p484194515317"></a><a id="p484194515317"></a>If this option is not set, the default value is <code>"[0.01,0.05]"</code>.</p>
     <p id="zh-cn_topic_0000001775029424_p1164919913414"><a id="zh-cn_topic_0000001775029424_p1164919913414"></a><a id="zh-cn_topic_0000001775029424_p1164919913414"></a>Value range: <code>"[0.0,1.0]"</code>.</p>
@@ -1517,7 +1518,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p124189542512"><a id="zh-cn_topic_0000001775029424_p124189542512"></a><a id="zh-cn_topic_0000001775029424_p124189542512"></a>Optional.</p>
     <p id="zh-cn_topic_0000001775029424_p451533102611"><a id="zh-cn_topic_0000001775029424_p451533102611"></a><a id="zh-cn_topic_0000001775029424_p451533102611"></a>Int.</p>
-    <p id="zh-cn_topic_0000001775029424_p3407143873820"><a id="zh-cn_topic_0000001775029424_p3407143873820"></a><a id="zh-cn_topic_0000001775029424_p3407143873820"></a>When <code>fuzz_impl</code> is added, manually add this parameter to specify the number of test cases generated by the fuzz parameter generation script; range: 1–2000.</p>
+    <p id="zh-cn_topic_0000001775029424_p3407143873820"><a id="zh-cn_topic_0000001775029424_p3407143873820"></a><a id="zh-cn_topic_0000001775029424_p3407143873820"></a>When <code>fuzz_impl</code> is added, manually add this parameter to specify the number of test cases generated by the fuzz parameter generation script. The value range is 1 to 2000.</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001775029424_row17363357114718"><td class="cellrowborder" valign="top" width="16.41%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p936485717475"><a id="zh-cn_topic_0000001775029424_p936485717475"></a><a id="zh-cn_topic_0000001775029424_p936485717475"></a>input_desc</p>
@@ -1526,7 +1527,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p74347081410"><a id="zh-cn_topic_0000001775029424_p74347081410"></a><a id="zh-cn_topic_0000001775029424_p74347081410"></a>Required.</p>
     <p id="zh-cn_topic_0000001775029424_p18364357144713"><a id="zh-cn_topic_0000001775029424_p18364357144713"></a><a id="zh-cn_topic_0000001775029424_p18364357144713"></a>Operator input description.</p>
-    <div class="note" id="note14756175912110"><a id="note14756175912110"></a><a id="note14756175912110"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p17364757134719"><a id="zh-cn_topic_0000001775029424_p17364757134719"></a><a id="zh-cn_topic_0000001775029424_p17364757134719"></a>The number of parameter values in all <code>input_desc</code> entries must be consistent; otherwise, test case generation will fail.</p>
+    <div class="note" id="note14756175912110"><a id="note14756175912110"></a><a id="note14756175912110"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p17364757134719"><a id="zh-cn_topic_0000001775029424_p17364757134719"></a><a id="zh-cn_topic_0000001775029424_p17364757134719"></a>The number of parameter values in all <code>input_desc</code> entries must be consistent. Otherwise, test case generation will fail.</p>
     <p id="zh-cn_topic_0000001775029424_p236413575471"><a id="zh-cn_topic_0000001775029424_p236413575471"></a><a id="zh-cn_topic_0000001775029424_p236413575471"></a>For example, if input1 supports two formats, input2 should also support two formats.</p>
     <p id="zh-cn_topic_0000001775029424_p1736425712472"><a id="zh-cn_topic_0000001775029424_p1736425712472"></a><a id="zh-cn_topic_0000001775029424_p1736425712472"></a>Similarly, the number of values for <code>type</code>, <code>shape</code>, <code>data_distribute</code>, and <code>value_range</code> must remain consistent across all <code>input_x</code> entries.</p>
     </div></div>
@@ -1537,7 +1538,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="15.8%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p17364157114719"><a id="zh-cn_topic_0000001775029424_p17364157114719"></a><a id="zh-cn_topic_0000001775029424_p17364157114719"></a>name</p>
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p3714795501"><a id="zh-cn_topic_0000001775029424_p3714795501"></a><a id="zh-cn_topic_0000001775029424_p3714795501"></a>Optional.</p>
-    <p id="zh-cn_topic_0000001775029424_p59222248501"><a id="zh-cn_topic_0000001775029424_p59222248501"></a><a id="zh-cn_topic_0000001775029424_p59222248501"></a>When dynamic multi-input is used, <code>name</code> is required and must be set as the corresponding <code>inputx.name</code> parameter value from the operator information library appended with an index starting from 0 and incrementing sequentially (0, 1, 2, ...) based on the number of inputs.</p>
+    <p id="zh-cn_topic_0000001775029424_p59222248501"><a id="zh-cn_topic_0000001775029424_p59222248501"></a><a id="zh-cn_topic_0000001775029424_p59222248501"></a>In the dynamic multi-input scenario (that is, the number of operator inputs is not fixed and the inputs form a TensorList), <code>name</code> is required and must be set as the corresponding <code>inputx.name</code> parameter value from the operator information library appended with an index starting from 0 and incrementing sequentially (0, 1, 2, ...) based on the number of inputs.</p>
     <p id="zh-cn_topic_0000001775029424_p1271413914509"><a id="zh-cn_topic_0000001775029424_p1271413914509"></a><a id="zh-cn_topic_0000001775029424_p1271413914509"></a> For example, if the number of inputs specified in the operator information file is 4, four input descriptions need to be configured in <code>input_desc</code>. The names are <code>xxx0</code>, <code>xxx1</code>, <code>xxx2</code>, and <code>xxx3</code>, where <code>xxx</code> indicates the name of the input parameter.</p>
     <p id="zh-cn_topic_0000001775029424_p048015111916"><a id="zh-cn_topic_0000001775029424_p048015111916"></a><a id="zh-cn_topic_0000001775029424_p048015111916"></a>For details about the configuration example in the dynamic multi-input scenario, see "Test Case Definition File" >"Uncertain Number of Inputs of an Operator (Dynamic Multi-Input Scenario)" in Typical Cases of MindStudio Ops Generator.</p>
     </td>
@@ -1572,7 +1573,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p171553554143"><a id="zh-cn_topic_0000001775029424_p171553554143"></a><a id="zh-cn_topic_0000001775029424_p171553554143"></a>Required.</p>
     <p id="zh-cn_topic_0000001775029424_p14314194913143"><a id="zh-cn_topic_0000001775029424_p14314194913143"></a><a id="zh-cn_topic_0000001775029424_p14314194913143"></a>String or string array.</p>
     <p id="zh-cn_topic_0000001775029424_p23671157174710"><a id="zh-cn_topic_0000001775029424_p23671157174710"></a><a id="zh-cn_topic_0000001775029424_p23671157174710"></a>Input data type:</p>
-    <a id="zh-cn_topic_0000001775029424_ul43676579471"></a><a id="zh-cn_topic_0000001775029424_ul43676579471"></a><ul id="zh-cn_topic_0000001775029424_ul43676579471"><li>bool</li><li>int8</li><li>uint8</li><li>int16</li><li>uint16</li><li>int32</li><li>int64</li><li>uint32</li><li>uint64</li><li>float16</li><li>float32</li><li>float</li><li>bfloat16 (only supported by <span id="ph38341327102213"><a id="ph38341327102213"></a><a id="ph38341327102213"></a><term id="zh-cn_topic_0000001312391781_term1253731311225_1"><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>Atlas A3 training products</term>/<term id="zh-cn_topic_0000001312391781_term131434243115_1"><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a>Atlas A3 inference products</term></span> and <span id="ph135659390269"><a id="ph135659390269"></a><a id="ph135659390269"></a><term id="zh-cn_topic_0000001312391781_term11962195213215"><a id="zh-cn_topic_0000001312391781_term11962195213215"></a><a id="zh-cn_topic_0000001312391781_term11962195213215"></a>Atlas A2 training products</term>/<term id="zh-cn_topic_0000001312391781_term184716139811"><a id="zh-cn_topic_0000001312391781_term184716139811"></a><a id="zh-cn_topic_0000001312391781_term184716139811"></a>Atlas A2 inference products</term>)</span> </li><li>UNDEFINED: The input type of the operator is optional. </li><li>fuzz: automatically generates test cases in batches by using the fuzzing script.</li></ul>
+    <a id="zh-cn_topic_0000001775029424_ul43676579471"></a><a id="zh-cn_topic_0000001775029424_ul43676579471"></a><ul id="zh-cn_topic_0000001775029424_ul43676579471"><li>bool</li><li>int8</li><li>uint8</li><li>int16</li><li>uint16</li><li>int32</li><li>int64</li><li>uint32</li><li>uint64</li><li>float16</li><li>float32</li><li>float</li><li>bfloat16 (only supported by <span id="ph38341327102213"><a id="ph38341327102213"></a><a id="ph38341327102213"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_1"></a>Atlas A3 training products/<a id="zh-cn_topic_0000001312391781_term131434243115_1"></a><a id="zh-cn_topic_0000001312391781_term131434243115_1"></a>Atlas A3 inference products</span> and <span id="ph135659390269"><a id="ph135659390269"></a><a id="ph135659390269"></a><a id="zh-cn_topic_0000001312391781_term11962195213215"></a><a id="zh-cn_topic_0000001312391781_term11962195213215"></a>Atlas A2 training products/<a id="zh-cn_topic_0000001312391781_term184716139811"></a><a id="zh-cn_topic_0000001312391781_term184716139811"></a>Atlas A2 inference products)</span> </li><li>UNDEFINED: The input type of the operator is optional. </li><li>fuzz: automatically generates test cases in batches by using the fuzzing script.</li></ul>
     <p id="zh-cn_topic_0000001775029424_p67493712412"><a id="zh-cn_topic_0000001775029424_p67493712412"></a><a id="zh-cn_topic_0000001775029424_p67493712412"></a>For details about the configuration example when the input data type is complex number, see "Test Case Definition File" > "Complex Input and Output Types of an Operator" in Typical Cases of MindStudio Ops Generator.</p>
     </td>
     </tr>
@@ -1681,7 +1682,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p067403761619"><a id="zh-cn_topic_0000001775029424_p067403761619"></a><a id="zh-cn_topic_0000001775029424_p067403761619"></a>Required.</p>
     <p id="zh-cn_topic_0000001775029424_p113711757134718"><a id="zh-cn_topic_0000001775029424_p113711757134718"></a><a id="zh-cn_topic_0000001775029424_p113711757134718"></a>Operator output description.</p>
-    <div class="note" id="note3100818101218"><a id="note3100818101218"></a><a id="note3100818101218"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p183721457154717"><a id="zh-cn_topic_0000001775029424_p183721457154717"></a><a id="zh-cn_topic_0000001775029424_p183721457154717"></a>The number of parameter values in <code>output_desc</code> must be the same as that in <code>input_desc</code>; otherwise, test case generation will fail.</p>
+    <div class="note" id="note3100818101218"><a id="note3100818101218"></a><a id="note3100818101218"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p183721457154717"><a id="zh-cn_topic_0000001775029424_p183721457154717"></a><a id="zh-cn_topic_0000001775029424_p183721457154717"></a>The number of parameter values in <code>output_desc</code> must be the same as that in <code>input_desc</code>. Otherwise, test case generation will fail.</p>
     <p id="zh-cn_topic_0000001775029424_p6372657194710"><a id="zh-cn_topic_0000001775029424_p6372657194710"></a><a id="zh-cn_topic_0000001775029424_p6372657194710"></a>Example: If inputx supports 2 format types, the output must also support 2 format types.</p>
     </div></div>
     </td>
@@ -1692,7 +1693,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p6632104591614"><a id="zh-cn_topic_0000001775029424_p6632104591614"></a><a id="zh-cn_topic_0000001775029424_p6632104591614"></a>Optional. String.</p>
     <p id="zh-cn_topic_0000001775029424_p4157145635814"><a id="zh-cn_topic_0000001775029424_p4157145635814"></a><a id="zh-cn_topic_0000001775029424_p4157145635814"></a>Output parameter name.</p>
-    <p id="zh-cn_topic_0000001775029424_p914085185914"><a id="zh-cn_topic_0000001775029424_p914085185914"></a><a id="zh-cn_topic_0000001775029424_p914085185914"></a>When dynamic multi-output is used, <code>name</code> is required and must be set as the corresponding <code>outputx.name</code> parameter value from the operator information library appended with an index starting from 0 and incrementing sequentially (0, 1, 2, ...) based on the number of inputs.</p>
+    <p id="zh-cn_topic_0000001775029424_p914085185914"><a id="zh-cn_topic_0000001775029424_p914085185914"></a><a id="zh-cn_topic_0000001775029424_p914085185914"></a>In the dynamic multi-output scenario (that is, the number of operator outputs is not fixed), <code>name</code> is required and must be set as the corresponding <code>outputx.name</code> parameter value from the operator information library appended with an index starting from 0 and incrementing sequentially (0, 1, 2, ...) based on the number of outputs.</p>
     <p id="zh-cn_topic_0000001775029424_p14140175195913"><a id="zh-cn_topic_0000001775029424_p14140175195913"></a><a id="zh-cn_topic_0000001775029424_p14140175195913"></a>Example: If the number of output specified in the operator information file is 4, four output descriptions need to be configured in <code>output_desc</code>. The names are <code>xxx0</code>, <code>xxx1</code>, <code>xxx2</code>, and <code>xxx3</code>, where <code>xxx</code> indicates the name of the output parameter.</p>
     </td>
     </tr>
@@ -1726,7 +1727,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p04921946191712"><a id="zh-cn_topic_0000001775029424_p04921946191712"></a><a id="zh-cn_topic_0000001775029424_p04921946191712"></a>Required.</p>
     <p id="zh-cn_topic_0000001775029424_p18389125691720"><a id="zh-cn_topic_0000001775029424_p18389125691720"></a><a id="zh-cn_topic_0000001775029424_p18389125691720"></a>String, string array, or <code>fuzz</code>.</p>
     <p id="zh-cn_topic_0000001775029424_p237418571470"><a id="zh-cn_topic_0000001775029424_p237418571470"></a><a id="zh-cn_topic_0000001775029424_p237418571470"></a>Output data type:</p>
-    <a id="zh-cn_topic_0000001775029424_ul14627151451810"></a><a id="zh-cn_topic_0000001775029424_ul14627151451810"></a><ul id="zh-cn_topic_0000001775029424_ul14627151451810"><li>bool</li><li>int8</li><li>uint8</li><li>int16</li><li>uint16</li><li>int32</li><li>int64</li><li>uint32</li><li>uint64</li><li>float16</li><li>float32</li><li>float</li><li>bfloat16 (only supported by <span id="ph13792114914267"><a id="ph13792114914267"></a><a id="ph13792114914267"></a><term id="zh-cn_topic_0000001312391781_term1253731311225_2"><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a>Atlas A3 training products</term>/<term id="zh-cn_topic_0000001312391781_term131434243115_2"><a id="zh-cn_topic_0000001312391781_term131434243115_2"></a><a id="zh-cn_topic_0000001312391781_term131434243115_2"></a>Atlas A3 inference products</term></span> and <span id="zh-cn_topic_0000001775029424_ph139217974314"><a id="zh-cn_topic_0000001775029424_ph139217974314"></a><a id="zh-cn_topic_0000001775029424_ph139217974314"></a><term id="zh-cn_topic_0000001312391781_term11962195213215_1"><a id="zh-cn_topic_0000001312391781_term11962195213215_1"></a><a id="zh-cn_topic_0000001312391781_term11962195213215_1"></a>Atlas A2 training products</term>/<term id="zh-cn_topic_0000001312391781_term184716139811_1"><a id="zh-cn_topic_0000001312391781_term184716139811_1"></a><a id="zh-cn_topic_0000001312391781_term184716139811_1"></a>Atlas A2 inference products</term></span>) </li><li>fuzz: automatically generates test cases in batches by using the fuzzing script.</li></ul>
+    <a id="zh-cn_topic_0000001775029424_ul14627151451810"></a><a id="zh-cn_topic_0000001775029424_ul14627151451810"></a><ul id="zh-cn_topic_0000001775029424_ul14627151451810"><li>bool</li><li>int8</li><li>uint8</li><li>int16</li><li>uint16</li><li>int32</li><li>int64</li><li>uint32</li><li>uint64</li><li>float16</li><li>float32</li><li>float</li><li>bfloat16 (only supported by <span id="ph13792114914267"><a id="ph13792114914267"></a><a id="ph13792114914267"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a><a id="zh-cn_topic_0000001312391781_term1253731311225_2"></a>Atlas A3 training products/<a id="zh-cn_topic_0000001312391781_term131434243115_2"></a><a id="zh-cn_topic_0000001312391781_term131434243115_2"></a>Atlas A3 inference products</span> and <span id="zh-cn_topic_0000001775029424_ph139217974314"><a id="zh-cn_topic_0000001775029424_ph139217974314"></a><a id="zh-cn_topic_0000001775029424_ph139217974314"></a><a id="zh-cn_topic_0000001312391781_term11962195213215_1"></a><a id="zh-cn_topic_0000001312391781_term11962195213215_1"></a>Atlas A2 training products/<a id="zh-cn_topic_0000001312391781_term184716139811_1"></a><a id="zh-cn_topic_0000001312391781_term184716139811_1"></a>Atlas A2 inference products</span>) </li><li>fuzz: automatically generates test cases in batches by using the fuzzing script.</li></ul>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001775029424_row173751957174716"><td class="cellrowborder" valign="top" width="16.41%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p5375115715475"><a id="zh-cn_topic_0000001775029424_p5375115715475"></a><a id="zh-cn_topic_0000001775029424_p5375115715475"></a>-</p>
@@ -1734,7 +1735,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="15.8%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p3375557174714"><a id="zh-cn_topic_0000001775029424_p3375557174714"></a><a id="zh-cn_topic_0000001775029424_p3375557174714"></a>shape</p>
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p1013071032616"><a id="zh-cn_topic_0000001775029424_p1013071032616"></a><a id="zh-cn_topic_0000001775029424_p1013071032616"></a>Required.</p>
-    <a id="zh-cn_topic_0000001775029424_ul22641405613"></a><a id="zh-cn_topic_0000001775029424_ul22641405613"></a><ul id="zh-cn_topic_0000001775029424_ul22641405613"><li>Int. 1D or 2D array. <p id="zh-cn_topic_0000001775029424_p141302109260"><a id="zh-cn_topic_0000001775029424_p141302109260"></a><a id="zh-cn_topic_0000001775029424_p141302109260"></a>Input tensor shape.</p>
+    <a id="zh-cn_topic_0000001775029424_ul22641405613"></a><a id="zh-cn_topic_0000001775029424_ul22641405613"></a><ul id="zh-cn_topic_0000001775029424_ul22641405613"><li>Int. 1D or 2D array. <p id="zh-cn_topic_0000001775029424_p141302109260"><a id="zh-cn_topic_0000001775029424_p141302109260"></a><a id="zh-cn_topic_0000001775029424_p141302109260"></a>Output tensor shape.</p>
     </li></ul>
     <a id="zh-cn_topic_0000001775029424_ul131301210192619"></a><a id="zh-cn_topic_0000001775029424_ul131301210192619"></a><ul id="zh-cn_topic_0000001775029424_ul131301210192619"><li>String type, <code>"fuzz"</code>. <p id="zh-cn_topic_0000001775029424_p101301310122618"><a id="zh-cn_topic_0000001775029424_p101301310122618"></a><a id="zh-cn_topic_0000001775029424_p101301310122618"></a>Supports fuzzing and uses the fuzzing script to automatically generate values in batches.</p>
     </li></ul>
@@ -1745,7 +1746,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="15.8%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p837616579472"><a id="zh-cn_topic_0000001775029424_p837616579472"></a><a id="zh-cn_topic_0000001775029424_p837616579472"></a>ori_shape</p>
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p1067863052619"><a id="zh-cn_topic_0000001775029424_p1067863052619"></a><a id="zh-cn_topic_0000001775029424_p1067863052619"></a>Optional.</p>
-    <a id="zh-cn_topic_0000001775029424_ul1367810303263"></a><a id="zh-cn_topic_0000001775029424_ul1367810303263"></a><ul id="zh-cn_topic_0000001775029424_ul1367810303263"><li>Int. 1D or 2D array. <p id="zh-cn_topic_0000001775029424_p1267893042614"><a id="zh-cn_topic_0000001775029424_p1267893042614"></a><a id="zh-cn_topic_0000001775029424_p1267893042614"></a>Original shape of the input data. This parameter is required if the original operator shape is not consistent with the implemented one.</p>
+    <a id="zh-cn_topic_0000001775029424_ul1367810303263"></a><a id="zh-cn_topic_0000001775029424_ul1367810303263"></a><ul id="zh-cn_topic_0000001775029424_ul1367810303263"><li>Int. 1D or 2D array. <p id="zh-cn_topic_0000001775029424_p1267893042614"><a id="zh-cn_topic_0000001775029424_p1267893042614"></a><a id="zh-cn_topic_0000001775029424_p1267893042614"></a>Original shape of the output data. This parameter is required if the original operator shape is not consistent with the implemented one.</p>
     </li></ul>
     <a id="zh-cn_topic_0000001775029424_ul5678113082614"></a><a id="zh-cn_topic_0000001775029424_ul5678113082614"></a><ul id="zh-cn_topic_0000001775029424_ul5678113082614"><li>String type, <code>"fuzz"</code>. <p id="zh-cn_topic_0000001775029424_p5678230172614"><a id="zh-cn_topic_0000001775029424_p5678230172614"></a><a id="zh-cn_topic_0000001775029424_p5678230172614"></a>Supports fuzzing and uses the fuzzing script to automatically generate values in batches.</p>
     </li></ul>
@@ -1815,25 +1816,26 @@ This section describes how to use the msOpST tool to generate the operator test 
             return [res, ]
         ```
 
-        > [!NOTE]NOTE  
+        > [!NOTE]
+        > 
         > You need to create the expected data generation function of the operator based on the developed custom operator. The names of all input, output, and attribute elements in the test case definition file are used as the input parameters of the expected data generation function of the operator. If an input is optional, the default value will be specified for the input.
 
         For example, if the `x3` input is optional, define the expected operator data generation function of the operator as follows:
 
         ```py
-        def calc_expect_func(x1, x2, x3=None, y=None)
+        def calc_expect_func(x1, x2, x3=None, y=None):
         ```
 
     2. Add a comparison function to the ST case definition file, that is, `OpType_xx.json`. Edit the test case definition file as required.
 
         In [Step 2 Run the following command to generate the operator test case definition file](#zh-cn_topic_0000001775029424_li1663966193910), add the `calc_expect_func_file` parameter to the operator test case definition file `AddCustom_case_timestamp_.json`, and set the parameter value to `/home/test/test_add_st.py:calc_expect_func`.
 
-        ```py
+        ```json
         [
             {
                 "case_name":"Test_AddCustom_001",         
                 "op": "AddCustom",                             
-                "calc_expect_func_file": "/home/test/test_add_st.py:calc_expect_func",   // Configure the implementation file for generating expected compute result.
+                "calc_expect_func_file": "/home/test/test_add_st.py:calc_expect_func",   // Configure the implementation file for generating expected compute result
                 "input_desc": [...]
                 ...
                 ...
@@ -1845,17 +1847,18 @@ This section describes how to use the msOpST tool to generate the operator test 
 
 This section walks through the workflow of generating the ST data and test case execution code based on the operator test case definition file, for running the test cases in the hardware environment.
 
-**Development and operating environments on the same server<a id="zh-cn_topic_0000001821790281_section1578184110620"></a>**
+**Development and Operating Environments on the Same Server<a id="zh-cn_topic_0000001821790281_section1578184110620"></a>**
 
 1. Configure the environment variables required for AscendCL application building as the AscendCL API is used to load and execute the single-operator model file during the execution of ST cases.
 
     ```sh
     export DDK_PATH=${INSTALL_DIR}
-    export NPU_HOST_LIB=${INSTALL_DIR}/{arch-os}/devlib
+    export NPU_HOST_LIB=${INSTALL_DIR}/${arch-os}/devlib
     ```
 
-    > [!NOTE]NOTE 
-    >- Replace `$\{INSTALL\_DIR\}` with the actual file storage path after the CANN software is installed. For example, if the installation is performed as the `root` user, the default file storage path after the installation is `/usr/local/Ascend/cann`.
+    > [!NOTE]
+    > 
+    >- Replace `${INSTALL_DIR}` with the actual file storage path after the CANN software is installed. For example, if the installation is performed as the `root` user, the default file storage path after the installation is `/usr/local/Ascend/cann`.
     >- In `{arch-os}`, `arch` indicates the OS architecture, and `os` indicates the operating system.
 
 2. Run the following command to generate or execute test cases. For details about the parameters, see [Table 1 Parameters for generating the operator test case definition file](#zh-cn_topic_0000001775029424_table15856145565413).
@@ -1867,8 +1870,9 @@ This section walks through the workflow of generating the ST data and test case 
     - The path of the `msopst.ini` file is `${INSTALL_DIR}/python/site-packages/bin/`.
     - The following table describes the parameters in the·`msopst.ini` file.
 
-        > [!NOTE]NOTE  
-        >By default, the `msopst.ini` file uses the FP16 precision mode. To use another precision mode, manually modify the `--precision_mode` option of `atc_singleop_advance_option` in [Table 1 msopst.ini file parameter description](#zh-cn_topic_0000001821790281_table17358154319919).
+        > [!NOTE]
+        > 
+        >By default, the `msopst.ini` file uses the `FP16` precision mode. To use another precision mode, manually modify the `--precision_mode` option of `atc_singleop_advance_option` in [Table 1 msopst.ini file parameter description](#zh-cn_topic_0000001821790281_table17358154319919).
 
         **Table 1** msopst.ini file parameter description
 
@@ -1905,7 +1909,7 @@ This section walks through the workflow of generating the ST data and test case 
         </tr>
         <tr id="zh-cn_topic_0000001821790281_row6356243695"><td class="cellrowborder" valign="top" width="29.432943294329434%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p6355114320910"><a id="zh-cn_topic_0000001821790281_p6355114320910"></a><a id="zh-cn_topic_0000001821790281_p6355114320910"></a>ASCEND_GLOBAL_LOG_LEVEL</p>
         </td>
-        <td class="cellrowborder" valign="top" width="41.3041304130413%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001821790281_ul53569434914"></a><a id="zh-cn_topic_0000001821790281_ul53569434914"></a><ul id="zh-cn_topic_0000001821790281_ul53569434914"><li><code>0</code>: DEBUG</li><li><code>1</code>: INFO</li><li><code>2</code>: WARNING</li><li><code>3</code>: ERROR (default)</li><li><code>4</code>: NULL; no log export.</li></ul>
+        <td class="cellrowborder" valign="top" width="41.3041304130413%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001821790281_ul53569434914"></a><a id="zh-cn_topic_0000001821790281_ul53569434914"></a><ul id="zh-cn_topic_0000001821790281_ul53569434914"><li><code>0</code>: DEBUG</li><li><code>1</code>: INFO</li><li><code>2</code>: WARNING</li><li><code>3</code>: ERROR (default)</li><li><code>4</code>: NULL, no log export</li></ul>
         </td>
         <td class="cellrowborder" valign="top" width="29.262926292629267%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p103561431190"><a id="zh-cn_topic_0000001821790281_p103561431190"></a><a id="zh-cn_topic_0000001821790281_p103561431190"></a>Host log level.</p>
         </td>
@@ -1921,7 +1925,7 @@ This section walks through the workflow of generating the ST data and test case 
         </td>
         <td class="cellrowborder" valign="top" width="41.3041304130413%" headers="mcps1.2.4.1.2 "><div class="p" id="zh-cn_topic_0000001821790281_p73562431699"><a id="zh-cn_topic_0000001821790281_p73562431699"></a><a id="zh-cn_topic_0000001821790281_p73562431699"></a><code>--log</code> value:<a id="zh-cn_topic_0000001821790281_ul1435714431393"></a><a id="zh-cn_topic_0000001821790281_ul1435714431393"></a><ul id="zh-cn_topic_0000001821790281_ul1435714431393"><li><code>debug</code>: outputs run logs at the debug, info, warning, error, and event levels.</li><li><code>info</code>: outputs run logs at the info, warning, error, and event levels.</li><li><code>warning</code>: outputs run logs at the warning, error, and event levels.</li><li><code>error</code>: (default) outputs run logs at the error and event levels.</li><li><code>null</code>: does not output run logs.</li></ul>
         </div>
-        <div class="p" id="zh-cn_topic_0000001821790281_p935714433915"><a id="zh-cn_topic_0000001821790281_p935714433915"></a><a id="zh-cn_topic_0000001821790281_p935714433915"></a><code>--precision_mode</code> value:<a id="zh-cn_topic_0000001821790281_ul13357194313910"></a><a id="zh-cn_topic_0000001821790281_ul13357194313910"></a><ul id="zh-cn_topic_0000001821790281_ul13357194313910"><li><code>force_fp16</code>: (Default) When the operator supports both FP16 and FP32 precisions, this value forces the selection of FP16.</li><li><code>force_fp32</code>: When the operator supports both FP16 and FP32 precisions, this mode forces the selection of FP32.</li><li><code>allow_fp32_to_fp16</code>: If the operator supports FP32, retains original FP32 precision; otherwise, selects FP16.</li><li><code>must_keep_origin_dtype</code>: maintains original image precision.</li><li><code>allow_mix_precision</code>: enables mixed precision mode.</li></ul>
+        <div class="p" id="zh-cn_topic_0000001821790281_p935714433915"><a id="zh-cn_topic_0000001821790281_p935714433915"></a><a id="zh-cn_topic_0000001821790281_p935714433915"></a><code>--precision_mode</code> value:<a id="zh-cn_topic_0000001821790281_ul13357194313910"></a><a id="zh-cn_topic_0000001821790281_ul13357194313910"></a><ul id="zh-cn_topic_0000001821790281_ul13357194313910"><li><code>force_fp16</code>: (Default) When the operator supports both <code>FP16</code> and <code>FP32</code> precisions, this value forces the selection of <code>FP16</code>.</li><li><code>force_fp32</code>: When the operator supports both <code>FP16</code> and <code>FP32</code> precisions, this mode forces the selection of <code>FP32</code>.</li><li><code>allow_fp32_to_fp16</code>: If the operator supports <code>FP32</code>, the original <code>FP32</code> precision is retained. Otherwise, <code>FP16</code> is selected.</li><li><code>must_keep_origin_dtype</code>: maintains original image precision.</li><li><code>allow_mix_precision</code>: enables mixed precision mode.</li></ul>
         </div>
         <p id="zh-cn_topic_0000001821790281_p18150525142215"><a id="zh-cn_topic_0000001821790281_p18150525142215"></a><a id="zh-cn_topic_0000001821790281_p18150525142215"></a><code>--host_env_os</code> value: </p>
         <p id="zh-cn_topic_0000001821790281_p1529318258415"><a id="zh-cn_topic_0000001821790281_p1529318258415"></a><a id="zh-cn_topic_0000001821790281_p1529318258415"></a><code>linux</code>: sets OS type to linux</p>.
@@ -2043,30 +2047,31 @@ This section walks through the workflow of generating the ST data and test case 
                 msopst run -i xx/AddCustom_case_timestamp.json -soc {soc version} -out ./output -conf xx/msopst.ini
                 ```
 
-            > [!NOTE]NOTE 
+            > [!NOTE]
+            > 
             > If the execution fails, analyze the cause as follows:
-            >- For details about aclError, see [aclError](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/API/appdevgapi/aclcppdevg_03_1345.html).
-            >- See [Error Code Reference](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/maintenref/troubleshooting/troubleshooting_0225.html).
-            >- View and analyze logs by referring to [Log Reference](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/maintenref/logreference/logreference_0001.html).
+            >- For details about aclError, see [aclError](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/API/runtimeapi/aclcppdevg_03_1345.html).
+            >- See [Error Code Reference](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/maintenref/troubleshooting/troubleshooting_0225.html).
+            >- View and analyze logs by referring to [Log Reference](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/maintenref/logreference/logreference_0001.html).
 
 3. View the execution result. <a id="output-in-the-co-deployed-development-and-operating-environments"></a>
     - In the run mode that msOpST generates the ST code only, a timestamp directory is generated in the directory specified by `-out`, and under the timestamp directory, a folder named after `OpType` is generated for storing ST cases. The directory structure is as follows:
 
-        ```tex
+        ```text
          {time_stamp}
         │   ├── OpType
         │   │   ├── CMakeLists.txt            // Build script
         │   │   ├── inc                       // Directory of header files required by the test case code
-        │   │   │   └── common.h
-        │   │   │   └── op_execute.h
-        │   │   │   └── op_runner.h
-        │   │   │   └── op_test_desc.h
+        │   │   │   ├── common.h
+        │   │   │   ├── op_execute.h
+        │   │   │   ├── op_runner.h
+        │   │   │   ├── op_test_desc.h
         │   │   │   └── op_test.h
         │   │   ├── run                       // Directory related to test case execution
         │   │   │   └── out
         │   │   │       └── test_data
         │   │   │          └── config
-        │   │   │             └── acl.json      // File for acl initialization. Keep it intact.
+        │   │   │             └── acl.json      // File for acl initialization. Keep it intact
         │   │   │             └── acl_op.json   // Operator description file used to build a single-operator model
         │   │   │          └── data
         │   │   │             └── expect
@@ -2084,7 +2089,7 @@ This section walks through the workflow of generating the ST data and test case 
 
     - In the run mode that msOpST generates and runs ST code, the execution result is printed after the command is executed. Then, a timestamp directory is generated in the directory specified by `-out`, and under the timestamp directory, a folder named after `OpType` is generated for storing both the ST cases and the execution results. The directory structure is as follows:
 
-        ```tex
+        ```text
          {time_stamp}
         │   ├── OpType
         │   │   ├── build
@@ -2109,7 +2114,7 @@ This section walks through the workflow of generating the ST data and test case 
         │   │   │       └── test_data         // Directory for storing test data files
         │   │   │          ├── config
         │   │   │             ├── acl_op.json    // Operator description file used to build a single-operator model
-        │   │   │             ├── acl.json       // File for AscendCL initialization. Keep it intact.
+        │   │   │             ├── acl.json       // File for AscendCL initialization. Keep it intact
         │   │   │          ├── data                // Constructed test data
         │   │   │             ├──expect
         │   │   │                 ├──Test_xxxx.bin      // Binary of the expected output
@@ -2123,7 +2128,7 @@ This section walks through the workflow of generating the ST data and test case 
         │   │       ├── op_execute.cpp        // Encapsulated AscendCL API for single-operator execution
         │   │       ├── op_runner.cpp         // Encapsulated API for loading the single-operator model file for execution
         │   │       ├── op_test.cpp          // Test class of the operator
-        │   │       ├── op_test_desc.cpp      // File for loading and reading the operator test case information.
+        │   │       ├── op_test_desc.cpp      // File for loading and reading the operator test case information
         │   │       └── testcase.cpp             // Test case definition file
         │   └── st_report.json        // Execution report
         ```
@@ -2133,7 +2138,7 @@ This section walks through the workflow of generating the ST data and test case 
         **Figure 1** Example of the running result <a id="zh-cn_topic_0000001821790281_fig1936411431910"></a> 
         ![](../figures/example_of_the_running_result.png "Example of the running result")
 
-        **Table 3** Fields in the st\_report.json report
+        **Table 3** Fields in the `st_report.json` report
 
         <a id="zh-cn_topic_0000001821790281_table1236818431294"></a>
         <table><thead align="left"><tr id="zh-cn_topic_0000001821790281_row83651743795"><th class="cellrowborder" colspan="3" valign="top" id="mcps1.2.5.1.1"><p id="zh-cn_topic_0000001821790281_p1636584311913"><a id="zh-cn_topic_0000001821790281_p1636584311913"></a><a id="zh-cn_topic_0000001821790281_p1636584311913"></a>Field</p>
@@ -2234,7 +2239,7 @@ This section walks through the workflow of generating the ST data and test case 
         </tbody>
         </table>
 
-**Development and operating environments on separate servers<a id="zh-cn_topic_0000001821790281_section389074412216"></a>**
+**Development and Operating Environments on Separate Servers<a id="zh-cn_topic_0000001821790281_section389074412216"></a>**
 
 1. Set up the environment in the development environment based on the operating environment architecture.
     1. The AscendCL APIs are used to load and execute the single-operator model file during ST case execution. As such, you need to configure the environment variables required for AscendCL application building in the development environment based on the operating environment architecture.
@@ -2253,8 +2258,9 @@ This section walks through the workflow of generating the ST data and test case 
             export NPU_HOST_LIB=${INSTALL_DIR}/{arch-os}/devlib
             ```
 
-        > [!NOTE]NOTE 
-        >- Replace `$\{INSTALL\_DIR\}` with the actual file storage path after the CANN software is installed. For example, if the installation is performed as the `root` user, the default file storage path after the installation is `/usr/local/Ascend/cann`.
+        > [!NOTE]
+        > 
+        >- Replace `${INSTALL_DIR}` with the actual file storage path after the CANN software is installed. For example, if the installation is performed as the `root` user, the default file storage path after the installation is `/usr/local/Ascend/cann`.
         >- In `arch-os`, `arch` indicates the OS architecture (select a value based on the architecture of the operating environment), and `os` indicates the operating system (select a value based on the OS of the operating environment).
 
 2. Enable the advanced features of the msOpST tool in the development environment to generate ST cases only.
@@ -2300,7 +2306,7 @@ This section walks through the workflow of generating the ST data and test case 
 
 This section describes how to specify the ST case definition file (.json) and implementation file `kernel_name.cpp` of the Ascend C operator to automatically generate the on-board test framework for calling the kernel function, test and verify the operator, and view the output result to check whether the operator function is correct.
 
-> [!NOTE]NOTE 
+> [!NOTE]
 > 
 >- This function applies only to Atlas inference products and Atlas training products, excluding the Atlas A2 training products/Atlas A2 inference products and Atlas A3 training products/Atlas A3 inference products.
 >- The `addr` and `tiling` attributes cannot be specified for any parameter.
@@ -2308,7 +2314,7 @@ This section describes how to specify the ST case definition file (.json) and im
 
 1. Prepare the following input files:
     - Operator ST case definition file (.json).
-    - Operator implementation file (.cpp) on the kernel side. For details, see "Operator Implementation" > "Project-based Operator Development" > "Operator Implementation on the Kernel Side" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/opdevg/Ascendcopdevg/atlas_ascendc_10_0063.html).
+    - Operator implementation file (.cpp) on the kernel side. For details, see "Operator Implementation" > "Project-based Operator Development" > "Operator Implementation on the Kernel Side" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/850/opdevg/Ascendcopdevg/atlas_ascendc_10_0063.html).
 
 2. Run the following command to generate the test code to call the kernel function. For details about the parameters, see [Parameters for generating single-operator on-board test framework](#zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_table20825174505717).
 
@@ -2392,7 +2398,7 @@ This section describes how to specify the ST case definition file (.json) and im
     </tr>
     <tr id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_row82001941201918"><td class="cellrowborder" valign="top" headers="mcps1.2.5.1.1 "><p id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p320094117199"><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p320094117199"></a><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p320094117199"></a>stage_result</p>
     </td>
-    <td class="cellrowborder" valign="top" headers="mcps1.2.5.1.1 "><p id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p10200741121914"><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p10200741121914"></a><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p10200741121914"></a>Result information in each running stage, including:</p>;
+    <td class="cellrowborder" valign="top" headers="mcps1.2.5.1.1 "><p id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p10200741121914"><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p10200741121914"></a><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p10200741121914"></a>Result information in each running stage, including:</p>
     <a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_ul20489160152817"></a><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_ul20489160152817"></a><ul id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_ul20489160152817"><li><code>status</code>: stage running status, indicating whether the stage is successfully executed or fails to be executed. </li><li><code>result</code>: output result. </li><li><code>stage_name</code>: stage name. </li><li><code>cmd</code>: running command.</li></ul>
     </td>
     </tr>
@@ -2455,8 +2461,8 @@ This section describes how to specify the ST case definition file (.json) and im
     `ASCEND_HOME_DIR` indicates the installation path of the CANN package. Change it to the actual path.
 
     ```sh
-    # Point to the installation address of the Ascend software package and export environment variables.
-    if [ ! $ASCEND_HOME_DIR ]; then
+    # Point to the installation address of the Ascend software package and export environment variables
+    if [ -z "$ASCEND_HOME_DIR" ]; then
         export ASCEND_HOME_DIR=${INSTALL_DIR}     
     fi
     source $ASCEND_HOME_DIR/bin/set_env.bash
@@ -2481,7 +2487,7 @@ This section describes how to specify the ST case definition file (.json) and im
     </thead>
     <tbody><tr id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001615270497_row1131012314182"><td class="cellrowborder" valign="top" width="18.45%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001776778716_p33101334189"><a id="zh-cn_topic_0000001776778716_p33101334189"></a><a id="zh-cn_topic_0000001776778716_p33101334189"></a>&lt;kernel_name&gt;</p>
     </td>
-    <td class="cellrowborder" valign="top" width="34.29%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001776778716_p3310937183"><a id="zh-cn_topic_0000001776778716_p3310937183"></a><a id="zh-cn_topic_0000001776778716_p3310937183"></a><span id="zh-cn_topic_0000001776778716_ph46922372194"><a id="zh-cn_topic_0000001776778716_ph46922372194"></a><a id="zh-cn_topic_0000001776778716_ph46922372194"></a>Name of the Ascend C operator implementation file.</p>
+    <td class="cellrowborder" valign="top" width="34.29%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001776778716_p3310937183"><a id="zh-cn_topic_0000001776778716_p3310937183"></a><a id="zh-cn_topic_0000001776778716_p3310937183"></a><span id="zh-cn_topic_0000001776778716_ph46922372194"></span><a id="zh-cn_topic_0000001776778716_ph46922372194"></a><a id="zh-cn_topic_0000001776778716_ph46922372194"></a>Name of the Ascend C operator implementation file.</p>
     </td>
     <td class="cellrowborder" valign="top" width="47.260000000000005%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001776778716_p93108391810"><a id="zh-cn_topic_0000001776778716_p93108391810"></a><a id="zh-cn_topic_0000001776778716_p93108391810"></a>For example, if the implementation file of the Add operator is <code>add_custom.cpp</code>, <code>add_custom</code> should be passed.</p>
     </td>
@@ -2490,8 +2496,8 @@ This section describes how to specify the ST case definition file (.json) and im
     </td>
     <td class="cellrowborder" valign="top" width="34.29%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001776778716_p1931033151815"><a id="zh-cn_topic_0000001776778716_p1931033151815"></a><a id="zh-cn_topic_0000001776778716_p1931033151815"></a>Model of the AI processor where the operator runs.</p>
     </td>
-    <td class="cellrowborder" valign="top" width="47.260000000000005%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001776778716_p4764221499"><a id="zh-cn_topic_0000001776778716_p4764221499"></a><a id="zh-cn_topic_0000001776778716_p4764221499"></a><span id="zh-cn_topic_0000001776778716_ph17641221894"><a id="zh-cn_topic_0000001776778716_ph17641221894"></a><a id="zh-cn_topic_0000001776778716_ph17641221894"></a><term id="zh-cn_topic_0000001312391781_term71949488213_1"><a id="zh-cn_topic_0000001312391781_term71949488213_1"></a><a id="zh-cn_topic_0000001312391781_term71949488213_1"></a>For the Atlas training series and Atlas inference series products, the actual model in use must be configured as <code>ascendxxxyy</code>.</p>
-    <div class="note" id="note1794698677"><a id="note1794698677"></a><a id="note1794698677"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul1553919272419"></a><a id="ul1553919272419"></a><ul id="ul1553919272419"><li>For servers other than the Atlas A3 training products/Atlas A3 inference products: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="zh-cn_topic_0000002015877373_ph31312041180"><a id="zh-cn_topic_0000002015877373_ph31312041180"></a><a id="zh-cn_topic_0000002015877373_ph31312041180"></a><term id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products/Atlas A3 inference products, run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
+    <td class="cellrowborder" valign="top" width="47.260000000000005%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001776778716_p4764221499"><a id="zh-cn_topic_0000001776778716_p4764221499"></a><a id="zh-cn_topic_0000001776778716_p4764221499"></a><span id="zh-cn_topic_0000001776778716_ph17641221894"></span><a id="zh-cn_topic_0000001776778716_ph17641221894"></a><a id="zh-cn_topic_0000001776778716_ph17641221894"></a><a id="zh-cn_topic_0000001312391781_term71949488213_1"></a><a id="zh-cn_topic_0000001312391781_term71949488213_1"></a>For the Atlas training series and Atlas inference series products, the actual model in use must be configured as <code>ascendxxxyy</code>.</p>
+    <div class="note" id="note1794698677"><a id="note1794698677"></a><a id="note1794698677"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="ul1553919272419"></a><a id="ul1553919272419"></a><ul id="ul1553919272419"><li>For servers other than the Atlas A3 training products/Atlas A3 inference products: Run the <code>npu-smi info</code> command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by <code>AscendChip name</code>. For example, if the chip name is <code>xxxyy</code>, the actual value is <code>Ascendxxxyy</code>. If <code>Ascendxxxyy</code> is the path of the code sample, set this parameter to <code>ascendxxxyy</code>. </li><li><span id="zh-cn_topic_0000002015877373_ph31312041180"></span><a id="zh-cn_topic_0000002015877373_ph31312041180"></a><a id="zh-cn_topic_0000002015877373_ph3131204118225_1"></a><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a><a id="zh-cn_topic_0000002015877373_zh-cn_topic_0000001312391781_term1253731311225_1"></a>For the Atlas A3 training products/Atlas A3 inference products, run the <code>npu-smi info -t board -i id -c chip_id</code> command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by <code>Chip name_NPU name</code>. For example, if the chip name is <code>Ascendxxx</code> and the NPU name is <code>1234</code>, the actual value is <code>Ascendxxx_1234</code>. If <code>Ascendxxx_1234</code> is the path of the code sample, set this parameter to <code>ascendxxx_1234</code>.  
     <a id="zh-cn_topic_0000002015877373_ul9238121944"></a><a id="zh-cn_topic_0000002015877373_ul9238121944"></a><ul id="zh-cn_topic_0000002015877373_ul9238121944"><li><code>id</code>: device ID, which is the NPU ID obtained by running the <code>npu-smi info -l</code> command. </li><li><code>chip_id</code>: chip ID, which is the same as the chip ID obtained by running the <code>npu-smi info -m</code> command.</li></ul>
     </li></ul>
     </div></div>

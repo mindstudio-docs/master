@@ -4,7 +4,7 @@
 
 |Product|Supported|
 |--|:-:|
-|Ascend 910_95 AI Processors|√|
+|Ascend 950 products|√|
 |Atlas A3 training products/Atlas A3 inference products|√|
 |Atlas A2 training products/Atlas A2 inference products|√|
 |Atlas 200I/500 A2 inference products|√|
@@ -30,7 +30,7 @@ void mstxDomainMarkA(mstxDomainHandle_t domain, const char *message, aclrtStream
 |Parameter|Input/Output|Description|
 |--|--|--|
 |domain|Input|Handle of the specified domain.|
-|message|Input|Pointer to the message string carried by the instrumentation. Length requirements for the passed message string: MSPTI scenario: cannot exceed 255 bytes. Non-MSPTI scenarios (for example, msprof command line, Ascend PyTorch Profiler): cannot exceed 156 bytes.|
+|message|Input|Pointer to the message string carried by the instrumentation. Length requirements for the passed message string: MSPTI scenario: cannot exceed 255 bytes.|
 |stream|Input|Stream used to execute the instrumentation task. When set to nullptr, only the instantaneous event on the Host side is marked. When set to a valid stream, the instantaneous events on both the Host side and the corresponding Device side are marked.|
 
 **Returns<a id="section16621124213476"></a>**

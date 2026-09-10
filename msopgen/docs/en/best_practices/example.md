@@ -2,11 +2,11 @@
 
 ## Ascend C Custom Operator Development Practice <a id="ZH-CN_TOPIC_0000002495336760"></a>
 
-Explains how to use the msOpGen tool to generate, build, and deploy an Ascend C custom operator project, and how to use the msOpST tool to test the functions of the operator.
+This document describes how to use the msOpGen tool to generate, build, and deploy an Ascend C custom operator project, and how to use the msOpST tool to test the functions of the operator.
 
 **Prerequisites**
 
-You have prepared for using the msOpGen tool by referring to "Preparations" in [MindStudio Ops Generator User Guide](../user_guide/msopgen_user_guide.md).
+Complete the preparations for using the msOpGen tool by referring to "Preparations" in [MindStudio Ops Generator User Guide](../user_guide/msopgen_user_guide.md).
 
 **Procedure**
 
@@ -69,7 +69,7 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
 
     > [!NOTE]
     > 
-    > The msOpGen tool generates only an empty operator project template. You need to add operators. For details, see "Operator Implementation" > "Project-based Operator Development" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/opdevg/Ascendcopdevg/atlas_ascendc_10_0059.html).
+    > The msOpGen tool generates only an empty operator project template. You need to implement the operator logic. For details, see "Operator Implementation" > "Project-based Operator Development" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_10_0059.html).
 
     ```sh
     msopgen gen -i MatmulCustom.json -f tf -c ai_core-Ascendxxxyy -lan cpp -out MatmulCustom
@@ -77,14 +77,14 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
 
 3. After the command is executed, the following operator project directory is generated in the specified directory.
 
-    ```tex
+    ```text
     MatmulCustom/
     ├── build.sh         // Compilation entry script
     ├── CMakeLists.txt   // CMakeLists.txt script of the operator project
     ├── CMakePresets.json // Compilation configuration items
-    ├── framework        // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored.
-    ├── op_host                      // Implementation file on the host.
-    │   ├── matmul_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation.
+    ├── framework        // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored
+    ├── op_host                      // Implementation file on the host
+    │   ├── matmul_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation
     │   ├── CMakeLists.txt
     ├── op_kernel                   // Implementation file on the kernel
     │   ├── CMakeLists.txt   
@@ -111,7 +111,7 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
         ./build_out/custom_opp_<target_os>_<target_architecture>.run --install-path="xxx/MatmulCustom/installed" 
         ```
 
-6. <a id="zh-cn_topic_0000001979357392_li2121117163612"></a>Run the following command to generate ST case: Replace `xxx` with the actual project path.
+6. <a id="zh-cn_topic_0000001979357392_li2121117163612"></a>Run the following command to generate an ST case: Replace `xxx` with the actual project path.
 
     ```sh
     msopst create -i "xxx/MatmulCustom/op_host/matmul_custom.cpp" -out ./st
@@ -122,7 +122,7 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
 
         ```sh
         export DDK_PATH=${INSTALL_DIR}
-        export NPU_HOST_LIB=${INSTALL_DIR}/{arch-os}/devlib
+        export NPU_HOST_LIB=${INSTALL_DIR}/${arch-os}/devlib
         ```
 
     2. Run the following command to perform ST and save the test result to the specified path: `xxx.json` is the test case obtained in [Step 6](#zh-cn_topic_0000001979357392_li2121117163612).
@@ -133,7 +133,7 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
 
 ## msOpST Test Case Definition File <a id="ZH-CN_TOPIC_0000002539685293"></a>
 
-- The following describes the Less operator's test case definition file (`Less\_case.json`).
+- The following describes the test case definition file of the Less operator (`Less_case.json`).
 
     ```json
     [
@@ -175,23 +175,6 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
                     "format": ["ND"],
                     "type": ["bool","bool"],
                     "shape": [12,32]
-                }
-            ]
-        },
-        {
-            "case_name": "Test_Less_002",
-            "op": "Less",
-            "input_desc": [
-                {                               
-                 ...
-                },
-                {                   
-                 ... 
-                }
-            ],
-            "output_desc": [
-                {
-                  ...
                 }
             ]
         }
@@ -292,7 +275,7 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
             "input_desc": [
                 {
                     "format": ["ND"],
-                    "type": ["int32"],         // If the value needs to be set, only one data type can be specified per test case.
+                    "type": ["int32"],         // If the value needs to be set, only one data type can be specified per test case
                     "shape": [3,6,3,4],
                     "data_distribute": [
                         "uniform"
@@ -317,7 +300,7 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
                             1
                         ]
                     ],
-            "value":[0,2]            // Configure a specific value, which must match that of shape.
+            "value":[0,2]            // Configure a specific value, which must match that of shape
                 }
         ],
         "output_desc": [
@@ -347,15 +330,25 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
             "op": "ArgMin",
             "input_desc": [
                 {
-                ...
+                    "format": ["ND"],
+                    "type": ["float"],
+                    "shape": [16,32],
+                    "data_distribute": ["uniform"],
+                    "value_range": [[-10.0, 10.0]]
                 },
             {
-                ...
+                    "format": ["ND"],
+                    "type": ["int64"],
+                    "shape": [1],
+                    "data_distribute": ["uniform"],
+                    "value_range": [[0, 1]]
                 }
         ],
         "output_desc": [
                 {
-                ...
+                    "format": ["ND"],
+                    "type": ["int64"],
+                    "shape": [16]
                 }
             ],
         "attr":[
@@ -427,25 +420,31 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
                     "format": ["ND"],
                     "type": ["int32"],
                     "shape": [1], 
-                    "is_const":true,           // The input is a constant.
+                    "is_const":true,           // The input is a constant
                     "data_distribute": [            
                         "uniform"                 
                     ],
                     "value":[11],              // Constant value
-                    "value_range": [           // Set both min_value and max_value to constants.
+                    "value_range": [           // Set both min_value and max_value to constants
                         [
                             11,
                             11
                         ]
                     ]
                 },
-                {                     
-                      ...
+                {
+                    "format": ["ND"],
+                    "type": ["float"],
+                    "shape": [11],
+                    "data_distribute": ["uniform"],
+                    "value_range": [[0.5, 2.0]]
                 }
             ],  
             "output_desc": [                     
                 {
-                    ...
+                    "format": ["ND"],
+                    "type": ["float"],
+                    "shape": [11]
                 }
             ]
         }
@@ -463,8 +462,8 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
                 {
                     "format": ["ND"],
                     "type": [
-                        "complex64",    // The input is of the complex type.
-                        "complex128"    // The input is of the complex type.
+                        "complex64",    // The input is of the complex type
+                        "complex128"    // The input is of the complex type
                             ],
                     "shape": [3,6],
                     "data_distribute": [
@@ -498,8 +497,8 @@ You have prepared for using the msOpGen tool by referring to "Preparations" in [
                 {
                     "format": ["ND"],
                     "type": [
-                        "complex64",    // The input is of the complex type.
-                        "complex128"    // The input is of the complex type.
+                        "complex64",    // The input is of the complex type
+                        "complex128"    // The input is of the complex type
                             ],
                     "shape": [3]
                 }
