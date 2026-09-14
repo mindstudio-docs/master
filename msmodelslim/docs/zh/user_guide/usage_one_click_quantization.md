@@ -1,4 +1,3 @@
-<!-- waiver: CE-05 原因：按团队链接规范，引用文档标题时书名号置于链接外（《[XX](…)》），链接锚文本内不使用书名号 -->
 # 一键量化使用指南
 
 ## 1. 适用范围
@@ -56,11 +55,11 @@ flowchart LR
 msmodelslim quant \
   --model_path ${MODEL_PATH} \          # 浮点权重目录
   --save_path ${SAVE_PATH} \            # 量化权重输出目录
-  --device npu \                        # 量化设备，如 npu、npu --device_id 0 1 2 3
+  --device npu \                        # 量化设备类型，如 npu、cpu；多卡另加 --device_id 0 1 2 3
   --model_type ${MODEL_TYPE} \          # 已注册或支持矩阵中的模型名，大小写敏感
   --quant_type ${QUANT_TYPE} \          # 量化类型，如 w8a8
   --tags ${TAG} \                        # 场景标签，如 vLLM-Ascend Atlas_A2_Inference
-  --trust_remote_code false             # 仅可信模型必要时设为 True
+  --trust_remote_code false             # 仅可信模型必要时设为 true
 ```
 
 ### 执行前预检
@@ -123,7 +122,7 @@ msmodelslim quant \
 | 硬件形态 | `Atlas_300I_Duo` | 量化后模型运行于 Atlas 300I Duo 推理卡 |
 | 硬件形态 | `Ascend_950` | 量化后模型运行于昇腾950PR&950DT系列产品 |
 
-> 推理引擎各取值对应的官方文档参见：《[MindIE 文档](https://mindie-motor.readthedocs.io/zh-cn/latest/)》《[vLLM-Ascend 文档](https://docs.vllm.ai/projects/ascend/zh-cn/latest/index.html)》《[SGLang 文档](https://docs.sglang.io/)》；硬件形态各取值对应的产品形态说明参见《[昇腾硬件形态描述](https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html)》。
+> 推理引擎各取值对应的官方文档参见：《[MindIE 文档](https://mindie-motor.readthedocs.io/zh-cn/latest/)》、《[vLLM-Ascend 文档](https://docs.vllm.ai/projects/ascend/zh-cn/latest/index.html)》、《[SGLang 文档](https://docs.sglang.io/)》；硬件形态各取值对应的产品形态说明参见《[昇腾硬件形态描述](https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html)》。
 
 **注意**：
 
@@ -157,7 +156,7 @@ msmodelslim quant \
 
 `--device` 为可选参数，不指定时默认使用 NPU 单卡执行。如需显式指定，可参考以下取值：
 
-- **填写**：`npu`（默认，单卡）、`npu --device_id 0 1 2 3`（多卡）、`cpu`。
+- **填写**：`--device` 指定设备类型：`npu`（默认）、`cpu`；多卡时另加 `--device_id` 指定设备索引，如 `--device_id 0 1 2 3`。
 - **注意**：指定多张卡时自动启用分布式逐层量化，详见下方"可选：多卡分布式量化"。
 
 **输出**：量化命令中已包含设备参数（或使用默认值）。
@@ -179,7 +178,7 @@ msmodelslim quant \
 **执行前检查**：
 
 - 目标 NPU 卡空闲可用；量化前不与其他训练/推理任务共享计算资源。
-- `trust_remote_code` 默认 `False`；仅当模型必须执行仓库内自定义代码且来源可信时设为 `True`。
+- `trust_remote_code` 默认 `false`；仅当模型必须执行仓库内自定义代码且来源可信时设为 `true`。
 
 **操作**：
 
@@ -252,5 +251,5 @@ msmodelslim quant \
 
 ## 11. 安全说明
 
-- trust_remote_code 默认保持 False，仅可信模型必要时开启。
+- trust_remote_code 默认保持 false，仅可信模型必要时开启。
 - 测评日志、校准数据、量化产物与 ModelScope 发布内容按业务权限管控。

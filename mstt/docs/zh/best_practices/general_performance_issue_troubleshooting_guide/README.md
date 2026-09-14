@@ -1,0 +1,15 @@
+# 性能问题通用定位指南
+
+- [导读](guide.md)
+- [简介](overview.md)
+- [性能问题的定位流程](positioning_process_for_performance_issues.md)
+- [性能工具的使用](performance_tool_usage.md)
+- [TopN性能问题的解决方案]()
+  - [简介](solution_to_topn_overview.md)
+  - [通信问题优化方案](solution_to_top1.md)
+  - [算子性能问题优化方案](solution_to_top2.md)
+  - [Host Bound问题定位及解决方法](solution_to_top3.md)
+  - [集群性能异常波动问题定位方法论](solution_to_top4.md)
+  - [ONNX离线推理场景解决方案](solution_to_top5.md)
+  - [MindIE推理性能解决方案](solution_to_top6.md)
+  - [版本升级性能劣化定位方法论](solution_to_top7.md)
