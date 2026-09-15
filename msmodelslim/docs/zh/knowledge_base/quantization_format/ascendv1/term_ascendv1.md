@@ -174,15 +174,15 @@ optional/
 | 格式枚举值 | vLLM Ascend | SGLang | MindIE | 说明 |
 | --- | --- | --- | --- | --- |
 | `FLOAT` | √ | √ | √ | 未量化张量，随模型一并加载 |
-| `W8A8` | √ | √ | √ | 昇腾A2系列产品 / 昇腾A3系列产品 / 昇腾950PR&950DT系列产品通用入口之一 |
-| `W8A8_DYNAMIC` | √ | √ | √ | 昇腾A2系列产品 / 昇腾A3系列产品 / 昇腾950PR&950DT系列产品通用入口之一 |
+| `W8A8` | √ | √ | √ | Atlas A2 系列产品 / Atlas A3 系列产品 / Ascend 950PR&950DT 系列产品通用入口之一 |
+| `W8A8_DYNAMIC` | √ | √ | √ | Atlas A2 系列产品 / Atlas A3 系列产品 / Ascend 950PR&950DT 系列产品通用入口之一 |
 | `W4A8_DYNAMIC` | √ | √ | √ | 显存更紧时常用 |
 | `W4A4_DYNAMIC` | √ | √ | √ | 更低比特 INT 路径 |
-| `W8A8_MXFP8` | √ | √ | √ | **推荐昇腾950PR&950DT系列产品**；昇腾A2系列产品 / 昇腾A3系列产品通常不可用 |
-| `W4A8_MXFP` | √ | √ | √ | **推荐昇腾950PR&950DT系列产品** |
-| `W4A4_MXFP4` | √ | √ | √ | **推荐昇腾950PR&950DT系列产品** |
-| `W4A4_MXFP4_DUALSCALE` | √ | √ | √ | **推荐昇腾950PR&950DT系列产品** |
-| `WFP8AFP8_DYNAMIC` | √ | — | — | 仅 vLLM Ascend；**推荐昇腾950PR&950DT系列产品** |
+| `W8A8_MXFP8` | √ | √ | √ | **推荐Ascend 950PR&950DT 系列产品**；Atlas A2 系列产品 / Atlas A3 系列产品通常不可用 |
+| `W4A8_MXFP` | √ | √ | √ | **推荐Ascend 950PR&950DT 系列产品** |
+| `W4A4_MXFP4` | √ | √ | √ | **推荐Ascend 950PR&950DT 系列产品** |
+| `W4A4_MXFP4_DUALSCALE` | √ | √ | √ | **推荐Ascend 950PR&950DT 系列产品** |
+| `WFP8AFP8_DYNAMIC` | √ | — | — | 仅 vLLM Ascend；**推荐Ascend 950PR&950DT 系列产品** |
 | `W8A16` | — | — | √ | 仅 MindIE |
 | `W8A8_MIX` | — | — | √ | PD-Mix；仅 MindIE |
 | `W16A16S` | — | — | √ | 稀疏量化；仅 MindIE |
@@ -282,7 +282,7 @@ optional/
 | `{prefix}.quant_bias` | int32 | 量化偏置 |
 | `{prefix}.input_scale` | float32 | 激活量化 scale |
 | `{prefix}.input_offset` | float32 | 激活量化 zero-point |
-| `{prefix}.deq_scale` | int64 / float32 | 综合反量化 scale（bfloat16 模型多为 float32，否则常按算子约定以 int64 位型存储） |
+| `{prefix}.deq_scale` | int64 / float32 | 综合反量化 scale（bfloat16 模型多为 float32，否则常按算子约定以 int64 类型存储） |
 | `{prefix}.bias` | float32 | 原始浮点偏置（可选） |
 
 ### 6.4 W8A8_DYNAMIC

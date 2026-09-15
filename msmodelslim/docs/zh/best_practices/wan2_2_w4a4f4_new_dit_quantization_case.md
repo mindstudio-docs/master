@@ -30,13 +30,13 @@
 
 | 项          | 版本或配置 |
 | ----------- | -------------------------------------------------- |
-| 产品形态     | 昇腾950PR&950DT系列产品（限定：浮点推理限定硬件形态） |
+| 产品形态     | Ascend 950PR&950DT 系列产品（限定：浮点推理限定硬件形态） |
 | 推理仓库     | 魔乐社区Wan2.2模型推理仓库，量化时推荐使用版本`git checkout 38fb8eb13a018cca316678930720eafa446c4387`，推理时推荐最新版本，仓库参见《[Wan2.2推理仓](https://modelers.cn/models/MindIE/wan2.2)》|
 | CANN        | 9.1.0 |
 | PyTorch     | 2.9.0 |
 | TorchNPU    | 2.9.0 |
 | MindIE-SD   | 3.1.0 |
-| 评测工具     | [AISBench](https://github.com/AISBench/benchmark) |
+| 测评工具     | [AISBench](https://github.com/AISBench/benchmark) |
 | 其他依赖     | Wan2.2-T2V-A14B 模型权重、[VBench-1.0-mini 评测数据集](https://modelers.cn/datasets/AISBench/VBench-1.0-mini) |
 
 **本案例前置条件**：
@@ -282,7 +282,7 @@ cp VBench-1.0-mini/VBench_kmeans_info_0.01.json \
 
 **目标**：运行浮点模型推理，在VBench-mini数据集上生成评测结果作为精度对比基线，该步骤只生成视频。  
 **输入**：浮点模型权重、VBench-mini评测数据集、推理超参配置。  
-**操作**：本案例中具体取值为：`ulysses_size=2`、`dit_fsdp + t5_fsdp`、`cfg_size=2`、`vae_parallel` 启用。FP16 与 W4A4F4 两组使用完全相同的并行约定。其中 `ALGO` 为推理仓用于选择 FA 计算方式的环境变量，需按设备与推理方式取值（取值说明详见推理仓文档 [开始前必读-ALGO配置说明](https://modelers.cn/models/MindIE/wan2.2#31-%E5%BC%80%E5%A7%8B%E5%89%8D%E5%BF%85%E8%AF%BB)）。本案例产品形态为昇腾950PR&950DT系列产品：浮点推理取 `ALGO=0`；量化推理因使能 attention FP8，取 `ALGO=3`。此为两侧唯一的非模型路径差异。
+**操作**：本案例中具体取值为：`ulysses_size=2`、`dit_fsdp + t5_fsdp`、`cfg_size=2`、`vae_parallel` 启用。FP16 与 W4A4F4 两组使用完全相同的并行约定。其中 `ALGO` 为推理仓用于选择 FA 计算方式的环境变量，需按设备与推理方式取值（取值说明详见推理仓文档 [开始前必读-ALGO配置说明](https://modelers.cn/models/MindIE/wan2.2#31-%E5%BC%80%E5%A7%8B%E5%89%8D%E5%BF%85%E8%AF%BB)）。本案例产品形态为Ascend 950PR&950DT 系列产品：浮点推理取 `ALGO=0`；量化推理因使能 attention FP8，取 `ALGO=3`。此为两侧唯一的非模型路径差异。
 
 ```bash
 # Wan2.2浮点模型推理
@@ -368,7 +368,7 @@ torchrun --nproc_per_node=4 --master_port=23459 vbench.py \
 
 | 项          | 内容                           |
 | ---------- | ---------------------------- |
-| 评测工具       | AISBench |
+| 测评工具       | AISBench |
 | 对比对象       | Wan2.2 FP16浮点推理生成结果 vs Wan2.2 W4A4F4量化推理生成结果 |
 | 数据集与任务     | Vbench-1.0-mini 1%子集 |
 | 样本数 / 子集策略 | VBench-1.0-mini 1%子集共11条prompt，每条prompt生成1个视频，共11个视频样本 |
