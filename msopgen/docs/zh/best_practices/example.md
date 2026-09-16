@@ -246,7 +246,7 @@
             "attr": [                           // 算子的属性
                 {
                     "name": "strides",          //属性的名称
-                    "type": "list_int",         // 属性的支持的类型
+                    "type": "list_int",         // 属性支持的类型
                     "value": [1,1,1,1]          // 属性值,跟type的类型对应
                 },
                {

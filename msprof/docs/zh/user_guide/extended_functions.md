@@ -5,27 +5,27 @@
 **产品支持情况<a name="zh-cn_topic_0000001276273570_section1281125681015"></a>**
 
 <!-- npu="950" id1 -->
-- 昇腾950PR&950DT系列产品：支持
+- Ascend 950PR&950DT 系列产品：支持
 <!-- end id1 -->
 <!-- npu="A3" id2 -->
-- 昇腾A3系列产品：支持
+- Atlas A3 系列产品：支持
 <!-- end id2 -->
 <!-- npu="910b" id3 -->
-- 昇腾A2系列产品：支持
+- Atlas A2 系列产品：支持
 <!-- end id3 -->
 <!-- npu="310b" id4 -->
-- 昇腾310B系列产品：支持
+- Atlas 200I/500 A2 推理产品：支持
 <!-- end id4 -->
 <!-- npu="310p" id5 -->
-- 昇腾310P系列产品：支持
+- Atlas 推理系列产品：支持
 <!-- end id5 -->
 <!-- npu="910" id6 -->
-- 昇腾910系列产品：支持
+- Atlas 训练系列产品：支持
 <!-- end id6 -->
 
 **功能说明<a name="zh-cn_topic_0000001276273570_section4362143220451"></a>**
 
-性能数据采集完成后可以通过“get\_msprof\_info.py”脚本工具在PROF\_XXX目录下的device_\{__id__\} 或host目录文件获取设备信息。“get\_msprof\_info.py”功能及安装路径如下：
+性能数据采集完成后可以通过“get\_msprof\_info.py”脚本工具在PROF\_XXX目录下的device_\{__id__\} 或host目录下的文件获取设备信息。“get\_msprof\_info.py”功能及安装路径如下：
 
 **表 1**  脚本介绍
 
@@ -126,27 +126,27 @@ python3 get_msprof_info.py -dir <dir> [--help]
 **产品支持情况<a name="zh-cn_topic_0000001265229666_section1281125681015"></a>**
 
 <!-- npu="950" id1 -->
-- 昇腾950PR&950DT系列产品：支持
+- Ascend 950PR&950DT 系列产品：支持
 <!-- end id1 -->
 <!-- npu="A3" id2 -->
-- 昇腾A3系列产品：支持
+- Atlas A3 系列产品：支持
 <!-- end id2 -->
 <!-- npu="910b" id3 -->
-- 昇腾A2系列产品：支持
+- Atlas A2 系列产品：支持
 <!-- end id3 -->
 <!-- npu="310b" id4 -->
-- 昇腾310B系列产品：支持
+- Atlas 200I/500 A2 推理产品：支持
 <!-- end id4 -->
 <!-- npu="310p" id5 -->
-- 昇腾310P系列产品：支持
+- Atlas 推理系列产品：支持
 <!-- end id5 -->
 <!-- npu="910" id6 -->
-- 昇腾910系列产品：支持
+- Atlas 训练系列产品：支持
 <!-- end id6 -->
 
 **功能说明<a name="zh-cn_topic_0000001265229666_section1598625522114"></a>**
 
-性能数据文件分片是对于解析完成的timeline数据文件（.json），系统会识别.json文件在Chrome浏览器（“chrome://tracing”）上打开时间的长短，适当将.json文件切分成合适的数量，以方便用户快速打开。分片操作是在执行性能数据导出时启动。
+性能数据文件分片是指，对于解析完成的timeline数据文件（.json），系统会识别.json文件在Chrome浏览器（“chrome://tracing”）上打开时间的长短，适当将.json文件切分成合适的数量，以方便用户快速打开。分片操作是在执行性能数据导出时启动。
 
 **文件格式<a name="zh-cn_topic_0000001265229666_section18515142717224"></a>**
 
@@ -194,7 +194,7 @@ msprof.py脚本需要执行如下步骤才能完成性能数据的最终导出�
 >[!NOTE]
 >
 <!-- npu="310b" id7 -->
->- 昇腾310B系列产品的Ascend RC场景不支持在设备上直接解析、查询和导出，需要将采集到的PROF\_XXX目录拷贝到安装了Toolkit包的环境下进行操作。
+>- Atlas 200I/500 A2 推理产品的Ascend RC场景不支持在设备上直接解析、查询和导出，需要将采集到的PROF\_XXX目录拷贝到安装了Toolkit包的环境下进行操作。
 <!-- end id7 -->
 >
 >- msprof.py工具使用安装时创建的用户运行。
@@ -204,22 +204,22 @@ msprof.py脚本需要执行如下步骤才能完成性能数据的最终导出�
 **产品支持情况<a name="zh-cn_topic_0000001265229758_section17436144114294"></a>**
 
 <!-- npu="950" id1 -->
-- 昇腾950PR&950DT系列产品：支持
+- Ascend 950PR&950DT 系列产品：支持
 <!-- end id1 -->
 <!-- npu="A3" id2 -->
-- 昇腾A3系列产品：支持
+- Atlas A3 系列产品：支持
 <!-- end id2 -->
 <!-- npu="910b" id3 -->
-- 昇腾A2系列产品：支持
+- Atlas A2 系列产品：支持
 <!-- end id3 -->
 <!-- npu="310b" id4 -->
-- 昇腾310B系列产品：支持
+- Atlas 200I/500 A2 推理产品：支持
 <!-- end id4 -->
 <!-- npu="310p" id5 -->
-- 昇腾310P系列产品：支持
+- Atlas 推理系列产品：支持
 <!-- end id5 -->
 <!-- npu="910" id6 -->
-- 昇腾910系列产品：支持
+- Atlas 训练系列产品：支持
 <!-- end id6 -->
 
 **功能说明<a name="zh-cn_topic_0000001265229758_section14143165719292"></a>**
@@ -233,7 +233,7 @@ msprof.py脚本需要执行如下步骤才能完成性能数据的最终导出�
 **命令格式<a name="zh-cn_topic_0000001265229758_section2822141353814"></a>**
 
 ```bash
-python3 msprof.py import -dir <dir>
+python3 msprof.py import -dir <dir> [--cluster]
 ```
 
 **参数说明<a name="zh-cn_topic_0000001265229758_section144107596381"></a>**
@@ -243,7 +243,7 @@ python3 msprof.py import -dir <dir>
 |参数|**可选/必选**|说明|
 |--|--|--|
 |import|必选|通过import方式解析性能数据。使用import方式解析性能数据时，即使原始性能数据目录中已经生成.db文件，该方式会重新生成.db文件。|
-|--cluster|集群场景时必选|解析集群场景的性能数据并进行汇总。仅配置import参数时支持。<br>**-dir**参数需指定PROF\_XXX目录的父目录，指定后的解析结果在PROF_XXX目录同级目录下生成sqlite目录。|
+|--cluster|集群场景时必选|解析集群场景的性能数据并进行汇总。仅配置import参数时支持。<br>**-dir**参数需指定PROF\_XXX目录的父目录，指定后的解析结果在PROF_XXX目录的同级目录下生成sqlite目录。|
 |-dir或--collection-dir|必选|收集到的性能数据目录。须指定为PROF\_XXX目录或PROF\_XXX目录的父目录，例如：*/home/profiler_data/PROF_XXX*。|
 |-h或--help|可选|显示帮助信息，仅在获取使用方式时使用。|
 
@@ -271,22 +271,22 @@ python3 msprof.py import -dir <dir>
 **产品支持情况<a name="zh-cn_topic_0000001312709849_section17436144114294"></a>**
 
 <!-- npu="950" id1 -->
-- 昇腾950PR&950DT系列产品：支持
+- Ascend 950PR&950DT 系列产品：支持
 <!-- end id1 -->
 <!-- npu="A3" id2 -->
-- 昇腾A3系列产品：支持
+- Atlas A3 系列产品：支持
 <!-- end id2 -->
 <!-- npu="910b" id3 -->
-- 昇腾A2系列产品：支持
+- Atlas A2 系列产品：支持
 <!-- end id3 -->
 <!-- npu="310b" id4 -->
-- 昇腾310B系列产品：支持
+- Atlas 200I/500 A2 推理产品：支持
 <!-- end id4 -->
 <!-- npu="310p" id5 -->
-- 昇腾310P系列产品：支持
+- Atlas 推理系列产品：支持
 <!-- end id5 -->
 <!-- npu="910" id6 -->
-- 昇腾910系列产品：支持
+- Atlas 训练系列产品：支持
 <!-- end id6 -->
 
 **功能说明<a name="zh-cn_topic_0000001312709849_section2149245124116"></a>**
@@ -353,22 +353,22 @@ msprof工具的查询功能获取到的信息如[表2](#zh-cn_topic_000000131270
 **产品支持情况<a name="zh-cn_topic_0000001265069834_section17436144114294"></a>**
 
 <!-- npu="950" id1 -->
-- 昇腾950PR&950DT系列产品：支持
+- Ascend 950PR&950DT 系列产品：支持
 <!-- end id1 -->
 <!-- npu="A3" id2 -->
-- 昇腾A3系列产品：支持
+- Atlas A3 系列产品：支持
 <!-- end id2 -->
 <!-- npu="910b" id3 -->
-- 昇腾A2系列产品：支持
+- Atlas A2 系列产品：支持
 <!-- end id3 -->
 <!-- npu="310b" id4 -->
-- 昇腾310B系列产品：支持
+- Atlas 200I/500 A2 推理产品：支持
 <!-- end id4 -->
 <!-- npu="310p" id5 -->
-- 昇腾310P系列产品：支持
+- Atlas 推理系列产品：支持
 <!-- end id5 -->
 <!-- npu="910" id6 -->
-- 昇腾910系列产品：支持
+- Atlas 训练系列产品：支持
 <!-- end id6 -->
 
 **功能说明<a name="zh-cn_topic_0000001265069834_section4946111125919"></a>**
@@ -407,8 +407,8 @@ msprof工具的查询功能获取到的信息如[表2](#zh-cn_topic_000000131270
 |--|--|--|
 |-dir或--collection-dir|必选|收集到的性能数据目录。须指定为PROF\_XXX目录或PROF\_XXX目录的父目录，例如：/home/HwHiAiUser/profiler_data/PROF_XXX。|
 |-reports|可选|传入用户自定义的reports_sample_config.json配置文件，会根据配置文件中指定的范围导出相应的性能数据文件。参数实现与msprof --reports一致，详细介绍请参见[使用示例（--reports参数）](msprof_parsing_instruct.md#zh-cn_topic_0000001265229686_section1128153151819)。|
-|--model-id|可选|模型ID。需配置为正整数。与--iteration-id必须同时配置，导出该Model下指定计算迭代的性能数据。--model-id与--iteration-id均未配置时，默认导出所有性能数据。<br/>&#8226; 对于昇腾A2系列产品和昇腾A3系列产品，支持--model-id 4294967295，为Step模式，即--iteration-id配置的值以Step为粒度解析。仅支持解析MindSpore（版本号大于等于2.3）框架的性能数据。<br/>&#8226;--model-id配置为其他值时，指定以Graph为粒度统计的迭代ID（每个Graph执行一次，Iteration ID加1，当一个脚本被编译为多个Graph时，该ID与脚本层面的Step ID不一致）。|
-|--iteration-id|可选|迭代ID。需配置为正整数。与--model-id必须同时配置，导出该Model下指定计算迭代的性能数据。--model-id与--iteration-id均未配置时，默认导出所有性能数据。<br>&#8226; 对于昇腾A2系列产品和昇腾A3系列产品，支持--model-id 4294967295，表示指定以Step为粒度统计的迭代ID（每执行完成一个Step，Iteration ID加1）。仅支持解析MindSpore（版本号大于等于2.3）框架的性能数据。<br/>&#8226; --model-id配置为其他值时，指定以Graph为粒度统计的迭代ID（每个Graph执行一次，Iteration ID加1，当一个脚本被编译为多个Graph时，该ID与脚本层面的Step ID不一致）。|
+|--model-id|可选|模型ID。需配置为正整数。与--iteration-id必须同时配置，导出该Model下指定计算迭代的性能数据。--model-id与--iteration-id均未配置时，默认导出所有性能数据。<br/>&#8226; 对于Atlas A2 系列产品和Atlas A3 系列产品，支持--model-id 4294967295，为Step模式，即--iteration-id配置的值以Step为粒度解析。仅支持解析MindSpore（版本号大于等于2.3）框架的性能数据。<br/>&#8226;--model-id配置为其他值时，指定以Graph为粒度统计的迭代ID（每个Graph执行一次，Iteration ID加1，当一个脚本被编译为多个Graph时，该ID与脚本层面的Step ID不一致）。|
+|--iteration-id|可选|迭代ID。需配置为正整数。与--model-id必须同时配置，导出该Model下指定计算迭代的性能数据。--model-id与--iteration-id均未配置时，默认导出所有性能数据。<br>&#8226; 对于Atlas A2 系列产品和Atlas A3 系列产品，支持--model-id 4294967295，表示指定以Step为粒度统计的迭代ID（每执行完成一个Step，Iteration ID加1）。仅支持解析MindSpore（版本号大于等于2.3）框架的性能数据。<br/>&#8226; --model-id配置为其他值时，指定以Graph为粒度统计的迭代ID（每个Graph执行一次，Iteration ID加1，当一个脚本被编译为多个Graph时，该ID与脚本层面的Step ID不一致）。|
 |--iteration-count|可选|导出连续迭代的个数，取值范围为1~5的整数，根据--iteration-id配置的值为起始Step，导出连续数量的Step，比如配置--iteration-count为3，--iteration-id为1，则导出Step为1、2、3。|
 |--format|可选|summary数据文件的导出格式，支持csv和json两种格式，默认值为csv。仅配置summary参数时支持。<br/>本文中summary文件介绍均以csv文件为例。|
 |--clear|可选|数据精简模式，开启后将在导出性能数据后删除PROF_XXX/device_{id}下的sqlite目录，以节省存储空间。配置该参数时表示开启数据精简模式，未配置表示关闭，默认关闭。|
@@ -505,37 +505,38 @@ msprof工具的查询功能获取到的信息如[表2](#zh-cn_topic_000000131270
 >- 多Device场景下，若启动单采集进程，则仅生成一个PROF\_XXX目录，若启动多采集进程则生成多个PROF\_XXX目录，其中device目录在PROF\_XXX目录下生成，每个PROF\_XXX目录下生成多少个device目录与用户实际操作有关，不影响性能数据分析。
 >- 性能数据详细介绍请参见[性能数据文件参考](profile_data_file_references.md)。
 >- mindstudio\_profiler\_output目录中的文件是根据采集的实际性能数据进行生成，如果实际的性能数据没有相关的数据文件，就不会导出对应的timeline和summary数据。
->- 使用export命令能直接从已解析的性能数据中导出数据文件。当性能数据未解析时，单独执行export命令也能进行解析性能数据并导出数据文件。
+>- 使用export命令能直接从已解析的性能数据中导出数据文件。当性能数据未解析时，单独执行export命令也能对性能数据进行解析并导出数据文件。
 >- 对于被强制中断的msprof采集进程，工具会保存已采集的原始性能数据，也可以使用**export**解析并导出。
 
 ## 性能调优建议
 
 > [!NOTE]
 > 
-> 该功能为msprof工具解析后输出调优建议的功能，已不再演进，分析性能数据并输出调优建议更多的功能请参见《[msprof-analyze](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/quick_start/msprof-analyze_quick_start.md)》。
+> 该功能为msprof工具解析后输出调优建议的功能，已不再演进，更多分析性能数据并输出调优建议的功能请参见《[msprof-analyze](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/quick_start/msprof-analyze_quick_start.md)》。
 
 **产品支持情况<a name="zh-cn_topic_0000002441319698_section5889102116569"></a>**
 
 >[!NOTE]
->昇腾产品的具体型号，请参见《[昇腾产品形态说明](https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html)》
+>
+>昇腾产品的具体型号，请参见《[昇腾产品形态说明](https://www.hiascend.com/document/detail/zh/AscendFAQ/ProduTech/productform/hardwaredesc_0001.html)》。
 
 <!-- npu="950" id1 -->
-- 昇腾950PR&950DT系列产品：支持
+- Ascend 950PR&950DT 系列产品：支持
 <!-- end id1 -->
 <!-- npu="A3" id2 -->
-- 昇腾A3系列产品：支持
+- Atlas A3 系列产品：支持
 <!-- end id2 -->
 <!-- npu="910b" id3 -->
-- 昇腾A2系列产品：支持
+- Atlas A2 系列产品：支持
 <!-- end id3 -->
 <!-- npu="310b" id4 -->
-- 昇腾310B系列产品：支持
+- Atlas 200I/500 A2 推理产品：支持
 <!-- end id4 -->
 <!-- npu="310p" id5 -->
-- 昇腾310P系列产品：支持
+- Atlas 推理系列产品：支持
 <!-- end id5 -->
 <!-- npu="910" id6 -->
-- 昇腾910系列产品：支持
+- Atlas 训练系列产品：支持
 <!-- end id6 -->
 
 集群或多卡通信场景下，在执行完性能数据export导出命令后，会在屏幕打印相关性能调优建议，具体如下：
@@ -568,7 +569,7 @@ msprof工具的查询功能获取到的信息如[表2](#zh-cn_topic_000000131270
     - 个别的慢链路导致少数卡之间的通信时间增长，其他卡需等待其通信完成，从而拖累整个集群的性能。
     - 存在带宽或通信算子异常的情况，导致全网链路无法达到正常的带宽速率，所有卡的通信时间增长，这种情况下没有典型的慢卡和慢链路。
 
-    通过通信矩阵对HCCS、PCIE和RDMA进行分析，针对每种链路类型的平均情况，给出瓶颈分析及调优建议；针对存在慢链路的情况，给出慢链路的全部信息及调优建议。
+    通过通信矩阵对HCCS、PCIe和RDMA进行分析，针对每种链路类型的平均情况，给出瓶颈分析及调优建议；针对存在慢链路的情况，给出慢链路的全部信息及调优建议。
 
     分析建议如下：
 

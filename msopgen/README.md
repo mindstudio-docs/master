@@ -39,11 +39,11 @@ MindStudio Ops Generator（算子工程生成，msOpGen）是算子工程自动�
 
 ## 🚀 快速入门
 
-详细操作步骤请参见《[msOpGen 快速入门](./docs/zh/quick_start/msopgen_quick_start.md)》。
+基于入门教程中开发的简易加法算子，演示msOpGen工具的核心功能，详细操作步骤请参见《[msOpGen 快速入门](./docs/zh/quick_start/msopgen_quick_start.md)》。
 
 ## 📦 安装指南
 
-介绍msOpGen工具的环境依赖及安装方式，具体请参见《[msOpGen 安装指南](docs/zh/install_guide/msopgen_install_guide.md)》。
+msOpGen工具支持在线安装、离线安装以及源码安装，具体请参见《[msOpGen 安装指南](docs/zh/install_guide/msopgen_install_guide.md)》。
 
 ## 📘 使用指南
 
@@ -70,7 +70,7 @@ msOpGen工具通过一些典型案例帮助用户理解并熟悉工具，具体�
 
 ## ⚖️ 相关说明
 
-🔹《[版本说明](./docs/zh/release_notes/release_notes.md)》  
+🔹《[版本说明](https://gitcode.com/Ascend/msopgen/releases)》  
 🔹《[许可证声明](./docs/zh/legal/license_notice.md)》  
 🔹《[安全声明](./docs/zh/legal/security_statement.md)》  
 🔹《[免责声明](./docs/zh/legal/disclaimer.md)》

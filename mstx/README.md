@@ -38,7 +38,7 @@ MindStudio Tools Extension Library（工具扩展接口库，msTX）介绍msTX�
 
 ## 📦 安装指南
 
-介绍工具的环境依赖与安装方法，请参见《[msTX 安装指南](docs/zh/install_guide/mstx_install_guide.md)》。
+工具支持在线安装、离线安装以及源码安装，请参见《[msTX 安装指南](docs/zh/install_guide/mstx_install_guide.md)》。
 
 ## 💡 典型案例
 
@@ -50,7 +50,7 @@ msTX接口具体内容请参见《[msTX 接口参考](docs/zh/api_reference/READ
 
 ## 🛠️ 贡献指南
 
-欢迎参与项目贡献，请参见《[贡献指南](./docs/zh/contributing/contributing_guide.md)》。  
+欢迎参与项目贡献，请参见《[贡献指南](./docs/zh/contributing/contributing_guide.md)》。
 
 ## ⚖️ 相关说明
 

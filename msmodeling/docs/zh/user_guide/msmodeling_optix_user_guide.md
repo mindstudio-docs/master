@@ -195,16 +195,25 @@ others = ""
 |`port`|必选|端口号，需与 `[vllm_benchmark.command]` 中的 `port` 保持一致。|
 |`model`|必选|模型路径。|
 |`served_model_name`|必选|模型名称。|
-|`others`|可选|拼接其他参数，参数间使用空格分隔。如 `--tensor-parallel-size 2 --no-enable-prefix-caching`。默认为空。|
+|`others`|可选|追加固定参数，参数间使用空格分隔。如 `--tensor-parallel-size 2 --no-enable-prefix-caching`。默认为空。|
 
 ### VLLM 自定义参数寻优
 
 寻优工具支持通过 `[[vllm.target_field]]` 添加 VLLM 参数参与寻优。根据参数生效方式不同，配置方式分为两类：
 
 - **VLLM 环境变量**：只需在 `[[vllm.target_field]]` 中声明，且 `config_position = "env"`。工具会在每轮寻优启动服务前自动写入同名大写环境变量，不需要写入 `[vllm.command]` 的 `others`。
-- **VLLM 命令行参数**：先在 `[[vllm.target_field]]` 中声明，再在 `[vllm.command]` 的 `others` 中通过变量引用拼接到启动命令。
+- **VLLM 命令行参数**：在 `[[vllm.target_field]]` 中声明，且 `config_position = "run"`；工具会自动将字段名渲染为同名 `--kebab-case` 参数并追加到 `vllm serve`，无需在 `others` 中引用。
 
-> **变量引用规则**：在 `others` 中使用 `$字段名大写` 的格式引用寻优字段，工具运行时会自动将其替换为当前迭代的实际值。
+如需给 vLLM 服务进程注入固定环境变量，可在 `[vllm.env]` 中按 key/value 配置：
+
+```toml
+[vllm.env]
+ASCEND_RT_VISIBLE_DEVICES = "8,9"
+```
+
+这些变量会直接进入 vLLM 子进程环境，不会拼成命令行参数；如果同名变量同时出现在 `[[vllm.target_field]]` 的 `env` 字段中，寻优字段会按轮次覆盖固定值。
+
+> **变量引用规则**：`others` 仅用于固定参数；如需显式展开环境变量类字段，可使用 `$字段名大写`。
 
 #### 示例一：VLLM 环境变量寻优
 
@@ -219,41 +228,45 @@ dtype_param = ["fork", "spawn"]
 value = "fork"
 ```
 
-此类参数无需在 `[vllm.command]` 的 `others` 中引用，保持 `others = ""` 或仅填写其他命令行参数即可。
+#### 示例二：命令行参数寻优
 
-#### 示例二：命令行枚举数值参数（以 `gpu_memory_utilization` 为例）
+声明 `config_position = "run"` 后，工具会自动把字段名渲染为同名 `--kebab-case` 参数并追加到 `vllm serve`，无需在 `others` 中引用。
+
+普通标量参数：
 
 ```toml
-# 第一步：声明寻优字段
 [[vllm.target_field]]
 name = "GPU_MEMORY_UTILIZATION"
-config_position = "env"
+config_position = "run"
 dtype = "enum"
 dtype_param = [0.9, 0.91, 0.92]
 value = 0.9
-
-# 第二步：在 [vllm.command] 的 others 中引用变量
-[vllm.command]
-others = "--gpu-memory-utilization $GPU_MEMORY_UTILIZATION"
 ```
 
-#### 示例三：命令行开关型/复合字符串参数（以 `--compilation-config` 为例）
+生成：
 
-当参数本身是一段完整的 CLI 字符串时，可将"不启用"（空字符串 `""`）和"启用"两种形态作为枚举候选值。工具遇到空字符串时会自动跳过，不向启动命令追加任何内容。
+```bash
+--gpu-memory-utilization 0.9
+```
 
-> **注意**：TOML 字符串使用双引号 `"` 作为边界符，若字符串内容中包含双引号，需使用 `\"` 转义。
+JSON 容器参数：
 
 ```toml
 [[vllm.target_field]]
 name = "COMPILATION_CONFIG"
-config_position = "env"
+config_position = "run"
 dtype = "enum"
-dtype_param = ["", "--compilation-config '{\"cudagraph_mode\": \"FULL_DECODE_ONLY\"}'"]
-value = "--compilation-config '{\"cudagraph_mode\": \"FULL_DECODE_ONLY\"}'"
-
-[vllm.command]
-others = "$COMPILATION_CONFIG"
+dtype_param = ["", '{"cudagraph_mode": "FULL_DECODE_ONLY"}']
+value = '{"cudagraph_mode": "FULL_DECODE_ONLY"}'
 ```
+
+生成：
+
+```bash
+--compilation-config '{"cudagraph_mode": "FULL_DECODE_ONLY"}'
+```
+
+空字符串候选表示不追加该参数。TOML 单引号字面量可以直接包含 JSON 双引号；若使用双引号字符串，则需将 JSON 内部双引号写成 `\"`。
 
 ### VLLM 常用寻优字段
 
@@ -316,11 +329,11 @@ dtype_param = "max_batch_size"
 
 | 字段 | 含义                                                                                                                                                                                          | 示例 |
 |---|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
-| `name` | 寻优字段名。环境变量类需大写，工具每轮启动服务前自动写入同名大写环境变量；命令行类用作 `$字段名大写` 变量引用                                                                                                                                   | `COMPILATION_CONFIG` |
-| `config_position` | 生效位置：`env`（环境变量）或MindIE服务配置文件路径（如 `BackendConfig.ScheduleConfig.maxBatchSize`）                                                                                                              | `env` |
+| `name` | 寻优字段名。环境变量类需大写，工具每轮启动服务前自动写入同名大写环境变量；命令行类由工具自动渲染为同名 `--kebab-case` 参数                                                                                                                                   | `COMPILATION_CONFIG` |
+| `config_position` | 生效位置：`env`（仅环境变量，不拼命令行）、`run`（命令行参数，工具自动追加同名 `--kebab-case` 参数，无需在 `others` 引用）或 MindIE 服务配置文件路径（如 `BackendConfig.ScheduleConfig.maxBatchSize`） | `run` |
 | `dtype` | 取值类型，决定 PSO 采样方式：`int`/`float`/`bool`/`enum`/`range`/`ratio`/`share`/`factories`/`times`/`ternary_factories`/`ternary_times`，各类型含义见 [target_field 支持的 dtype 类型](#target_field-支持的-dtype-类型) | `enum` |
-| `dtype_param` | 依 dtype 而定：`enum` 为候选值列表、`range` 为步长整数、`ratio` 与派生类为依赖字段配置                                                                                                                                  | `["", "--compilation-config '{\"cudagraph_mode\": \"FULL_DECODE_ONLY\"}'"]` |
-| `value` | 初始值，用于生成基线数据                                                                                                                                                                                | `"--compilation-config '{\"cudagraph_mode\": \"FULL_DECODE_ONLY\"}'"` |
+| `dtype_param` | 依 dtype 而定：`enum` 为候选值列表、`range` 为步长整数、`ratio` 与派生类为依赖字段配置                                                                                                                                  | `["", '{"cudagraph_mode": "FULL_DECODE_ONLY"}']` |
+| `value` | 初始值，用于生成基线数据                                                                                                                                                                                | `'{"cudagraph_mode": "FULL_DECODE_ONLY"}'` |
 | `min` / `max` | 搜索区间上下界（`int`/`float`/`range` 生效）；`min == max` 时字段视为常量、不参与搜索；`enum` 的实际候选由 `dtype_param` 给出，派生类型需将 `min`/`max` 均设为 0                                                                        | — |
 | `constant` | 可选；设值后字段固定为该值、不参与 PSO 搜索（`CONCURRENCY`/`REQUESTRATE` 自动改写时由工具写入）                                                                                                                            | — |
 
@@ -485,207 +498,13 @@ msmodeling optix -e vllm -b vllm_benchmark -c ../configs/vllm_config.toml
 msmodeling optix -c my_config.toml
 ```
 
-> 如需设置环境变量作用于 vLLM/MindIE 服务，只需在运行工具前设置即可（如 `export ASCEND_RT_VISIBLE_DEVICES=0`），工具会在寻优过程中自动设置。
+> 如需设置环境变量作用于 vLLM 服务，优先使用 `[vllm.env]`；如需作用于 MindIE 服务或整个工具进程，可在运行工具前设置（如 `export ASCEND_RT_VISIBLE_DEVICES=0`），工具会在寻优过程中自动继承。
 
 ### 内置 PD 分离两步寻优
 
-PD 分离模式拆分为“P/D 服务参数搜索与配比推荐”和“外部 PD 服务 benchmark-only 微调”两步。
-该流程仅用于需要推荐 P/D 实例配比的场景；其他 PD 分离或 PD 混部寻优直接使用仓内现有插件。
+OptiX 支持为 vLLM 的 PD（Prefill-Decode）分离部署搜索服务参数并推荐 P/D 实例配比：先通过 `--mode pd_disagg` 分别搜索 P/D 参数，再由用户部署完整 PD 服务，最后通过普通 `standard` 模式微调并发和请求速率。
 
-第一步执行：
-
-```bash
-msmodeling optix --mode pd_disagg -c ./pd_disagg_config.toml
-```
-
-第一步只使用 vLLM 搜索 Prefill/Decode 服务化参数，输出 `service_search_completed` summary、P/D QPS、`pd_ratio` 和整数实例推荐。该模式必须配置 `skip_pso=false` 和 `manage_simulator_lifecycle=true`；否则启动时直接报错，不会使用未经搜索的 baseline 计算配比，也不会静默忽略生命周期配置。配置 `pd_disagg.top_k=0` 可跳过 P/D 搜索阶段内的 FineTune，仍保留 PSO 最优结果和配比推荐。用户随后使用自有部署工具启动 PD 服务。
-
-第二步新建独立的普通 OptiX 微调配置，将 benchmark URL 指向已运行的 PD 服务：
-
-```toml
-skip_pso = true
-manage_simulator_lifecycle = false
-fine_tune_mode = "pd_mixed"
-
-[vllm]
-target_field = []
-
-[vllm_benchmark.command]
-host = "pd-service-host"
-port = "8000"
-model = "model_path"
-served_model_name = "model_name"
-dataset_name = "random"
-others = "--num-prompts 500 --random-input-len 1024 --random-output-len 256"
-
-[[vllm_benchmark.target_field]]
-name = "CONCURRENCY"
-config_position = "env"
-min = 1
-max = 1000
-dtype = "int"
-value = 100
-
-[[vllm_benchmark.target_field]]
-name = "REQUESTRATE"
-config_position = "env"
-min = 1
-max = 1000
-dtype = "float"
-value = 100
-```
-
-然后执行：
-
-```bash
-msmodeling optix --mode standard -e vllm -b vllm_benchmark -c ./pd_fine_tune.toml
-```
-
-该步在 benchmark 基线测试后直接 FineTune，只调整并发和请求速率，不启动、监控或停止 simulator。无需安装 `contrib/optix/vllm_pd_simulator`。
-
-Prefill 阶段必须把 benchmark 的输出长度配置为 1 token，使请求在首 token 后结束，尽量消除 Decode 过程对结果的影响。
-OptiX 直接把 P/D 两阶段 benchmark 各自返回的 `throughput`（单位 req/s）作为 QPS，不使用并发数和 TTFT/TPOT 计算或兜底。任一阶段未返回有效正数 `throughput` 时，配比计算失败。
-
-独立 Decode 搜索应启用 vLLM prefix caching，并在 `use_request_rate_calibration=false` 时设置 `decode.benchmark_run_count=2`。每组候选只启动一次 Decode 服务：第一轮相同请求用于填充 prefix cache，第二轮才采集有效指标；第一轮不会进入 CSV、fitness、Decode QPS 或配比计算。random 数据集应显式固定 benchmark `--seed`，确保两轮 prompt 和请求顺序一致。该双跑只用于第一步近似隔离 D 节点能力，不影响用户启动完整 PD 服务后的第二步 benchmark-only 微调。
-
-浮点 `pd_ratio` 表示未考虑卡数的理论 `P_instances / D_instances`；最终 `instances` 必须满足总卡数和单实例用卡约束。例如总计 16 卡、P/D 单实例均为 8 卡且要求用满设备时，唯一可行推荐是 `1P:1D`；其与理论配比的差异记录在 `ratio_error`。
-
-关键配置如下：
-
-| 配置 | 默认值 | 说明 |
-|---|---|---|
-| `total_devices` | `0` | 总设备数；为 0 时只输出浮点配比。|
-| `prefill_devices_per_instance` / `decode_devices_per_instance` | `0` | 单实例设备数；设备相关三个字段必须同时配置。|
-| `top_k` | `3` | P/D 阶段候选数量；`0` 表示跳过阶段 FineTune，仍输出 PSO 最优点对应的配比和至少一组实例推荐。|
-| `use_full_device` | `true` | 是否要求实例组合用满设备。|
-| `phase_output_dir` | `pd_disagg` | 相对 `output` 的阶段产物目录。|
-| `prefill.engine` / `decode.engine` | `vllm` | 内置 PD 流程限定值。|
-| `prefill.benchmark_policy` / `decode.benchmark_policy` | `vllm_benchmark` | 可换为 `ais_bench` 或其他已注册 benchmark。|
-| `prefill.n_particles` / `prefill.iters` | 顶层同名值 | Prefill 独立 PSO 粒子数和迭代数。|
-| `decode.n_particles` / `decode.iters` | 顶层同名值 | Decode 独立 PSO 粒子数和迭代数。|
-| `prefill.benchmark_run_count` / `decode.benchmark_run_count` | `1` | 同一服务实例上的 benchmark 总次数，必须大于等于 1；大于 1 时要求 `use_request_rate_calibration=false`，否则配置校验失败。前 N-1 轮只预热。|
-| `phase.simulator_command_overrides` | 空 | 可选，只覆盖该阶段 vLLM 启动命令配置中已声明的字段。|
-| `phase.benchmark_command_overrides` | 空 | 可选，只覆盖该阶段 benchmark 命令配置中已声明的字段。|
-| `phase.target_field` | 空 | 该阶段完整搜索空间；非空时替代从插件继承的字段。|
-
-Prefill 和 Decode 可分别设置搜索预算；任一字段未填写时仅该字段回退到顶层配置：
-
-```toml
-[pd_disagg.prefill]
-n_particles = 8
-iters = 4
-benchmark_run_count = 1
-
-[pd_disagg.decode]
-n_particles = 12
-iters = 6
-benchmark_run_count = 2
-```
-
-`[vllm.command]` 是 Prefill/Decode 的公共基线；两个阶段可分别使用
-`simulator_command_overrides` 覆盖 `host`、`port`、`model`、`served_model_name` 或 `others`。
-覆盖使用阶段本地副本，不会回写全局配置，也不会污染另一个阶段。例如：
-
-```toml
-[pd_disagg.prefill.simulator_command_overrides]
-others = "--tensor-parallel-size 4 --no-enable-prefix-caching"
-
-[pd_disagg.decode.simulator_command_overrides]
-others = "--tensor-parallel-size 2 --enable-prefix-caching"
-```
-
-若 `others` 使用 `$MAX_MODEL_LEN` 等搜索参数占位符，必须在对应阶段自己的
-`[[pd_disagg.<phase>.target_field]]` 中声明。
-P/D 的 `target_field` 是两份相互独立的完整搜索空间；只要任一阶段显式配置了它，就不会再合并
-`[[vllm.target_field]]`。因此服务参数和 `CONCURRENCY`、`REQUESTRATE` 等负载参数都要在该阶段列全：
-
-```toml
-[[pd_disagg.prefill.target_field]]
-name = "MAX_NUM_BATCHED_TOKENS"
-config_position = "env"
-min = 8192
-max = 65536
-dtype = "int"
-value = 8192
-
-[[pd_disagg.prefill.target_field]]
-name = "MAX_NUM_SEQS"
-config_position = "env"
-min = 8
-max = 128
-dtype = "int"
-value = 32
-
-[[pd_disagg.prefill.target_field]]
-name = "CONCURRENCY"
-config_position = "env"
-min = 1
-max = 256
-dtype = "int"
-value = 32
-
-[[pd_disagg.prefill.target_field]]
-name = "REQUESTRATE"
-config_position = "env"
-min = 0
-max = 0
-dtype = "float"
-value = 0
-
-[[pd_disagg.decode.target_field]]
-name = "MAX_NUM_BATCHED_TOKENS"
-config_position = "env"
-min = 128
-max = 4096
-dtype = "int"
-value = 512
-
-[[pd_disagg.decode.target_field]]
-name = "MAX_NUM_SEQS"
-config_position = "env"
-min = 32
-max = 512
-dtype = "int"
-value = 64
-
-[[pd_disagg.decode.target_field]]
-name = "CONCURRENCY"
-config_position = "env"
-min = 1
-max = 1000
-dtype = "int"
-value = 100
-
-[[pd_disagg.decode.target_field]]
-name = "REQUESTRATE"
-config_position = "env"
-min = 1
-max = 1000
-dtype = "float"
-value = 100
-```
-
-仅当 `top_k>0` 启用 Decode 阶段 FineTune 时，Decode 才会先临时使用不限流速率探测 QPS，再固定该速率调整并发，因此 `REQUESTRATE` 必须配置为覆盖预期 QPS 的可调范围。`top_k=0` 时跳过该 FineTune 和相应范围校验。
-
-同一个 benchmark 也可以在 P 和 D 阶段使用不同命令参数。`vllm_benchmark` 使用 random 数据集时可按下例配置：
-
-```toml
-[pd_disagg.prefill.benchmark_command_overrides]
-others = "--num-prompts 500 --random-input-len 1024 --random-output-len 1"
-
-[pd_disagg.decode.benchmark_command_overrides]
-others = "--seed 1024 --num-prompts 500 --random-input-len 1024 --random-output-len 256"
-```
-
-Decode 双跑时，两轮必须保持相同的 benchmark 参数、请求数、输入输出长度、并发和请求速率；服务启动命令中的 `--seed` 不能替代上述 benchmark `--seed`。若 `use_request_rate_calibration=true`，Prefill 和 Decode 的 `benchmark_run_count` 都必须保持为 1，配置大于 1 会直接校验失败。
-
-如果选用 `ais_bench`，仍使用同一覆盖机制，配置键必须是 `[ais_bench.command]`
-已定义的 `models`、`mode`、`work_dir` 或 `others`；核心流程不会判断 benchmark 名称。
-
-第一步的阶段 JSON 分别记录 `service_params` 和 `benchmark_params`。用户必须将 `service_params` 和推荐卡数应用到实际 PD 部署，再将 benchmark 插件的服务 URL 指向当前 OptiX 主机能够访问的 PD Proxy 地址。具体 URL 字段由所选 benchmark 插件定义。
-
-输出目录为 `result/pd_disagg/<run_id>/`。PD 模式写入 P/D CSV、`phase_result.json`、
-`pd_ratio_candidates.csv` 和 `service_search_completed` summary。第二步按普通 `standard` 模式的输出规则单独存储。
+详细配置、操作步骤、配比解读和结果说明见[使用案例：OptiX PD 分离两步寻优](../use_cases/optix_pd_disaggregation.md)。其他 PD 分离或 PD 混部寻优可使用[插件支持](#插件支持)中列出的现有插件。
 
 ## 结果文件说明
 

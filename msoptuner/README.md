@@ -8,6 +8,8 @@
 
 </div>
 
+简体中文 | [English](README_EN.md)
+
 ## ✨ 最新消息
 
 * [2025.12.30]：MindStudio Ops Tuner项目首次上线 
