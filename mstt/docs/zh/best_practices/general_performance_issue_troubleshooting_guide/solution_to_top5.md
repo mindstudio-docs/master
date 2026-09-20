@@ -2,7 +2,7 @@
 
 ## 信息收集
 
-本文以Atlas 200I A2 加速模块为例，分析使用Atlas 200I A2推理场景通常需要收集如下信息。
+本文以Atlas 200I A2加速模块为例，分析使用Atlas 200I A2推理场景通常需要收集如下信息。
 
 **Profiling信息收集**
 
@@ -108,7 +108,7 @@ ONNX是业内目前比较主流的模型格式，广泛用于模型交流及部�
 
 1. 将收集到的性能数据文件导入至MindStudio Insight工具中进行分析。
 
-2. 分析Free占比，通常情况Atlas 200I A2 加速模块的Free占比应该比较小(<10%)。如[图1](#ZH-CN_TOPIC_0000002535807001__fig82447235328)所示，Free占比超过30%，明显存在异常。需要进一步分析该芯片的OS是否运行了其它业务导致资源占用，进而导致出现等待。
+2. 分析Free占比，通常情况Atlas 200I A2加速模块的Free占比应该比较小(<10%)。如[图1](#ZH-CN_TOPIC_0000002535807001__fig82447235328)所示，Free占比超过30%，明显存在异常。需要进一步分析该芯片的OS是否运行了其它业务导致资源占用，进而导致出现等待。
 
    **图1** 分析Free占比<a name="ZH-CN_TOPIC_0000002535807001__fig82447235328"></a>
 
@@ -183,7 +183,7 @@ ONNX是业内目前比较主流的模型格式，广泛用于模型交流及部�
 
 量化方法包括以下几种：
 
-- 通过ATC进行量化：进行ATC转换时使用--compression_optimize_conf参数，直接得到量化后的OM文件，使用方法详见《[ATC离线模型编译工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/devaids/atctool/atlasatc_16_0001.html)》的“[参数说明](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/devaids/atctool/atlasatc_16_0039.html)”章节。
+- 通过ATC进行量化：进行ATC转换时使用--compression_optimize_conf参数，直接得到量化后的OM文件，使用方法详见《[ATC离线模型编译工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/devaids/atctool/docs/zh/user_guides/atc_tools/overview/learning_guide.md)》的“[参数说明](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/devaids/atctool/docs/zh/user_guides/atc_tools/CLI_options/general_restrictions.md)”章节。
 - AMCT_ONNX：针对ONNX进行量化，需下载并安装“AMCT（ONNX）”，相当于ATC参数量化的ONNX版本。AMCT工具在CANN软件下载链接中获取，AMCT支持联合量化，在resnet结构上可能会有额外的性能提升。
 - msModelSlim工具：针对ONNX进行量化，CANN包自带工具，无需安装，支持超2G的ONNX模型量化， 使用指导请参考[msModelSlim工具](https://gitcode.com/Ascend/msmodelslim/blob/master/docs/zh/quick_start/quantization_quick_start.md)。
 
@@ -225,7 +225,7 @@ atc --framework=5 \
 --insert_op_conf=./insert_op.cfg
 ```
 
-命令中的参数说明如[表1](#ZH-CN_TOPIC_0000002535807083__table698594314591)所示，更多参数说明可参考《[ATC离线模型编译工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/devaids/atctool/atlasatc_16_0001.html)》。
+命令中的参数说明如[表1](#ZH-CN_TOPIC_0000002535807083__table698594314591)所示，更多参数说明可参考《[ATC离线模型编译工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/devaids/atctool/docs/zh/user_guides/atc_tools/overview/learning_guide.md)》。
 
 **表1** 参数说明<a name="ZH-CN_TOPIC_0000002535807083__table698594314591"></a>
 
@@ -251,7 +251,7 @@ atc --framework=5 \
 aoe --framework 5 --model ./model.onnx --output model --job_type 2 --ip xx.xx.xx.xx --aicore_num=1
 ```
 
-参数的详细解释以及使用方法可参见《[AOE调优工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/devaids/aoe/auxiliarydevtool_aoe_0001.html)》。
+参数的详细解释以及使用方法可参见《[AOE调优工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/devaids/aoe/auxiliarydevtool_aoe_0001.html)》。
 
 #### NCS调优
 
@@ -418,7 +418,7 @@ aoe --framework 5 --model ./model.onnx --output model --job_type 2 --ip xx.xx.xx
    aoe --framework 5 --model ./model.onnx --output model --job_type 2 --ip xx.xx.xx.xx --aicore_num=1
    ```
 
-   命令中的参数说明如[表2](#ZH-CN_TOPIC_0000002535807043__table12900141617195)所示。更多调优参数可以参考《[AOE调优工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/devaids/aoe/auxiliarydevtool_aoe_0001.html)》。
+   命令中的参数说明如[表2](#ZH-CN_TOPIC_0000002535807043__table12900141617195)所示。更多调优参数可以参考《[AOE调优工具用户指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/devaids/aoe/auxiliarydevtool_aoe_0001.html)》。
 
    **表2** 参数说明<a name="ZH-CN_TOPIC_0000002535807043__table12900141617195"></a>
 

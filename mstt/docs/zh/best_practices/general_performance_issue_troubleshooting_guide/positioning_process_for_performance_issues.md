@@ -64,7 +64,7 @@
 
 #### 下发问题
 
-下发问题是指算子下发过程耗时异常。下发指Graph Engine将算子执行请求下发至Runtime，Runtime判断算子的Task类型，根据类型将算子执行请求下发到Device上执行，详细说明请参考《[TBE&AI CPU算子开发指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/others/tbeaicpudevg/atlasopdev_10_0001.html)》中的[算子编译运行流程](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/910/others/tbeaicpudevg/atlasopdev_10_0012.html)章节。
+下发问题是指算子下发过程耗时异常。下发指Graph Engine将算子执行请求下发至Runtime，Runtime判断算子的Task类型，根据类型将算子执行请求下发到Device上执行，详细说明请参考《[TBE&AI CPU算子开发指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/others/tbeaicpudevg/atlasopdev_10_0001.html)》中的[算子编译运行流程](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/others/tbeaicpudevg/atlasopdev_10_0012.html)章节。
 
 理想情况下，NPU侧的计算流水不停运转，不会出现NPU等待CPU的场景，一旦出现下发延迟，将导致流水线阻塞，从而影响AI Core的算力利用率。此时即判定存在下发问题。下发问题主要通过MindStudio Insight工具中[时间线（Timeline）](performance_tool_usage.md#performance_tool_usage09)进行观察，若存在下列任一现象，请参考[下发异常分析](solution_to_top3.md#下发异常分析)进行分析。
 

@@ -454,6 +454,6 @@ Timeline常用操作包括**通信与时间线相互跳转、置顶比对、覆�
 | 工具名称                                                     | 工具简介                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [推理预检工具](https://gitcode.com/Ascend/msit/blob/master/msprechecker/README.md) | 支持推理前、推理中和推理后的全流程检测。<br>&#8226; 推理前，提供一键式预检功能，全面排查环境变量、系统内核、配置文件等可能导致服务部署失败或性能下降的问题。<br/>&#8226; 推理过程中，支持将环境相关的所有数据完整落盘。<br/>&#8226; 推理结束后，支持对落盘文件进行比对，帮助识别差异点，便于复现基线环境。 |
-| [服务化专家建议](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/service_profiling_advisor_instruct.md) | 根据当前的Benchmark输出结果及MindIE service的config.json配置，结合理论分析性能上限，提出提升首令牌生成时间（TFTT）和吞吐量（Throughput）等关键指标的优化建议。 |
-| [服务化自动寻优](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/serviceparam_optimizer_instruct.md) | 提供MindIE服务化和vLLM服务化的参数自动优化功能。利用先进的检索算法，在参数空间中高效寻找最优解，实现自动化调优。该功能同时支持轻量化设计，部署快速便捷，确保搜索结果更加准确。 |
-| [服务化调优工具](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/msserviceprofiler_serving_tuning_instruct.md) | 提供推理服务化性能数据采集接口的解析和拆解能力。此接口专为服务化调优设计，能够采集关键流程的起止时间点，识别并记录关键函数调用、关键事件、服务化调度等信息，同时支持采集算子信息，助力快速定位性能问题。 |
+| [服务化专家建议](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/user_guide/service_profiling_advisor_instruct.md) | 根据当前的Benchmark输出结果及MindIE service的config.json配置，结合理论分析性能上限，提出提升首令牌生成时间（TFTT）和吞吐量（Throughput）等关键指标的优化建议。 |
+| [服务化自动寻优](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/user_guide/serviceparam_optimizer_instruct.md) | 提供MindIE服务化和vLLM服务化的参数自动优化功能。利用先进的检索算法，在参数空间中高效寻找最优解，实现自动化调优。该功能同时支持轻量化设计，部署快速便捷，确保搜索结果更加准确。 |
+| [服务化调优工具](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/user_guide/msserviceprofiler_serving_tuning_instruct.md) | 提供推理服务化性能数据采集接口的解析和拆解能力。此接口专为服务化调优设计，能够采集关键流程的起止时间点，识别并记录关键函数调用、关键事件、服务化调度等信息，同时支持采集算子信息，助力快速定位性能问题。 |
