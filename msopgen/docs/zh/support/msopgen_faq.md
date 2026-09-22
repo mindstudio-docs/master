@@ -53,8 +53,8 @@
 1. 使用 `npu-smi info` 检查 NPU 状态
 2. 尝试切换 NPU 设备：通过 `-d <device_id>` 指定其他空闲设备
 3. 容器环境中确认 `/dev/hisi_hdc` 或 `--device=/dev/davinciX` 已正确挂载
-4. 检查驱动安装是否正确，参考《[CANN 软件安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/83RC1/softwareinst/instg/instg_0000.html)》
-5. 错误码详见《[ACL错误码表](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/API/appdevgapi/aclcppdevg_03_1345.html)》
+4. 检查驱动安装是否正确，参考《[CANN 软件安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/softwareinst/instg/instg_0107.html?OS=openEuler&InstallType=netyum)》
+5. 错误码详见《[ACL错误码表](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/runtimeapi/aclcppdevg_03_1345.html)》
 
 ## 运行结果全为 0 或随机值
 

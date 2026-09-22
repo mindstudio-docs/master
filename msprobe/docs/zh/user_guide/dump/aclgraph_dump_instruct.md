@@ -106,6 +106,10 @@
 `AclGraphDumper` 用于采集整网中间数据，支持 module 级别、API 级别以及 module+API 混合级别采集。`statistics` 任务输出张量形状、数据类型和统计值；`tensor` 任务输出 Tensor 真实数据。
 `AclGraphDumper` 的初始化与 `start` 调用需在模型编图（如`torch.npu.graph`或`torch.compile`）之前完成。
 
+> [!NOTE]
+>
+> 使用整网采集会使图 capture（编图）阶段变慢。这是因为工具会在编图过程中向 ACLGraph 中插入采集节点（用于统计值计算或 Tensor 数据准备等），图中节点数量随采集范围增大而增多，capture 阶段耗时相应增加，采集的 module/API 数量越多，影响越明显。编图完成后，这些采集节点会作为图的一部分在每次 replay 时执行，以完成数据采集。
+
 #### 接口说明
 
 **函数原型**
@@ -408,4 +412,4 @@ CANN 8.5.0 以下（不含 8.5.0）可能出现 `Allocate SQ failed`，这是老
 
 **3. 运行时出现提示信息：`[WARNING]: Invalid statistics detected. Please use tensor mode to collect the affected data.`**
 
-当统计量场景涉及低精度数据类型时，由于无法采集相关低精度信息，系统会触发此提示。若需要解决该问题，建议切换至真实数据模式进行数据采集，具体操作可参考[Tensor 整网采集](#tensor-整网采集)。
+统计结果中存在取值为 null 的统计量（即部分统计量无法计算，如 min、max、mean、norm 记录为 null）时，系统会触发此提示。导致统计量无法计算的原因不限于低精度数据类型，一些预分配 Tensor（如通过 torch.empty 创建的 Tensor）也会导致该问题。若需要进一步分析受影响的数据，建议切换至真实数据模式进行数据采集，具体操作可参见[Tensor 整网采集](#tensor-整网采集)。

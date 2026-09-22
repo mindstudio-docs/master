@@ -40,9 +40,9 @@ MindStudio Ops Profiler（算子调优工具，msOpProf）用于采集和分析�
 **环境准备**
 
 - 请参考[MindStudio Ops Profiler安装指南](../install_guide/msopprof_install_guide.md)，完成相关环境变量的配置。
-- 仿真器库的默认加载目录因平台而异：Ascend 950PR&950DT 系列产品默认加载`${INSTALL_DIR}/tools/simulator/<soc-version>/camodel`目录下的仿真器库；Atlas A2 系列产品和Atlas A3 系列产品默认加载`${INSTALL_DIR}/tools/simulator/<soc-version>/lib`目录下的仿真器库。未指定--soc-version参数时，可通过`LD_LIBRARY_PATH`环境变量指定自定义的仿真器库目录，以更改仿真器来源。
+- 仿真器库的默认加载目录因平台而异：Ascend 950PR&950DT系列产品默认加载`${INSTALL_DIR}/tools/simulator/<soc-version>/camodel`目录下的仿真器库；Atlas A2系列产品和Atlas A3系列产品默认加载`${INSTALL_DIR}/tools/simulator/<soc-version>/lib`目录下的仿真器库。未指定--soc-version参数时，可通过`LD_LIBRARY_PATH`环境变量指定自定义的仿真器库目录，以更改仿真器来源。
 - 若要使用MindStudio Insight进行查看时，需要单独安装MindStudio Insight软件包，具体下载链接请参见[MindStudio Insight安装指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/install_guide/mindstudio_insight_install_guide.md)。
-- 针对Atlas A2 系列产品，若要使用[模板库](https://gitcode.com/cann/catlass/blob/master/scripts/build.sh)进行仿真，编译脚本需增加选项--simulator，以simulator模式编译算子。具体操作请参见[样例](https://gitcode.com/cann/catlass/blob/master/docs/zh/1_Practice/evaluation/performance_tools.md)。
+- 针对Atlas A2系列产品，若要使用[模板库](https://gitcode.com/cann/catlass/blob/master/scripts/build.sh)进行仿真，编译脚本需增加选项--simulator，以simulator模式编译算子。具体操作请参见[样例](https://gitcode.com/cann/catlass/blob/master/docs/zh/1_Practice/evaluation/performance_tools.md)。
 
     ```shell
     bash scripts/build.sh --simulator 00_basic_matmul
@@ -64,13 +64,14 @@ MindStudio Ops Profiler（算子调优工具，msOpProf）用于采集和分析�
 - 用户需自行保证可执行文件或用户程序（_application_）执行的安全性。
     - 建议限制对可执行文件或用户程序（_application_）的操作权限，避免提权风险。
     - 不建议进行高危操作（删除文件、删除目录、修改密码及提权命令等），避免安全风险。
+- 仿真器库的默认加载目录因平台而异：Ascend 950PR&950DT系列产品必须通过`--soc-version`指定芯片类型，不支持通过`LD_LIBRARY_PATH`选择仿真器。此时，若应用程序二进制通过`DT_RPATH`链接`${INSTALL_DIR}/tools/simulator/<soc-version>/lib`目录下的仿真库，则使用该`lib`目录；其他情况使用`--soc-version`所指定仿真器下的`camodel`目录。Atlas A2系列产品和Atlas A3系列产品默认加载`${INSTALL_DIR}/tools/simulator/<soc-version>/lib`目录；未指定`--soc-version`时，仍可通过`LD_LIBRARY_PATH`指定仿真器库。
+- Ascend 950PR&950DT系列产品支持npu模式编译或sim模式编译的AscendC算子运行仿真，若算子以npu模式编译，则使用`${INSTALL_DIR}/tools/simulator/<soc-version>/camodel`目录仿真器运行仿真，若以sim模式编译，则根据编译时链接的仿真库动态选择仿真器。
 
 ## 命令参考
 
 登录运行环境，使用msopprof simulator开启算子仿真调优功能，并配合使用仿真可选参数和用户待调优程序（blockdim 1）进行调优，仿真可选参数请参考[**表 1**  msopprof simulator可选参数说明](#simulator可选参数说明)。
 
 > [!NOTE]
->
 > 参数 `--soc-version` 的值可通过执行以下命令获取：`python3 -c "import acl; print(acl.get_soc_name())"`。
 
 ```shell
@@ -100,9 +101,9 @@ msopprof simulator --soc-version=Ascendxxxyy --output=/home/projects/output /hom
 </td>
 <td class="cellrowborder" valign="top" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000002016036877_p011233417332"><span>配置为算子编译得到的二进制文件</span><strong id="zh-cn_topic_0000002016036877_b695415337500">*.o</strong><span>，可配置为绝对路径或者相对路径</span>。<span>具体可参考</span><a href="./extended_functions.md#json配置文件说明">json配置文件说明</a><span>。</span></p>
 <p id="zh-cn_topic_0000002016036877_p1611218349332">进行算子调优之前，可通过以下两种方式获取算子二进制<strong id="zh-cn_topic_0000002016036877_b1845814318519"><span>*.</span>o</strong>文件。</p>
-<ul id="zh-cn_topic_0000002016036877_ul81131345339"><li>参考<span id="zh-cn_topic_0000002016036877_ph20112143419334">《Ascend C算子开发指南》</span>中的“Kernel直调算子开发 &gt; <a href="https://www.hiascend.com/document/detail/zh/canncommercial/latest/opdevg/Ascendcopdevg/atlas_ascendc_10_0056.html" target="_blank" rel="noopener noreferrer">Kernel直调</a> ”章节中的“修改并执行一键式编译运行脚本”，获取NPU侧可执行文件，并需要用户自行从可执行文件中提取<span>*</span>.o文件。</li><li>参考<a href="https://gitcode.com/Ascend/msopgen/blob/master/docs/zh/user_guide/msopgen_user_guide.md#153-%E7%AE%97%E5%AD%90%E7%BC%96%E8%AF%91%E9%83%A8%E7%BD%B2" target="_blank" rel="noopener noreferrer">算子编译部署</a>，算子编译时会自动生成<strong id="zh-cn_topic_0000002016036877_b17819952105016">*.o</strong>文件。</li></ul>
+<ul id="zh-cn_topic_0000002016036877_ul81131345339"><li>参考<span id="zh-cn_topic_0000002016036877_ph20112143419334">《Ascend C算子开发指南》</span>中的“基于样例工程完成核函数（Kernel）直调 &gt; <a href="https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta2/programug/Ascendcopdevg/docs/zh/guide/programming_guide/appendix/kernel_direct_call_from_sample.md" target="_blank" rel="noopener noreferrer">Kernel直调</a> ”章节中的“修改并执行一键式编译运行脚本”，获取NPU侧可执行文件，并需要用户自行从可执行文件中提取<span>*</span>.o文件。</li><li>参考<a href="https://gitcode.com/Ascend/msopgen/blob/master/docs/zh/user_guide/msopgen_user_guide.md#153-%E7%AE%97%E5%AD%90%E7%BC%96%E8%AF%91%E9%83%A8%E7%BD%B2" target="_blank" rel="noopener noreferrer">算子编译部署</a>，算子编译时会自动生成<strong id="zh-cn_topic_0000002016036877_b17819952105016">*.o</strong>文件。</li></ul>
 <p id="p811246204">需确保群组和其他组的用户不具备--config指定的json文件及上一级目录的写入权限。同时，需要确保json文件的上一级目录属主为当前用户。</p>
-<div class="p" id="p20157517201">需要使用LD_LIBRARY_PATH环境变量设置仿真器类型。<pre class="screen" id="screen011316904">export LD_LIBRARY_PATH=${INSTALL_DIR}/tools/simulator/Ascendxxxyy/lib:$LD_LIBRARY_PATH // xxxyy为用户实际使用的具体芯片类型</pre>
+<div class="p" id="p20157517201">A2/A3需要使用LD_LIBRARY_PATH环境变量设置仿真器类型，A5则只能使用--soc-version参数指定具体芯片类型。<pre class="screen" id="screen011316904">export LD_LIBRARY_PATH=${INSTALL_DIR}/tools/simulator/Ascendxxxyy/lib:$LD_LIBRARY_PATH // xxxyy为用户实际使用的具体芯片类型</pre>
 </div>
 </td>
 </tr>
@@ -132,12 +133,12 @@ msopprof simulator --soc-version=Ascendxxxyy --output=/home/projects/output /hom
 <tr id="zh-cn_topic_0000002016036877_row11115934143315"><td class="cellrowborder" valign="top" width="25.232523252325233%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000002016036877_p611493416337">--aic-metrics</p>
 </td>
 <td class="cellrowborder" valign="top" width="63.02630263026302%" headers="mcps1.2.4.1.2 "><div class="p" id="zh-cn_topic_0000002016036877_p217535311423">使能算子性能指标采集。支持以下性能指标采集项。<ul id="zh-cn_topic_0000002016036877_ul17160143219116"><li>PipeUtilization（默认采集）：计算和搬运指令流水。<p id="p1253172210219">当配置--aic-metrics=PipeUtilization时会关闭ResourceConflictRatio，即只显示指令流水，不包括同步事件指令细节。</p>
-</li><li>ResourceConflictRatio（默认采集）：开启可查看同步事件指令细节。<ul id="ul12706651330"><li><span id="zh-cn_topic_0000002016036877_zh-cn_topic_0000001740005657_ph38331631115919">Atlas A3 系列产品</span>和<span id="zh-cn_topic_0000002016036877_ph9610350151414">Atlas A2 系列产品</span>展示为SET_FLAG/WAIT_FLAG指令。</li><li><span id="zh-cn_topic_0000002016036877_ph12187735121517">Atlas 推理系列产品</span>展示为set_event/wait_event指令。</li></ul>
+</li><li>ResourceConflictRatio（默认采集）：开启可查看同步事件指令细节。<ul id="ul12706651330"><li><span id="zh-cn_topic_0000002016036877_zh-cn_topic_0000001740005657_ph38331631115919">Atlas A3系列产品</span>和<span id="zh-cn_topic_0000002016036877_ph9610350151414">Atlas A2系列产品</span>展示为SET_FLAG/WAIT_FLAG指令。</li><li><span id="zh-cn_topic_0000002016036877_ph12187735121517">Atlas推理系列产品</span>展示为set_event/wait_event指令。</li></ul>
 </li></ul>
 </div>
-<ul id="zh-cn_topic_0000002016036877_ul21140347333"><li>PMSampling：使能内存通路吞吐率波形图，并进行可视化呈现，例如：<strong id="zh-cn_topic_0000002016036877_b1368923464413">--aic-metrics=PMSampling</strong>。具体呈现内容请参见<a href="#内存通路吞吐率波形图">内存通路吞吐率波形图</a>。<ul id="zh-cn_topic_0000002016036877_ul536462164812"><li>--core-id设置对PMSampling参数不生效，PMSampling参数解析全部核。</li><li>此功能默认不开启。</li><li>该参数当前仅支持Atlas A3 系列产品和Atlas A2 系列产品，Ascend 950PR&950DT 系列产品不支持。</li></ul>
+<ul id="zh-cn_topic_0000002016036877_ul21140347333"><li>PMSampling：使能内存通路吞吐率波形图，并进行可视化呈现，例如：<strong id="zh-cn_topic_0000002016036877_b1368923464413">--aic-metrics=PMSampling</strong>。具体呈现内容请参见<a href="#内存通路吞吐率波形图">内存通路吞吐率波形图</a>。<ul id="zh-cn_topic_0000002016036877_ul536462164812"><li>--core-id设置对PMSampling参数不生效，PMSampling参数解析全部核。</li><li>此功能默认不开启。</li><li>该参数当前仅支持Atlas A3系列产品和Atlas A2系列产品，Ascend 950PR&950DT系列产品不支持。</li></ul>
 </li></ul>
-<ul id="zh-cn_topic_0000002016036877_ul17160143219117"><li>Overhead：控制scalar头开销是否使能。<p id="p1253172210220">当配置--aic-metrics=Overhead后流水图有相应scalar的开销时间，分为cache_time和ccu_time。具体呈现内容请参见<a href="#scalar耗时展示">scalar耗时展示</a>。<ul id="zh-cn_topic_0000002016036877_ul536462164813"><li>该参数当前仅支持Atlas A3 系列产品和Atlas A2 系列产品，Ascend 950PR&950DT 系列产品不支持。</li><li>若需在MindStudio Insight中正常展示scalar头开销数据，对应MindStudio Insight应为MindStudio-Insight_26.1.0及以上版本。</li></ul></p>
+<ul id="zh-cn_topic_0000002016036877_ul17160143219117"><li>Overhead：控制scalar头开销是否使能。<p id="p1253172210220">当配置--aic-metrics=Overhead后流水图有相应scalar的开销时间，分为cache_time和ccu_time。具体呈现内容请参见<a href="#scalar耗时展示">scalar耗时展示</a>。<ul id="zh-cn_topic_0000002016036877_ul536462164813"><li>该参数当前仅支持Atlas A3系列产品和Atlas A2系列产品，Ascend 950PR&950DT系列产品不支持。</li><li>若需在MindStudio Insight中正常展示scalar头开销数据，对应MindStudio Insight应为MindStudio-Insight_26.1.0及以上版本。</li></ul></p>
 </li></ul>
 </td>
 <td class="cellrowborder" valign="top" width="11.741174117411742%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000002016036877_p4115163416335">否</p>
@@ -171,7 +172,7 @@ msopprof simulator --soc-version=Ascendxxxyy --output=/home/projects/output /hom
 <p id="zh-cn_topic_0000002016036877_p18115834193315">当配置--mstx=on，算子调优工具将会使能用户代码程序中使用的mstx API。</p>
 <p id="zh-cn_topic_0000002016036877_p151157346336">具体举例如下：</p>
 <pre class="code_wrap" id="zh-cn_topic_0000002016036877_screen811523463318">msopprof simulator --soc-version=Ascendxxxyy --mstx=on ./add_custom <span>// </span>xxxyy为用户实际使用的具体芯片类型</pre>
-<p id="zh-cn_topic_0000002016036877_p1776694422415">当前已支持mstx API中的mstxRangeStartA和mstxRangeEnd接口，功能为使能算子调优的指定区间，具体参数介绍请参见<span id="zh-cn_topic_0000002016036877_ph1583812516245">《MindStudio mstx API参考》</span>中的<span id="zh-cn_topic_0000002016036877_ph2878123711242"><a href="https://www.hiascend.com/document/detail/zh/mindstudio/82RC1/API/mstxAPIReference/atlasopdev_16_0117.html" target="_blank" rel="noopener noreferrer">mstxRangeStartA</a></span>和<span id="zh-cn_topic_0000002016036877_ph137651944162412"><a href="https://www.hiascend.com/document/detail/zh/mindstudio/82RC1/API/mstxAPIReference/atlasopdev_16_0118.html" target="_blank" rel="noopener noreferrer">mstxRangeEnd</a></span>接口。</p>
+<p id="zh-cn_topic_0000002016036877_p1776694422415">当前已支持mstx API中的mstxRangeStartA和mstxRangeEnd接口，功能为使能算子调优的指定区间，具体参数介绍请参见<span id="zh-cn_topic_0000002016036877_ph1583812516245">《MindStudio mstx API参考》</span>中的<span id="zh-cn_topic_0000002016036877_ph2878123711242"><a href="https://gitcode.com/Ascend/mstx/blob/master/docs/zh/api_reference/Common/mstxRangeStartA.md" target="_blank" rel="noopener noreferrer">mstxRangeStartA</a></span>和<span id="zh-cn_topic_0000002016036877_ph137651944162412"><a href="https://gitcode.com/Ascend/mstx/blob/master/docs/zh/api_reference/Common/mstxRangeEnd.md" target="_blank" rel="noopener noreferrer">mstxRangeEnd</a></span>接口。</p>
 </td>
 <td class="cellrowborder" valign="top" width="11.741174117411742%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000002016036877_p131151034163318">否</p>
 </td>
@@ -192,7 +193,7 @@ msopprof simulator --soc-version=Ascendxxxyy --output=/home/projects/output /hom
 <tr id="zh-cn_topic_0000002016036877_row14335144923717"><td class="cellrowborder" valign="top" width="25.232523252325233%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000002016036877_p13335144910371">--soc-version</p>
 </td>
 <td class="cellrowborder" valign="top" width="63.02630263026302%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000002016036877_p3169521144911">可以通过--soc-version或设置LD_LIBRARY_PATH环境变量来指定仿真器类型，两者必须二选一，具体介绍如下：</p>
-<ul id="zh-cn_topic_0000002016036877_ul137711927194111"><li>--soc-version：用于在--application和--export模式下指定仿真器类型，选取范围可参考<span id="ph15854163318419">${INSTALL_DIR}</span>/tools/simulator路径下的仿真器类型。</li><li>设置LD_LIBRARY_PATH环境变量：用于在--config的模式下或未使用--soc-version的情况下指定仿真器的类型。<pre class="code_wrap" id="zh-cn_topic_0000002016036877_zh-cn_topic_0000001752643572_screen1774042011344">export LD_LIBRARY_PATH=<span id="ph585510335411">${INSTALL_DIR}</span>/tools/simulator/Ascend<em id="i6855163310419">xxxyy</em>/lib:$LD_LIBRARY_PATH </pre>
+<ul id="zh-cn_topic_0000002016036877_ul137711927194111"><li>--soc-version：用于在--application和--export模式下指定仿真器类型，选取范围可参考<span id="ph15854163318419">${INSTALL_DIR}</span>/tools/simulator路径下的仿真器类型，Ascend 950PR&950DT系列产品必须配置该参数，且不从LD_LIBRARY_PATH推导芯片类型。</li><li>设置LD_LIBRARY_PATH环境变量：用于在--config的模式下或未使用--soc-version的情况下指定仿真器的类型。<pre class="code_wrap" id="zh-cn_topic_0000002016036877_zh-cn_topic_0000001752643572_screen1774042011344">export LD_LIBRARY_PATH=<span id="ph585510335411">${INSTALL_DIR}</span>/tools/simulator/Ascend<em id="i6855163310419">xxxyy</em>/lib:$LD_LIBRARY_PATH </pre>
 <p id="p18405124210413">${INSTALL_DIR}请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：/usr/local/Ascend/cann。</p>
 </li></ul>
 </td>
@@ -212,7 +213,7 @@ msopprof simulator --soc-version=Ascendxxxyy --output=/home/projects/output /hom
 <td class="cellrowborder" valign="top" width="63.02630263026302%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000002016036877_p18606195017712">控制仿真器dump文件夹是否生成。</p>
 <p id="zh-cn_topic_0000002016036877_p3562736122116">选项包括开启（on）和关闭（off），默认情况下设置为关闭（off），即不生成仿真器dump文件夹。</p>
 <p id="p195771271259">注意事项：</p>
-<ul id="ul537191457"><li>此参数仅支持<span id="zh-cn_topic_0000002016036877_ph8606165015710">Atlas A2 系列产品</span>、<span id="zh-cn_topic_0000002016036877_ph96063504712">Atlas A3 系列产品</span>及Ascend 950PR&950DT 系列产品。Ascend 950PR&950DT 系列产品默认启用camodel在线解析，不生成仿真器dump文件，指定--dump=on时保留指令回调dump文件。</li><li>此参数仅适用于单进程场景，不支持两个算子同时运行的场景。</li></ul>
+<ul id="ul537191457"><li>此参数仅支持<span id="zh-cn_topic_0000002016036877_ph8606165015710">Atlas A2系列产品</span>、<span id="zh-cn_topic_0000002016036877_ph96063504712">Atlas A3系列产品</span>及Ascend 950PR&950DT系列产品。Ascend 950PR&950DT系列产品默认启用camodel在线解析，不生成仿真器dump文件，指定--dump=on时保留指令回调dump文件。</li><li>此参数仅适用于单进程场景，不支持两个算子同时运行的场景。</li></ul>
 </td>
 <td class="cellrowborder" valign="top" width="11.741174117411742%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000002016036877_p182411240125415">否</p>
 </td>
@@ -266,7 +267,7 @@ msOpProf工具协助用户定位算子内存、算子代码以及算子指令的
     > - 添加-g编译选项会在生成的二进制文件中附带调试信息，建议限制带有调试信息的用户程序的访问权限，确保只有授权人员可以访问该二进制文件。
     > - 若不使用llvm-symbolizer组件提供的相关功能，输入msOpProf的程序编译时不包含-g即可，msOpProf工具则不会调用llvm-symbolizer组件的相关功能。
 
-    - 若参考msOpGen工具创建的算子工程，需编辑算子工程op\_kernel目录下的CMakeLists.txt文件，可参考[创建算子工程](https://www.hiascend.com/document/detail/zh/mindstudio/82RC1/ODtools/Operatordevelopmenttools/atlasopdev_16_0021.html)。
+    - 若参考msOpGen工具创建的算子工程，需编辑算子工程op\_kernel目录下的CMakeLists.txt文件，可参考[创建算子工程](https://gitcode.com/Ascend/msopgen/blob/master/docs/zh/user_guide/msopgen_user_guide.md)。
 
         ```shell
         add_ops_compile_options(ALL OPTIONS -g)
@@ -276,7 +277,7 @@ msOpProf工具协助用户定位算子内存、算子代码以及算子指令的
 
         > [!NOTE]
         >
-        > - 此样例工程不支持Atlas A3 系列产品。
+        > - 此样例工程不支持Atlas A3系列产品。
         > - 下载代码样例时，需执行以下命令指定分支版本。
         >
         >    ```shell
@@ -297,7 +298,7 @@ msOpProf工具协助用户定位算子内存、算子代码以及算子指令的
         ```
 
 - 使用msOpProf工具对PyTorch脚本的算子进行仿真调优时，不支持Python内置的print函数打印Device侧上的变量和值。
-- Atlas A3 系列产品和Atlas A2 系列产品的仿真器在运行过程中，当仿真blockdim大于物理核数时，仿真器可能会出现以下报错，可以通过配置pem\_config\_cloud.toml文件中的core\_ostd\_num参数解决该问题。pem\_config\_cloud.toml文件的路径为$\{INSTALL\_DIR\}/tools/simulator/Ascendxxxyy/lib/pem\_config\_cloud.toml。
+- Atlas A3系列产品和Atlas A2系列产品的仿真器在运行过程中，当仿真blockdim大于物理核数时，仿真器可能会出现以下报错，可以通过配置pem\_config\_cloud.toml文件中的core\_ostd\_num参数解决该问题。pem\_config\_cloud.toml文件的路径为$\{INSTALL\_DIR\}/tools/simulator/Ascendxxxyy/lib/pem\_config\_cloud.toml。
 
     ![](../figures/zh-cn_image_0000002541334865.png)
 
@@ -308,7 +309,7 @@ msOpProf工具协助用户定位算子内存、算子代码以及算子指令的
         core_ostd_num           = 2             # 2 early end  1 normal mode
     ```
 
-- Ascend 950PR&950DT 系列产品使用msOpProf工具进行算子仿真调优时，需将config.json文件中的flush_level参数修改为info级，也就是将文件中的"flush_level": 3修改为"flush_level" : 2。config.json文件的路径为${INSTALL_DIR}/tools/simulator/Ascendxxxyy/lib/config.json。
+- Ascend 950PR&950DT系列产品使用msOpProf工具进行算子仿真调优时，需将config.json文件中的flush_level参数修改为info级，也就是将文件中的"flush_level": 3修改为"flush_level" : 2。config.json文件的路径为${INSTALL_DIR}/tools/simulator/Ascendxxxyy/lib/config.json。
 
 **启动工具**
 
@@ -319,7 +320,7 @@ msOpProf工具协助用户定位算子内存、算子代码以及算子指令的
 > - 当前msOpProf不支持-O0编译选项。
 > - 仿真环境不支持采集MC2和HCCL类型的算子。
 > - 用户设置的仿真核数不能超过物理核数。
-> - 若用户仅需关注部分算子性能时，可在Atlas A3 系列产品、Atlas 推理系列产品和Atlas A2 系列产品的单核内调用《Ascend C算子开发接口》中的“调测接口”章节的[TRACE_START](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_START.md)和[TRACE_STOP](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_STOP.md)接口。并在编译配置文件中添加-DASCENDC\_TRACE\_ON，具体操作请参见[添加-DASCENDC\_TRACE\_ON的方法](#添加-DASCENDC_TRACE_ON)。然后，才能生成该范围内的流水图信息，具体流水图显示内容可参考[指令流水图](#指令流水图)。
+> - 若用户仅需关注部分算子性能时，可在Atlas A3系列产品、Atlas推理系列产品和Atlas A2系列产品的单核内调用《Ascend C算子开发接口》中的“调测接口”章节的[TRACE_START](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_START.md)和[TRACE_STOP](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_STOP.md)接口。并在编译配置文件中添加-DASCENDC\_TRACE\_ON，具体操作请参见[添加-DASCENDC\_TRACE\_ON的方法](#添加-DASCENDC_TRACE_ON)。然后，才能生成该范围内的流水图信息，具体流水图显示内容可参考[指令流水图](#指令流水图)。
 > - 用户需在编译配置文件中添加-DASCENDC\_TRACE\_ON，具体修改方法可参考以下样例工程。<a id="添加-DASCENDC_TRACE_ON"></a>
 >    [AddKernelInvocationNeo算子工程](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/3_add_kernellaunch/AddKernelInvocationNeo/cmake)，需在$\{git\_clone\_path\}/samples/operator/ascendc/0\_introduction/3\_add\_kernellaunch/AddKernelInvocationNeo/cmake/npu\_lib.cmake文件中新增以下代码。
 >
@@ -457,7 +458,7 @@ msOpProf工具协助用户定位算子内存、算子代码以及算子指令的
 - MindStudio Insight具体操作和详细字段解释请参考《MindStudio Insight算子调优》的“[时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/operator_tuning.md#%E6%97%B6%E9%97%B4%E7%BA%BF%EF%BC%88timeline%EF%BC%89)”章节。
 - 添加-g编译选项会在生成的二进制文件中附带调试信息，建议限制带有调试信息的用户程序的访问权限，确保只有授权人员可以访问该二进制文件。
 - 若不使用llvm-symbolizer组件提供的相关功能，输入msOpProf的程序编译时不包含-g即可，msOpProf工具则不会调用llvm-symbolizer组件的相关功能。
-- 若用户仅需关注部分算子性能时，可在Atlas A3 系列产品、Atlas 推理系列产品、Atlas A2 系列产品和Ascend 950PR&950DT 系列产品的单核内调用《Ascend C算子开发接口》中的“调测接口”章节的[TRACE_START](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_START.md)和[TRACE_STOP](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_STOP.md)接口。并在编译配置文件中添加-DASCENDC\_TRACE\_ON，具体操作请参见[添加-DASCENDC\_TRACE\_ON的方法](#添加-DASCENDC_TRACE_ON)。然后，才能生成该范围内的流水图信息。
+- 若用户仅需关注部分算子性能时，可在Atlas A3系列产品、Atlas推理系列产品、Atlas A2系列产品和Ascend 950PR&950DT系列产品的单核内调用《Ascend C算子开发接口》中的“调测接口”章节的[TRACE_START](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_START.md)和[TRACE_STOP](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/ascendcopapi/docs/api/Utils-API/%E8%B0%83%E6%B5%8B%E6%8E%A5%E5%8F%A3/TRACE_STOP.md)接口。并在编译配置文件中添加-DASCENDC\_TRACE\_ON，具体操作请参见[添加-DASCENDC\_TRACE\_ON的方法](#添加-DASCENDC_TRACE_ON)。然后，才能生成该范围内的流水图信息。
 
 ### 使用说明
 
@@ -477,7 +478,7 @@ trace.json文件可分别通过Chrome浏览器和MindStudio Insight展示，visu
     |MTE1|数据搬运流水，数据搬运方向为：L1 ->{L0A/L0B, UBUF}。|
     |MTE2|数据搬运流水，数据搬运方向为：{DDR/GM, L2} ->{L1, L0A/B, UBUF}。|
     |MTE3|数据搬运流水，数据搬运方向为：UBUF -> {DDR/GM, L2, L1}、L1->{DDR/L2}。|
-    |FIXP|数据搬运流水，数据搬运方向为：FIXPIPE L0C -> OUT/L1。（仅Atlas A2 系列产品支持展示）|
+    |FIXP|数据搬运流水，数据搬运方向为：FIXPIPE L0C -> OUT/L1。（仅Atlas A2系列产品支持展示）|
     |FLOWCTRL|控制流指令。|
     |CACHEMISS|未命中ICache。|
     |USEMASK|自定义打点范围。若同一个USEMASK内存在范围嵌套或只有TRACE_START无TRACE_STOP时，不能正常绘制指令流水图。|
@@ -512,9 +513,9 @@ trace.json文件可分别通过Chrome浏览器和MindStudio Insight展示，visu
     ![](../figures/同步指令连线展示.png "同步指令连线展示")
 
     在MindStudio Insight中，用户可选中仿真流水图中的目标PIPE通路，以查看同步指令的等待信息。其中各产品展示信息如下：
-    - Atlas A3 系列产品和Atlas A2 系列产品展示为SET_FLAG/WAIT_FLAG指令。
-    - Atlas 推理系列产品展示为set_event/wait_event指令。
-    - Ascend 950PR&950DT 系列产品展示为SET_FLAG/WAIT_FLAG、SET_INTRA_BLOCK/WAIT_INTRA_BLOCK、SET_INTRA_BLOCKI/WAIT_INTRA_BLOCKI指令。
+    - Atlas A3系列产品和Atlas A2系列产品展示为SET_FLAG/WAIT_FLAG指令。
+    - Atlas推理系列产品展示为set_event/wait_event指令。
+    - Ascend 950PR&950DT系列产品展示为SET_FLAG/WAIT_FLAG、SET_INTRA_BLOCK/WAIT_INTRA_BLOCK、SET_INTRA_BLOCKI/WAIT_INTRA_BLOCKI指令。
 
 ## 算子代码热点图
 
@@ -550,7 +551,7 @@ trace.json文件可分别通过Chrome浏览器和MindStudio Insight展示，visu
 
     **表 1**  msopprof simulator热点图的功能介绍<a id="simulator热点图的功能介绍"></a>
 
-    |列名|Atlas A2 系列产品|Atlas A3 系列产品|Atlas 推理系列产品|Ascend 950PR&950DT 系列产品|说明|
+    |列名|Atlas A2系列产品|Atlas A3系列产品|Atlas推理系列产品|Ascend 950PR&950DT系列产品|说明|
     |------|-------|-------|-------|--------|--------|
     |源码|支持|支持|支持|支持|-|
     |指令PC地址|支持|支持|支持|支持|-|
@@ -571,7 +572,7 @@ trace.json文件可分别通过Chrome浏览器和MindStudio Insight展示，visu
 **注意事项**
 
 - MindStudio Insight具体操作和详细字段解释请参考《MindStudio Insight算子调优》的“[时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/operator_tuning.md#%E6%97%B6%E9%97%B4%E7%BA%BF%EF%BC%88timeline%EF%BC%89)”章节。
-- 内存通路吞吐率波形图功能仅适用于Atlas A2 系列产品和Atlas A3 系列产品。
+- 内存通路吞吐率波形图功能仅适用于Atlas A2系列产品和Atlas A3系列产品。
 - 此功能默认不开启，--core-id设置对该功能不生效。
 
 ### 使用说明

@@ -12,7 +12,7 @@
 
 ## ✨ 最新消息
 
-* [2025.12.30]：MindStudio Ops Tuner项目首次上线 
+* [2025.12.30]：MindStudio Ops Tuner项目首次上线
 
 <br>
 
