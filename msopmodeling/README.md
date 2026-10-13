@@ -49,7 +49,7 @@ MindStudio-Ops-Modeling（msOpModeling）算子性能建模工具，基于 **Til
 
 ## 📚 API参考
 
-扩展自定义算子的 DSL API 接口信息，请参见 [《msOpModeling API说明》](src/tilesim/docs/OPERATOR_MODELING_GUIDE.md)。
+扩展自定义算子的使用方式，请参见 [《msOpModeling 使用指南》](docs/zh/user_guide/msopmodeling_user_guide.md)。
 
 ## 🛠️ 贡献指南
 

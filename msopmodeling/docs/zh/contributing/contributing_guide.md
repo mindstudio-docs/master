@@ -10,7 +10,7 @@
 
 ### 2.1 代码架构说明
 
-介绍工具的整体架构、代码框架及核心设计思路等，详细请参见 [《msOpModeling 架构设计方案》](../../../src/tilesim/docs/ENGINEERING_ARCHITECTURE.md)。
+介绍工具的整体架构、代码框架及核心设计思路，请参见 [《msOpModeling 开发指南》](../development_guide/develop_guide.md)。
 
 ### 2.2 开发环境与编译测试
 
