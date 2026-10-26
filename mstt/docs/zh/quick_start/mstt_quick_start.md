@@ -23,14 +23,15 @@ msTT 围绕训练开发的关键阶段，提供以下核心能力：
 
 ## 2. 快速入门
 
-| 类别 | 工具名称                                                                                                                             | 功能简介                                               |                                                      快速入门链接                                                       |
-|:--:|:----------------------|:---------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------:|
-| 精度 | **msProbe**        | **【精度调试】** 昇腾全场景精度工具，用于训练精度调试与问题定位。                |         [点击查看](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/quick_start/pytorch_quick_start.md)         |
-| 精度 | **TensorBoard**    | **【分级可视】** 分级展示模型结构与精度，支持调试与标杆模型对比以定位精度问题。         |         [点击查看](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/quick_start/pytorch_quick_start.md)         |
-| 性能 | **msProf**           | **【模型调优】** 全场景性能调优底座，采集 CANN 与 NPU 数据，提升设备调优效率。    |          [点击查看](https://gitcode.com/Ascend/msprof/blob/master/docs/zh/quick_start/msprof_quick_start.md)          |
-| 性能 | **msprof-analyze**  | **【性能分析】** 基于采集数据做性能分析，快速识别性能瓶颈。                   |  [点击查看](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/quick_start/msprof-analyze_quick_start.md)  |
-| 性能 | **msMemScope**       | **【内存调优】** 内存调优专用工具：整网级多维度内存采集，支持自动诊断与优化分析。        |           [点击查看](https://gitcode.com/Ascend/msmemscope/blob/master/docs/zh/quick_start/quick_start.md)            |
-| 性能 | **msInsight**       | **【可视调优】** 可视化性能分析，覆盖系统、算子、服务化等场景，辅助完成性能诊断。        |     [点击查看](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/quick_start/system_tuning_quick_start.md)     |
-| 性能 | **msPTI**          | **【性能剖析】** 面向昇腾的 Profiling API，可据此开发 NPU 应用性能分析工具。 |           [点击查看](https://gitcode.com/Ascend/mspti/blob/master/docs/zh/quick_start/mspti_quick_start.md)           |
-| 监控 | **msMonitor**      | **【在线监控】** 一站式监控，支持落盘与在线采集，面向集群的监测与问题定位。           |       [点击查看](https://gitcode.com/Ascend/msmonitor/blob/master/docs/zh/quick_start/msmonitor_quick_start.md)       |
-| 迁移 | **msTransplant**  | **【分析迁移】** PyTorch 训练脚本一键迁移至昇腾 NPU，支持少量改码或零改码完成迁移。 |                                   [点击查看](../../../msfmktransplt/README.md#快速入门)                                   |
+|  类别  | 工具名称           | 功能简介                                                     |                         快速入门链接                         |
+| :----: | :----------------- | :----------------------------------------------------------- | :----------------------------------------------------------: |
+|  精度  | **msProbe**        | **【精度调试】** 昇腾全场景精度工具，用于训练精度调试与问题定位。 | [点击查看](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/quick_start/pytorch_quick_start.md) |
+|  精度  | **TensorBoard**    | **【分级可视】** 分级展示模型结构与精度，支持调试与标杆模型对比以定位精度问题。 | [点击查看](https://gitcode.com/Ascend/msprobe/blob/master/docs/zh/quick_start/pytorch_quick_start.md) |
+|  性能  | **msProf**         | **【模型调优】** 全场景性能调优底座，采集 CANN 与 NPU 数据，提升设备调优效率。 | [点击查看](https://gitcode.com/Ascend/msprof/blob/master/docs/zh/quick_start/msprof_quick_start.md) |
+|  性能  | **msprof-analyze** | **【性能分析】** 基于采集数据做性能分析，快速识别性能瓶颈。  | [点击查看](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/zh/quick_start/msprof-analyze_quick_start.md) |
+|  性能  | **msMemScope**     | **【内存调优】** 内存调优专用工具：整网级多维度内存采集，支持自动诊断与优化分析。 | [点击查看](https://gitcode.com/Ascend/msmemscope/blob/master/docs/zh/quick_start/quick_start.md) |
+|  性能  | **msInsight**      | **【可视调优】** 可视化性能分析，覆盖系统、算子、服务化等场景，辅助完成性能诊断。 | [点击查看](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/quick_start/system_tuning_quick_start.md) |
+|  性能  | **msPTI**          | **【性能剖析】** 面向昇腾的 Profiling API，可据此开发 NPU 应用性能分析工具。 | [点击查看](https://gitcode.com/Ascend/mspti/blob/master/docs/zh/quick_start/mspti_quick_start.md) |
+|  监控  | **msMonitor**      | **【在线监控】** 一站式监控，支持落盘与在线采集，面向集群的监测与问题定位。 | [点击查看](https://gitcode.com/Ascend/msmonitor/blob/master/docs/zh/quick_start/msmonitor_quick_start.md) |
+|  迁移  | **msTransplant**   | **【分析迁移】** PyTorch 训练脚本一键迁移至昇腾 NPU，支持少量改码或零改码完成迁移。 |    [点击查看](../../../msfmktransplt/README.md#快速入门)     |
+| 智能体 | **msAgent**        | **【调试调优】** 在性能调优、精度分析、模型量化、算子优化、文档体验与代码审查等任务中更快定位问题并形成可执行建议 | [点击查看](https://gitcode.com/Ascend/msagent/blob/master/docs/zh/quick_start/msagent_quick_start.md) |
