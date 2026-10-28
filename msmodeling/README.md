@@ -75,6 +75,13 @@
 </details>
 
 <details>
+<summary><b>Step 系列</b></summary>
+
+🔹 [2026.10.26] msModeling 新增 **Step 5 Preview** 模型支持（文本与图像输入）<br>
+
+</details>
+
+<details>
 <summary><b>近期特性更新</b></summary>
 
 🔹 [2026.09.15] 新增校准解析性能模型，可使用校准画像修正 Roofline 延迟估算<br>
@@ -229,12 +236,5 @@ openLiBing CI 故障闭环。AI 的统一入口是 [AGENTS.md](AGENTS.md)，工�
 
 ## 🙏 致谢
 
-本工具由以下公司联合贡献，以下排名不分先后：
-
-🔹 **华为技术有限公司**
-
-🔹 **蚂蚁集团**
-
-🔹 **电信研究院**
-
-感谢来自社区的每一个 PR，欢迎贡献！
+本工具由华为技术有限公司与开发者联合贡献。<br>
+感谢来自社区的每一个PR，欢迎贡献。
