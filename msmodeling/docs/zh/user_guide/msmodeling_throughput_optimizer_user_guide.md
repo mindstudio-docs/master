@@ -19,6 +19,13 @@
 
 上述任一场景均可叠加 `--speculative-method {dflash,dspark}` 启用投机解码（MTP 建议使用统一接口 `--speculative-method mtp`），详见 [2.2 叠加投机解码](#叠加投机解码dflash--dspark)。
 
+`--max-concurrency` 限制每个优化器实例的并发请求总数，取值为大于等于 1 的整数，默认值 `None` 表示此选项不限制并发数。不设置该选项时，沿用原有搜索策略。
+
+- 该限制分别作用于混部、分离和 PD 配比模式中的各实例，不是集群总限制。
+- Attention DP 为 `D` 时，局部 batch 上限为 `floor(max_concurrency / D)`。例如，`--max-concurrency 10` 且 Attention DP 为 4 时，局部 batch 上限为 2，总并发数最多为 8。
+- 该上限与 `--batch-range` 取交集。没有可行 batch 的候选会被跳过，不执行推理。
+- 该限制与 `--max-batched-tokens` 的 token 预算相互独立。
+
 ### 2.1 PD 混部场景
 
 PD 混部针对 Prefill-Decode 合一的服务架构优化吞吐量，两个阶段运行在同一实例上。优化器会在所有可行的 TP（Tensor Parallelism，张量并行）与 DP（Data Parallelism，数据并行）配置中搜索，在 SLO 约束下找到最佳吞吐量。
@@ -45,8 +52,11 @@ python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B \
     --compile \
     --quantize-linear-action W8A8_DYNAMIC \
     --quantize-attention-action disabled \
-    --tpot-limit 50
+    --tpot-limit 50 \
+    --max-concurrency 128
 ```
+
+本例将每个实例的并发请求数限制为最多 128。实际结果还受 SLO 和显存约束影响。
 
 #### 使用 Prefix Cache
 
@@ -72,6 +82,8 @@ python -m cli.inference.throughput_optimizer Qwen/Qwen3-32B \
 ### 2.2 PD 分离场景
 
 PD 分离将 Prefill 与 Decode 阶段拆分为独立的优化运行，适用于需要分别刻画各阶段性能，或规划 PD 分离服务部署的场景。
+
+PD 分离 Prefill 未设置 `--max-batched-tokens` 时，不设置组 batch 的 token 上限，并继续按 TTFT、显存等约束搜索并发。显式设置时，该值限制每个 DP 副本中单个 Prefill microbatch 的 token 数；请求按有效 query length 分组后进入 PP 调度，候选的总并发可以大于单组容量。超长输入先拆成 chunk，各 chunk 分别按预算分组。`--max-batched-tokens` 本身不是并发上限。
 
 #### 前置条件
 
@@ -552,13 +564,13 @@ Model & Quantization Options:
                         Requires --speculative-method dspark. Markov embedding rank; 0 disables MarkovHead. (default: 256)
   --dspark-markov-head {vanilla,gated,rnn}
                         Requires --speculative-method dspark. Markov head type. (default: vanilla)
-  --quantize-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}
+  --quantize-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4,HIF8}
                         Quantize all linear layers in the model from choices (currently only support symmetric quant) (default: W8A8_DYNAMIC)
-  --quantize-non-expert-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4}
+  --quantize-non-expert-linear-action {DISABLED,W8A16_STATIC,W8A8_STATIC,W4A8_STATIC,W8A16_DYNAMIC,W8A8_DYNAMIC,W4A8_DYNAMIC,FP8,MXFP4,HIF8}
                         Set a separate quantization type for non-expert linear layers, such as attention projections, dense MLP layers, and shared experts, while routed MoE experts keep --quantize-linear-action. This option is mainly intended for DeepSeek V4-style MoE models. (default: DISABLED)
   --mxfp4-group-size mxfp4_GROUP_SIZE
                         Group size for mxfp4 quantization (default: 32)
-  --quantize-attention-action {DISABLED,INT8,FP8}
+  --quantize-attention-action {DISABLED,INT8,FP8,HIF8}
                         Quantize the KV cache with the given action (default: DISABLED)
   --tp-sizes [TP_SIZES ...]
                         Enable TP search. Optional explicit TP sizes. If no value is provided, defaults to powers of 2 up to world_size. (default: None)
@@ -597,10 +609,12 @@ Service Options:
                         merged, so the reported minimum is global across those budgets.
   --max-batched-tokens MAX_BATCHED_TOKENS
                         Max batched tokens per data-parallel replica for one prefill or mixed prefill/decode step. If omitted, starts from 4 * input_length and falls back on Prefill OOM. (default: None)
+  --max-concurrency <N>
+                        Maximum simultaneous requests per optimizer instance. (default: None)
   --prefix-cache-hit-rate PREFIX_CACHE_HIT_RATE
                         Prefix cache hit rate for token-level prefill reuse approximation. Valid range: [0, 1). (default: 0.0)
   --batch-range BATCH_RANGE [BATCH_RANGE ...]
-                        Batch size range: [min max] or [max] (default: 1 for min, no limit for max) (default: None)
+                        Batch size range: min max, or a single max (min defaults to 1). (default: None)
   --serving-cost SERVING_COST
                         Serving cost represents the cost of service delivery (default: 0)
   --disagg              If set, run disaggregation mode. disagg means disaggregation mode. (default: False)
@@ -672,10 +686,10 @@ KV Cache Offload Options:
 | `--dspark-markov-head` | Model & Quantization Options | 可选 | Markov head 类型。<br>1. 类型：Str。<br>2. 参考值：`vanilla`、`gated`、`rnn`。<br>3. 默认值：`vanilla`。<br>4. 需要 `--speculative-method dspark`。 |
 | `--num-draft-layers` | Model & Quantization Options | 可选 | 覆盖 draft `num_hidden_layers`。<br>1. 类型：Int。<br>2. 取值范围：非负整数；`0` 表示使用 config 默认。<br>3. 默认值：`0`。<br>4. 需要 `--speculative-method dflash` 或 `dspark`（不可与 `mtp` 同用）。 |
 | `--draft-model-config-path` | Model & Quantization Options | 可选 | 外部 draft `config.json` 路径（或含该文件的目录）。<br>1. 类型：Str。<br>2. 默认值：`None`（使用 `tensor_cast/runtime_configs/draft_configs/dflash_draft_builtin.json`）。<br>3. 需要 `--speculative-method dflash` 或 `dspark`（不可与 `mtp` 同用）。<br>4. 字段说明见 [`tensor_cast/runtime_configs/draft_configs/README.md`](../../../tensor_cast/runtime_configs/draft_configs/README.md)。 |
-| `--quantize-linear-action` | Model & Quantization Options | 可选 | 指定线性层量化方式。<br>1. 类型：Str。<br>2. 参考值：`DISABLED`、`W8A16_STATIC`、`W8A8_STATIC`、`W4A8_STATIC`、`W8A16_DYNAMIC`、`W8A8_DYNAMIC`、`W4A8_DYNAMIC`、`FP8`、`MXFP4`。<br>3. 默认值：`W8A8_DYNAMIC`。<br>4. draft 自有 Linear 不量化。<br>5. 取值大小写及下划线/连字符写法均可，例如 `W8A8_DYNAMIC` 与 `w8a8-dynamic`、`DISABLED` 与 `disabled`。 |
-| `--quantize-non-expert-linear-action` | Model & Quantization Options | 可选 | 为 attention 投影、dense MLP、shared experts 等非 expert 线性层指定独立量化方式。<br>1. 类型：Str。<br>2. 参考值：`DISABLED`、`W8A16_STATIC`、`W8A8_STATIC`、`W4A8_STATIC`、`W8A16_DYNAMIC`、`W8A8_DYNAMIC`、`W4A8_DYNAMIC`、`FP8`、`MXFP4`。<br>3. 默认值：`DISABLED`。<br>4. 主要用于 DeepSeek V4 风格 MoE 模型；路由 MoE experts 仍使用 `--quantize-linear-action`。<br>5. 取值大小写及下划线/连字符写法均可，例如 `DISABLED` 与 `disabled`。 |
+| `--quantize-linear-action` | Model & Quantization Options | 可选 | 指定线性层量化方式。<br>1. 类型：Str。<br>2. 参考值：`DISABLED`、`W8A16_STATIC`、`W8A8_STATIC`、`W4A8_STATIC`、`W8A16_DYNAMIC`、`W8A8_DYNAMIC`、`W4A8_DYNAMIC`、`FP8`、`MXFP4`、`HIF8`。<br>3. 默认值：`W8A8_DYNAMIC`。<br>4. draft 自有 Linear 不量化。<br>5. 取值大小写及下划线/连字符写法均可，例如 `W8A8_DYNAMIC` 与 `w8a8-dynamic`、`DISABLED` 与 `disabled`。 |
+| `--quantize-non-expert-linear-action` | Model & Quantization Options | 可选 | 为 attention 投影、dense MLP、shared experts 等非 expert 线性层指定独立量化方式。<br>1. 类型：Str。<br>2. 参考值：`DISABLED`、`W8A16_STATIC`、`W8A8_STATIC`、`W4A8_STATIC`、`W8A16_DYNAMIC`、`W8A8_DYNAMIC`、`W4A8_DYNAMIC`、`FP8`、`MXFP4`、`HIF8`。<br>3. 默认值：`DISABLED`。<br>4. 主要用于 DeepSeek V4 风格 MoE 模型；路由 MoE experts 仍使用 `--quantize-linear-action`。<br>5. 取值大小写及下划线/连字符写法均可，例如 `DISABLED` 与 `disabled`。 |
 | `--mxfp4-group-size` | Model & Quantization Options | 可选 | 指定 mxfp4 量化的 group size。<br>1. 类型：Int。<br>2. 取值范围：正整数。<br>3. 默认值：`32`。 |
-| `--quantize-attention-action` | Model & Quantization Options | 可选 | 指定 KV cache 量化方式。<br>1. 类型：Str。<br>2. 参考值：`DISABLED`、`INT8`、`FP8`。<br>3. 默认值：`DISABLED`。<br>4. 取值大小写及下划线/连字符写法均可，例如 `DISABLED` 与 `disabled`、`INT8` 与 `int8`。 |
+| `--quantize-attention-action` | Model & Quantization Options | 可选 | 指定 KV cache 量化方式。<br>1. 类型：Str。<br>2. 参考值：`DISABLED`、`INT8`、`FP8`、`HIF8`。<br>3. 默认值：`DISABLED`。<br>4. 取值大小写及下划线/连字符写法均可，例如 `DISABLED` 与 `disabled`、`INT8` 与 `int8`。 |
 | `--tp-sizes` | Model & Quantization Options | 可选 | 启用 TP 搜索，并可显式指定 TP 取值范围。<br>1. 类型：List[Int]。<br>2. 取值范围：正整数列表。<br>3. 默认值：`None`；仅传入参数但不指定取值时，默认搜索不超过 `world_size` 的 2 的幂。 |
 | `--ep-sizes` | Model & Quantization Options | 可选 | 启用 EP 搜索，并可显式指定 EP 取值范围。<br>1. 类型：List[Int]。<br>2. 取值范围：正整数列表。<br>3. 默认值：`None`；仅传入参数但不指定取值时，默认搜索不超过 `world_size` 的 2 的幂。 |
 | `--moe-dp-sizes` | Model & Quantization Options | 可选 | 启用 MOE-DP 搜索，并可显式指定 MOE-DP 取值范围。<br>1. 类型：List[Int]。<br>2. 取值范围：正整数列表。<br>3. 默认值：`None`；仅传入参数但不指定取值时，默认搜索不超过 `world_size` 的 2 的幂。 |
@@ -696,7 +710,8 @@ KV Cache Offload Options:
 | `--tpot-limit` | Service Options | 可选 | 指定 TPOT 约束，用于在约束内搜索最优吞吐。<br>1. 类型：Float。<br>2. 取值范围：正数，单位 ms。<br>3. 默认值：`None`，表示不限制 TPOT。 |
 | `--target-qps` | Service Options | 可选 | 指定目标请求 QPS（req/s）；设置后触发容量规划模式，在给定 SLO 下反推满足该 QPS 的最少卡数。<br>1. 类型：Float。<br>2. 取值范围：正数。<br>3. 默认值：`None`。<br>4. 与 `--num-devices` 的配合方式、以及 `--disagg` 下需恰好指定一个阶段 SLO 的约束，见 [2.5 容量规划场景](#25-容量规划场景)。 |
 | `--max-batched-tokens` | Service Options | 可选 | 指定单个数据并行（DP）副本在一次 prefill 或混合 prefill/decode step 的最大 batched tokens。<br>1. 类型：Int。<br>2. 取值范围：正整数。<br>3. 默认值：`None`；自动模式先使用 `4 * input_length`，并在 Prefill OOM 时依次降级为 `2 * input_length`、`1 * input_length`。 |
-| `--batch-range` | Service Options | 可选 | 指定 batch size 搜索范围。<br>1. 类型：List[Int]。<br>2. 格式：`[min max]` 或 `[max]`。<br>3. 默认值：`None`；未指定 `min` 时默认从 `1` 开始搜索，未指定 `max` 时不设置上限。 |
+| `--max-concurrency` | Service Options | 可选 | 限制每个优化器实例的并发请求总数。<br>1. 类型：Int。<br>2. 取值范围：大于等于 1 的整数。<br>3. 默认值：`None`，表示此选项不限制并发数。 |
+| `--batch-range` | Service Options | 可选 | 指定 batch size 搜索范围。<br>1. 类型：List[Int]。<br>2. 格式：`[min max]` 或 `[max]`。<br>3. 默认值：`None`；未指定 `min` 时默认从 `1` 开始搜索，未指定 `max` 时此选项不设置上限；设置 `--max-concurrency` 时仍受其限制。 |
 | `--serving-cost` | Service Options | 可选 | 指定服务成本，用于成本相关指标计算。<br>1. 类型：Float。<br>2. 取值范围：非负数。<br>3. 默认值：`0`。 |
 | `--disagg` | Service Options | 可选 | 启用 PD 分离模式。<br>1. 类型：Bool。<br>2. 取值范围：开关参数。<br>3. 默认值：`False`。 |
 | `--jobs` | Service Options | 可选 | 指定并行搜索任务数。<br>1. 类型：Int。<br>2. 取值范围：正整数。<br>3. 默认值：`8`。 |

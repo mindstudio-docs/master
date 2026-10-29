@@ -23,7 +23,7 @@ This document summarizes the currently supported model types and simulation feat
 | --- | --- | --- |
 | Text models | DeepSeek | DeepSeek-V4.1-Flash, DeepSeek V4, DeepSeek V3.2, DeepSeek V3 |
 | Text models | Kimi | Kimi-K3, Kimi-K2.6, Kimi K2.5, Kimi-K2 (supported through the DeepSeek V3 compatibility path) |
-| Text models | Qwen | Qwen3.8, Qwen3.6, Qwen3.6 MoE, Qwen3.5, Qwen3.5 MoE, Qwen3-Next, Qwen3 Dense, Qwen3 MoE |
+| Text models | Qwen | Qwen3.8-Flash-Next (requires transformers >= 5.16), Qwen3.8, Qwen3.6, Qwen3.6 MoE, Qwen3.5, Qwen3.5 MoE, Qwen3-Next, Qwen3 Dense, Qwen3 MoE |
 | Text models | GLM | GLM-5.3-Flash, GLM5.2, GLM5.1, GLM5, GLM-4 MoE |
 | Text models | ERNIE | ERNIE 4.5 MoE |
 | Text models | Bailing/MiMo/MiniMax | Bailing MoE, MiMo v2 Flash, MiniMax M2.7, MiniMax M2.5, MiniMax M2, MiniMax M3 |
@@ -44,7 +44,7 @@ This document summarizes the currently supported model types and simulation feat
 | Speculative decoding simulation | Supports Multi-Token Prediction (MTP), DFlash, and DSpark, and models the extra proposal/draft and verify computation to evaluate the impact of speculative decoding on latency and throughput. |
 | Compilation and graph optimization | Compiles and rewrites the forward computation graph, fusing typical subgraphs such as RMSNorm and Grouped Matmul into unified performance operators to more closely match the execution behavior in real deployments. |
 | Multi-stream compute-communication overlap | In the compilation path, splits computation and communication across different execution streams through multi-stream scheduling, modeling inter-stream synchronization overhead and the end-to-end benefit of compute-communication overlap. |
-| Quantization simulation | Models the quantization compute and memory-access cost of paths such as Linear, non-Expert Linear, LMHead, and Attention, and supports strategy combinations such as `W8A8`, `W4A8`, `FP8`, and `MXFP4`. |
+| Quantization simulation | Models the quantization compute and memory-access cost of paths such as Linear, non-Expert Linear, LMHead, and Attention, and supports strategy combinations such as `W8A8`, `W4A8`, `FP8`, `MXFP4`, and `HIF8`. HIF8 supports Dense Linear, Attention projections, and MoE expert GMM on A5, including compilation and TP/EP paths; Attention/KV quantization remains independent. MiMo V2 Flash does not support HIF8 KV cache; the CLI and Web UI reject this combination during configuration resolution. Its existing attention paths and independent HIF8 linear quantization are unaffected. |
 | Parallelism and MoE extensions | Models the communication and compute overhead after splitting with global TP/DP/EP and fine-grained parallelism (Embedding TP, Vision TP, and so on), covering MoE deployment modes such as redundant experts and external/shared experts. |
 | Pipeline parallelism (PP) simulation | Supports stage-local model construction, logical send/recv communication, stage memory usage estimation, and explicit layer partitioning. |
 | Decode context parallel (DCP) simulation | Splits the KV cache of the decode phase along the sequence dimension to model the memory, attention computation, and collective communication changes of DCP. This does not indicate support for Prefill Context Parallel. |
