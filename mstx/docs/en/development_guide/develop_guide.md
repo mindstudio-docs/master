@@ -2,90 +2,51 @@
 
 <br>
 
+This document describes how to set up the development environment for MindStudio Tools Extension Library (msTX), build the project, and run UT unit tests.
+
 ## 1. Prerequisites
 
-First read the [msTX API List](../api_reference/README.md) to learn about the core APIs provided by msTX and their functions.
+### 1.1 Prerequisite Knowledge
 
-## 2. Development Environment Preparation
+Before starting development, read [msTX API List](../api_reference/README.md) to learn about the core APIs provided by msTX and their functions.
 
-For details, see [Operator Tool Development Environment Setup Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/dev_env_setup.md).
+### 1.2 Environment Preparation
 
-Compilation also requires installing python3-dev (the header files required to compile Python bindings):
+Follow [msTX Installation Guide — Source Installation](../install_guide/mstx_install_guide.md#231-environment-preparation) to set up the build and test environment.
 
-```sh
-# openEuler
-yum install python3-devel
+> **Note:** The environment image build method and the supporting software versions are maintained by the *MindStudio Unified Build Image Creation Guide* and are not redefined in this repository.
 
-# Ubuntu
-apt-get install python3-dev
+## 2. Build
+
+Run the following in the project root directory:
+
+```bash
+python3 build.py
 ```
 
-> **NOTE:** If you are not a root user, add `sudo` before the command.
+### 2.1 Build Artifacts
 
-## 3. Compilation and Packaging
+After a successful build, the output is generated in the `artifacts` directory.
 
-The following two methods are available, with their advantages and disadvantages:
+### 2.2 Build Cleanup
 
-| Method | Application Scenario | Advantages | Disadvantages |
-|------|---------|------|------|
-| One-click script | First build and CI/CD pipeline | Zero configuration, one-step setup | Steps cannot be executed independently. |
-| Step-by-step script | Daily development and incremental build | Flexible and efficient | Multiple steps are required. |
+To perform a full rebuild, delete the build directory and run the preceding steps again:
 
-### 3.1 Method 1: One-click Script
-
-```shell
-python build.py
-```
-
-### 3.2 Method 2: Step-by-Step Script
-
-#### 3.2.1 Downloading Dependencies
-
-```shell
-python download_dependencies.py
-```
-
-#### 3.2.2 Starting Compilation
-
-Run the following command to start compilation:
-
-```shell
-mkdir build
-cd build
-cmake .. && make -j$(nproc)
-make install
-```
-
-After compilation is complete, check the `output/` directory. If the file generation time has been updated to the current compilation time, the compilation has completed successfully.
-
-#### 3.2.3 Compilation Result Description
-
-The compilation results are generated in the `output/` directory:
-
-```text
-output/
-├── mstx/                         # Installation directory
-│   └── lib64/                    # Dynamic libraries (libms_tools_ext.so, mstx.so)
-└── mstx-<version>.whl            # Python installation package
-```
-
-#### 3.2.4 Cleanup and Recompilation
-
-Delete the build directory and rerun [Section 3.2.2](#322-starting-compilation):
-
-```shell
+```bash
 rm -rf build
 ```
 
-## 4. Unit Testing
+## 3. Unit Tests
 
-```shell
-python build.py test
+### 3.1 Running Tests
+
+```bash
+python3 build.py test
 ```
 
-This command sequentially downloads test dependencies, compiles C/CPP test targets in Debug mode, runs C/C++ unit tests, and runs Python unit tests.
+This command sequentially downloads test dependencies, compiles C++ test targets in Debug mode, runs C++ unit tests, and runs Python unit tests.
 
-If the output is similar to the following, and the number of run test cases equals the number of passed test cases, it indicates success:
+When all tests pass, the output is similar to the following example:
 
 ```text
 [----------] 4 tests from CoreApi (8ms total)
@@ -95,38 +56,12 @@ If the output is similar to the following, and the number of run test cases equa
 ============= 4 passed in 0.03s =============
 ```
 
-NOTE: You need to install `pytest` in the environment beforehand to run Python tests. There are multiple independent test suites. If the output results are similar to the example, it indicates successful execution.
+> **Pass criteria:** The tests pass when the number of `ran` test cases matches the number of `PASSED` test cases. If any `FAILED` test cases exist, locate the cause of the failure from the logs. There are multiple independent test suites. If the output results are similar to the example, it indicates successful execution.
 
-## 5. FAQ
+### 3.2 Cleaning the Test Environment
 
-### 5.1 Compilation Error: `Python.h` Not Found
+Delete the UT build directory and run the tests again:
 
-```text
-fatal error: Python.h: No such file or directory
+```bash
+rm -rf build_ut
 ```
-
-**Solution:** Install the Python development package:
-
-```sh
-# OpenEuler
-yum install python3-devel
-
-# Ubuntu
-apt-get install python3-dev
-```
-
-### 5.2 Test Error: `pytest` Not Found
-
-```text
-pytest: command not found
-```
-
-**Solution:** Install `pytest`:
-
-```sh
-pip3 install pytest
-```
-
-### 5.3 Only the whl Package Exists in the Output Folder, No Dynamic Library
-
-The one-click script `python build.py` generates the whl package and installs dynamic libraries to `output/mstx/lib64/` at the same time. If you only see the whl package, it is usually because only `cmake .. && make` was run during the step-by-step compilation and `make install` was missed. Run `make install` in the `build/` directory to fix this.

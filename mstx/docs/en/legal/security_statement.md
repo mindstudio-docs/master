@@ -22,7 +22,7 @@ echo 2 > /proc/sys/kernel/randomize_va_space
 
 2. Proper permission control is essential during installation and use. You are advised to set permissions by referring to the [File Permission Reference](#file-permission-reference).
 
-**File Permission Reference**<a id="file-permission-reference"></a>
+    **File Permission Reference**<a id="file-permission-reference"></a>
 
 | Type                              | Maximum Linux Permission|
 | ---------------------------------- | ------------------- |
@@ -54,7 +54,9 @@ During the use of this tool, certain code-line-related features may access the u
 
 ## Build Security
 
-This tool supports source code compilation and installation. During compilation, third-party dependencies may be downloaded and build shell scripts executed, resulting in temporary program files and build directories. You may control permissions on files within the source code directory as needed to mitigate security risks. During the build process, you may also modify build scripts as necessary to avoid related security risks and ensure the security of build artifacts.
+- This tool supports source code compilation and installation. During compilation, third-party dependencies may be downloaded and build shell scripts executed, resulting in temporary program files and build directories. You may control permissions on files within the source code directory as needed to mitigate security risks. During the build process, you may also modify build scripts as necessary to avoid related security risks and ensure the security of build artifacts.
+
+- This repository provides reference configurations for VS Code and Dev Containers for development and debugging. They are only used for developing and debugging this repository in a secure debugging environment. Check the configuration security yourself and adjust it as needed.
 
 ## Runtime Security
 

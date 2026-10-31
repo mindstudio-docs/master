@@ -1,15 +1,25 @@
-# mstxRangeStartA<a id="mstxRangeStartA"></a>
+# `mstxRangeStartA`<a id="mstxRangeStartA"></a>
 
 **Supported Products<a id="section8178181118225"></a>**
 
-|Product|Supported|
-|--|:-:|
-|Ascend 950 products|√|
-|Atlas A3 training products/Atlas A3 inference products|√|
-|Atlas A2 training products/Atlas A2 inference products|√|
-|Atlas 200I/500 A2 inference products|√|
-|Atlas inference products|√|
-|Atlas training products|√|
+<!-- npu="950" id1 -->
+- Ascend 950PR and 950DT products: supported
+<!-- end id1 -->
+<!-- npu="A3" id2 -->
+- Atlas A3 products: supported
+<!-- end id2 -->
+<!-- npu="910b" id3 -->
+- Atlas A2 products: supported
+<!-- end id3 -->
+<!-- npu="310b" id4 -->
+- Atlas 200I/500 A2 inference products: supported
+<!-- end id4 -->
+<!-- npu="310p" id5 -->
+- Atlas inference products: supported
+<!-- end id5 -->
+<!-- npu="910" id6 -->
+- Atlas training products: supported
+<!-- end id6 -->
 
 **Function<a id="zh-cn_topic_0000002016210401_section20806203412478"></a>**
 
@@ -35,7 +45,7 @@ mstx.range_start(message, stream)
 
 |Parameter|Input/Output|Description|
 |--|--|--|
-|message|Input|message is a text marker that carries trace information.<br>Data type in C/C++: const char *.<br>In Python, message is a string. Defaults to None.<br>Length requirement for the input message string: MSPTI scenario: cannot exceed 255 Byte.<br>message cannot be a null pointer.|
+|message|Input|message is a text marker that carries trace information.<br>Data type in C/C++: const char *.<br>In Python, message is a string. Defaults to None.<br>Length requirement for the input message string: MSPTI scenario: cannot exceed 255 bytes.<br>message cannot be a null pointer.|
 |stream|Input|stream indicates the thread that uses the mark.<br>Data type in C/C++: aclrtStream.<br>In Python, stream is an aclrtStream object. Defaults to None.<br>When set to nullptr, only the instantaneous event on the Host side is marked.<br>When set to a valid stream, the instantaneous events on the Host side and the corresponding Device side are marked.|
 
 **Returns<a id="zh-cn_topic_0000002016210401_section16621124213476"></a>**

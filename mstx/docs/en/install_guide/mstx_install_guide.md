@@ -1,4 +1,4 @@
-# MindStudio Tools Extension Library Installation Guide
+# msTX Installation Guide
 
 <br>
 
@@ -6,19 +6,19 @@
 
 This tool is integrated into CANN. If CANN is already installed and you do not need to update this tool, you can use it directly without following the installation steps in this document.
 
-If CANN is not yet installed in your environment, refer to the [CANN Quick Installation](https://www.hiascend.com/en/cann/download) guide to install the Ascend NPU driver and CANN software (including Toolkit and the ops package), and configure the environment variables.
+If CANN is not yet installed in your environment, refer to the [CANN Quick Installation](https://www.hiascend.com/cann/download) guide to install the Ascend NPU driver and CANN software (including Toolkit and the ops package), and configure the environment variables.
 
-If you need to upgrade this tool separately or use the latest version, you can install it in the following three ways: [online installation](#21-online-installation), [offline installation](#22-offline-installation), [source installation](#23-source-installation).
+If you need to upgrade this tool separately or use the latest version, you can install it in the following ways: [online installation](#21-online-installation), [offline installation](#22-offline-installation), [source installation](#23-source-installation).
 
 ## 2. Installation Methods
 
 ### 2.1 Online Installation
 
-If your device has internet access, you can automatically download and install the tool with a single command. Please visit the Ascend Community MindStudio [download](https://www.hiascend.com/en/developer/software/mindstudio/download) page, select the corresponding CANN version, and choose online installation as the installation method. The system will guide you through the subsequent operations.
+If your device has internet access, you can automatically download and install the tool with a single command. Please visit the Ascend Community MindStudio [download](https://www.hiascend.com/developer/software/mindstudio/download) page, select the corresponding CANN version, and choose online installation as the installation method. The system will guide you through the subsequent operations.
 
 ### 2.2 Offline Installation
 
-For devices in environments without external network access, such as enterprise intranets, first download the complete offline installation package on a machine with internet access, then transfer it to the target device for installation. Please visit the MindStudio [download](https://www.hiascend.com/en/developer/software/mindstudio/download) page on the Ascend Community, select the corresponding CANN version, choose offline installation as the installation method, and obtain the corresponding installation package and operation guide.
+For devices in environments without external network access, such as enterprise intranets, first download the complete offline installation package on a machine with internet access, then transfer it to the target device for installation. Please visit the MindStudio [download](https://www.hiascend.com/developer/software/mindstudio/download) page on the Ascend Community, select the corresponding CANN version, choose offline installation as the installation method, and obtain the corresponding installation package and operation guide.
 
 ### 2.3 Source Installation
 
@@ -26,45 +26,52 @@ If you need to use the latest code features or modify the source code to enhance
 
 #### 2.3.1 Environment Preparation
 
-Please follow the documentation below for environment configuration: [Operator Tool Development Environment Setup Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/dev_env_setup.md).
+All source code compilation uses the standard MindStudio build environment.
 
-#### 2.3.2 Project Dependencies
+- For daily development or when you use a released image, refer to the [MindStudio Tool Development Environment Installation Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/dev_env_setup.md).
+- If you need to reproduce the environment from a base operating system, or to perform source code build verification or unit test verification, you must refer to the [MindStudio Unified Build Image Creation Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/docker_image_build_guide.md) to build the environment image on site from the openEuler base image.
 
-- Clone this repository
+The source code compilation and unit test commands later in this document all run in the container of the specified image or of the environment image built on site. The CANN software package version, GCC version, and Python version are subject to the *Unified Build Image Creation Guide*, and this repository does not maintain them separately.
 
-    ```sh
-    git clone https://gitcode.com/Ascend/mstx.git
-    ```
+After the image is built, you must use the `ctr_in.py` command provided in Chapter 7 of the *Unified Build Image Creation Guide* to start and enter the container in an interactive terminal. Do not use a plain `docker run` to create a container, and do not use `docker exec <container_name> bash -c '<command>'` to replace the interactive environment. Otherwise, the initialization of the Python, GCC, and CANN environments may be skipped.
 
-- Download dependencies
+After you enter the interactive container shell opened by `ctr_in.py`, run the following command to clone this repository:
 
-    Since the code in this project depends on the header files of Python 3, the python3-dev package needs to be installed in the build environment. This can be done with the following commands:
-
-    - OpenEuler environment:
-
-        ```sh
-        yum install python3-devel
-        ```
-
-    - Ubuntu environment:
-
-        ```sh
-        apt-get install python3-dev
-        ```
-
-    NOTE: Non-root users need to add sudo before the command, for example: `sudo yum install python3-devel`.
-
-#### 2.3.3 Building and Packaging
-
-```sh
-cd mstx
-python build.py
+```bash
+cd ~
+git clone https://gitcode.com/Ascend/mstx.git
 ```
 
-#### 2.3.4 whl Package Installation
+#### 2.3.2 Compilation
 
-```sh
-cd output
+Stay in the same interactive container shell opened by `ctr_in.py`, and run the following command in the repository root directory to automatically download dependencies and build:
+
+```bash
+cd ~/mstx
+python3 build.py
+```
+
+After the build succeeds, the installation package is generated in the `artifacts/` directory.
+
+#### 2.3.3 Unit Tests (Optional)
+
+This step is not required for installation. If you need to verify the basic functions of the code, you can run the unit tests:
+
+```bash
+cd ~/mstx
+python3 build.py test
+```
+
+If the return code of the command is 0 and no test case fails, the unit tests pass.
+
+#### 2.3.4 Installation
+
+##### 2.3.4.1 Installation Package
+
+Copy the whl package to the operating environment (not required for local installation) and perform the following installation:
+
+```shell
+cd ~/mstx/artifacts
 pip3 install mstx-xxxxx.whl
 ```
 
@@ -73,10 +80,10 @@ pip3 install mstx-xxxxx.whl
 After installation, run the following command to verify whether the tool was installed successfully:
 
 ```shell
-pip show mstx
+python3 -c "import mstx; print('All is OK')"
 ```
 
-If no error is reported and relevant information is displayed, the installation is successful.
+If no error is reported and `All is OK` is displayed, the installation is successful.
 
 ## 4. Uninstallation
 
@@ -85,7 +92,7 @@ You can uninstall it by following these steps:
 1. Download the script.
 
    ```bash
-   curl -O https://inst.obs.cn-north-4.myhuaweicloud.com/26.1.0/ms_install.py
+   curl -O https://inst.obs.cn-north-4.myhuaweicloud.com/26.2.0/ms_install.py
    ```
 
    > [!NOTE]
@@ -111,4 +118,4 @@ You can uninstall it by following these steps:
 
 Upgrade means "uninstall first, then install". Directly execute the installation command, and the tool will automatically uninstall the old version and guide you through the overwrite installation.
 
-You can run the `pip show mstx` command to check the version information of the current environment and select the version you want to upgrade to. When upgrading the version, pay attention to version compatibility. Refer to the [Release Notes](https://gitcode.com/Ascend/release-management/blob/master/MindStudio/master/release_notes_en.md).
+You can run the `pip show mstx` command to check the version information of the current environment and select the version you want to upgrade to. When upgrading the version, pay attention to version compatibility. Refer to the [Release Notes](https://gitcode.com/Ascend/release-management/blob/master/MindStudio/master/release_notes.md).
