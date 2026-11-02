@@ -69,7 +69,7 @@ Complete the preparations for using the msOpGen tool by referring to "Preparatio
 
     > [!NOTE]
     > 
-    > The msOpGen tool generates only an empty operator project template. You need to implement the operator logic. For details, see "Operator Implementation" > "Project-based Operator Development" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/900/programug/Ascendcopdevg/atlas_ascendc_10_0059.html).
+    > The msOpGen tool generates only an empty operator project template. You need to implement the operator logic. For details, see "Operator Implementation" > "Project-based Operator Development" in [Ascend C Operator Development Guide](https://www.hiascend.com/document/detail/en/canncommercial/83RC1/opdevg/Ascendcopdevg/atlas_ascendc_10_0059.html).
 
     ```sh
     msopgen gen -i MatmulCustom.json -f tf -c ai_core-Ascendxxxyy -lan cpp -out MatmulCustom

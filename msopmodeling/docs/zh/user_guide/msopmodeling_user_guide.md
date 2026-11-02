@@ -110,11 +110,11 @@ msopmodeling --help
 ## 5. 运行
 
 ```shell
-# 理论极限模式，针对 910B1 芯片
+# 理论极限模式，针对 910B1 芯片，结果写入 msopmodeling_output/
 msopmodeling -i input_theo.json -s 910B1
 
-# 工程可达模式，结果写入文件
-msopmodeling -i input_eng.json -s 910B4 -o result.json
+# 工程可达模式，结果写入 result_dir/
+msopmodeling -i input_eng.json -s 910B4 -o result_dir
 ```
 
 **完整参数说明：**
@@ -122,7 +122,7 @@ msopmodeling -i input_eng.json -s 910B4 -o result.json
 | 参数 | 必填 | 说明 |
 |------|----|------|
 | `-i / --input` | 是  | 输入 JSON 文件路径 |
-| `-o / --output` | 否  | 输出 JSON 文件路径；省略则打印到标准输出 |
+| `-o / --output` | 否  | 输出目录，默认 `msopmodeling_output`；不存在时自动创建，已存在时直接复用 |
 | `-s / --soc-type` | 是  | 芯片型号（如 `910B1`、`910B4`） |
 | `-v / --verbose` | 否  | 输出 DEBUG 级别详细日志，便于排查问题 |
 
@@ -130,7 +130,26 @@ msopmodeling -i input_eng.json -s 910B4 -o result.json
 
 ## 6. 查看输出结果
 
-成功执行后，输出如下 JSON 结构（以 MatMul 工程模式为例）：
+成功执行后，输出目录结构如下：
+
+```text
+result_dir/
+├── result.json          # 所有算子的预测结果
+├── OP_0/                # 第 1 个算子的交付件
+│   ├── trace.json
+│   ├── events.json
+│   ├── OpBasicInfo.csv
+│   ├── PipeUtilization.csv
+│   ├── diagnostics.json
+│   ├── runtime_profile.json
+│   └── optimization_hints_OP_0.csv
+└── OP_1/
+    └── ...
+```
+
+> 输出目录不存在时会自动创建；已存在时直接复用，不会清空其中已有文件，`result.json` 与对应 `OP_x/` 内容会被覆盖更新。
+
+`result.json` 的结构如下（以 MatMul 工程模式为例）：
 
 ```json
 {

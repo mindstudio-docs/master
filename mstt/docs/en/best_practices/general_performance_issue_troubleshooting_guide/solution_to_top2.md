@@ -57,17 +57,17 @@ When the BERT model is trained on B4, the performance of B4 is obviously lower t
 
    | Operator                                            | Website                                                                                                              |
    | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-   | IndexPutV2                                          | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/indexput_operator_replacement.md> |
-   | MatMul/hcom_allReduce                               | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/MatmulAllReduce.md> |
-   | Nonzero                                             | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/nonzero_op_replacement.md> |
-   | where                                               | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/where_op_replace.md> |
-   | RotaryMul & RotaryMulGrad (fused operator)          | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/RotaryMul-RotaryMulGrad.md>   |
-   | RmsNorm & RmsNormGrad                               | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/RmsNorm-RmsNormGrad.md>   |
-   | ScaledMaskedSoftmax & ScaledMaskedSoftmaxGrad       | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/ScaledMaskedSoftmax-ScaledMaskedSoftmaxGrad.md>   |
-   | MatmulAllReduce                                     | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/MatmulAllReduce.md>   |
-   | FlashAttentionScore                                 | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/FlashAttentionScore.md>   |
-   | SwiGlu                                              | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/SwiGlu.md>   |
-   | Fusion optimizer                                    | <https://gitcode.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/fusion_opt.md>   |
+   | IndexPutV2                                          | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/indexput_operator_replacement.md> |
+   | MatMul/hcom_allReduce                               | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/MatmulAllReduce.md> |
+   | Nonzero                                             | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/nonzero_op_replacement.md> |
+   | where                                               | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/where_op_replace.md> |
+   | RotaryMul & RotaryMulGrad (fused operator)          | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/RotaryMul-RotaryMulGrad.md>   |
+   | RmsNorm & RmsNormGrad                               | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/RmsNorm-RmsNormGrad.md>   |
+   | ScaledMaskedSoftmax & ScaledMaskedSoftmaxGrad       | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/ScaledMaskedSoftmax-ScaledMaskedSoftmaxGrad.md>   |
+   | MatmulAllReduce                                     | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/MatmulAllReduce.md>   |
+   | FlashAttentionScore                                 | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/FlashAttentionScore.md>   |
+   | SwiGlu                                              | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/SwiGlu.md>   |
+   | Fusion optimizer                                    | <https://atomgit.com/Ascend/docs/blob/master/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/fusion_opt.md>   |
    | Official document for fused operator replacement    | <https://www.hiascend.com/document/detail/en/Pytorch/latest/ptmoddevg/trainingmigrguide/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/RotaryMul-RotaryMulGrad.md> |
    | Official document for affinity operator replacement | <https://www.hiascend.com/document/detail/en/Pytorch/latest/ptmoddevg/trainingmigrguide/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/indexput_operator_replacement.md> |
    | Official document for affinity API replacement      | <https://www.hiascend.com/document/detail/en/Pytorch/latest/ptmoddevg/trainingmigrguide/FrameworkPTAdapter/26.0.0/en/pytorch_model_migration_fine_tuning/affinity_api_repl.md> |

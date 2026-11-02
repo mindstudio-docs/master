@@ -31,7 +31,7 @@ When creating or compiling an operator project, a chip model (soc_version) confi
 
 1. Run `npu-smi info` to query the Chip Name
 2. Change `-c ai_core-Ascend<Chip_Name>` to the correct value
-3. Note that `ai_core` and the chip model are separated by a dash `-`, e.g. `ai_core-ascend910b`
+3. Note that `ai_core` and the chip model are separated by a dash `-`, for example `ai_core-ascend910b`
 
 ## Runtime Error: aclrtSetDevice failed
 
@@ -53,8 +53,8 @@ Possible causes include:
 1. Run `npu-smi info` to check NPU status
 2. Try switching NPU devices via `-d <device_id>`
 3. In container environments, verify that `--device=/dev/davinciX` is correctly mounted
-4. Check the driver installation. See [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/83RC1/softwareinst/instg/instg_0000.html)
-5. See [ACL Error Code Reference](https://www.hiascend.com/document/detail/en/canncommercial/83RC1/API/appdevgapi/aclcppdevg_03_1345.html) for error code details
+4. Check the driver installation. See [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/softwareinst/instg/instg_0107.html?OS=openEuler&InstallType=netyum)
+5. See [ACL Error Code Reference](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/runtimeapi/aclcppdevg_03_1345.html) for error code details
 
 ## Output Is All Zeros or Random Values
 

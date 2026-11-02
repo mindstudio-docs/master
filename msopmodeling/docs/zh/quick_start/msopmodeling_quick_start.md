@@ -65,7 +65,7 @@ msopmodeling -h
 ## 5. 运行
 
 ```shell
-msopmodeling -i input.json -s 910B4
+msopmodeling -i input.json -s 910B4 -o result_dir
 ```
 
 **参数说明：**
@@ -74,12 +74,32 @@ msopmodeling -i input.json -s 910B4
 |------|----|------|
 | `-i / --input` | 是  | 输入 JSON 文件路径 |
 | `-s / --soc-type` | 是  | 芯片型号，当前支持 `910B1`、`910B4` |
+| `-o / --output` | 否  | 输出目录，默认 `msopmodeling_output`；不存在时自动创建，已存在时直接复用 |
 
 ---
 
 ## 6. 查看输出结果
 
-成功执行后，输出如下 JSON 结构：
+成功执行后，输出目录结构如下：
+
+```text
+result_dir/
+├── result.json          # 所有算子的预测结果
+├── OP_0/                # 第 1 个算子的交付件
+│   ├── trace.json
+│   ├── events.json
+│   ├── OpBasicInfo.csv
+│   ├── PipeUtilization.csv
+│   ├── diagnostics.json
+│   ├── runtime_profile.json
+│   └── optimization_hints_OP_0.csv
+└── OP_1/
+    └── ...
+```
+
+> 输出目录不存在时会自动创建；已存在时直接复用，不会清空其中已有文件，`result.json` 与对应 `OP_x/` 内容会被覆盖更新。
+
+`result.json` 的 JSON 结构如下：
 
 ```json
 {

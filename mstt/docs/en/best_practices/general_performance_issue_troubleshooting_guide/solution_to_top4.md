@@ -1,52 +1,52 @@
-# Methodology for Locating Performance Fluctuation Problems in a Cluster
+# Methodology for Locating Abnormal Fluctuations in Cluster Performance
 
-## Cluster Performance Deterioration Analysis
+## Approach for Analyzing Cluster Performance Degradation
 
-For details about the overall analysis approach to cluster performance issues, see [Troubleshooting Principles](./positioning_process_for_performance_issues.md#troubleshooting-principles).
+For the overall approach to analyzing cluster performance issues, see [Troubleshooting Approach](./positioning_process_for_performance_issues.md#troubleshooting-approach).
 
-Performance problems in long-term, stable training are usually performance fluctuations that occur during a normal training process. To solve these problems, you need to consider recent changes and preliminarily check for any hardware issue, then use the profiling tool to identify problem details.
+For a general long-term stability performance issue, that is, a performance fluctuation that occurs during normal training, you first need to consider recent changes and perform a preliminary check for hardware issues, and then use Profiling to find the specific issue point and locate it in detail.
 
-To improve the locating efficiency, you are advised to take a two-step methodology of rough and fine locating, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535807059__fig1169003471618).
+To improve locating efficiency, you are advised to use the two-step coarse-to-fine locating method, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535807059__fig1169003471618).
 
-**Figure 1** Locating process <a name="ZH-CN_TOPIC_0000002535807059__fig1169003471618"></a>
+**Figure 1** Locating process<a name="ZH-CN_TOPIC_0000002535807059__fig1169003471618"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/e77d5823-04ab-42da-8bf6-eb7549a9834d.png)
 
-The two-step methodology of rough and fine locating is designed to streamline profile data collection and analysis in large-scale cluster training scenarios. Rough locating focuses on recent cluster changes (such as configuration changes and component upgrades) and hardware metrics (such as CPU/memory usage and network throughput) to quickly determine suspicious time periods and modules. If no exceptions are detected, take the step of fine locating. Use the profiling tool for in-depth analysis on computing, communication, and delivery to determine root causes from the perspectives of thread stack, I/O latency, and lock contention. This methodology emphasizes the correlation analysis of change information and metrics, and uses visualization methods such as profiling, flame graphs, and traces to implement exception locating and root cause analysis, providing a precise, accurate, and layered diagnosis approach for cluster performance optimization.
+The core idea of the two-step coarse-to-fine locating method is as follows. Because collecting and analyzing Profiling data for large-scale cluster training is difficult, start with a coarse granularity, focus on recent cluster changes (such as configuration changes and component upgrades) and hardware metrics (such as CPU and memory utilization and network throughput), and quickly identify the abnormal period and suspicious modules. If no obvious abnormality is found, use the fine locating method to deeply analyze low-level details such as computing, communication, and dispatch by using Profiling tools, and further locate the root cause of the bottleneck from dimensions such as thread stacks, I/O latency, and lock contention. This methodology emphasizes the correlated analysis of change information and metrics. It also uses visualization methods such as Profiling, flame graphs, and call chains to implement a closed loop from macro-level abnormality locating to micro-level root cause analysis, providing an accurate hierarchical diagnosis path for cluster performance optimization.
 
-In addition, to make verification easier, you are advised to use the test methods of N-partitioning and single-node service modeling test to reproduce the problem on a smaller scale.
+In addition, to resolve the difficulty of verification, when conditions permit, you are advised to use methods such as N-way partitioning and single-server model tests for the service to reproduce the issue at a small scale, which facilitates verification.
 
-1. **Rough locating**
+1. **Coarse locating**
 
-   Rough locating is usually performed in the scenario where no profiling is available. This approach is mainly based on the analysis and experience gained from past issues. Significant problems mainly fall into the following four categories:
+   Coarse locating is generally carried out in scenarios without Profiling. Coarse locating methods are mainly based on the analysis of past issues and on experience. Prominent issues mainly fall into the following four categories:
 
-   - Resource accumulation: Allocated resources are not released in a timely manner or requested abnormally, causing resource accumulation and affecting performance.
-   - Resource preemption: Other processes run on the host, or other machines perform high-intensity read/write operations on shared storage without proper resource isolation.
-   - Communication retransmission: Packet loss and other issues trigger communication retransmissions, which degrade performance.
-   - Environment change: Recent changes include but are not limited to upgrade, new cluster usage, and startup or stop of some services.
+   - Resource accumulation: Requested resources are not released in time, or resources are requested abnormally, causing resources to accumulate and affecting performance.
+   - Resource preemption: Other processes exist on the host side, or other machines read and write the shared storage under heavy pressure when resource isolation is not properly performed.
+   - Communication retransmission: Communication retransmission occurs due to issues such as packet loss, which affects performance.
+   - Environment change: A change was made recently, including but not limited to upgrades, use of a new cluster, and starting or stopping certain services.
 
-   You can use the following rough locating methods before performing profiling analysis.
+   To address the preceding issues, you can use the following methods for coarse locating before Profiling analysis:
 
-   - Version check: Collect the current versions including at least HDK, OS, CANN, and framework. Check the compatibility list to identify compatibility issues and verify whether known performance-related problems exist in these versions.
-   - Change check: Confirm whether any changes have been made recently, including but not limited to version upgrades and cluster re-partitioning.
-   - Environment check: Check for hardware alarms and verify that key KPIs such as storage (I/O) and network (packet loss) are normal.
-   - Configuration check: Check whether the typical check items are correctly configured by referring to [Pre-check Tool Guide](https://gitcode.com/Ascend/msit/blob/master/msprechecker/README_EN.md).
+   - Version check: Collect the versions in use, including at least HDK, OS, CANN, and the framework. Use the compatibility list to confirm whether compatibility issues exist in the versions, and also confirm whether known performance-related issues exist in the versions.
+   - Change check: Determine whether any change was made recently, including but not limited to version upgrades and cluster re-planning.
+   - Environment check: Check whether hardware alarms exist and whether KPIs such as storage (I/O and so on) and network (packet loss and so on) are normal.
+   - Configuration check: Refer to the typical check items in the [Pre-Check Tool Guide](https://atomgit.com/Ascend/msit/blob/master/msprechecker/README.md) to check whether the configuration is correct.
 
    > [!NOTE]
    >
-   > The check items for rough locating are derived from historical problem locating experience and are applicable to most common performance fluctuation problems. For the problems that cannot be identified through rough locating, perform fine locating.
+   > The coarse locating check items come from experience in locating historical issues and can cover most common performance fluctuation issues. If an issue cannot be handled by coarse locating, you need to troubleshoot it in detail by using fine locating.
    >
-   > In addition, you can use the test methods of cluster N-partitioning and single-node service modeling to reproduce the problem at the smallest possible scale. If the problem is reproduced on a single node, check whether a process preemption occurs, CPU usage changes, or whether any alarm or error exists in the messages or dmesg log.
+   > In addition, you can use methods such as N-way cluster partitioning and single-server model tests to minimize the unit for reproducing the issue. If you confirm that the issue can be reproduced on a single server, check whether process preemption exists, whether the CPU utilization changes, and whether the messages or dmesg logs contain alarms or errors.
 
 2. **Fine locating**
 
-   For the process of fine locating, see [Detailed Troubleshooting](positioning_process_for_performance_issues.md#detailed-troubleshooting) and use model fine-tuning tools to further locate and analyze exceptions.
+   For the fine locating process, see [Detailed Troubleshooting](positioning_process_for_performance_issues.md#detailed-troubleshooting). Use the model tuning tool to further locate the abnormal points and perform a detailed analysis.
 
-Compare and verify the conclusions of the rough and fine locating processes to obtain the root cause and solution.
+Corroborate the conclusions of the coarse and fine locating processes to determine the final root cause and solution.
 
-## Hands-on Skills for Problem Locating
+## Practical Locating Tips
 
-1. In large-scale scenarios, if the training task needs to be completed within a specified period, you can first specify an optimization objective and calculate the benefits of problem locating (compare the time loss due to experiments and collection in the production cluster for problem locating with the benefits brought by optimization).
-2. To locate problems in a large-scale cluster, you can reproduce the problems in a smaller-scale cluster or even a single-node system to facilitate experiments and reduce the impact on production tasks. The methods include but are not limited to N-partitioning, single-node test, and pre-check.
-3. In practice, L1 without stack is used for the initial collection. In large-scale cluster scenarios, if data is directly written to the shared storage, the total size of collected data may be too large. In addition, if resources are not properly isolated, other jobs in the cluster may be affected. Therefore, you are advised to write the profile data to the local system, collect the data using scripts, and transfer the collected data to the shared storage in batches.
-4. If possible, you can enable dynamic profile data collection during model training.
+1. In large-scale scenarios, if the goal is to complete the training task within a specified period, you can first clarify the optimization objective and calculate the benefit of locating the issue. To do so, compare the time consumed by experiments and collection on the production cluster for locating the issue with the benefit brought by the completed optimization.
+2. For locating issues in large-scale clusters, first consider reproducing the large-scale issue in a small-scale cluster or even a single-server environment to facilitate experiments, thereby reducing the impact on production tasks. Methods include but are not limited to N-way partitioning, single-server tests, and pre-checks.
+3. In practice, the first collection generally uses L1 without stacks. In large-scale cluster scenarios, if you write Profiling data directly to the shared storage, the collected data may expand excessively. In addition, if resource isolation is not properly performed, other jobs in the cluster may be affected. Therefore, you can consider writing Profiling data to the local storage first and then collecting it to the shared storage in batches by using a script.
+4. When conditions permit, you can enable the dynamic performance data collection function when the model performs training.

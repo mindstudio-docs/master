@@ -12,15 +12,18 @@ Before developing msOpGen, you need to understand the following fundamentals:
 
 ## 2. Development Environment Setup
 
-Set up the environment by referring to the [Operator Tool Development Environment Setup Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/dev_env_setup.md).
+Set up the compilation and test environment by referring to the "Preparing the Environment" section in the [msOpGen Installation Guide](../install_guide/msopgen_install_guide.md#231-preparing-the-environment).
+
+> **Note:**
+> The environment image build method and the supporting software versions are maintained by the unified MindStudio image production guide and are not redefined in this repository.
 
 ## 3. One-click Build
 
 ```shell
-python build.py
+python3 build.py
 ```
 
-The generated wheel packages are located in the `output/` directory and include the `mindstudio_opgen` and `mindstudio_opst` packages.
+The generated wheel packages are located in the `artifacts/` directory and include the `mindstudio_opgen` and `mindstudio_opst` packages.
 
 ## 4. Project Directory Structure
 
@@ -28,8 +31,8 @@ The generated wheel packages are located in the `output/` directory and include 
 ├── msopgen/          // msopgen source code directory (core engine)
 ├── tools/msopst/     // msopst source code directory (ST test tool)
 ├── test/
-│   ├── msopgen/      // msopgen unit tests
-│   └── msopst/       // msopst unit tests
+│   ├── test_msopgen/ // msopgen unit tests
+│   └── test_msopst/  // msopst unit tests
 ├── example/          // Tool examples
 ├── docs/             // Project documentation
 ├── setup.py          // build script for the msopgen wheel package
@@ -40,7 +43,7 @@ The generated wheel packages are located in the `output/` directory and include 
 ## 5. UT Tests
 
 ```shell
-python build.py test
+python3 build.py test
 ```
 
 ### 5.1 Test coverage

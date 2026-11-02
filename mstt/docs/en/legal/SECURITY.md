@@ -42,7 +42,7 @@ For security and the principle of least privilege, the tools in this code reposi
 
 ## Vulnerability Security Statement
 
-The tb-graph-ascend tool depends on webpack-dev-server in the development state. Version 4.x has been identified as having known security vulnerabilities (CVE-2025-30359 and CVE-2025-30360). However, the final built release artifacts (production environment code/packages) do not contain webpack-dev-server or its related code, and users will not download this dependency library during use. Therefore, these vulnerabilities do not affect the security of the final application generated using this tool, nor will they be downloaded or triggered by end users. However, developers need to ensure the security of the development process themselves.
+The tb-graph-ascend tool depends on `webpack-dev-server` in the development state. Version 4.x has been identified as having known security vulnerabilities (CVE-2025-30359 and CVE-2025-30360). However, the final built release artifacts (production environment code/packages) do not contain `webpack-dev-server` or its related code, and users will not download this dependency library during use. Therefore, these vulnerabilities do not affect the security of the final application generated using this tool, nor will they be downloaded or triggered by end users. However, developers need to ensure the security of the development process themselves.
 
 For details about the vulnerability handling mechanism, see [MindStudio Vulnerability Handling Procedure](./mindstudio_vulnerability_handling_procedure.md).
 
@@ -67,12 +67,12 @@ msMonitor and msProbe support source code compilation and installation. During c
    Usage scenario: When you need to perform model accuracy analysis, you can add the dump API of msProbe to the model training script, collect accuracy data while executing training, and directly output the accuracy data file after training is completed. The data file content includes the API data in the model, the model structure, and the stack information of API calls (so that when an API with an accuracy issue is located, the position of the API in the model can be quickly found).
 
     Risk warning: Using this function generates accuracy data locally. You must strengthen the protection of related accuracy data files. Use it only when model accuracy analysis is required, and disable it promptly after analysis is complete.
-
+   
 4. To avoid remote code injection attacks, if the `--trust-remote-code` parameter is involved, set it to False.
 
 ## Public IP Address Statement
 
-[Public IP address information](./public_ip_address.md) present in the configuration files and scripts of the msTT repository tools
+For details about the public IP address information present in the configuration files and scripts of the msTT repository tools, see [Public IP address information](./public_ip_address.md).
 
 ## Public API Statement
 
@@ -88,9 +88,9 @@ Insecure functions are not forcibly disabled, but you are advised to use the `_s
 
 **1. Security Risk of Native Dynolog Wildcard Address Listening**
 
-**Background**: msMonitor integrates the open-source third-party library dynolog. msMonitor has adapted dynolog for NPU. The adapted file `msMonitor/dynolog_npu/dynolog/src/rpc/SimpleJsonServer.cpp` contains code for wildcard address listening. To ensure tool functionality and usability, the native dynolog wildcard address listening has not been modified yet.
+**Background**: msMonitor integrates the open-source third-party library `dynolog`. msMonitor has adapted `dynolog` for NPU. The adapted file `msMonitor/dynolog_npu/dynolog/src/rpc/SimpleJsonServer.cpp` contains code for wildcard address listening. To ensure tool functionality and usability, the native `dynolog` wildcard address listening has not been modified yet.
 
-**Risk**: The `dynolog/src/rpc/SimpleJsonServer.cpp` file of this library contains the functionality of wildcard address listening (bind to `in6addr_any`), posing a network exposure security risk. This security risk originates from the dynolog open-source third-party library.
+**Risk**: The `dynolog/src/rpc/SimpleJsonServer.cpp` file of this library contains the functionality of wildcard address listening (bind to `in6addr_any`), posing a network exposure security risk. This security risk originates from the `dynolog` open-source third-party library.
 
 **Risk mitigation measures**: In the default security mode, you need to provide the root certificate, server certificate, server private key file, client certificate, client private key file, and certificate revocation list file. You must ensure the validity and legitimacy of the provided certificate files. At the same time, you must ensure that the directory where the certificates are located has file permissions of 700 and the certificates and other files have file permissions of 600. You are advised to configure firewall mechanisms such as `iptables` to restrict network access to the RPC port.
 
@@ -115,7 +115,7 @@ Insecure functions are not forcibly disabled, but you are advised to use the `_s
 
 - This tool is intended solely for debugging and development. Users are responsible for any risks and should carefully review the following information:
 
-  - [X] Data processing and deletion: Users are responsible for managing and deleting any data (including but not limited to dumped data) generated while using this tool. Users are advised to delete such data promptly after use to prevent information leakage.
+  - [X] Data processing and deletion: Users are responsible for managing and deleting any data (including but not limited to dumped data) generated while using this tool. Users are advised to delete such data promptly after use to prevent data leakage.
   - [X] Data confidentiality and transmission: Users understand and agree not to share or transmit any data generated by this tool. Neither the tool nor its developers are responsible for any information leaks, data breaches, or other negative consequences.
   - [X] User input security: Users are responsible for the security of any commands they enter and for any risks or losses resulting from improper input. The tool and its developers are not liable for issues caused by incorrect command usage.
 - Disclaimer scope: This disclaimer applies to all individuals and entities using this tool. By using the tool, you acknowledge and accept this statement and assume all risks and responsibilities arising from its use. If you do not agree, please stop using the tool immediately.

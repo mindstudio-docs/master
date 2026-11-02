@@ -1,287 +1,287 @@
-# Solution for the MindIE Inference Performance
+# MindIE Inference Performance Solution
 
-## Overall Guideline
+## Overall Approach
 
-The MindIE inference performance can be optimized from two perspectives: large language model (LLM) inference and serving.
+You can optimize MindIE inference performance from two perspectives: model-only and service-oriented.
 
-Check whether the performance of the current LLM inference can be optimized.
+First, determine whether the current model-only performance has room for tuning:
 
-1. If scenarios are covered in the version baseline, compare the performance with that of the version baseline and check the configuration.
-2. If no scenario is covered in the version baseline or the problem persists after the configuration is checked, perform an LLM inference test with the same input and output.
-3. If the LLM inference test result does not meet the expectation, optimize the LLM inference performance. If the result meets the expectation, optimize the serving performance.
-4. Locate performance bottlenecks for serving optimization, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535807067__fig294108141612).
+1. For scenarios covered by the version baseline, compare the performance with that of the version baseline and check the configuration.
+2. For scenarios not covered by the version baseline, or scenarios that still have issues after you check the configuration, first perform a model-only test with the same input and output.
+3. If the model-only test result does not meet expectations, perform model-only performance tuning. If it meets expectations, perform service-oriented performance tuning.
+4. During service-oriented tuning, locate performance bottlenecks as shown in [Figure 1](#ZH-CN_TOPIC_0000002535807067__fig294108141612).
 
-**Figure 1** Flowchart for locating serving performance bottlenecks <a name="ZH-CN_TOPIC_0000002535807067__fig294108141612"></a>
+**Figure 1** Flowchart for locating service-oriented performance bottlenecks<a name="ZH-CN_TOPIC_0000002535807067__fig294108141612"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/flowchart-for-locating-serving-performance-bottlenecks.png)
 
-## LLM Inference Performance Tuning
+## Model-Only Performance Tuning
 
-In common models and application scenarios, similar performance can be reproduced theoretically if the same weight, image, and deployment policy are used.
+For common models and usage scenarios, if the same weights, image, and deployment policy are used, similar performance can theoretically be reproduced.
 
-Therefore, if a performance problem occurs, you can check the environment variables and performance-related switches first. There is a high probability that the problem is caused by the environment variables and performance-related switches (for example, no core is bound, the kernel version is low, or the log level is incorrect).
+Therefore, after a performance issue occurs, you can check environment variables and performance-related switches first, because the issue is most likely here (for example, no core binding, a low kernel version, or a log level issue).
 
-For details about how to test the pure model performance, see [ATB Models Pure Model Usage](https://www.hiascend.com/document/detail/en/mindie/22RC1/mindiellm/llmdev/mindie_llm0009.html).
+For model-only performance tests, see [ATB Models model-only usage](https://www.hiascend.com/document/detail/en/mindie/latest/mindiellm/llmdev/mindie_llm/user_guide/user_manual/offline_inference.md) for evaluation.
 
-If the LLM inference test result shows that the performance deteriorates, you can perform detailed Profiling analysis. For details about the analysis method, see [In-depth Model Tuning Analysis (MindStudio Insight)](performance_tool_usage.md#performance_tool_usage02).
+If the model-only test result already shows performance degradation, you can perform a detailed Profiling performance analysis. For the analysis method, see [In-Depth Analysis for Model Tuning (MindStudio Insight)](performance_tool_usage.md#in-depth-analysis-for-model-tuning-mindstudio-insight).
 
-### Preliminary LLM Inference Test
+### Preliminary Model-Only Test
 
-The LLM inference test determines the size of the test request based on the `--batch_size option` entered by the user and determines the combination of the request input length and output length based on the `--case_pair` option. During inference, the Prefill of all requests is processed first, and then all requests are grouped into a Decode Batch to complete the Decode inference. For test scenarios that are not covered by the baseline, especially scenarios with TTFT or TPOT latency requirements, perform the following steps to perform a LLM inference test:
+A model-only test determines the size of test requests based on the `--batch_size` parameter that you enter, and determines the combination of request input length and output length based on `--case_pair`. During inference, it first processes the Prefill of all requests, and then groups all requests into the same Decode Batch to complete Decode inference. For test scenarios not covered by the baseline, especially scenarios with TTFT or TPOT latency requirements, you can perform a model-only test as follows.
 
-1. Set `--case_pair [[input_len, 1]]` to simulate a pure model test with a single prefill batch. In this mode, the specified `--batch_size` is recorded as `prefill_batchsize`, and the `Total Time(s)` in the results is recorded as `prefill_time`.
+1. Set `--case_pair [[input length,1]]` to simulate a model-only test of a single Prefill Batch. In this case, the specified `--batch_size` parameter is recorded as `prefill_batchsize`, and `Total Time(s)` in the test result is recorded as `prefill_time`.
 
-2. Set the `--case_pair` option according to actual input/output lengths and run tests as normal. Record the specified `--batch_size` as `decode_batchsize`, and record the "Non-first token time (ms)" from the test results as `decode_token_time`.
+2. Set the `--case_pair` parameter according to the actual input and output lengths and run the test normally. In this case, the specified `--batch_size` parameter is recorded as `decode_batchsize`, and `Non-first token time(ms)` in the test result is recorded as `decode_token_time`.
 
-3. Adjust `decode_batchsize` and `prefill_batchsize` to find the configuration items that meet the requirements, as shown in [Table 1](#ZH-CN_TOPIC_0000002504087066__table1511926121511).
+3. Adjust `decode_batchsize` and `prefill_batchsize` to find a configuration that meets the requirements, as shown in [Table 1](#ZH-CN_TOPIC_0000002504087066__table1511926121511).
 
-   **Table 1** Configuration description <a name="ZH-CN_TOPIC_0000002504087066__table1511926121511"></a>
+   **Table 1** Configuration description<a name="ZH-CN_TOPIC_0000002504087066__table1511926121511"></a>
 
-   | Scenario                                                          | Configuration Method                                                                                                                                                                                                                                                                      |
-   | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | Baseline throughput without delay limit                           | Increase `decode_batchsize` to OOM. (Alternatively, select `decode_batchsize` whose growth rate slows down.)                                                                                                                                                                              |
-   | TPOT limited, but TTFT not limited                                | Adjust `decode_batchsize` to ensure that `decode_token_time` meets the TPOT limit.                                                                                                                                                                                                        |
-   | Limited TPOT and TTFT; ramp-up test (request rate limited)        | Adjust `decode_batchsize` to ensure that `decode_token_time` meets the TPOT limit. Adjust `prefill_batchsize` to ensure that `prefill_time` is close to the TTFT limit.                                                                                                                   |
-   | Limited TPOT and TTFT; fixed concurrency (request rate unlimited) | Adjust `decode_batchsize` until the value of `decode_token_time` meets the TPOT limit, set `prefill_batchsize` to `dp`, and decrease the value of `decode_batchsize` until the value of ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535807121.png) is close to the average TTFT limit. |
+   | Scenario                                                     | Configuration Method                                         |
+   | ------------------------------------------------------------ | ------------------------------------------------------------ |
+   | Baseline throughput without a latency limit                  | Increase `decode_batchsize` until OOM. (Alternatively, select the `decode_batchsize` at which the growth rate slows down.) |
+   | Limit TPOT, do not limit TTFT                                | Adjust `decode_batchsize` until `decode_token_time` just meets the TPOT limit. |
+   | Limit TPOT and TTFT, ramp-up test (limit Request Rate)       | Adjust `decode_batchsize` until `decode_token_time` just meets the TPOT limit, and adjust `prefill_batchsize` so that `prefill_time` approaches the TTFT limit. |
+   | Limit TPOT and TTFT, fixed concurrency (do not limit Request Rate) | Adjust `decode_batchsize` until `decode_token_time` just meets the TPOT limit, set `prefill_batchsize=dp`, and reduce `decode_batchsize` until ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535807121.png) approaches the average TTFT limit. |
 
-4. If you want to optimize the LLM inference performance (such as the parallel policy and environment variables), repeat Step 1 for different configurations until the optimal configuration is obtained.
+4. If model-only performance tuning is required (parallel strategy, environment variables, and so on), repeat step 1 for different configurations until you select the optimal configuration.
 
-5. Convert `Decode Batchsize` and `Prefill Batchsize` of the LLM inference to serving parameters `maxBatchsize` and `maxPrefillBatchSize`.
+5. Convert the model-only Decode Batchsize and Prefill Batchsize into the service-oriented parameters `maxBatchsize` and `maxPrefillBatchSize`.
 
-6. Set other serving and test parameters. Then, adjust the maximum values of concurrent `Requestrate`, `maxBatchSize`, and `maxPrefillBatchsize` based on the actual test result.
+6. Set other service-oriented and test parameters, and adjust the maximum concurrency, `RequestRate`, `maxBatchSize`, and `maxPrefillBatchsize` according to the actual test result.
 
-## Methodology for Tuning the Serving Performance
+## Service-Oriented Performance Tuning Methodology
 
-### Clarifying the Optimization Objective
+### Defining the Optimization Objective
 
-Users usually focus on performance metrics such as the first token latency and throughput. During the test, the number of concurrent requests and the length of input and output data greatly affect the performance. You can guide the customer to test the performance based on the actual situation.
+You usually focus on performance metrics such as first token latency and throughput. Concurrency and input and output lengths during the test have a great impact on performance. Therefore, you can provide guidance when necessary.
 
-- Low-latency scenario: real-time interaction (such as a dialog system), focusing on the speed of generating the first token (optimization in the Prefill phase).
+- Low-latency scenario: real-time interaction (for example, a dialog system), which focuses on the first token generation speed (Prefill phase optimization).
 
-- High-throughput scenario: offline batch processing (such as document generation), focusing on tokens per second (optimization in the Decode phase).
+- High-throughput scenario: offline batch processing (for example, document generation), which focuses on tokens per second (Decode phase optimization).
 
   > [!NOTE]
   >
-  > Sometimes, the performance objective is greatly different from the actual performance. You can evaluate the performance upper limit based on the LLM inference performance to determine the upper limit of latency or throughput and determine whether the objective can be achieved.
+  > Sometimes the performance objective differs greatly from the actual performance. You can evaluate the performance upper limit based on model-only performance to determine the latency or throughput limit, and therefore determine whether the objective is achievable.
 
-#### Evaluating the Upper Limit of the Serving Performance
+#### Service-Oriented Performance Upper Limit Evaluation
 
-Based on the estimation scenarios, objectives, and LLM inference test results, the following (favorable) methods are used to estimate the upper limit of the serving performance:
+Based on the estimation scenario and objective, and on the model-only test result, the following methods provide (optimistic) estimates of the service-oriented performance upper limit:
 
-- Single concurrency: The performance is close to that of the LLM inference in single-concurrency mode.
+- Single concurrency: close to the model-only performance at single concurrency.
 
-- Average first token delay in the case of a large number of concurrent requests.
+- Average first token latency at high concurrency.
 
-  - Inference in the Prefill phase is a computing-intensive scenario. After `Prefill Batchsize` is increased, the computing bottleneck is triggered. After the bottleneck is triggered, the Prefill delay increases linearly with `Batchsize`.
-  - Determine `Prefill Batchsize` at which the compute bottleneck is reached through pure model testing. Use this `Prefill Batchsize` to partition the number of concurrent serving requests—this establishes the upper bound for TTFT based on pure mode results. Assume that the `Prefill Batchsize` at the bottleneck found in the pure model test is ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535887175.png). In this case, the pure model calculation time of a single `Prefill Batch` is ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002504087186.png), and the estimated actual concurrency of serving is ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002503927360.png). Then, the estimated total Prefill time for this round of concurrent serving requests is ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535807147.png). Under the first-come, first-served (FCFS) scheduling strategy, the average TTFT is about ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535887181.png).
+  - Prefill phase inference is compute-intensive. When Prefill Batchsize increases, a computing power bottleneck occurs. After the bottleneck occurs, Prefill latency grows almost linearly as Batchsize increases.
+  - Use the model-only test to find the Prefill Batchsize at which the computing power bottleneck occurs, and divide the concurrent request count of the service-oriented system by this Prefill Batchsize, that is, calculate the first token latency upper limit based on the model-only result. Assume that the Prefill Batchsize at the bottleneck found by the model-only test is ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535887175.png), the model-only computing time of a single Prefill Batch at this point is ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002504087186.png), and the actual service-oriented concurrency to be estimated is ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002503927360.png). Then the total Prefill time of the concurrent requests in this round in the service-oriented system is estimated as ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535807147.png), and under the first-come, first-served (FCFS) scheduling policy, the average first token latency is approximately ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_formulaimage_0000002535887181.png).
 
-- Throughput and TPOT in the case of high concurrency.
+- Throughput and non-first token latency at high concurrency.
 
-  - Decode is a bandwidth bottleneck instead of a computing power bottleneck. Theoretically, a larger value of `Batchsize` for a single Decode indicates a larger total throughput until the graphics memory limit is reached.
-  - For the output throughput and TPOT of serving, you can refer to the LLM inference result under the same concurrency (that is, `Decode Batchsize`) as the theoretical upper limit. Considering that serving inference has extra time overheads in the aspects such as framework scheduling, the favorable throughput of the serving inference can be estimated as 0.8 to 0.9 times of the throughput of the LLM inference.
+  - Decode has a bandwidth bottleneck rather than a computing power bottleneck. Theoretically, the larger the Batchsize of a single Decode, the higher the total throughput, until the device memory limit is reached.
+  - For the output throughput and non-first token latency of the service-oriented system, you can use the model-only result at the same concurrency (that is, Decode Batchsize) as the theoretical upper limit of the estimate. Because service-oriented inference incurs extra time overhead such as framework-side scheduling, an optimistic estimate of service-oriented throughput can be converted to 0.8 to 0.9 times the model-only throughput.
 
-- Theoretical upper limit of the maximum concurrency divided by `maxBatchSize` under the graphics memory bottleneck: In the Decode phase, the value of `maxBatchSize` is mainly limited by the graphics memory and can be calculated based on the number of KV cache blocks and sequence length.
+- Theoretical upper limit of the maximum concurrency/`maxBatchsize` under a device memory bottleneck: In the Decode phase, `maxBatchSize` is mainly limited by device memory and can be calculated from the number of KV Cache Blocks and the sequence length.
 
-  - The KV Cache pool is allocated by block. The block size is specified by `cacheBlockSize` in the MindIE serving parameters. Generally, the default value is 128. That is, each block can store 128 tokens. The number of KV cache blocks occupied by each request is calculated based on the context length in the application scenario.
+  - The KV Cache pool is allocated in units of Blocks. The Block size is set by `cacheBlockSize` in the MindIE service-oriented parameter configuration and usually uses the default value 128, that is, each Block can store 128 tokens. Calculate the number of KV Cache Blocks that each request needs to occupy based on the context length of the usage scenario:
 
-    - Maximum number of blocks = Ceil (Number of input tokens/cacheBlockSize) + Ceil (Maximum number of output tokens/cacheBlockSize)
-    - Average number of blocks = Ceil (Average number of input tokens/cacheBlockSize) + Ceil (Average number of output tokens/cacheBlockSize)
+    - Maximum number of Blocks = Ceil(number of input tokens/cacheBlockSize) + Ceil(maximum number of output tokens/cacheBlockSize)
+    - Average number of Blocks = Ceil(average number of input tokens/cacheBlockSize) + Ceil(average number of output tokens/cacheBlockSize).
 
-  - The total number of available KV cache blocks (`Total Block Num`) on the NPU of the MindIE server can be obtained from the test.
+  - The Total Block Num, that is, the total number of available KV Cache Blocks on the NPU of the MindIE server, can be obtained through an actual test.
 
-    - Clear all old log files in `/root/mindie/log`. By enabling environment variables `MINDIE_LLM_PYTHON_LOG_LEVEL` and `MINDIE_LLM_PYTHON_LOG_TO_FILE`, MindIE LLM can generate INFO logs when running in Python and write the logs into a file.
+    - Clear all old log files in the `/root/mindie/log` directory, and enable the `MINDIE_LLM_PYTHON_LOG_LEVEL` and `MINDIE_LLM_PYTHON_LOG_TO_FILE` environment variables so that the Python program in MindIE LLM generates INFO-level logs and writes them to a file during running.
 
-    - After determining other serving configurations except `maxBatchSize`, use the default values to start the service. After the service is successfully started on the server, run the `grep` command to search for keywords `npuBlockNum` in the MindIE LLM Python program logs. Multiple results will be returned based on the number of used ranks, the minimum value is the total number of available KV cache blocks on the NPU of the MindIE server. [Figure 1](#ZH-CN_TOPIC_0000002535887093__fig19500185613447) shows an example. The total number of available KV cache blocks is 817.
+    - After you determine the other service-oriented configurations except `maxBatchSize`, start the service with the default value. After the service is started successfully on the server, run the `grep` command to search for the `npuBlockNum` keyword in the MindIE LLM Python program log. Multiple results are returned depending on the number of devices used, and the minimum value is the total number of available KV Cache Blocks on the NPU of the MindIE server. Take [Figure 1](#ZH-CN_TOPIC_0000002535887093__fig19500185613447) as an example. The total available number is 817.
 
-      **Figure 1** Example for obtaining the total number of available KV cache blocks on the NPU of the MindIE server <a name="ZH-CN_TOPIC_0000002535887093__fig19500185613447"></a>
+      **Figure 1** Example of obtaining the total number of available KV Cache Blocks on the NPU of the MindIE server<a name="ZH-CN_TOPIC_0000002535887093__fig19500185613447"></a>
 
       ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807145.png)
 
-  - The value of `maxBatchSize` cannot exceed that of `Floor [Total block number/Maximum number of blocks]` to ensure optimal performance. If the context length difference between requests is large, the upper limit can be increased to the value of `Floor [Total block number/Average number of blocks]`.
+  - To maintain the best performance, `maxBatchSize` should generally not exceed Floor[Total Block Num/maximum number of Blocks]. If the context lengths of requests differ greatly, you can appropriately increase the upper limit to Floor[Total Block Num/average number of Blocks].
 
-### Tuning Based on the Objective
+### Tuning for the Objective
 
-After clarifying the optimization objective, adjust the serving parameters to improve the serving performance.
+After you define the optimization objective, adjust the service-oriented parameters to improve service-oriented performance.
 
-**Core Parameters**
+**Introduction to Core Parameters**
 
-For details about the core parameters, see [Table 1](#ZH-CN_TOPIC_0000002535807049__table3617mcpsimp). For more details, see MindIE LLM Development Guide.
+For the core parameters, see [Table 1](#ZH-CN_TOPIC_0000002535807049__table3617mcpsimp). For details, see the *MindIE LLM Development Guide*.
 
-**Table 1** Core parameters <a name="ZH-CN_TOPIC_0000002535807049__table3617mcpsimp"></a>
+**Table 1** Core parameters<a name="ZH-CN_TOPIC_0000002535807049__table3617mcpsimp"></a>
 
-| **Optimization Direction** | **Key Parameter**                      | **Recommended Value/Policy**                                                                                          |
-| -------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Low latency**            | maxPrefillBatchSize                    | Small batch size (4 to 16), reducing the calculation workload of the first token.                                     |
-|                            | supportSelectBatch                     | `false`: The Prefill is forcibly scheduled first.                                                                     |
-|                            | maxQueueDelayMicroseconds              | ≤ 50 ms (reducing the waiting delay)                                                                                  |
-| **High throughput**        | `maxBatchSize` (in the Decode phase)   | Maximized (limited by the graphics memory)                                                                            |
-|                            | maxPrefillBatchSize/maxPrefillTokens   | Increase the value based on the actual average input to ensure that the value of `maxPrefilltokens` is around 10,000. |
-|                            | supportSelectBatch                     | Enable throughput-first scheduling.                                                                                   |
-|                            | maxQueueDelayMicroseconds              | Increase the waiting time to form a large batch at the beginning of the test.                                         |
-|                            | RequestRate (set by using a test tool) | Increase the delivery frequency to the upper limit of the hardware.                                                   |
-|                            | Concurrency (set by using a test tool) | Gradually increase the concurrency until the throughput reaches the saturation point.                                 |
-|                            | Three-piece suite for sequence length  | Set `maxInputTokenLen`, `maxIterTimes`, and `maxSeqLen` based on the actual scenarios and requirements.               |
+| Optimization Direction     | Key Parameter                        | Recommended Value/Strategy|
+| -------------------------- | ------------------------------------ | ------------------------------------------------------------ |
+| **Low latency**            | `maxPrefillBatchSize`                  | Use a small batch (4 to 16) to reduce the first token computation amount. |
+|                            | `supportSelectBatch`                   | false, which forcibly gives Prefill scheduling priority.     |
+|                            | `maxQueueDelayMicroseconds`            | ≤50 ms (reduces the waiting latency).                        |
+| **High throughput**        | `maxBatchSize` (Decode phase)          | Maximize it (limited by device memory).                      |
+|                            | `maxPrefillBatchSize`/`maxPrefillTokens` | Increase it relatively and convert it according to the actual average input so that `maxPrefilltokens` is around 10000. |
+|                            | `supportSelectBatch`                   | Enable throughput-first scheduling.                          |
+|                            | `maxQueueDelayMicroseconds`            | Increase the waiting time so that a large Batch is formed as much as possible at the start of the test. |
+|                            | `RequestRate` (set through the test tool) | Increase the dispatch frequency up to the hardware upper limit. |
+|                            | `Concurrency` (set through the test tool) | Increase the concurrency step by step in sync until the throughput saturation point. |
+|                            | Sequence length trio                 | Configure `maxInputTokenLen`, `maxIterTimes`, and `maxSeqLen` properly based on the actual scenario and requirements. |
 
 **Manual Tuning**
 
-Tune the parameters that do not meet the objectives, for example, the latency or throughput which does not meet the objectives.
+Tune the parameters that do not meet the objective, for example, when the latency or throughput does not meet the objective.
 
-Before tuning, you can confirm the theoretical upper limit and optimal configuration of each parameter, for example, calculating the optimal value of `maxBatchSize`. For details about the calculation method, see [Evaluating the Upper Limit of the Serving Performance](#evaluating-the-upper-limit-of-the-serving-performance).
+Before tuning, you can first confirm the theoretical upper limit and theoretical optimal configuration of each parameter, for example, calculate the theoretical optimal value of `maxBatchSize`. For the specific calculation method, see [Service-Oriented Performance Upper Limit Evaluation](#service-oriented-performance-upper-limit-evaluation).
 
-**Tool Tuning**
+**Tool-based Tuning**
 
-Manual tuning requires certain serving basic knowledge. For more convenient tuning, you can use the expert suggestion function of the **serving tuning tool** (**msServiceProfiler**). For details, see [Serving Expert Suggestion Tool](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/en/service_profiling_advisor_instruct.md). Before using the expert suggestion tool, you need to use MindIE Benchmark to test the serving performance. The expert suggestion tool provides tuning suggestions based on the MindIE Benchmark test result file.
+Manual tuning requires some service-oriented background. For more convenient tuning, you can use the expert advice function of the **service-oriented tuning tool** (`msServiceProfiler`). For details, see [Service-Oriented Advisor Tool](https://atomgit.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/service_profiling_advisor_instruct.md). To use the advisor tool, first use MindIE Benchmark to perform a service-oriented performance test. The advisor tool provides tuning suggestions based on the files written to drive from the MindIE Benchmark test result.
 
-**Difficult Issues**
+**Challenging Issues**
 
-The preceding serving tuning is performed in black-box mode. You do not know the specific scheduling process of requests, for example, which requests form a batch, the size of a batch, when to execute Prefill, and when to execute Decode.
+The service-oriented tuning described in the preceding sections is all black-box tuning. You do not know the specific scheduling process of requests, for example, which requests form a Batch, how large a Batch is, when Prefill is executed, and when Decode is executed.
 
-Some problems cannot be solved by tuning in black-box mode and need to be further analyzed. You must use msServiceProfiler for analysis, which is similar to optimizing the LLM inference performance.
+Some issues cannot be resolved by black-box tuning alone and require further analysis. As with model-only performance optimization, you need to use `msServiceProfiler` for the analysis.
 
-## Cases for Tuning the Serving Performance
+## Service-Oriented Performance Tuning Localization Cases
 
-### Performance Deterioration Due to Time-consuming Scheduling of the Framework
+### Performance Degradation Caused by Framework Scheduling Time
 
 **Symptom**
 
-In the same environment with the same configurations, the serving performance of MindIE 2.0.RC1 deteriorates seriously compared with that of MindIE 2.0.T3. Check whether the problem is caused by the version.
+In the same environment with all other configurations identical, the service-oriented performance of MindIE 2.0.RC1 is much worse than that of MindIE 2.0.T3, and you need to determine whether this is a version issue.
 
-As shown in [Figure 1](#ZH-CN_TOPIC_0000002504087096__fig31731419193712), the upper part is the test result of the LM inference. The average latency in the Decode phase of the LM inference is 36 ms when 300 concurrent requests are sent. The lower part is the test result of the serving inference. The average latency in the Decode phase is about 66 ms when 300 concurrent requests are sent.
+As shown in [Figure 1](#ZH-CN_TOPIC_0000002504087096__fig31731419193712), the upper screenshot shows the model-only test result, in which the average latency of the model-only Decode phase at 300 concurrency is 36 ms. The lower screenshot shows the service-oriented test result, in which the average latency of the Decode phase at 300 concurrency is about 66 ms.
 
-**Figure 1** MindIE 2.0.T3 performance test result <a name="ZH-CN_TOPIC_0000002504087096__fig31731419193712"></a>
+**Figure 1** MindIE 2.0.T3 performance test result<a name="ZH-CN_TOPIC_0000002504087096__fig31731419193712"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087208.png)
 
-As shown in [Figure 2](#ZH-CN_TOPIC_0000002504087096__fig145925476375), the upper part is the test result of the LM inference. The average latency in the Decode phase of the LM inference is 35.44 ms when 300 concurrent requests are sent. The performance is close to that of MindIE 2.0.T3. The lower part is the test result of the serving inference. The average latency in the Decode phase is about 95 ms when 300 concurrent requests are sent. The performance deteriorates by 50% compared with that of MindIE 2.0.T3.
+As shown in [Figure 2](#ZH-CN_TOPIC_0000002504087096__fig145925476375), the upper screenshot shows the model-only test result, in which the average latency of the model-only Decode phase at 300 concurrency is 35.44 ms, which is very close to the performance of 2.0.T3. The lower screenshot shows the service-oriented test result, in which the average latency of the Decode phase at 300 concurrency is about 95 ms, which is 50% worse than the performance of 2.0.T3.
 
-**Figure 2** MindIE 2.0.RC1 performance test result <a name="ZH-CN_TOPIC_0000002504087096__fig145925476375"></a>
+**Figure 2** MindIE 2.0.RC1 performance test result<a name="ZH-CN_TOPIC_0000002504087096__fig145925476375"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927380.png)
 
 **Solution**
 
-1. Use the pre-check tool to dump and compare the configurations, as shown in [Figure 3](#ZH-CN_TOPIC_0000002504087096__fig2425144244017). `ms_performance_prechecker_dump_20250520_152124.json` is the dump file in the MindIE 2.0.T3 environment, and `ms_performance_prechecker_dump_20250520_152138.json` is the dump file in the MindIE 2.0.RC1 environment. Except for environment variables that do not affect performance, such as log settings, no obvious configuration difference is found.
+1. Use the pre-check tool to dump and compare the configurations, as shown in [Figure 3](#ZH-CN_TOPIC_0000002504087096__fig2425144244017). `ms_performance_prechecker_dump_20250520_152124.json` is the file written to drive in the MindIE 2.0.T3 environment, and `ms_performance_prechecker_dump_20250520_152138.json` is the file written to drive in the MindIE 2.0.RC1 environment. Except for environment variables that do not affect performance, such as log settings, no obvious configuration difference is found.
 
-   **Figure 3** Comparing configurations <a name="ZH-CN_TOPIC_0000002504087096__fig2425144244017"></a>
+   **Figure 3** Configuration comparison<a name="ZH-CN_TOPIC_0000002504087096__fig2425144244017"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887201.png)
 
-2. Collect and compare the serving profile data of MindIE 2.0.RC1. It is found that the interval between forward operations in the Decode phase of MindIE 2.0.RC1 is serious, indicating that the preprocessing and postprocessing on the CPU side take a long time, as shown in [Figure 4](#ZH-CN_TOPIC_0000002504087096__fig8393010422).
+2. Collect the service-oriented performance data of MindIE 2.0.RC1 for comparison. The gap between forwards in the Decode phase of MindIE 2.0.RC1 is too large, which indicates that the pre-processing and post-processing on the CPU side take a long time, as shown in [Figure 4](#ZH-CN_TOPIC_0000002504087096__fig8393010422).
 
    **Figure 4** Viewing forward<a name="ZH-CN_TOPIC_0000002504087096__fig8393010422"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927378.png)
 
-3. Enable asynchronous scheduling and shorten the interval between forward operations. Then, the E2E output throughput of MindIE 2.0.RC1 increases from 2900 to 4500, which is 500tokens/s higher than that of MindIE 2.0.T3. For details about how to enable asynchronous scheduling, see the asynchronous scheduling section in MindIE LLM Development Guide.
+3. After asynchronous scheduling is enabled to shorten the forward gap, the E2E output throughput of MindIE 2.0.RC1 increases from 2900 to 4500, which is 500 token/s higher than that of T3. For how to enable asynchronous scheduling, see the asynchronous scheduling chapter of the *MindIE LLM Development Guide*.
 
    **Figure 5** Enabling asynchronous scheduling
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887199.png)
 
-### Tuning the model execution time
+### Model Execution Time Optimization Case
 
 **Symptom**
 
-When the DeepSeek Prefill-Decode disaggregated large-scale expert parallel solution is used, the model performance deteriorates seriously.
+In the DeepSeek PD-separated large-scale expert parallelism scenario, model performance is significantly degraded.
 
 **Solution**
 
-1. Use msServiceProfiler to collect the serving profile data of the Decode node.
+1. Use `msServiceProfiler` to collect service-oriented performance data of the D node.
 
-2. Analyze the collected profile data. It is found that two different servers on the same Decode node have fast and slow ranks in the Decode phase. Specifically, the execution time of a single Decode on the two ranks from the two servers is 260 ms and 170 ms, respectively. The difference is serious. If the `MIX_AIC` field is long in the operator lane of a rank, the rank is executing the merged compute and communication operators and the synchronization wait time is long. Therefore, the rank is a fast rank. The `MIX_AIC` field of the other rank is short, indicating that the rank is a slow rank.
+2. Analyze the collected performance data and you can find a fast and slow device issue in the Decode phase between two different servers in the same D node. Specifically, the single Decode execution time of the two devices on the two servers is 260 ms and 170 ms respectively, which is a large gap. A very long `MIX_AIC` field appears in the operator swimlane of one device, which indicates that this device is executing an MC2 operator and the synchronization wait time is long. Therefore, this device can be considered a fast device. The `MIX_AIC` field of the other device is shorter. Therefore, that device is a slow device.
 
-   **Figure 1** Profile data of the fast rank <a name="ZH-CN_TOPIC_0000002535807061__fig193870541031"></a>
+   **Figure 1** Screenshot of fast device performance data<a name="ZH-CN_TOPIC_0000002535807061__fig193870541031"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/screenshot-of-the-fast-card-performance-data.png)
 
-   **Figure 2** Profile data of the slow rank <a name="ZH-CN_TOPIC_0000002535807061__fig179374817410"></a>
+   **Figure 2** Screenshot of slow device performance data<a name="ZH-CN_TOPIC_0000002535807061__fig179374817410"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/screenshot-of-the-slow-card-performance-data.png)
 
-3. As shown in the CANN CPU unit ([Figure 1](#ZH-CN_TOPIC_0000002535807061__fig193870541031) and [Figure 2](#ZH-CN_TOPIC_0000002535807061__fig179374817410) are collapsed in gray), the time for starting a task on each rank is different. As a result, the time for the first MC2 operator (moedispatch) in the forward operation is different, and the synchronization wait time is more than 90 ms. After the first moedispatch is removed, the remaining computing time is about 140 ms, and the operator performance of the two ranks is similar. Based on the above, it can be concluded that the performance difference between fast and slow ranks is caused by model distribution latency, not operator delivery timing.
+3. The CANN CPU-side swimlane (collapsed and grayed out in [Figure 1](#ZH-CN_TOPIC_0000002535807061__fig193870541031) and [Figure 2](#ZH-CN_TOPIC_0000002535807061__fig179374817410)) shows that the time at which each device starts a task differs, which causes the time of the first MC2 operator (moedispatch) of forward to differ, and a synchronization wait of more than 90 ms is observed. After the first moedispatch is excluded, the remaining computing time is about 140 ms, and the operator performance of the two devices is close. Based on the preceding two points, you can determine that the fast and slow device issue is caused by a time difference in model dispatch rather than operator dispatch.
 
-4. After the distributed scheduling feature is enabled on the Decode node (environment variable `MINDIE_ENABLE_DP_DISTRIBUTED` is enabled, and the large-scale expert parallel solution later than MindIE 25.0.RC1 is enabled by default), the performance becomes normal.
+4. After the distributed scheduling feature is enabled on the D node (enable the `MINDIE_ENABLE_DP_DISTRIBUTED` environment variable, and the large-scale expert parallelism solution after inference solution 25.0.RC1 has this feature enabled by default), performance returns to normal.
 
-### Analyzing graphics memory bottlenecks
+### Device Memory Bottleneck Analysis Case
 
 **Symptom**
 
-When the DeepSeek two-node cluster is used for serving inference, the actual **Batchsize** cannot reach 192.
+During DeepSeek two-server service-oriented inference, the actual Batchsize cannot reach 192.
 
 **Analysis**
 
-1. Collects serving profile data.
+1. Collect service-oriented performance data.
 
-2. When **Batchsize** is 192, the number of Decodes increases. When the number of Decodes reaches 185, the KV blocks are about to be used up and the number of remaining KV blocks is 36 (the initial number is 1747). Then, the number of remaining KV blocks is reduced to 0, **Batchsize** is reduced to 72. At last, when **Batchsize** is 192, the reference reaches 253.
+2. When the Batchsize reaches 192, as Decode increases, at the 185th Decode inference you can see that the KV Block is about to run out, with 36 remaining (initial value 1747). Subsequently, the remaining KV Block decreases to 0, and the Batchsize drops to 72. Before the drop, the last 192 Batchsize inference reaches a length of 253.
 
    **Figure 1** Viewing data
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/viewing-data.png)
 
-3. According to the actual execution, the number of Decodes can be close to 1000 when **Batchsize** is 150.
+3. In actual execution, when Batchsize=150, Decode can run close to 1000.
 
    **Figure 2** Actual execution
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/actual-execution.png)
 
-4. Estimate the upper limit of concurrency under the graphics memory bottleneck. The Profiling tool shows that the number of available KV Cache blocks is 1747. By default, the size of each block is 128 tokens. According to the context requirements of 1024 inputs and 2048 outputs, the average context is 1536, and the KV Cache can accommodate 1747/[(1024+2048)/2/128]≈145 on average.
+4. Estimate the concurrency upper limit under the device memory bottleneck. Profiling shows that the number of available KV Cache blocks is 1747, and under the default configuration each Block is 128 tokens in size. For the context requirement of 1024 input and 2048 output, the average context is 1536, and the KV Cache can hold an average of 1747/[(1024+2048)/2/128]≈145.
 
-   **Figure 3** Number of blocks
+   **Figure 3** Number of Blocks
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807139.png)
 
-5. Adjust the serving parameters. That is, set `export NPU_MEMORY_FRACTION=0.96` and `maxSeqLen` to 3000 to achieve the optimal effect.
+5. Adjust the service-oriented parameters: run `export NPU_MEMORY_FRACTION=0.96` and reduce `maxSeqLen` to 3K to achieve the optimal effect.
 
-### Optimizing the Serving Parameters
+### Service-Oriented Parameter Optimization Case
 
 **Symptom**
 
-Qwen3-32B is deployed on a single server with four ranks as a service. In the application scenario, the number of concurrent requests is small and the number of requests reaches the threshold slowly (the maximum number of concurrent requests is 40, and the actual number of concurrent requests is close to the request rate 9.4). In the default serving configuration of PD co-location, the performance is tested when the input length is 128 and the output length is 100. The average TPOT is 48 ms, but TPOT SLO P99 is 157 ms. As a result, the streaming output of some requests is frozen, which cannot meet the requirement of TPOT 50 ms.
+For a single-server 4-device service-oriented deployment of Qwen3-32B, the concurrency in your usage scenario is small and the requests arrive slowly (the maximum concurrency is 40, and the actual usage is close to a request rate of 9.4). With the default service-oriented configuration of PD colocation, the performance was tested with an input length of 128 and an output length of 100. The average non-first token latency is 48 ms, but the request-level P99 quantile of the non-first token latency (TPOT SLO P99) is 157 ms, which causes stuttering in the streaming output of individual requests and cannot meet your non-first token latency requirement of 50 ms.
 
 **Solution**
 
-1. In the default serving configuration, the preliminary performance test result is shown in [Figure 1](#ZH-CN_TOPIC_0000002504087058__fig57131966516). It can be found that: (1) The maximum TTFT is only 158 ms when the default Prefill priority scheduling is used. This indicates that the Prefill performance is normal and does not reach the computing power bottleneck. (2) The TTFT of P75 is less than 50 ms, and the TPOT is normal, indicating that the actual Decode performance meets the expectation. (3) The P90/P99/maximum delay of non-first tokens is high. It is suspected that the request arrives slowly and the Prefill of the new request interrupts the Decode of the request in the inference. As a result, some non-first tokens need to wait for the Prefill of new requests, and the TPOT increases sharply.
+1. Observe the preliminary performance test result under the default service-oriented configuration, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087058__fig57131966516). You can find that (1) under the default Prefill-priority scheduling, the maximum first token latency is only 158 ms, which indicates that Prefill performance is normal and the computing power bottleneck is not reached. (2) The P75 first token latency is less than 50 ms, which indicates that most non-first token latencies are normal and the actual Decode performance meets expectations. (3) The P90/P99/maximum latency of non-first tokens is relatively high. It is inferred that because requests arrive slowly, the Prefill of a new request interrupts the Decode of an in-progress request. Therefore, some non-first tokens must wait for the Prefill of the new request to complete, and the non-first token latency increases sharply.
 
-   **Figure 1** Initial performance test result <a name="ZH-CN_TOPIC_0000002504087058__fig57131966516"></a>
+   **Figure 1** Preliminary performance test result<a name="ZH-CN_TOPIC_0000002504087058__fig57131966516"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927324.png)
 
-2. In this scenario, you can enable `SupportSelectBatch` and set `prefillTimeMsPerReq` and `decodeTimeMsPerReq` to adjust the priorities of Prefill and Decode so that the scheduler allows Decode to take precedence in certain cases. This policy can reduce the number of new requests that interrupt the Decode of the request during inference, increase the proportion of continuous Decode, and shorten TPOT, as shown in [Figure 2](#ZH-CN_TOPIC_0000002504087058__fig99048387485). Although this policy causes Prefill waiting of some requests, the Prefill performance of the model in this case is enough. Even if the TTFT increases slightly, it can be controlled within an acceptable range by adjusting the priority parameter.
+2. In this scenario, you can enable `supportSelectBatch` and adjust the priority of Prefill and Decode by setting `prefillTimeMsPerReq` and `decodeTimeMsPerReq` so that the scheduler allows Decode to take priority in certain situations. This policy reduces the occurrence of "the Prefill of a new request interrupting the Decode of an in-progress request", thereby increasing the proportion of consecutive Decode and reducing the non-first token latency, as shown in [Figure 2](#ZH-CN_TOPIC_0000002504087058__fig99048387485). Although this policy causes some requests to wait for Prefill, the model Prefill performance in this case is already good enough. Even if the first token latency increases slightly, you can still control the first token latency within a range acceptable to you by adjusting the priority parameters.
 
-   **Figure 2** Principle of TPOT deterioration <a name="ZH-CN_TOPIC_0000002504087058__fig99048387485"></a>
+   **Figure 2** Schematic diagram of the cause of non-first token latency degradation<a name="ZH-CN_TOPIC_0000002504087058__fig99048387485"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/principle-of-non-first-token-latency-deterioration.png)
 
-3. Adjust the priority parameters. A larger value of `prefillTimeMsPerReq` and a smaller value of `decodeTimeMsPerReq` indicate a higher Decode priority. Otherwise, the Prefill priority is higher. Set `supportSelectBatch` to `true`, `prefillTimeMsPerReq` to `1000`, and `decodeTimeMsPerReq` to `1`. The performance test result is shown in [Figure 3](#ZH-CN_TOPIC_0000002504087058__fig17560946184820). In this case, the TTFT increases to 1562 ms, the average TPOT decreases to 31.7 ms, and the P99 TPOT decreases to 36 ms. The overall streaming output is smooth, meeting user requirements.
+3. Adjust the priority parameters. The higher `prefillTimeMsPerReq` is and the lower `decodeTimeMsPerReq` is, the higher the Decode priority is. Conversely, the lower `prefillTimeMsPerReq` is and the higher `decodeTimeMsPerReq` is, the higher the Prefill priority is. Set `supportSelectBatch` to true, `prefillTimeMsPerReq` to 1000, and `decodeTimeMsPerReq` to 1. The performance test result is shown in [Figure 3](#ZH-CN_TOPIC_0000002504087058__fig17560946184820). The first token latency increases to 1562 ms, the average non-first token latency decreases to 31.7 ms, and the P99 non-first token latency decreases to 36 ms. The overall streaming output is smooth and meets your requirements.
 
-   **Figure 3** Performance test result after tuning <a name="ZH-CN_TOPIC_0000002504087058__fig17560946184820"></a>
+   **Figure 3** Performance test result after tuning<a name="ZH-CN_TOPIC_0000002504087058__fig17560946184820"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807113.png)
 
-## Advanced Tuning of DeepSeek
+## DeepSeek Advanced Tuning
 
-Advanced tuning brings benefits to both serving and LLM inferences. Some advanced tuning methods may require support from related components.
+Advanced tuning benefits both service-oriented and model-only scenarios. Therefore, it is not distinguished here. Some advanced tuning methods may require support from related components.
 
-### Analyzing the Graphics Memory
+### Device Memory Analysis
 
-After the optimization reaches the bottleneck, an intuitive method is to optimize the graphics memory to use better configurations (such as the number of concurrent tasks and parallel policy). Quantization can be used to reduce the computation workload and graphics memory. Currently, the best solution is W8A8.
+After optimization reaches a bottleneck, an intuitive method is to optimize device memory to use a better configuration (for example, the concurrency and parallel strategy). You can consider using quantization to reduce the computation amount and device memory usage. Currently, the best-adapted solution is W8A8.
 
-### Tuning the Parallel Policy
+### Parallel Strategy Tuning
 
-In the current 16-rank inference scenario, the optimal configuration is as follows: TP=8, DP=2, MOE_TP=4, and MOE_EP=4. However, users have different hosts (Arm/x86) and input and output requirements. As a result, the optimal parallel policy changes. Therefore, the parallel policy needs to be adjusted.
+In the current 16-device inference scenario, the optimal configuration is generally TP=8, DP=2, MOE_TP=4, and MOE_EP=4. However, you may have different host platforms (arm/x86) and input and output requirements, which change the optimal parallel strategy. Therefore, you need to adjust the parallel strategy.
 
-### Optimizing the Communication Policy
+### Communication Strategy Optimization
 
-Different communication policies generate different traffic. Therefore, you need to evaluate the traffic based on the parallel policy.
+Different communication strategies produce different communication volumes, which you need to evaluate based on the parallel strategy.
 
 Tuning suggestions:
 
-- Minimize the TP of Attention and increase the DP to avoid KV cache replication and repeated access and storage.
-- Pure DP communication can save KV cache, but the model weight needs to occupy more space.
-- Expert communication (EP) is configured based on the `ep_level` keyword in the `config.json` configuration file in the ATB-Models installation directory. The theoretical AlltoAll communication traffic is less.
-- Communication can be implemented through LCCL or HCCL. Generally, LCCL delivers better performance, but adaptation may be abnormal in some parallel policies.
+- Minimize the TP of Attention and increase DP to avoid KV Cache replication and avoid repeated access and storage.
+- Pure DP communication saves KV Cache, but model weights occupy more space.
+- Expert communication (EP) is configured through the `ep_level` keyword in the `config.json` configuration file in the ATB-Models installation directory. The theoretical communication volume of AlltoAll is somewhat smaller.
+- Communication can use LCCL or HCCL. LCCL usually has better performance, but adaptation issues may occur under some parallel strategies.
 
 ### Other Optimization Methods
 
-- Weight format conversion: Convert the weight to the NZ format to reduce the time required for format conversion.
-- Total request setting: The performance in the Decode phase increases (the request rate is limited, the batch size is small in the early stage, and the bottleneck is not reached. The batch size in the Decode phase gradually increases). Therefore, you are advised to set the total number of requests to the number of concurrent requests multiplied by 10.
+- Weight format conversion: convert weights to the NZ format to reduce the time consumed by inline format conversion.
+- Total request setting: Because the Decode phase performance ramps up (limited by the Request Rate, the Batch is small in the early stage and does not reach the bottleneck, and the Batch in the Decode phase increases gradually), you are advised to set the total number of requests to concurrency x 10.

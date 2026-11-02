@@ -1,4 +1,4 @@
-# MindStudio Ops Generator Installation Guide
+# msOpGen Installation Guide
 
 <br>
 
@@ -6,7 +6,7 @@
 
 This tool has been integrated into CANN. If CANN has been installed and this tool does not need to be updated, you can directly use it without following the instructions in this document.
 
-If CANN has not been installed in your environment, install the Ascend NPU driver and CANN software (including the Toolkit and ops) by referring to [CANN Quick Installation](https://www.hiascend.com/en/cann/download), and configure environment variables.
+If CANN has not been installed in your environment, install the Ascend NPU driver and CANN software (including the Toolkit and ops) by referring to [CANN Quick Installation](https://www.hiascend.com/cann/download), and configure environment variables.
 
 If you need to upgrade this tool separately or use the latest version, you can install it in any of the following ways: [Online Installation](#21-online-installation), [Offline Installation](#22-offline-installation), and [Source Installation](#23-source-installation).
 
@@ -23,11 +23,11 @@ If you need to upgrade this tool separately or use the latest version, you can i
 
 ### 2.1 Online Installation
 
-If your device has Internet access, you can run a single command to automatically download and install the tool. Visit the [Ascend community](https://www.hiascend.com/en/developer/software/mindstudio/download), select the target CANN version, and choose "Online" installation method. The system will guide you through the subsequent operations.
+If your device has Internet access, you can run a single command to automatically download and install the tool. Visit the [Ascend community](https://www.hiascend.com/developer/software/mindstudio/download), select the target CANN version, and choose "Online" installation method. The system will guide you through the subsequent operations.
 
 ### 2.2 Offline Installation
 
-For devices that are not connected to the Internet, such as those on an enterprise intranet, download the complete offline installation package on a device that has Internet access and then transfer the package to the target device for installation. Visit the [Ascend community](https://www.hiascend.com/en/developer/software/mindstudio/download), select the target CANN version, and choose "Offline" installation method. The system will guide you through the subsequent operations.
+For devices that are not connected to the Internet, such as those on an enterprise intranet, download the complete offline installation package on a device that has Internet access and then transfer the package to the target device for installation. Visit the [Ascend community](https://www.hiascend.com/developer/software/mindstudio/download), select the target CANN version, and choose "Offline" installation method. The system will guide you through the subsequent operations.
 
 ### 2.3 Source Installation
 
@@ -35,35 +35,51 @@ To use the functions of the latest code or modify the source code to enhance fun
 
 #### 2.3.1 Preparing the Environment
 
-Set up the environment by referring to [Operator Tool Development Environment Installation Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/dev_env_setup.md).
+All source code compilation uses the standard MindStudio build environment.
 
-- Clone this repository.
+- For daily development or when you use a released image, refer to the [MindStudio Tool Development Environment Installation Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/dev_env_setup.md).
+- If you need to reproduce the environment from a base operating system, or to perform source code build verification or unit test verification, you must refer to the [MindStudio Unified Build Image Creation Guide](https://gitcode.com/Ascend/msot/blob/master/docs/en/common/docker_image_build_guide.md) to build the environment image on site from the openEuler base image.
 
-    ```sh
-    git clone https://gitcode.com/Ascend/msopgen.git
-    ```
+The source code compilation and unit test commands later in this document are all run in the container of the specified image or of the environment image built on site. The CANN software package version, GCC version, and Python version are subject to the *Unified Build Image Creation Guide*, and this repository does not maintain them separately.
 
-- Install the Python dependency.
+After the image is built, you must use the `ctr_in.py` command provided in Chapter 7 of the *Unified Build Image Creation Guide* to start and enter the container in an interactive terminal. Do not use a plain `docker run` to create a container, and do not use `docker exec <container_name> bash -c '<command>'` to replace the interactive environment. Otherwise, the initialization of the Python, GCC, and CANN environments may be skipped.
 
-    ```sh
-    cd msopgen
-    pip install -r requirements.txt
-    ```
+After you enter the interactive container shell opened by `ctr_in.py`, run the following command to clone this repository:
 
-#### 2.3.2 Installation
-
-##### 2.3.2.1 Building and Packaging
-
-After the following command is executed, the generated `.whl` packages (`mindstudio_opgen` and `mindstudio_opst`) are stored in the `output` directory.
-
-```sh
-python build.py
+```bash
+cd ~
+git clone https://gitcode.com/Ascend/msopgen.git
 ```
 
-##### 2.3.2.2 Installing the `.whl` Package
+#### 2.3.2 Compilation
 
-```sh
-cd output
+Stay in the same interactive container shell opened by `ctr_in.py`, and run the following command in the repository root directory to automatically download dependencies and build:
+
+```bash
+cd ~/msopgen
+python3 build.py
+```
+
+After the build succeeds, the installation packages are generated in the `artifacts/` directory, including the `mindstudio_opgen` and `mindstudio_opst` `.whl` packages.
+
+#### 2.3.3 Unit Tests (Optional)
+
+This step is not required for installation. If you need to verify the basic functions of the code, you can run the unit tests:
+
+```bash
+cd ~/msopgen
+python3 build.py test
+```
+
+If the return code of the command is 0 and no test case fails, the unit tests pass.
+
+#### 2.3.4 Installation
+
+##### 2.3.4.1 Installation Package
+
+Copy the `.whl` packages to the operating environment (not required for local installation) and run the following commands to perform the installation:
+
+```bash
 pip install mindstudio_opgen-xxxxx.whl
 pip install mindstudio_opst-xxxxx.whl
 ```
@@ -85,7 +101,7 @@ To uninstall the tool, perform the following steps:
 1. Download the script.
 
    ```bash
-   curl -O https://inst.obs.cn-north-4.myhuaweicloud.com/26.1.0/ms_install.py
+   curl -O https://inst.obs.cn-north-4.myhuaweicloud.com/26.2.0/ms_install.py
    ```
 
    > [!NOTE]
@@ -96,10 +112,10 @@ To uninstall the tool, perform the following steps:
 2. Uninstall the tool.
 
    ```bash
-   python ms_install.py uninstall {tools_name}
+   python3 ms_install.py uninstall {tools_name}
    ```
 
-   Replace `{tools_name}` with the name of the tool to be uninstalled. You can run the `python ms_install.py help` command to query the tool name, which is displayed under the `Available Tools` field in the command output.
+   Replace `{tools_name}` with the name of the tool to be uninstalled. You can run the `python3 ms_install.py help` command to query the tool name, which is displayed under the `Available Tools` field in the command output.
 
    If the uninstallation is successful, the following information is displayed:
 
@@ -111,11 +127,11 @@ To uninstall the tool, perform the following steps:
 
 Upgrades follow the "uninstall first, then install" process. Simply run the installation command. The tool will automatically remove the previous version and guide you through the upgrade process.
 
-You can run the `msopgen --version` command to view the version information of the current environment and then select the version to be upgraded. When upgrading the version, pay attention to the version mapping. For details, see [Release Notes](https://gitcode.com/Ascend/release-management/blob/master/MindStudio/master/release_notes_en.md).
+You can run the `msopgen --version` command to view the version information of the current environment and then select the version to be upgraded. When upgrading the version, pay attention to the version mapping. For details, see [Release Notes](https://gitcode.com/Ascend/release-management/blob/master/MindStudio/master/release_notes.md).
 
 ## 6. Running UT and ST Cases
 
-`3.7 <= Python version <= 3.11`. Replace `${INSTALL_DIR}` with the path for storing the CANN installation files. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation directory is `$HOME/Ascend/cann`.
+3.7 <= `Python version` <= 3.11. Replace `${INSTALL_DIR}` with the path for storing the CANN installation files. For example, if the Ascend-CANN-Toolkit software package is installed, the default installation directory is `$HOME/Ascend/cann`.
 
 ```shell
 source ${INSTALL_DIR}/set_env.sh
