@@ -46,7 +46,7 @@ msopmodeling --help
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | `op_name` | string | 是 | 算子名称，如 `"MatMul"`、`"Add"` |
-| `backend_type` | string | 是 | 建模模式：`"theo"` 或 `"eng"` |
+| `backend_type` | string | 否 | 建模模式：`"theo"` 或 `"eng"`；省略时由命令行模式注入，填写时必须与命令行模式一致 |
 | `input_shapes` | list[list[int]] | 是* | 各输入 Tensor 的形状，如 `[[2048, 512], [512, 1024]]` |
 | `output_shapes` | list[list[int]] | 是* | 各输出 Tensor 的形状 |
 | `input_precision` | list[string] | 是 | 各输入 Tensor 的数据类型，如 `["FLOAT16", "FLOAT16"]` |
@@ -57,9 +57,16 @@ msopmodeling --help
 
 **支持的芯片型号（用于 `-s` 参数）：**
 
-| 系列 | 型号              |
-|------|-----------------|
-| 昇腾 910 系列 | `910B1`,`910B4` |
+`-s` 的可选型号由 `ArchName` 枚举定义，每个型号对应 `arc_config/<soc>/<soc>.yaml` 硬件配置。当前支持以下型号：
+
+| 系列 | 型号 |
+|------|------|
+| 昇腾 910 系列 | `910B1`、`910B4`、`910B3`、`910B4-1` |
+| A5 系列 | `950` |
+
+`910C` 是 `910B1` 的命令行别名。新增内置 SoC 时，需要同时更新 `src/tilesim/_internal/core/arch/names.py` 中的 `ArchName` 和对应硬件配置；仅增加配置文件不会自动成为命令行可选型号。
+
+`-s` 选择用于预测的硬件配置，包括带宽、算力和核数等参数，并覆盖输入 JSON 中各算子的 `accelerator`。性能预测时可以省略 `-s`，但此时每条算子配置必须提供 `accelerator` 配置路径。硬件配置存在不代表所有算子都可用：工具还会根据配置中的 `arch_family` 和算子注册的支持范围校验，不支持时在输入转换和算子实例化之前报错。可先使用第 5.1 节的命令查询清单。
 
 
 ### 4.2 示例一：理论极限模式（Add 算子）
@@ -111,20 +118,32 @@ msopmodeling --help
 
 ```shell
 # 理论极限模式，针对 910B1 芯片，结果写入 msopmodeling_output/
-msopmodeling -i input_theo.json -s 910B1
+msopmodeling theo -i input_theo.json -s 910B1
 
 # 工程可达模式，结果写入 result_dir/
-msopmodeling -i input_eng.json -s 910B4 -o result_dir
+msopmodeling eng -i input_eng.json -s 910B4 -o result_dir
 ```
 
 **完整参数说明：**
 
 | 参数 | 必填 | 说明 |
 |------|----|------|
-| `-i / --input` | 是  | 输入 JSON 文件路径 |
+| `theo` / `eng` | 是  | 建模模式；与 JSON 中 `backend_type` 冲突时终止程序 |
+| `list` | 否  | 指定时查询算子清单；省略时执行性能预测 |
+| `-i / --input` | 预测时必填 | 输入 JSON 文件路径；`list` 不接受此参数 |
 | `-o / --output` | 否  | 输出目录，默认 `msopmodeling_output`；不存在时自动创建，已存在时直接复用 |
-| `-s / --soc-type` | 是  | 芯片型号（如 `910B1`、`910B4`） |
+| `-s / --soc-type` | 清单查询时必填 | 选择 `ArchName` 中的芯片型号，如 `910B1`、`950`；预测时省略则要求每条输入提供 `accelerator` |
 | `-v / --verbose` | 否  | 输出 DEBUG 级别详细日志，便于排查问题 |
+
+### 5.1 查看算子清单
+
+```shell
+msopmodeling theo list -s 910B1
+msopmodeling eng  list -s 910B1
+msopmodeling eng  list -s 950
+```
+
+输出包含建模模式、SoC、架构族和按注册支持范围过滤的算子，以及供 JSON `op_name` 使用的别名。同一算子在 `theo`、`eng` 模式下的支持范围可能不同。`list` 不接受 `-i`、`-o`，不执行预测、不写输出文件，`-s` 必填。
 
 ---
 

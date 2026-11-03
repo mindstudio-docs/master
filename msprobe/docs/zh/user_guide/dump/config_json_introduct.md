@@ -166,7 +166,7 @@
 
 ### task配置为nan_check
 
-检测NaN或溢出，仅支持PyTorch昇腾NPU场景，要求CANN 8.5.0及以上，`level`须为`"L1"`。不同检测方式的适用范围和构建要求见[check_mode参数配置说明](#check_mode参数配置说明)。
+`PrecisionDebugger`检测NaN或溢出，仅支持PyTorch昇腾NPU场景，要求CANN 8.5.0及以上，`level`须为`"L1"`。不同检测方式的适用范围和构建要求见[check_mode参数配置说明](#check_mode参数配置说明)。`AclGraphDumper`的配置和输出说明见[aclgraph_dump使用指南：NaN自动检测](./aclgraph_dump_instruct.md#nan-自动检测)。
 
 **配置示例**
 
@@ -318,7 +318,7 @@ MindSpore动态图场景下，"level"须为"L2"；MindSpore静态图场景下，
 
 ### check_mode参数配置说明
 
-仅用于PyTorch `nan_check`任务，`str`类型，可选：
+以下说明适用于`PrecisionDebugger`的PyTorch `nan_check`任务，`str`类型，可选：
 
 - `"isnan"`（默认）：检测输入、输出tensor中的NaN，不检测Inf或过程溢出。前向输出含NaN时，将该API的输入、输出自动保存为`dump_tensor_data`目录下的`.pt`文件；反向由`grad_input`中的NaN触发，保存`grad_input`和`grad_output`。无需配置`tensor_list`，采集时不主动触发异常。编译msProbe时须包含`--include-mod=aclgraph_dump`模块。
 - `"slot"`：读取NPU寄存器状态，检测API中的NaN、Inf或过程溢出。编译msProbe时须包含`--include-mod=nan_check`模块，并在运行前设置`INF_NAN_MODE_FORCE_DISABLE=1`。详细采集范围由`tensor_list`指定。

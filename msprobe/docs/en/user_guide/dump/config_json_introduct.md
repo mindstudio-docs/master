@@ -166,7 +166,7 @@ Supported scenarios:
 
 ### task = nan_check
 
-Detects NaN or overflow. This task supports only PyTorch scenarios on Ascend NPUs, requires CANN 8.5.0 or later, and requires `level` to be `"L1"`. For the applicable scenarios and build requirements of each detection mode, see [check_mode Configuration](#check_mode-configuration).
+With `PrecisionDebugger`, this task detects NaN or overflow, supports only PyTorch scenarios on Ascend NPUs, requires CANN 8.5.0 or later, and requires `level` to be `"L1"`. For the applicable scenarios and build requirements of each detection mode, see [check_mode Configuration](#check_mode-configuration). For `AclGraphDumper` configuration and output, see [Automatic NaN Detection in the aclgraph_dump guide](./aclgraph_dump_instruct.md#automatic-nan-detection).
 
 **Examples**
 
@@ -318,7 +318,7 @@ Example: "scope": ["Module.conv1.Conv2d.forward.0", "Module.fc2.Linear.forward.0
 
 ### check_mode Configuration
 
-This parameter applies only to PyTorch `nan_check` tasks. It is of the type `str` and is optional.
+The following options apply to PyTorch `nan_check` tasks collected by `PrecisionDebugger`. This parameter is an optional `str`.
 
 - `"isnan"` (default): detects NaN in input and output tensors, and does not detect Inf or intermediate overflow. When a forward output contains NaN, the inputs and outputs of that API are automatically saved as `.pt` files in the `dump_tensor_data` directory. In the backward pass, detection is triggered by NaN in `grad_input`, and `grad_input` and `grad_output` are saved. `tensor_list` does not need to be configured, and no exception is actively raised during collection. When compiling msProbe, `--include-mod=aclgraph_dump` must be included.
 - `"slot"`: reads the NPU register status to detect NaN, Inf, or intermediate overflow in APIs. When compiling msProbe, `--include-mod=nan_check` must be included, and `INF_NAN_MODE_FORCE_DISABLE=1` must be set before running. The detailed collection scope is specified by `tensor_list`.

@@ -52,7 +52,7 @@ msopmodeling -h
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|----|------|
 | `op_name` | string | 是 | 算子名称，如 `"MatMul"`、`"Add"` |
-| `backend_type` | string | 是 | 建模模式：`"theo"` 或 `"eng"` |
+| `backend_type` | string | 否 | 建模模式：`"theo"` 或 `"eng"`；省略时由命令行模式注入，若填写则必须与命令行模式一致 |
 | `input_shapes` | list[list[int]] | 是 | 各输入 Tensor 的形状，如 `[[2048, 512], [512, 1024]]` |
 | `output_shapes` | list[list[int]] | 是 | 各输出 Tensor 的形状 |
 | `input_precision` | list[string] | 是 | 各输入 Tensor 的数据类型，如 `["FLOAT16", "FLOAT16"]` |
@@ -65,16 +65,32 @@ msopmodeling -h
 ## 5. 运行
 
 ```shell
-msopmodeling -i input.json -s 910B4 -o result_dir
+# 理论极限模式，结果写入默认目录 msopmodeling_output/
+msopmodeling theo -i input.json -s 910B4
+
+# 工程可达模式，结果写入 result_dir/
+msopmodeling eng -i input.json -s 910B4 -o result_dir
 ```
 
 **参数说明：**
 
 | 参数 | 必填 | 说明 |
 |------|----|------|
+| `theo` / `eng` | 是  | 建模模式；与 JSON 中 `backend_type` 冲突时会报错退出 |
 | `-i / --input` | 是  | 输入 JSON 文件路径 |
-| `-s / --soc-type` | 是  | 芯片型号，当前支持 `910B1`、`910B4` |
+| `-s / --soc-type` | 清单查询时必填 | 芯片型号由 `ArchName` 定义，如 `910B1`、`910B4`、`950`；预测时可省略，但每条输入必须提供 `accelerator` 配置路径 |
 | `-o / --output` | 否  | 输出目录，默认 `msopmodeling_output`；不存在时自动创建，已存在时直接复用 |
+| `-v / --verbose` | 否  | 输出 DEBUG 级别详细日志 |
+
+### 5.1 查看指定模式下的算子清单
+
+```shell
+msopmodeling theo list -s 910B4
+msopmodeling eng  list -s 910B4
+msopmodeling eng  list -s 950
+```
+
+`list` 按算子注册的架构支持范围查询清单，不接受 `-i`、`-o`，也不会产生输出文件；`-s` 必填。省略 `list` 时执行性能预测。
 
 ---
 
