@@ -32,6 +32,8 @@ msopmodeling -h
 
 ## 4. 准备输入文件
 
+`-i` 根据文件内容自动识别 JSON 数组、profiler `op_summary` CSV（包含 `Op Name`、`OP Type` 列）或 `kernel_details` CSV（包含 `Name`、`Type`、`Accelerator Core` 列），不依赖文件名或扩展名。JSON 继续支持 `theo` 和 `eng`；CSV 仅支持 `theo`，且必须指定 `-s`。
+
 以理论极限模式的ADD算子为例，将如下内容保存为 `input.json`：
 
 ```json
@@ -59,6 +61,10 @@ msopmodeling -h
 | `output_precision` | list[string] | 是 | 各输出 Tensor 的数据类型 |
 | `core_num` | int | 否 | 使用的计算核数，默认取芯片最大核数 |
 
+也可以直接使用上述两种 profiler CSV。CSV 形状单元格以分号 `;` 分隔 Tensor，以逗号 `,` 分隔维度；空的 Tensor 片段表示标量 `[]`，不能删除。例如 `;2048,512;` 表示 `[[], [2048, 512], []]`；`N/A` 是无效值，不表示标量。
+
+CSV 使用所选 SoC 的最大核数和模型默认属性，不从 `Block Num` 推断物理核数，不从 `ND` 推断 attention 的语义布局，也不推断其他算子属性。缺少必需属性会导致该行失败；即使模型有默认值，也不保证还原真实语义，例如 ReduceSum 默认归约最后一轴。
+
 
 ---
 
@@ -70,6 +76,12 @@ msopmodeling theo -i input.json -s 910B4
 
 # 工程可达模式，结果写入 result_dir/
 msopmodeling eng -i input.json -s 910B4 -o result_dir
+
+# profiler op_summary CSV，仅支持理论极限模式，必须指定芯片
+msopmodeling theo -i op_summary.csv -s 910B4 -o result_op_summary
+
+# profiler kernel_details CSV，同样使用理论极限模式
+msopmodeling theo -i kernel_details.csv -s 910B4 -o result_kernel_details
 ```
 
 **参数说明：**
@@ -77,8 +89,8 @@ msopmodeling eng -i input.json -s 910B4 -o result_dir
 | 参数 | 必填 | 说明 |
 |------|----|------|
 | `theo` / `eng` | 是  | 建模模式；与 JSON 中 `backend_type` 冲突时会报错退出 |
-| `-i / --input` | 是  | 输入 JSON 文件路径 |
-| `-s / --soc-type` | 清单查询时必填 | 芯片型号由 `ArchName` 定义，如 `910B1`、`910B4`、`950`；预测时可省略，但每条输入必须提供 `accelerator` 配置路径 |
+| `-i / --input` | 是  | 输入文件路径，按内容识别 JSON 数组或上述两种 CSV；CSV 仅支持 `theo` |
+| `-s / --soc-type` | 清单查询、CSV 预测时必填 | 芯片型号由 `ArchName` 定义，如 `910B1`、`910B4`、`950`；JSON 预测时可省略，但每条输入必须提供 `accelerator` 配置路径 |
 | `-o / --output` | 否  | 输出目录，默认 `msopmodeling_output`；不存在时自动创建，已存在时直接复用 |
 | `-v / --verbose` | 否  | 输出 DEBUG 级别详细日志 |
 
@@ -114,6 +126,10 @@ result_dir/
 ```
 
 > 输出目录不存在时会自动创建；已存在时直接复用，不会清空其中已有文件，`result.json` 与对应 `OP_x/` 内容会被覆盖更新。
+
+CSV 的每条数据行按原始顺序从 `OP_0` 开始编号（不含表头），不支持或无效的行也占用编号，不会跳过后重新编号。成功行保留正常的 `latency` 等预测字段，并附带 CSV 来源信息；不支持、无效或预测失败的行保留来源信息，并记录 `error` 和 `error_kind`，不能当作有效时延结果。
+
+CSV 的单行错误不会中断后续行处理。处理结束后，终端按错误类别分组汇总；只要有失败或不支持的行，工具会先保存结果，再以退出码 `1` 结束。文件级错误（如文件无法读取、格式无法识别）则直接终止，不进入逐行容错流程。
 
 `result.json` 的 JSON 结构如下：
 

@@ -39,7 +39,15 @@ msopmodeling --help
 
 ## 4. 准备输入文件
 
-输入为一个 JSON 数组，每个元素描述一个待预测的算子。
+`-i` 根据文件内容自动识别输入格式，不依赖文件名或扩展名。支持以下输入：
+
+| 输入格式 | 识别内容 | 支持模式 | 芯片配置 |
+|------|------|------|------|
+| JSON 数组 | 每个元素描述一个待预测的算子 | `theo`、`eng` | 指定 `-s`，或由每个元素提供 `accelerator` |
+| profiler `op_summary` CSV | 包含 `Op Name`、`OP Type` 列的表头 | 仅 `theo` | 必须指定 `-s` |
+| profiler `kernel_details` CSV | 包含 `Name`、`Type`、`Accelerator Core` 列的表头 | 仅 `theo` | 必须指定 `-s` |
+
+以下第 4.1 至 4.3 节说明 JSON 输入；CSV 输入见第 4.4 节。JSON 的两种建模模式及现有配置方式保持不变。
 
 ### 4.1 公共字段说明
 
@@ -66,7 +74,7 @@ msopmodeling --help
 
 `910C` 是 `910B1` 的命令行别名。新增内置 SoC 时，需要同时更新 `src/tilesim/_internal/core/arch/names.py` 中的 `ArchName` 和对应硬件配置；仅增加配置文件不会自动成为命令行可选型号。
 
-`-s` 选择用于预测的硬件配置，包括带宽、算力和核数等参数，并覆盖输入 JSON 中各算子的 `accelerator`。性能预测时可以省略 `-s`，但此时每条算子配置必须提供 `accelerator` 配置路径。硬件配置存在不代表所有算子都可用：工具还会根据配置中的 `arch_family` 和算子注册的支持范围校验，不支持时在输入转换和算子实例化之前报错。可先使用第 5.1 节的命令查询清单。
+`-s` 选择用于预测的硬件配置，包括带宽、算力和核数等参数，并覆盖输入 JSON 中各算子的 `accelerator`。JSON 性能预测时可以省略 `-s`，但此时每条算子配置必须提供 `accelerator` 配置路径；CSV 预测必须指定 `-s`。硬件配置存在不代表所有算子都可用：工具还会根据配置中的 `arch_family` 和算子注册的支持范围校验。JSON 中不支持的算子会在输入转换和算子实例化之前报错；CSV 中则记录该行错误并继续处理后续行。可先使用第 5.1 节的命令查询清单。
 
 
 ### 4.2 示例一：理论极限模式（Add 算子）
@@ -112,6 +120,24 @@ msopmodeling --help
 
 > `extra_param.tuning_candidates`：指定候选 tiling 参数组合，工具将从中挑选时延最优的方案。可提供多组候选，工具自动搜索最优。
 
+### 4.4 profiler CSV 输入
+
+可直接传入 `op_summary` 或 `kernel_details` CSV，无需先转换为 JSON。两者都仅支持理论极限模式 `theo`，不支持 CSV 工程可达模式 `eng`，且必须通过 `-s` 指定 SoC。即使文件改名或使用其他扩展名，也仍按内容识别。
+
+**形状单元格规则：**
+
+- 分号 `;` 分隔不同 Tensor，逗号 `,` 分隔同一 Tensor 的维度。例如 `2048,512;512,1024` 表示 `[[2048, 512], [512, 1024]]`。
+- 空的 Tensor 片段表示标量 `[]`，必须保留其位置，不能删除空片段。例如 `;2048,512;` 表示 `[[], [2048, 512], []]`，单个空形状单元格表示一个标量 Tensor。
+- `N/A` 是无效形状值，不能按空标量处理；该行会记录错误。
+- 形状单元格含逗号时，应保留 CSV 的字段引号，避免将维度逗号误解析为列分隔符。
+
+**建模边界：**
+
+- 使用所选 SoC 的最大核数，不将 profiler 的 `Block Num` 映射为物理核数。
+- 使用模型已有的默认属性，不从 CSV 推断算子属性；`ND` 仅是格式信息，不能据此推断 attention 所需的语义布局。
+- 模型要求的必需属性若缺失且没有默认值，该行预测失败，不会中断其他行。
+- 默认属性不保证恢复原算子的真实语义。例如 ReduceSum 默认归约最后一轴，不能据此认定原算子也沿最后一轴归约。若需明确指定属性，应使用包含完整算子配置的 JSON 输入。
+
 ---
 
 ## 5. 运行
@@ -122,6 +148,12 @@ msopmodeling theo -i input_theo.json -s 910B1
 
 # 工程可达模式，结果写入 result_dir/
 msopmodeling eng -i input_eng.json -s 910B4 -o result_dir
+
+# profiler op_summary CSV，仅支持 theo，必须指定 -s
+msopmodeling theo -i op_summary.csv -s 910B4 -o result_op_summary
+
+# profiler kernel_details CSV，仅支持 theo，必须指定 -s
+msopmodeling theo -i kernel_details.csv -s 910B4 -o result_kernel_details
 ```
 
 **完整参数说明：**
@@ -130,9 +162,9 @@ msopmodeling eng -i input_eng.json -s 910B4 -o result_dir
 |------|----|------|
 | `theo` / `eng` | 是  | 建模模式；与 JSON 中 `backend_type` 冲突时终止程序 |
 | `list` | 否  | 指定时查询算子清单；省略时执行性能预测 |
-| `-i / --input` | 预测时必填 | 输入 JSON 文件路径；`list` 不接受此参数 |
+| `-i / --input` | 预测时必填 | 输入文件路径，按内容识别 JSON 数组、`op_summary` CSV 或 `kernel_details` CSV，与文件名无关；CSV 仅支持 `theo`；`list` 不接受此参数 |
 | `-o / --output` | 否  | 输出目录，默认 `msopmodeling_output`；不存在时自动创建，已存在时直接复用 |
-| `-s / --soc-type` | 清单查询时必填 | 选择 `ArchName` 中的芯片型号，如 `910B1`、`950`；预测时省略则要求每条输入提供 `accelerator` |
+| `-s / --soc-type` | 清单查询、CSV 预测时必填 | 选择 `ArchName` 中的芯片型号，如 `910B1`、`950`；JSON 预测时省略则要求每条输入提供 `accelerator` |
 | `-v / --verbose` | 否  | 输出 DEBUG 级别详细日志，便于排查问题 |
 
 ### 5.1 查看算子清单
@@ -202,7 +234,22 @@ result_dir/
 }
 ```
 
-输出 JSON 中每个键（`OP_0`、`OP_1` …）对应输入数组中的一个算子，按顺序编号。
+输出 JSON 中每个键（`OP_0`、`OP_1` …）对应 JSON 输入数组中的一个算子，或 CSV 中的一条数据行，按顺序从 0 编号。CSV 表头不计入编号，不支持、无效或预测失败的行仍占用原来的 `OP_i`，后续行不会重新编号。
+
+### 6.1 CSV 结果与错误处理
+
+CSV 成功行保留正常的 `latency` 等预测结果字段，并附带来源信息，用于追溯原始 CSV 数据行及算子。错误行也保留来源信息，并通过以下字段说明原因，而不是提供有效的预测时延：
+
+| 字段 | 说明 |
+|------|------|
+| `error` | 该行不支持、输入无效或预测失败的具体原因 |
+| `error_kind` | 错误类别，便于分类检查失败结果 |
+
+不支持的算子、无效形状、缺少必需属性和预测失败等行级问题均不会中断后续行。所有行处理结束后，终端按错误类别分组汇总错误，便于集中排查；成功结果和错误记录都会写入 `result.json`。
+
+只要存在失败或不支持的行，工具就会在保存结果后以退出码 `1` 结束。因此，非零退出码不一定表示没有结果，应结合 `result.json` 和终端汇总检查。文件无法读取、输入格式无法识别等文件级错误会直接终止，不适用逐行继续处理的规则。
+
+### 6.2 预测字段说明
 
 **关键字段解读：**
 
@@ -234,3 +281,5 @@ result_dir/
 **Q：如何一次预测多个算子？**
 
 在输入 JSON 数组中添加多个对象即可，输出结果依次以 `OP_0`、`OP_1`、`OP_2` … 标识。
+
+也可以使用 profiler `op_summary` 或 `kernel_details` CSV 批量执行 `theo` 预测，并指定 `-s`。每条数据行保留自己的 `OP_i`，即使该行不支持或失败，也不影响其他行继续处理。
