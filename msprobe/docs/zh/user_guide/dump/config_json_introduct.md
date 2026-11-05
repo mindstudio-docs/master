@@ -323,7 +323,7 @@ MindSpore动态图场景下，"level"须为"L2"；MindSpore静态图场景下，
 
 以下说明适用于`PrecisionDebugger`的PyTorch `nan_check`任务，`str`类型，可选：
 
-- `"isnan"`（默认）：检测输入、输出tensor中的NaN，不检测Inf或过程溢出。前向输出含NaN时，将该API的输入、输出自动保存为`dump_tensor_data`目录下的`.pt`文件；反向由`grad_input`中的NaN触发，保存`grad_input`和`grad_output`。无需配置`tensor_list`，采集时不主动触发异常。编译msProbe时须包含`--include-mod=aclgraph_dump`模块。
+- `"isnan"`（默认）：检测输入、输出tensor中的NaN，不检测Inf或过程溢出。前向输出含NaN时，将该API的输入、输出自动保存为`dump_tensor_data`目录下的`.pt`文件；反向计算得到的梯度含NaN时，保存该次反向调用的全部输入、输出梯度。无需配置`tensor_list`，采集时不主动触发异常。编译msProbe时须包含`--include-mod=aclgraph_dump`模块。
 - `"slot"`：读取NPU寄存器状态，检测API中的NaN、Inf或过程溢出。编译msProbe时须包含`--include-mod=nan_check`模块，并在运行前设置`INF_NAN_MODE_FORCE_DISABLE=1`。详细采集范围由`tensor_list`指定。
 
 例如，在上方配置示例中将`nan_check`部分改为以下内容，启用寄存器检测并详细采集`sqrt`：
@@ -345,7 +345,7 @@ MindSpore动态图场景下，"level"须为"L2"；MindSpore静态图场景下，
 
   - 配置示例："tensor_list": ["relu"]。
 
-- [nan_check](#task配置为nan_check)任务仅在`slot`模式使用此参数：按API名称子串匹配需要详细采集的API，溢出时触发异常并将详细数据保存至`extra-info`，供[Tensor解析工具](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/maintenref/troubleshooting/troubleshooting_0532.html)解析。
+- [nan_check](#task配置为nan_check)任务仅在`slot`模式使用此参数：按API名称子串匹配需要详细采集的API，溢出时触发异常并将详细数据保存至`extra-info`，供[Tensor解析工具](https://gitcode.com/cann/oam-tools/blob/master/docs/zh/user_guide/msaicerr/Dump_files_parsing.md)解析。
 
 ### data_mode参数配置说明
 

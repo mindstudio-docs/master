@@ -26,6 +26,8 @@ pip install msopmodeling
 
 ```shell
 msopmodeling -h
+msopmodeling --version
+msopmodeling -V
 ```
 
 ---

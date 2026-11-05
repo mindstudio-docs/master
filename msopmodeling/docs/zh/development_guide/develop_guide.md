@@ -63,6 +63,29 @@ dist/
 └── msopmodeling-x.x.x-py3-none-any.whl
 ```
 
+其中 `x.x.x` 默认来自 `pyproject.toml` 的 `[project] version`。
+`build.py` 的 `--version` 默认值与 `pyproject.toml` 保持一致（当前为 `26.3.0`）；传入时临时覆盖 wheel 版本，构建后自动恢复 `pyproject.toml`。
+
+### 3.1 版本升级
+
+默认版本维护在：
+
+```toml
+# pyproject.toml
+[project]
+version = "x.y.z"
+```
+
+同时保持 `build.py` 的 `--version` 默认值一致。
+
+升级步骤：
+
+1. 修改 `pyproject.toml` 的 `[project] version`。
+2. 保持 `build.py` 中 `--version` 默认值一致。
+3. 执行 `python build.py`，或通过 `python build.py --version=x.y.z` 覆盖 wheel 版本。
+4. 检查 `dist/` 下 wheel 文件名中的版本号。
+5. 安装后执行 `msopmodeling -V`（或 `msopmodeling --version`），确认与 wheel 包名版本一致。
+
 ---
 
 ## 4. 执行UT测试

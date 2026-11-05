@@ -33,7 +33,11 @@ pip install msopmodeling -i https://mirrors.aliyun.com/pypi/simple/
 
 ```shell
 msopmodeling --help
+msopmodeling --version
+msopmodeling -V
 ```
+
+> `-v` 表示 `--verbose`，查看版本请使用 `msopmodeling -V` 或 `--version`。
 
 ---
 
@@ -137,6 +141,8 @@ msopmodeling --help
 - 使用模型已有的默认属性，不从 CSV 推断算子属性；`ND` 仅是格式信息，不能据此推断 attention 所需的语义布局。
 - 模型要求的必需属性若缺失且没有默认值，该行预测失败，不会中断其他行。
 - 默认属性不保证恢复原算子的真实语义。例如 ReduceSum 默认归约最后一轴，不能据此认定原算子也沿最后一轴归约。若需明确指定属性，应使用包含完整算子配置的 JSON 输入。
+
+**重复记录加速：** 同一次 CSV theo 预测中，完整建模配置相同的记录复用首次成功的预测结果和交付件，避免跨 step 重复建模。每行仍保留独立的 `OP_i`、`source` 和交付件目录，已有目录中的无关文件不会被删除。失败记录不会被缓存；缓存不跨批次保留，也不用于 JSON 或 eng 输入。GEMM 等模型包含随机搜索，重复记录共享首次成功搜索的结果，而不再逐行独立搜索；跳过重复搜索也可能改变后续不同配置的随机搜索轨迹，因此不保证与未复用时的逐行结果完全一致。此优化不补全缺失属性，也不改变模型公式或搜索参数。
 
 ---
 

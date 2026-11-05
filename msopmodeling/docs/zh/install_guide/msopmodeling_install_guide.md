@@ -30,9 +30,11 @@ pip install msopmodeling -i https://mirrors.aliyun.com/pypi/simple/
 
 ```shell
 msopmodeling --help
+msopmodeling --version
+msopmodeling -V
 ```
 
-成功安装后，将显示命令行帮助信息。
+成功安装后，`--help` 显示命令行帮助信息，`--version` / `-V` 输出当前安装包版本。
 
 ---
 
@@ -75,6 +77,8 @@ pip install -e ".[dev]" -i https://mirrors.aliyun.com/pypi/simple/
 
 ```shell
 msopmodeling --help
+msopmodeling --version
+msopmodeling -V
 ```
 
 ---
