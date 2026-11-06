@@ -15,7 +15,7 @@
 
 具体流程请参考[图1 msOpGen工具使用流程介绍](#fig1120319585112)。
 
-**图 1**  msOpGen工具使用流程介绍<a id="fig1120319585112"></a>  
+**图 1**  msOpGen工具使用流程介绍<a id="fig1120319585112"></a>
 ![](../figures/msOpGen工具使用流程介绍.png "msOpGen工具使用流程介绍")
 
 ## 使用前准备<a id="使用前准备"></a>
@@ -50,7 +50,7 @@
 - 下载代码样例时，需执行以下命令指定分支版本。
 
     ```sh
-    git clone https://gitee.com/ascend/samples.git -b master
+    git clone https://gitcode.com/cann/cann-learning-hub.git -b 8.5.0
     ```
 
 ## 算子工程创建功能介绍<a id="ZH-CN_TOPIC_0000002507799464"></a>
@@ -313,7 +313,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
                     "type": ["int32"]
                 }
             ],
-            "attr": [                                                                   
+            "attr": [
                 {
                     "name": "reduceDim",
                     "param_type": "required",
@@ -496,7 +496,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     </table>
 
     > [!NOTE]
-    > 
+    >
     >- json文件可以配置多个算子，json文件为列表，列表中每一个元素为一个算子。
     >- 若input_desc或output_desc中存在相同name参数，则后一个会覆盖前一参数。
     >- input_desc，output_desc中的type需按顺序一一对应匹配，format也需按顺序一一对应匹配。
@@ -525,8 +525,8 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     │   ├── add_custom.cpp         // 算子原型注册、shape推导、信息库、tiling实现等内容文件
     │   ├── CMakeLists.txt
     ├── op_kernel                   // Kernel侧实现文件
-    │   ├── CMakeLists.txt   
-    │   ├── add_custom.cpp        // 算子代码实现文件 
+    │   ├── CMakeLists.txt
+    │   ├── add_custom.cpp        // 算子代码实现文件
     │   ├── add_custom_tiling.h    // 算子tiling定义文件
     ```
 
@@ -548,7 +548,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 **操作步骤<a id="section7309175019420"></a>**
 
 1. 完成算子相关的开发适配，包括算子核函数的开发和tiling实现等，详细内容请参考《[Ascend C算子开发指南](https://gitcode.com/cann/asc-devkit/blob/master/docs/zh/guide/programming_guide/advanced_programming/aclnn_operator_development/overview.md)》中的工程化算子开发章节。
-2. 可参考[文档](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom)进行开发，完成op_host/add_custom_tiling.h、op_host/add_custom.cpp和op_kernel/add_custom.cpp的实现。
+2. 可参考[文档](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)进行开发，完成op_host/add_custom_tiling.h、op_host/add_custom.cpp和op_kernel/add_custom.cpp的实现。
 3. 算子实现完成后，进入[算子编译部署](#算子编译部署)。
 
 #### 算子编译部署<a id="算子编译部署"></a>
@@ -569,7 +569,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 
 完成算子Kernel、Host侧的开发后，需要对算子工程进行编译，生成自定义算子安装包*.run，具体编译操作流程请参考[图1 算子工程编译示意图](#zh-cn_topic_0000001691887130_fig11482161513267)。
 
-**图 1**  算子工程编译示意图<a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>  
+**图 1**  算子工程编译示意图<a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>
 ![](../figures/算子工程编译示意图.png "算子工程编译示意图")
 
 **操作步骤<a id="zh-cn_topic_0000001691887130_section122481539171817"></a>**
@@ -747,7 +747,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     编译成功后，会在当前目录下创建build_out目录，并在build_out目录下生成自定义算子安装包**custom\_opp\_**<target\_os\>\_<target\_architecture\>**.run**。
 
     > [!NOTE]
-    > 
+    >
     > 注册算子类型后，框架会根据算子类型获取算子注册信息，同时在编译和运行时按照一定的规则匹配算子实现文件名称和Kernel侧核函数名称。为了保证正确匹配，算子类型、算子实现文件名称和核函数名称需要遵循如下定义规则。通常情况下，开发者只需要保证创建算子工程时原型定义json文件中算子类型op的参数值为大驼峰命名方式即可，工程创建后自动生成的代码即满足该规则。在手动编写算子原型定义和算子实现文件时需要按照如下规则定义。
     >算子类型需要采用大驼峰的命名方式，即采用大写字符区分不同的语义。
     >算子实现文件名称、核函数名称需相同，均为算子类型转换为下划线命名方式后的值。下文描述了通过算子类型转换成算子实现文件名称和核函数名称的过程：
@@ -779,7 +779,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     - <a id="zh-cn_topic_0000001691887130_li1652971821912"></a>指定目录安装场景，配置--install-path参数，安装成功后会将编译生成的自定义算子相关文件部署到`<path>/vendors/<vendor_name>`目录，并在`<path>/vendors/<vendor_name>/bin`目录下新增set_env.bash，写入当前自定义算子包相关的环境变量。
 
         > [!NOTE]
-        > 
+        >
         > 如果部署算子包时通过配置--install-path参数指定了算子包的安装目录，则在使用自定义算子前，需要执行`source  <path>/vendors/<vendor_name>/bin/set_env.bash`命令，set_env.bash脚本中将自定义算子包的安装路径追加到环境变量`ASCEND_CUSTOM_OPP_PATH`中，使自定义算子在当前环境中生效。
 
     命令执行成功后，自定义算子包中的相关文件将部署至当前环境中。
@@ -812,7 +812,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     │           │           │   └── config
     │           │           └── op_tiling
     │           │               ├── lib
-    │           │               └── liboptiling.so 
+    │           │               └── liboptiling.so
     │           └── op_proto     //自定义算子原型库所在目录
     │                ├── inc
     │                │   └── op_proto.h
@@ -821,7 +821,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     ```
 
     > [!NOTE]
-    > 
+    >
     >**参数值：**_<soc_version>_，查询方法如下：
     >- 非Atlas A3系列产品：在安装昇腾AI处理器的服务器执行`npu-smi info`命令进行查询，获取**Chip Name**信息。实际配置值为AscendChip Name，例如**Chip Name**取值为xxxyy，实际配置值为Ascendxxxyy。当Ascendxxxyy为代码样例的路径时，需要配置为ascendxxxyy。
     >- Atlas A3系列产品：在安装昇腾AI处理器的服务器执行`npu-smi info -t board -i id -c chip_id`命令进行查询，获取**Chip Name**和**NPU Name**信息，实际配置值为Chip Name_NPU Name。例如**Chip Name**取值为Ascendxxx，**NPU Name**取值为1234，实际配置值为Ascendxxx_1234。当Ascendxxx_1234为代码样例的路径时，需要配置为ascendxxx_1234。
@@ -870,46 +870,52 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 
 msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水图文件（trace.json）。
 
-1. 参考[链接](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch)，在`${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch`路径下运行install.sh文件，并生成CustomOp文件夹。
+1. 参考[链接](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)，在`${git_clone_path}/cann-learning-hub/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04`路径下准备算子工程。
 
     > [!NOTE]
     > 
-    > 此样例工程不支持Atlas A3系列产品和Atlas 训练系列产品。
-
-    ```sh
-    ./install.sh -v Ascendxxxyy   # xxxyy为用户实际使用的具体芯片类型
-    ```
+    > 此样例工程默认按Atlas A2系列产品配置。若使用其他系列产品，需修改以下两处默认配置：
+    > 
+    > - 根目录CMakeLists.txt中`ASCEND_COMPUTE_UNIT`默认为`ascend910b`，请根据实际芯片型号（通过`npu-smi info`查询Chip Name）修改，例如Atlas 950PR&950DT系列产品需改为`ascend950`。
+    > - op_host目录下`add_custom_template.cpp`中`.AddConfig("ascend910b")`的值需要同样修改。
 
 2. 编译算子工程。
     1. 参考[编译前准备](#section4684858183614)章节，完成编译相关配置。
-    2. 在算子工程目录CustomOp下，执行如下命令，进行算子工程编译。
+    2. 在算子工程目录custom_op_04下，执行如下命令，进行算子工程编译。
 
         > [!NOTE]
-        > 
-        > 若要生成算子仿真流水图，需要将当前目录下CMakePresets.json文件中CMAKE_BUILD_TYPE修改为“Debug”。
+        >
+        > 若要生成算子仿真流水图，需要在`op_kernel/CMakeLists.txt`中添加kernel侧调试编译选项，使能kernel编译器调试功能。
 
-        编译完成后，将会在build_out目录生成.run算子包。
+        ```cmake
+        # op_kernel/CMakeLists.txt 中 npu_op_kernel_sources 之前添加
+        if ("${CMAKE_BUILD_TYPE}x" STREQUAL "Debugx")
+            npu_op_kernel_options(ascendc_kernels ALL OPTIONS -g)
+        endif()
+        ```
+
+        编译完成后，将会在build目录生成.run算子包。
 
         ```sh
-        ./build.sh
+        mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make -j binary package
         ```
 
 3. 在自定义算子包所在路径下，执行如下命令，部署算子包。
 
     ```sh
-    ./build_out/custom_opp_<target_os>_<target_architecture>.run
+    ./custom_opp_<target_os>_<target_architecture>.run
     ```
 
-4. 切换到AclNNInvocation仓的目录`${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch/AclNNInvocation`，执行以下命令。
+4. 切换到test目录`${git_clone_path}/cann-learning-hub/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04/test`，执行以下命令。
 
     ```sh
     ./run.sh
     ```
 
-5. 使能环境变量后，请参考《msOpProf工具用户指南》中的“工具使用\>msprof op simulator”功能进行仿真，并生成dump数据。
+5. 使能环境变量后（<SOC_VERSION>需要替换为具体值，如Ascend910B4），请参考《msOpProf工具用户指南》中的“工具使用\>msprof op simulator”功能进行仿真，并生成dump数据。
 
     ```sh
-    export LD_LIBRARY_PATH=${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch/CustomOp/build_out/op_host/:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=${ASCEND_HOME_PATH}/tools/simulator/<SOC_VERSION>/lib:${ASCEND_HOME_PATH}/opp/vendors/customize/op_api/lib:$LD_LIBRARY_PATH
     ```
 
 6. 生成算子仿真流水图文件。
@@ -917,7 +923,7 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
     执行如下命令，参数说明请参见[表1 参数说明](#zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_table197301923143513)。
 
     ```sh
-    msopgen sim -c core{id} -d xx/{path of dump data} -subc {sub core id} -out {output path} -reloc {path of .o file or executable file} 
+    msopgen sim -c core{id} -d xx/{path of dump data} -subc {sub core id} -out {output path} -reloc {path of .o file or executable file}
     ```
 
     **表 1**  参数说明
@@ -1024,10 +1030,10 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
     可以在Chrome浏览器中输入“chrome://tracing“地址，将输出路径下的**dump2trace_core*.json**文件拖到空白处打开，通过键盘上的快捷键（W：放大，S：缩小，A：左移，D：右移）进行查看，如下图所示。
 
-    **图 1**  单个子核展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a>  
+    **图 1**  单个子核展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a>
     ![](../figures/单个子核展示.png "单个子核展示")
 
-    **图 2**  Mix融合算子展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig793111117274"></a>  
+    **图 2**  Mix融合算子展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig793111117274"></a>
     ![](../figures/Mix融合算子展示.png "Mix融合算子展示")
 
     **表 2**  字段说明
@@ -1091,12 +1097,12 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
     在输出路径下打开代码行耗时文件{核编号}_code_exe_prof.csv，如下图所示。
 
-    **图 3**  代码行耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig35497207381"></a>  
+    **图 3**  代码行耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig35497207381"></a>
     ![](../figures/代码行耗时文件.png "代码行耗时文件")
 
     在输出路径下打开指令耗时文件{核编号}_instr_exe_prof.csv，如下图所示。
 
-    **图 4**  指令耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig15979118144012"></a>  
+    **图 4**  指令耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig15979118144012"></a>
     ![](../figures/指令耗时文件.png "指令耗时文件")
 
     通过文件中的“call count“及“cycles“字段可以分别查看代码行或指令的调用次数和累计耗时。
@@ -1378,20 +1384,28 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
     msOpST工具根据待测Host侧算子的实现文件生成算子ST测试用例定义文件，在算子工程文件中Host侧算子的实现文件路径如下所示。
 
-    可以单击[链接](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom)获取文档中对应的Host侧算子实现文件add_custom.cpp进行参考。
+    可以单击[链接](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)获取文档中对应的Host侧算子实现文件add_custom_template.cpp进行参考。
 
     > [!NOTE]
     > 
-    > 此样例工程不支持Atlas A3系列产品。
+    > 此样例工程默认按Atlas A2系列产品配置。若使用其他系列产品，需修改以下两处默认配置：
+    > 
+    > - 根目录CMakeLists.txt中`ASCEND_COMPUTE_UNIT`默认为`ascend910b`，请根据实际芯片型号（通过`npu-smi info`查询Chip Name）修改，例如Atlas 950PR&950DT系列产品需改为`ascend950`。
+    > - op_host目录下`add_custom_template.cpp`中`.AddConfig("ascend910b")`的值需要同样修改。
 
     ```text
-    ├── framework/tf_plugin        // 算子插件实现文件目录，单算子模型文件的生成不依赖算子适配插件，无需关注
-    ├── op_host                      // Host侧实现文件
-    │   ├── add_custom_tiling.h    // 算子tiling定义文件
-    │   ├── add_custom.cpp         // 算子原型注册、shape推导、信息库、tiling实现等内容文件
-    ├── op_kernel                   // Kernel侧实现文件
-    │   ├── CMakeLists.txt   
-    │   ├── add_custom.cpp        // 算子代码实现文件 
+    ├── CMakeLists.txt            // 样例工程根目录编译配置文件
+    ├── framework                 // 算子框架适配文件目录，单算子模型文件的生成不依赖算子适配插件，无需关注
+    ├── op_host                   // Host侧实现文件目录
+    │   ├── CMakeLists.txt
+    │   ├── add_custom_template.cpp    // 算子原型注册、shape推导、信息库、tiling实现等内容文件
+    ├── op_kernel                 // Kernel侧实现文件目录
+    │   ├── CMakeLists.txt
+    │   ├── add_custom_template.cpp    // 算子代码实现文件
+    │   ├── add_custom_template_tiling.h    // 算子tiling定义文件
+    ├── test                      // 算子测试相关文件目录
+    ├── run_deploy.sh             // 算子部署脚本
+    ├── run_test.sh               // 算子测试执行脚本
     ```
 
 2. <a id="zh-cn_topic_0000001775029424_li1663966193910"></a>执行如下命令生成算子测试用例定义文件，详细参数说明请参见[表1 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)。
@@ -1401,14 +1415,14 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     ```
 
     > [!NOTE]
-    > 
+    >
     > 示例如下：
     > 以AddCustom算子为例，执行如下命令:
-    > 
+    >
     > ```sh
     > msopst create -i Op_implementation/add_custom.cpp -out ./output
     > ```
-    > 
+    >
     > 请将Op_implementation更换为Host侧算子的实现文件所在路径。
     > 命令执行成功后，会在当前路径的output目录下生成算子测试用例定义文件：AddCustom_case_timestamp.json。
 
@@ -1821,13 +1835,13 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         例如Add算子的期望数据生成函数实现如下：
 
         ```py
-        def calc_expect_func(x1, x2, y):    
+        def calc_expect_func(x1, x2, y):
             res = x1["value"] + x2["value"]
             return [res, ]
         ```
 
         > [!NOTE]
-        > 
+        >
         > 用户需根据开发的自定义算子完成算子期望数据生成函数。测试用例定义文件中的全部Input、Output、Attr的name作为算子期望数据生成函数的输入参数，若Input是可选输入，请将该输入指定默认值传参。
 
         例如，某算子输入中的x3为可选输入时，定义该算子的期望数据生成函数如下。
@@ -1843,8 +1857,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         ```json
         [
             {
-                "case_name":"Test_AddCustom_001",         
-                "op": "AddCustom",                             
+                "case_name":"Test_AddCustom_001",
+                "op": "AddCustom",
                 "calc_expect_func_file": "/home/test/test_add_st.py:calc_expect_func",   //配置生成算子期望输出数据的实现文件
                 "input_desc": [...]
                 ...
@@ -1867,7 +1881,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     ```
 
     > [!NOTE]
-    > 
+    >
     >- `${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
     >- {arch-os}中arch表示操作系统架构，os表示操作系统。
 
@@ -1881,7 +1895,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     - msopst.ini文件参数说明如下表所示。
 
         > [!NOTE]
-        > 
+        >
         > msopst.ini文件默认使用FP16精度模式，如需使用其他精度模式需手动修改[表1 msopst.ini文件参数说明](#zh-cn_topic_0000001821790281_table17358154319919)中atc_singleop_advance_option的--precision_mode参数。
 
         **表 1**  msopst.ini文件参数说明
@@ -2058,7 +2072,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
                 ```
 
             > [!NOTE]
-            > 
+            >
             > 若执行失败，请参见以下文档进行排查：
             >- 请参见“[aclError](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/runtimeapi/aclcppdevg_03_1345.html)”查看aclError的含义。
             >- 请参见“[错误码参考](https://gitcode.com/cann/docs/blob/master/docs/zh/troubleshooting/error_code_desc.md)”。
@@ -2088,7 +2102,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         │   │   │             └── Test_xxx.bin
         │   │   ├── src
         │   │   │   └── CMakeLists.txt    // 编译规则文件
-        │   │   │   └── common.cpp         // 公共函数，读取二进制文件函数的实现文件 
+        │   │   │   └── common.cpp         // 公共函数，读取二进制文件函数的实现文件
         │   │   │   └── main.cpp            // 初始化算子测试用例并执行用例
         │   │   │   └── op_execute.cpp        //针对单算子调用的AscendCL接口进行了封装
         │   │   │   └── op_runner.cpp         //加载单算子模型文件进行执行的接口进行了封装
@@ -2145,7 +2159,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
         命令运行成功后，会生成报表st_report.json，记录了测试的信息以及各阶段运行情况，用户运行出问题以后，可基于报表查询运行信息，以便问题定位。同时，st_report.json报表可以对比测试结果。st_report.json保存在[图1 运行结果示例](#zh-cn_topic_0000001821790281_fig1936411431910)中“The st_report saved in”路径下。
 
-        **图 1**  运行结果示例<a id="zh-cn_topic_0000001821790281_fig1936411431910"></a>  
+        **图 1**  运行结果示例<a id="zh-cn_topic_0000001821790281_fig1936411431910"></a>
         ![](../figures/运行结果示例.png "运行结果示例")
 
         **表 3**  st_report.json报表主要字段及含义
@@ -2269,7 +2283,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
             ```
 
         > [!NOTE]
-        > 
+        >
         >- `${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
         >- {arch-os}中arch表示操作系统架构（需根据运行环境的架构选择），os表示操作系统（需根据运行环境的操作系统选择）。
 
@@ -2309,7 +2323,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
     执行完成后，打印信息提示此次用例运行的情况，如[图2 运行结果](#zh-cn_topic_0000001821790281_fig204517552811)所示。
 
-    **图 2**  运行结果<a id="zh-cn_topic_0000001821790281_fig204517552811"></a>  
+    **图 2**  运行结果<a id="zh-cn_topic_0000001821790281_fig204517552811"></a>
     ![](../figures/运行结果.png "运行结果")
 
 #### 生成单算子上板测试框架<a id="生成单算子上板测试框架"></a>
@@ -2340,8 +2354,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
      {time_stamp}
     │   ├── OpType
     │   │   ├── CMakeLists.txt     // 编译规则文件
-    │   │   ├── data    
-    │   │   │   └── xx.bin        
+    │   │   ├── data
+    │   │   │   └── xx.bin
     │   │   │   └── xx.bin
     │   │   ├── data_utils.h
     │   │   ├── main.cpp        // 测试框架
@@ -2473,7 +2487,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     ```sh
     # 指向昇腾软件包安装地址，导出环境变量
     if [ -z "$ASCEND_HOME_DIR" ]; then
-        export ASCEND_HOME_DIR=${INSTALL_DIR}     
+        export ASCEND_HOME_DIR=${INSTALL_DIR}
     fi
     source $ASCEND_HOME_DIR/bin/set_env.bash
     ```
