@@ -105,7 +105,7 @@ python build.py test
 如需单独执行某个测试文件：
 
 ```shell
-python -m pytest tests/ut/app/service/test_prediction_service.py -v
+python -m pytest tests/ut/cli/service/test_prediction_service.py -v
 ```
 
 ---
@@ -115,21 +115,33 @@ python -m pytest tests/ut/app/service/test_prediction_service.py -v
 ```text
 msopmodeling/
 ├── src/
-│   ├── main.py                        # CLI 入口
-│   ├── app/                           # 应用层（CLI解析、配置加载、结果输出）
-│   └── tilesim/                       # 核心引擎
-│       ├── api/                       # 对外 API 接口
-│       │   └── operator_api/          # 算子级预测入口
-│       ├── core/                      # 核心实现
-│       │   ├── frontend/              # 前端：DSL 解析与 IR 构建
-│       │   ├── backend/               # 后端：性能建模与评估
-│       │   ├── pipeline/              # 流水线：端到端处理流程
-│       │   ├── common/                # 公共定义（枚举、注册中心）
-│       │   └── config/                # 芯片配置文件（arc_config/）
-│       ├── ops/                       # 算子模型实现
-│       │   ├── eng/                   # 工程模式算子
-│       │   └── theo/                  # 理论模式算子
-│       └── tilesim/                   # 推荐的公开 Python API
+│   └── msopmodeling/                  # 唯一顶级包
+│       ├── __init__.py                # 公开 API 重导出
+│       ├── api.py                     # 对外 API 接口
+│       ├── arch.py                    # 体系结构配置 API
+│       ├── operator.py                # 算子建模 API
+│       ├── tileop.py                  # TileOp 成本模型 API
+│       ├── cli/                       # 命令行入口与应用层
+│       │   ├── main.py                # CLI 入口
+│       │   ├── argument_parser.py     # 参数解析
+│       │   ├── config_loader.py       # 输入配置加载
+│       │   ├── profiling_loader.py    # Profiler CSV 加载
+│       │   ├── soc_catalog.py         # SoC 型号目录
+│       │   ├── op_catalog.py          # 算子目录
+│       │   ├── prediction_service.py  # 批量预测服务
+│       │   └── result_writer.py       # 结果输出
+│       └── _internal/                 # 私有引擎实现
+│           ├── api/                   # 内部 API（operator_api/ 等）
+│           ├── core/                  # 核心实现
+│           │   ├── frontend/          # 前端：DSL 解析与 IR 构建
+│           │   ├── backend/           # 后端：性能建模与评估
+│           │   ├── pipeline/          # 流水线：端到端处理流程
+│           │   ├── common/            # 公共定义（枚举、注册中心）
+│           │   └── config/            # 芯片配置文件（arc_config/）
+│           ├── ops/                   # 算子模型实现
+│           │   ├── eng/               # 工程模式算子
+│           │   └── theo/              # 理论模式算子
+│           └── third_party/           # 随包分发的第三方 wheel
 ├── tests/                             # 宿主应用与集成测试
 ├── docs/                              # 用户文档
 ├── build.py                           # 构建脚本
@@ -144,7 +156,7 @@ msopmodeling/
 
 ### 6.1 执行测试时报 `ModuleNotFoundError: No module named 'core'`
 
-**原因：** 仓库统一从 `src/` 导入命名空间包（如 `tilesim._internal.core`、`msopmodeling._internal.app`）。根目录 `pyproject.toml` 的 `[tool.pytest.ini_options]` 声明了 `pythonpath = ["src"]`，pytest 会自动完成注入。
+**原因：** 仓库统一从 `src/` 导入命名空间包（如 `msopmodeling._internal.core`、`msopmodeling.cli`）。根目录 `pyproject.toml` 的 `[tool.pytest.ini_options]` 声明了 `pythonpath = ["src"]`，pytest 会自动完成注入。
 
 **解决方案：** 确认从**项目根目录**运行 pytest，不要 `cd` 进子目录后运行，否则 pytest 不会读取根目录的配置：
 

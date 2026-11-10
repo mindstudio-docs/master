@@ -19,7 +19,7 @@
 
 ## ℹ️ 简介
 
-MindStudio-Ops-Modeling（msOpModeling）算子性能建模工具，基于 **TileSim** (由 **2012马尔科夫实验室** 自研的仿真引擎)，支持理论（Roofline 模型）与工程（Tile 级仿真）双模性能预测；通过 JSON 即可评估内置算子或基于 DSL 扩展自定义算子，实现免上板的高精度性能预测。
+MindStudio-Ops-Modeling（msOpModeling）算子性能建模工具，基于 **TileSim** 仿真引擎，支持理论（Roofline 模型）与工程（Tile 级仿真）双模性能预测；通过 JSON 即可评估内置算子，实现免上板的高精度性能预测。
 
 ## ⚙️ 功能介绍
 
@@ -29,11 +29,10 @@ MindStudio-Ops-Modeling（msOpModeling）算子性能建模工具，基于 **Til
 |---------|--------|
 | **理论极限性能建模** | 给定 Tensor 级运算逻辑与少量微架构信息，预测算子忽略流水/同步开销下的 E2E 上限性能。 |
 | **工程可达性能建模** | 给定 Tile 级搬运与运算逻辑及详细微架构参数，通过 SnowCat 模型预测最优 tiling 下的真实时延。 |
-| **DSL 算子建模前端** | 提供基于 Python 的 DSL 语言，以理论和工程两种粒度描述算子逻辑，无需手动编写搬运或同步代码。 |
 
 ## 🧠 核心引擎
 
-本工具的性能预测能力由 **TileSim** 全面驱动。**TileSim** 是由 **2012马尔科夫实验室** 自主研发的 Tile 级 NPU 仿真引擎；该华为实验室长期深耕复杂系统建模与仿真基础技术研究。作为面向 NPU 算子性能建模的重要底层引擎，TileSim 为 msOpModeling 提供了高精度的 Tile 级仿真能力，团队将长期深度参与项目核心能力建设，不断夯实底层建模与仿真能力。
+本工具的性能预测能力由 **TileSim** 全面驱动。**TileSim** 是面向 NPU 算子的 Tile 级仿真引擎，为 msOpModeling 提供高精度的 Tile 级建模与仿真能力。
 
 ## 🚀 快速入门
 
@@ -47,9 +46,9 @@ MindStudio-Ops-Modeling（msOpModeling）算子性能建模工具，基于 **Til
 
 工具的详细使用方法，请参见 [《msOpModeling 使用指南》](docs/zh/user_guide/msopmodeling_user_guide.md)。
 
-## 📚 API参考
+## 🧑‍💻 开发指南
 
-扩展自定义算子的使用方式，请参见 [《msOpModeling 使用指南》](docs/zh/user_guide/msopmodeling_user_guide.md)。
+介绍代码架构、开发环境、新算子接入与 API 参考，请参见 [《msOpModeling 开发指南》](docs/zh/development_guide/develop_guide.md)。
 
 ## 🛠️ 贡献指南
 
@@ -74,6 +73,5 @@ MindStudio-Ops-Modeling（msOpModeling）算子性能建模工具，基于 **Til
 
 本工具由华为公司的下列部门联合贡献：    
 🔹 昇腾计算MindStudio开发部  
-🔹 2012马尔科夫实验室  
 🔹 华为云昇腾云服务  
 感谢来自社区的每一个 PR，欢迎贡献！
