@@ -10,7 +10,7 @@
 | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 性能数据采集   | 按照使能方式可以分为msprof命令行采集和AI框架Profiler接口采集两大类。具体介绍请参见[模型调优性能采集工具](#模型调优性能采集工具)。<br>AI框架Profiler接口采集<br/>&#8226; PyTorch场景：Ascend PyTorch Profiler<br/>&#8226; MindSpore场景：MindSpore Profiler<br/>msprof命令行采集<br/>msprof命令行工具无AI框架层数据。 | 选择合适的性能数据采集工具，记录模型运行过程中必要的AI框架与昇腾软硬件数据。详细介绍请参见[模型调优性能采集工具](#模型调优性能采集工具)。<br/>msprof命令行工具主要采集CANN层与NPU层性能数据，是其它采集接口的底座。<br/>AI框架Profiler接口封装了msprof命令行工具，进一步增加了对AI框架层性能数据的采集与解析，是训练或在线推理场景中最常用的采集方式。AI框架Profiler接口按照功能特性，可进一步分为常规采集（即静态采集）、动态采集、在线监测三种模式。<br/>此外，部分训练或推理套件会对AI框架Profiler接口进行进一步封装，可直接通过套件内接口调用，例如[MindSpeed-MM](https://gitcode.com/Ascend/MindSpeed-MM/blob/master/docs/zh/tools/tools.md#profiling%E9%87%87%E9%9B%86%E5%B7%A5%E5%85%B7)、[MindFormers](https://www.mindspore.cn/mindformers/docs/zh-CN/r1.3.2/perf_optimize/perf_optimize.html#profiler工具)等。 |
 | 性能数据分析   | 模型调优快速分析工具：<br/>&#8226; 集群分析（cluster_analyze）<br/>&#8226; 专家建议（advisor）<br/>&#8226; 性能拆解比对（compare）<br/>详细介绍请参见[模型调优快速分析（msprof-analyze命令行工具）](#performance_tool_usage01) | 初步快速分析，可使用msprof-analyze提供的一系列功能，其中：<br/>&#8226; cluster_analyze：集群场景下，如千卡、万卡等无法直接分析全部数据的场景，可通过此工具来提取集群迭代耗时和通信数据， 快速定位慢卡、慢节点以及慢链路问题。建议结合MindStudio Insight可视化工具的Summary（概览）与Communication（通信）页签使用，具体使用方法请参考MindStudio Insight的[集群性能分析](#集群性能分析)章节。<br/>&#8226; advisor：将常见问题的识别和优化建议工具化，快速定界、定位典型性能问题，或为下一步分析指明方向。<br/>&#8226; compare：通过对训练耗时和内存占用的比对分析，定位到具体劣化的算子/API，帮助用户提升性能调优的效率；支持比较GPU与NPU之间、NPU与NPU之间的单卡性能差异，更推荐在GPU迁移NPU性能劣化、性能抖动等有基线比对数据的场景使用。 |
-| 性能数据可视化 | 模型调优深入分析工具，具体分析请参见[模型调优深入分析（MindStudio Insight）](#performance_tool_usage02)。 | MindStudio Insight可视化工具能够将以图形化方式展示完整的Profiling数据，助力用户深入理解和准确定位问题根源。该工具采用Top-Down分析方法，即从宏观到微观、从整个集群到单一节点逐步深入。若要详细了解其使用策略和具体操作，请参考[模型调优深入分析（MindStudio Insight）](#performance_tool_usage02)。 |
+| 性能数据可视化 | 模型调优深入分析工具，具体分析请参见[模型调优深入分析（MindStudio Insight）](#performance_tool_usage02)。 | MindStudio Insight可视化工具能够以图形化方式展示完整的Profiling数据，助力用户深入理解和准确定位问题根源。该工具采用Top-Down分析方法，即从宏观到微观、从整个集群到单一节点逐步深入。若要详细了解其使用策略和具体操作，请参考[模型调优深入分析（MindStudio Insight）](#performance_tool_usage02)。 |
 
 **服务化调优**
 
@@ -158,7 +158,7 @@ MindStudio Insight工具能够将全量Profiling数据进行可视化呈现，�
 
    - 时间线（Timeline）界面：将训练或推理过程中Host、Device上的运行详细情况平铺在时间轴上，直观呈现Host侧的API耗时以及Device侧的Task耗时，具体使用思路详见[时间线（Timeline）](#performance_tool_usage09)。
    - 内存（Memory）界面：以内存折线图呈现整体内存趋势，可以框选放大折线图中峰值区域，精准定位到内存消耗大的进程或算子，具体使用思路详见[内存（Memory）](#performance_tool_usage10)。
-   - 算子（Operator）界面：计算算子和通信算子的耗时统计，可按类型、Shape统计，同时支持两卡间比对功能，可更直观的查看算子详情，具体使用思路详见[算子（Operator）](#performance_tool_usage11)。
+   - 算子（Operator）界面：计算算子和通信算子的耗时统计，可按类型、Shape统计，同时支持两卡间比对功能，可更直观地查看算子详情，具体使用思路详见[算子（Operator）](#performance_tool_usage11)。
 
 #### 获取软件包<a name="performance_tool_usage04"></a>
 
@@ -454,6 +454,6 @@ Timeline常用操作包括**通信与时间线相互跳转、置顶比对、覆�
 | 工具名称                                                     | 工具简介                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [推理预检工具](https://gitcode.com/Ascend/msit/blob/master/msprechecker/README.md) | 支持推理前、推理中和推理后的全流程检测。<br>&#8226; 推理前，提供一键式预检功能，全面排查环境变量、系统内核、配置文件等可能导致服务部署失败或性能下降的问题。<br/>&#8226; 推理过程中，支持将环境相关的所有数据完整落盘。<br/>&#8226; 推理结束后，支持对落盘文件进行比对，帮助识别差异点，便于复现基线环境。 |
-| [服务化专家建议](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/user_guide/service_profiling_advisor_instruct.md) | 根据当前的Benchmark输出结果及MindIE service的config.json配置，结合理论分析性能上限，提出提升首令牌生成时间（TFTT）和吞吐量（Throughput）等关键指标的优化建议。 |
+| [服务化专家建议](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/user_guide/service_profiling_advisor_instruct.md) | 根据当前的Benchmark输出结果及MindIE service的config.json配置，结合理论分析性能上限，提出提升首令牌生成时间（TTFT）和吞吐量（Throughput）等关键指标的优化建议。 |
 | [服务化自动寻优](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/user_guide/serviceparam_optimizer_instruct.md) | 提供MindIE服务化和vLLM服务化的参数自动优化功能。利用先进的检索算法，在参数空间中高效寻找最优解，实现自动化调优。该功能同时支持轻量化设计，部署快速便捷，确保搜索结果更加准确。 |
 | [服务化调优工具](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/zh/user_guide/msserviceprofiler_serving_tuning_instruct.md) | 提供推理服务化性能数据采集接口的解析和拆解能力。此接口专为服务化调优设计，能够采集关键流程的起止时间点，识别并记录关键函数调用、关键事件、服务化调度等信息，同时支持采集算子信息，助力快速定位性能问题。 |

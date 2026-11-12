@@ -143,7 +143,7 @@ ONNX是业内目前比较主流的模型格式，广泛用于模型交流及部�
 
 ### ATC转换日志分析
 
-查耗时长的算子是否在日志中存在有未命中高性能知识库的记录：
+查耗时长的算子是否在日志中存在未命中高性能知识库的记录：
 
 - 搜索关键字1：does not hit the high-priority operator information library。
 
@@ -164,7 +164,7 @@ ONNX是业内目前比较主流的模型格式，广泛用于模型交流及部�
 
 ### OM和ONNX文件
 
-可以使用[netron](https://netron.app/)工具加载OM和ONNX查看模型结构，可以清晰的看到ONNX模型中算子的拓扑结构，输入和输出，方便后续改图。加载ONNX或者OM文件的示例如[图1](#ZH-CN_TOPIC_0000002535887041__fig9649164411478)所示。
+可以使用[netron](https://netron.app/)工具加载OM和ONNX查看模型结构，可以清晰地看到ONNX模型中算子的拓扑结构，输入和输出，方便后续改图。加载ONNX或者OM文件的示例如[图1](#ZH-CN_TOPIC_0000002535887041__fig9649164411478)所示。
 
 **图1** 算子拓扑结构<a name="ZH-CN_TOPIC_0000002535887041__fig9649164411478"></a>
 
@@ -255,7 +255,7 @@ aoe --framework 5 --model ./model.onnx --output model --job_type 2 --ip xx.xx.xx
 
 #### NCS调优
 
-对于部分运行在RC模式的产品，产品普遍存在内存较小的特点。这就导致了模型无法通过本地AOE进行调优，这样就需要用到另一种调优方式，NCS调优。
+对于部分运行在RC模式的产品，普遍存在内存较小的特点。这就导致了模型无法通过本地AOE进行调优，这样就需要用到另一种调优方式，NCS调优。
 
 ##### 安装CANN包
 
@@ -331,9 +331,9 @@ aoe --framework 5 --model ./model.onnx --output model --job_type 2 --ip xx.xx.xx
    opensslreq-newkeyrsa:${KEY_LEN}-nodes-keyouthost-key.pem-outhost-cert.csr-subj"/C=${COUNTRY}/ST=${STATE}/L=${LOCATION}/O=${ORGANIZATION}/OU=${ORGANIZATION_UNIT}/CN=NCA"
 
    # generate host cert
-   openssl x509 -req -in host-cert.csr -days ${VALID_DAYS} -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out host-cert.pem -extension ext -extfile host-ext.cnf
+   openssl x509 -req -in host-cert.csr -days ${VALID_DAYS} -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out host-cert.pem -extensions ext -extfile host-ext.cnf
 
-   # encrytprivatekey
+   # encrypt private key
    openssl rsa -in host-key.pem -passout pass:${PASS_PHRASE} -${ENCRYPT_MODE} -out host-key.pem
    openssl rsa -in device-key.pem -passout pass:${PASS_PHRASE} -${ENCRYPT_MODE} -out device-key.pem
    ```

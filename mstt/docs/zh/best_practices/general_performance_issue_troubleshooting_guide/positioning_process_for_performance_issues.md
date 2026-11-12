@@ -30,13 +30,13 @@
 | 主要信息     | 说明                                                         |
 | ------------ | ------------------------------------------------------------ |
 | 问题场景     | 在模型训练或推理过程中，其表现未达到预期标准或竞品水平，或者出现了性能下降等异常情况。 <br/>&#8226; 性能不及预期，一般出现在模型迁移后，相较于竞品性能表现不及预期。 <br/>&#8226; 性能出现抖动，模型长稳训练过程中，随机或伴随特定事件出现性能波动。 <br/>&#8226; 集群线性度不足，集群规模扩大后，模型性能没有按照预期增长。 <br/>&#8226; 纯模型性能差，相同配置下纯模型性能异常，参考训练问题解决。<br/>&#8226; 服务化调度调优。 |
-| 当前性能指标 | 明确当前性能问题的状况，计算性能指标的优先级排序请参考《[PyTorch训练模型迁移调优指南](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/README.md)》中的“性能调优 > 性能概述 > [性能指标介绍](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/performance_tuning/performance_overview.md)”章节。 |
+| 当前性能指标 | 明确当前性能问题的状况，性能指标的优先级排序请参考《[PyTorch训练模型迁移调优指南](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/README.md)》中的“性能调优 > 性能概述 > [性能指标介绍](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/performance_tuning/performance_overview.md)”章节。 |
 
 **表3** 优化目标<a name="ZH-CN_TOPIC_0000002503927266__table8794114914508"></a>
 
 | 主要信息       | 说明                                                         |
 | -------------- | ------------------------------------------------------------ |
-| 性能优化的目标 | 明确优化目标及来源，例如是否基于竞品对比，还是通过线性度推算等。<br/>若优化中涉及增大batchsize等方法，尽量避免使用单step时间等指标进行衡量，需参考《[PyTorch训练模型迁移调优指南](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/README.md)》中的“性能调优 > 性能概述 > [性能指标介绍](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/performance_tuning/performance_overview.md)”章节，选取合理指标替换。 |
+| 性能优化的目标 | 明确优化目标及来源，例如是否基于竞品对比，还是通过线性度推算等。<br/>若优化中涉及增大Batch size等方法，尽量避免使用单step时间等指标进行衡量，需参考《[PyTorch训练模型迁移调优指南](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/README.md)》中的“性能调优 > 性能概述 > [性能指标介绍](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/zh/performance_tuning/performance_overview.md)”章节，选取合理指标替换。 |
 
 ## 排查思路介绍
 
@@ -44,7 +44,7 @@
 
 快速排查分为开箱和长稳两种场景，具体介绍如下：
 
-1. 开箱场景：开箱性能问题场景一般指首次加载模型。此时需要明确性能优化目标，如果存在竞品性能参考，则可以通过Profiling等工具详细对比二者差异。建议在正式拉起任务前，先考虑并行策略寻优，确认最优并行策略。若无法解决问题，参考长稳场景定位方案。
+1. 开箱场景：开箱性能问题一般指首次加载模型。此时需要明确性能优化目标，如果存在竞品性能参考，则可以通过Profiling等工具详细对比二者差异。建议在正式拉起任务前，先考虑并行策略寻优，确认最优并行策略。若无法解决问题，参考长稳场景定位方案。
 2. 长稳场景：长期稳定性下的性能问题通常指的是系统在一段时间内表现良好且没有性能问题的情况下，突然出现性能下降或性能问题。
    1. 变更排查：明确近期是否进行过变更，包括但不限于集群重新规划、版本变更等。若性能问题在变更后出现，条件允许的情况下，可以尝试撤销近期变更，若确认问题由变更引起，建议优先考虑版本问题或变更涉及操作（如重启）等对集群可能的影响，具体请参见[版本升级性能劣化定位方法论](solution_to_top7.md)。
    2. 硬件排查：当性能出现波动时，应检查相应时间点是否有硬件问题，例如NPU降频、网络丢包等硬件告警。注意，这里的硬件排查仅指初步排查，主要关注硬件告警。若无硬件告警或如网络丢包等关键事件，则参考[详细排查](#详细排查)进行定位。

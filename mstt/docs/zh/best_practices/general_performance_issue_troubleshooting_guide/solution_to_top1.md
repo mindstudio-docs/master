@@ -189,7 +189,7 @@
 
 **问题分析**
 
-首先，如[图1](#ZH-CN_TOPIC_0000002503927272__fig175962111612)所示，利用[模型调优快速分析（msprof-analyze命令行工具）](performance_tool_usage.md#performance_tool_usage01)中的msprof-analyze工具进行集群分析后，发现communication time和free time卡间波动趋势呈负相关（即同一张Rank中，communication耗时长的Free耗时短，communication耗时短的Free耗时长），推测出Free Time时间最短的0卡最先结束，等待其他卡，为快卡；Free Time时间最长的1卡最后结束，为慢卡。即此案例为Host侧下发性能波动导致的快慢卡问题。
+首先，如[图1](#ZH-CN_TOPIC_0000002503927272__fig175962111612)所示，利用[模型调优快速分析（msprof-analyze命令行工具）](performance_tool_usage.md#performance_tool_usage01)中的msprof-analyze工具进行集群分析后，发现communication time和free time卡间波动趋势呈负相关（即同一张Rank中，communication耗时长的Free耗时短，communication耗时短的Free耗时长），推测出Free Time最短的0卡最先结束，等待其他卡，为快卡；Free Time时间最长的1卡最后结束，为慢卡。即此案例为Host侧下发性能波动导致的快慢卡问题。
 
 **图1** cluster_step_trace_time.csv交付件<a name="ZH-CN_TOPIC_0000002503927272__fig175962111612"></a>
 
@@ -267,7 +267,7 @@
 
 2. 对比两个Step的概览结果，可以发现各卡间的计算时间和空闲时间比较接近，说明没有明显的快慢卡问题，差异点主要体现在通信耗时（通信时间（被覆盖）+ 通信时间（未被覆盖））上。
 
-3. 同时同步对比所有卡，发现Step11和Step12每一张卡的通信耗时差距都在4.7s左右。
+3. 同时对比所有卡，发现Step11和Step12每一张卡的通信耗时差距都在4.7s左右。
 
 4. 如[图2](#ZH-CN_TOPIC_0000002504087090__fig1049254151413)所示，观察320卡的时间线（Timeline）结果，算子为LinearWithGradAccumulationAndAsyncCommunication，该算子为用于同步的通信算子，后续任务下发时（AscendCL@aclnnTopK）被阻塞。
 
@@ -375,11 +375,11 @@ ZeRO（Zero Redundancy Optimizer，零冗余优化器）模式是一种节省内
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807129.png)
 
-经HCCL专家分析，是DP通信域的allGather通信算子源地址与目标地址无法对齐，导致通信性能劣化严重。
+经HCCL专家分析，是DP通信域的allGather通信算子源地址与目的地址无法对齐，导致通信性能劣化严重。
 
 **问题解决**
 
-针对DP通信域的allGather入桶做字节对齐的padding，对齐字节。当前AscendSpeed已适配针对DP通信域的allGather入桶做了字节对齐的padding，DeepSpeed和Megatron还未修改，需要去DeepSpeed源码里改nccl_start_alignment_factor，如[图3](#ZH-CN_TOPIC_0000002504087072__fig1128582301711)所示，修改后，allGather耗时从350ms变成了50ms。
+针对DP通信域的allGather入桶做字节对齐的padding，对齐字节。当前AscendSpeed已针对DP通信域的allGather入桶做了字节对齐的padding，DeepSpeed和Megatron还未修改，需要去DeepSpeed源码里改nccl_start_alignment_factor，如[图3](#ZH-CN_TOPIC_0000002504087072__fig1128582301711)所示，修改后，allGather耗时从350ms变成了50ms。
 
 **图3** 修改nccl_start_alignment_factor令字节对齐<a name="ZH-CN_TOPIC_0000002504087072__fig1128582301711"></a>
 

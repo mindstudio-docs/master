@@ -100,7 +100,7 @@ export CPU_AFFINITY_CONF=<mode>,npu<value1>:<value2>-<value3>
 
 ### 编译优化包获取
 
-编译优化环境配置复杂，完整流程耗时较长，为提升部署效率，实现开箱即用的性能收益，用户可直接获取预构建的泛化编译优化包，包含Python编译优化后的压缩包，以及torch、TorchNPU的whl安装包。Python压缩包可以直接配置[软连接](https://repo.oepkgs.net/ascend/pytorch/vllm/python/)使用，torch、TorchNPU的whl安装包则是基于典型场景的模型数据优化生成，具有一定泛化性能收益，软件包获取链接请参见[表1](#ZH-CN_TOPIC_0000002503927236__table18319122153814)。
+编译优化环境配置复杂，完整流程耗时较长，为提升部署效率，实现开箱即用的性能收益，用户可直接获取预构建的泛化编译优化包，包含Python编译优化后的压缩包，以及torch、TorchNPU的whl安装包。Python压缩包可以直接配置[软链接](https://repo.oepkgs.net/ascend/pytorch/vllm/python/)使用，torch、TorchNPU的whl安装包则是基于典型场景的模型数据优化生成，具有一定泛化性能收益，软件包获取链接请参见[表1](#ZH-CN_TOPIC_0000002503927236__table18319122153814)。
 
 **表1** vLLM场景软件包获取<a name="ZH-CN_TOPIC_0000002503927236__table18319122153814"></a>
 

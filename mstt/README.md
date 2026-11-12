@@ -18,7 +18,7 @@
 
  <span style="font-size:14px;">
 
- 🔹 **[2026.03.28]**：精度调试模块（debug 目录）正式日落下线，详情请参见 [公告](https://gitcode.com/Ascend/mstt/discussions/2)<br>
+ 🔹 **[2026.03.28]**：精度调试模块（debug 目录）正式日落，详情请参见 [公告](https://gitcode.com/Ascend/mstt/discussions/2)<br>
  🔹 **[2026.02.25]**：Tinker 并行策略自动寻优系统正式开源，详情请参见 [Tinker 项目](https://gitcode.com/Ascend/mstt/tree/master/profiler/tinker)<br>
  🔹 **[2026.01.12]**：本仓库许可证（License）变更，详情请参见 [公告](https://gitcode.com/Ascend/mstt/discussions/1)<br>
  🔹 **[2025.12.31]**：MindStudio 训练开发工具链全面开源
