@@ -39,6 +39,11 @@ msopmodeling -V
 
 > `-v` 表示 `--verbose`，查看版本请使用 `msopmodeling -V` 或 `--version`。
 
+两个版本参数输出相同的工具版本、Git 提交 ID、版权、许可证、UTC 时间和项目仓库地址。
+wheel 安装后显示构建时记录的提交 ID 和时间；可编辑安装显示当前源码提交 ID 和最近一次
+`pip install -e .` 时记录的时间。该时间不会随源码修改或再次运行命令而改变。
+直接运行未经安装的源码时，时间显示为 `Not recorded (source checkout)`。
+
 ---
 
 ## 4. 准备输入文件

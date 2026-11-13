@@ -18,6 +18,6 @@
 
 ## 3. 版本号约定
 
-默认版本维护在 `pyproject.toml` 的 `[project] version`，并保持 `build.py` 的 `--version` 默认值一致。
-发布构建可通过 `python build.py --version=...` 覆盖 wheel 版本。
+默认版本维护在 `pyproject.toml` 的 `[project] version`，`build.py` 自动读取，无需另外维护脚本中的默认版本。
+发布构建可通过 `python build.py --version=x.y.z` 临时覆盖 wheel 版本，构建后自动恢复 `pyproject.toml`。
 文档和 release notes 引用当前版本时，以 `msopmodeling -V` / `msopmodeling --version` 输出为准。

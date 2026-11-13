@@ -34,7 +34,8 @@ msopmodeling --version
 msopmodeling -V
 ```
 
-成功安装后，`--help` 显示命令行帮助信息，`--version` / `-V` 输出当前安装包版本。
+成功安装后，`--help` 显示命令行帮助信息，`--version` / `-V` 输出版本、Git 提交 ID、版权、许可证及构建信息。
+wheel 的时间为构建时记录的 UTC 时间；源码可编辑安装的时间为最近一次可编辑安装构建时记录的 UTC 时间。
 
 ---
 

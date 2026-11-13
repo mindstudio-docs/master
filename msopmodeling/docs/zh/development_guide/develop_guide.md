@@ -64,7 +64,7 @@ dist/
 ```
 
 其中 `x.x.x` 默认来自 `pyproject.toml` 的 `[project] version`。
-`build.py` 的 `--version` 默认值与 `pyproject.toml` 保持一致（当前为 `26.3.0`）；传入时临时覆盖 wheel 版本，构建后自动恢复 `pyproject.toml`。
+`build.py` 默认读取 `pyproject.toml` 的 `[project] version`；显式传入 `--version` 时临时覆盖 wheel 版本，构建后自动恢复 `pyproject.toml`。
 
 ### 3.1 版本升级
 
@@ -76,15 +76,14 @@ dist/
 version = "x.y.z"
 ```
 
-同时保持 `build.py` 的 `--version` 默认值一致。
+`build.py` 自动读取此版本，无需另外修改脚本中的默认值。
 
 升级步骤：
 
 1. 修改 `pyproject.toml` 的 `[project] version`。
-2. 保持 `build.py` 中 `--version` 默认值一致。
-3. 执行 `python build.py`，或通过 `python build.py --version=x.y.z` 覆盖 wheel 版本。
-4. 检查 `dist/` 下 wheel 文件名中的版本号。
-5. 安装后执行 `msopmodeling -V`（或 `msopmodeling --version`），确认与 wheel 包名版本一致。
+2. 执行 `python build.py`，或通过 `python build.py --version=x.y.z` 覆盖 wheel 版本。
+3. 检查 `dist/` 下 wheel 文件名中的版本号。
+4. 安装后执行 `msopmodeling -V`（或 `msopmodeling --version`），确认与 wheel 包名版本一致。
 
 ---
 
