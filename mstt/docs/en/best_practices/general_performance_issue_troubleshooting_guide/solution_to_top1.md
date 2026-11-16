@@ -1,406 +1,405 @@
-# Communication Tuning Solution
+# Communication Issue Optimization Solutions
 
-## Overview
+## Introduction
 
-Communication issues are typically characterized by excessively long cluster communication time, significantly exceeding the computing time, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087092__fig97371217617). Alternatively, specific communication operators may exhibit abnormally long durations. For example, in [Figure 2](#ZH-CN_TOPIC_0000002504087092__fig315152711916), the time of reduceScatter operators is much longer than the computing stream, as marked by ① and ②.
+The most intuitive manifestation of a communication issue is that the cluster communication time is long and the communication duration accounts for a much larger proportion than the computing duration, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087092__fig97371217617). Alternatively, a communication operator with an obviously excessive duration exists, as shown in [Figure 2](#ZH-CN_TOPIC_0000002504087092__fig315152711916). In the figure, labels ① and ② are two reduceScatter operators whose durations are far longer than the computing stream.
 
-**Figure 1** Communication issue 1: longer communication time than computing <a name="ZH-CN_TOPIC_0000002504087092__fig97371217617"></a>
+**Figure 1** Manifestation 1 of a communication issue: the communication duration is far longer than the computing duration<a name="ZH-CN_TOPIC_0000002504087092__fig97371217617"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/cluster_step_trace_time-csv-deliverable-\(comparison-between-a-normal-4-node-cluster-and-an-abnormal.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/communication-issue-1-longer-communication-time-than-computing.png)
 
-**Figure 2** Typical communication issue 2: long-duration communication operators <a name="ZH-CN_TOPIC_0000002504087092__fig315152711916"></a>
+**Figure 2** Typical manifestation 2 of a communication issue: a communication operator with an obviously excessive duration<a name="ZH-CN_TOPIC_0000002504087092__fig315152711916"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/typical-communication-issue-2-long-duration-communication-operators.png "typical-communication-issue-2-long-duration-communication-operators")
 
-Note that communication issues can be caused either by slow data transmission or by other slow ranks (that is, the fast and slow ranks).
+Note that a communication issue on a device is not necessarily caused by the communication transmission itself. It may also be caused by waiting for other slow devices, that is, a fast and slow device issue.
 
-To check whether the issue is caused by the transmission or the fast and slow ranks, perform the following operations:
+To determine whether an excessive communication duration on a device is caused by the communication transmission itself or by a fast and slow device issue, use the following methods:
 
-- Go to the **Communication Duration Analysis** tab page on MindStudio Insight. If the **Transmit Time** proportion of the rank is high, the communication transmission is faulty. If the **Synchronization Time** proportion is high, there are slow and fast ranks. For details, see [Communication](performance_tool_usage.md#performance_tool_usage07).
+- As described in [Communication](performance_tool_usage.md#communication), go to the Communication Duration Analysis tab in MindStudio Insight. If the **Transmission Time** of the device accounts for a high proportion, the communication transmission itself has a issue. If the **Synchronization Time** accounts for a high proportion, a fast and slow device issue exists.
 
   **Figure 3** Communication duration analysis
 
   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/communication-duration-analysis.png)
 
-- You can compare the multi-rank computing, communication, and free time on the **Summary** tab page to check whether the problem is caused by fast and slow ranks. For details, see [Summary](performance_tool_usage.md#performance_tool_usage06). [Figure 4](#ZH-CN_TOPIC_0000002504087092__fig1472719122113) shows a typical example. If the free time of each rank is negatively correlated with the communication time (that is, a longer free time indicates a shorter communication time, and a shorter free time indicates a longer communication time), there is a high probability that the cluster contains fast and slow ranks caused by delivery performance fluctuation. Similarly, there is a problem that the computing time is negatively correlated with the communication time.
+- You can use the [Summary](performance_tool_usage.md#summary) tab to compare the computing, communication, and idle time of multiple devices and observe whether a fast and slow device issue exists. Take [Figure 4](#ZH-CN_TOPIC_0000002504087092__fig1472719122113) as an example. If the idle time and the communication time of each device are negatively correlated (that is, a device with long idle time has short communication time, and a device with short idle time has long communication time), you can determine with high probability that the cluster has a fast and slow device issue caused by dispatch performance fluctuation. Similarly, a computing fast and slow device issue also exists, in which the computing time and the communication time are negatively correlated.
 
-  **Figure 4** Fast and slow rank problem <a name="ZH-CN_TOPIC_0000002504087092__fig1472719122113"></a>
+  **Figure 4** Fast and slow device issue caused by dispatch<a name="ZH-CN_TOPIC_0000002504087092__fig1472719122113"></a>
 
   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/fast-and-slow-card-issue.png)
 
-If there are slow and fast ranks, locate the cause by referring to [Fast and Slow Rank Troubleshooting](#fast-and-slow-rank-troubleshooting).
+If you confirm that a fast and slow device issue exists, refer to [Methods for Locating Fast and Slow Device Issues](#methods-for-locating-fast-and-slow-device-issues) to further locate the cause of the difference between fast and slow devices.
 
-If the issue is not related to slow and fast ranks, focus on the communication layer. Potential causes include [communication retransmission](#communication-retransmission), [small-packet overhead], byte misalignment between source and destination addresses, compute-communication bandwidth contention, and performance overhead from profiling collection.
+If you confirm that no fast and slow device issue exists, focus on communication itself. Possible causes include [communication retransmission](#communication-retransmission), [small-packet communication](#small-packet-communication), [source and destination address byte misalignment](#source-and-destination-address-byte-misalignment), [computing and communication bandwidth preemption](#computing-and-communication-bandwidth-preemption), and [profiling data inflation](#profiling-data-inflation).
 
-## Fast and Slow Rank Troubleshooting
+## Methods for Locating Fast and Slow Device Issues
 
 ### Overview
 
-Fast and slow ranks are relative concepts. A fast rank is one that completes a computing task earlier in a cluster, while a slow rank finishes the same task later. In a cluster, collective communication requires coordination between ranks. If different ranks complete their tasks at different times, fast ranks need to wait for slow ranks before communication can proceed, which leads to overall cluster performance degradation.
+For fast and slow devices, the fast device and the slow device are relative concepts. A fast device is the device that first completes its computing task in the cluster, and a slow device is a device that completes its computing task relatively slowly in the cluster task. A cluster usually needs to complete collective communication. If different devices complete their tasks at different times, fast devices tend to wait for slow devices to finish computing, which degrades the performance of the entire cluster.
 
-Fast and slow ranks can be caused by various reasons. The general troubleshooting approach is to use precise divergence point analysis to compare the differences of fast and slow ranks on the **Timeline** tab of MindStudio Insight, to determine the specific root cause.
+A fast and slow device issue is a phenomenon with a wide variety of root causes. The general localization approach is to use the pinpoint analysis method to compare the differences between fast and slow devices on the Timeline tab in MindStudio Insight and confirm the specific cause.
 
-The common causes include load imbalance and performance fluctuation of computing, host delivery, and data loading.
+Common causes of slow devices include load imbalance, computing performance fluctuation, host-side dispatch performance fluctuation, and data loading performance fluctuation.
 
-The main contents are as follows:
+This section covers the following topics:
 
-- [Precise Divergence Point Analysis for Fast and Slow Ranks](#precise-divergence-point-analysis-for-fast-and-slow-ranks): describes the general method for analyzing fast and slow ranks.
-- [Locating Fast and Slow Ranks Using the Timeline](#locating-fast-and-slow-ranks-using-the-timeline): demonstrates how to use the **Timeline** tab page of MindStudio Insight to locate the fast and slow rank problem.
-- [Locating Fast and Slow Ranks Through Operator Comparison](#locating-fast-and-slow-ranks-through-operator-comparison): demonstrates how to use the operator comparison function to locate the fast and slow rank problem.
-- [Fast and Slow Rank Cases](#fast-and-slow-rank-cases): provides more typical cases of fast and slow ranks.
+- [Pinpoint Analysis Method for Fast and Slow Devices](#pinpoint-analysis-method-for-fast-and-slow-devices): describes the general approach to fast and slow device analysis.
+- [Timeline-Based Fast and Slow Device Localization Example](#timeline-based-fast-and-slow-device-localization-example): demonstrates how to use the Timeline tab in MindStudio Insight to locate a fast and slow device issue.
+- [Operator Comparison-Based Fast and Slow Device Localization Example](#operator-comparison-based-fast-and-slow-device-localization-example): demonstrates how to use the operator comparison function to locate a computing fast and slow device issue.
+- [Additional Fast and Slow Device Cases](#additional-fast-and-slow-device-cases): presents more typical fast and slow device cases.
 
-### Precise Divergence Point Analysis for Fast and Slow Ranks
+### Pinpoint Analysis Method for Fast and Slow Devices
 
-You can quickly locate the root cause of the difference between fast and slow ranks on the **Timeline** tab page of MindStudio Insight.
+You can quickly locate the root cause of the difference between fast and slow devices on the Timeline tab in MindStudio Insight.
 
-**Figure 1** Precise divergence point analysis
+**Figure 1** Pinpoint analysis method
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/precise-divergence-point-analysis.png)
 
-#### Locating the Divergence Point
+#### Locating the Point
 
-On the **Communication** tab, open the communication operator thumbnail and select the last iteration ID. Identify the collective communication operator with the largest duration difference. Starting from the divergence point where the impact is most significant, right-click to navigate to the corresponding communication position for further analysis. The green operator is used as an example, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807027__fig16785105671316).
+First, find the point where the fast and slow device issue occurs. Go to the communication operator thumbnail view on the Communication tab, select a relatively late iteration ID, and observe the collective communication operator with the largest difference first. Start from the place where the fast and slow device issue has the greatest impact, and right-click to jump to the corresponding communication position. Take the green operator as an example, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807027__fig16785105671316).
 
-**Figure 2** Locating the divergence point <a name="ZH-CN_TOPIC_0000002535807027__fig16785105671316"></a>
+**Figure 2** Locating the point<a name="ZH-CN_TOPIC_0000002535807027__fig16785105671316"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/locating-the-divergence-point.png)
 
-#### Locating the Range
+#### Defining the Interval
 
-1. Zoom in the communication operator. Locate the ranks to be compared (cards with the largest duration gap, for example, ranks 0 and 3), as shown in [Figure 3](#ZH-CN_TOPIC_0000002535807027__fig1399855918136).
+1. Zoom in on the communication operator. Find the devices to compare (find the devices with the largest duration gap, such as device 0 and device 3), as shown in [Figure 3](#ZH-CN_TOPIC_0000002535807027__fig1399855918136).
 
-   **Figure 3** Locating the range 1<a name="ZH-CN_TOPIC_0000002535807027__fig1399855918136"></a>
+   **Figure 3** Defining the interval 1<a name="ZH-CN_TOPIC_0000002535807027__fig1399855918136"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/locating-the-range-1.png)
 
-2. Right-click the communication operator and choose **Find in Timeline** from the shortcut menu. It is recommended that you add a flag at the beginning of the Python API delivered by the HCCL communication operator on the two ranks.
+2. Right-click the communication operator and choose **Jump to Timeline View** to jump to the corresponding position on the Timeline. You are advised to add a flag marker at the beginning of the Python-side dispatch API that corresponds to the HCCL communication operator on both devices.
 
-   **Figure 4** Locating the range 2
+   **Figure 4** Defining the interval 2
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/locating-the-range-2.png)
 
-3. Identify the place (white line in the figure) where the fast and slow ranks begin to diverge—this marks the start of the comparison region. Use the respective flags of the two ranks as the end points of their comparison intervals to determine the fast-rank region and the slow-rank region, as shown in [Figure 5](#ZH-CN_TOPIC_0000002535807027__fig11471433161010).
+3. Find the place where the fast and slow device issue starts (the position of the white line) and use it as the start of the comparison region. Use the flag marker of each device as the end of the comparison interval for that device, which gives the fast device region and the slow device region respectively, as shown in [Figure 5](#ZH-CN_TOPIC_0000002535807027__fig11471433161010).
 
-   **Figure 5** Locating the place where slow and fast ranks are generated <a name="ZH-CN_TOPIC_0000002535807027__fig11471433161010"></a>
+   **Figure 5** Finding where the fast and slow device issue occurs<a name="ZH-CN_TOPIC_0000002535807027__fig11471433161010"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/locating-the-place-where-the-fast-and-slow-cards-begin-to-diverge.png)
 
 #### Finding the Differences
 
-Compare the fast-rank region and the slow-rank region to find the specific causes of the difference.
+Compare the different parts in the fast device region and the slow device region respectively to further find the specific cause of the difference.
 
-As shown in [Figure 6](#ZH-CN_TOPIC_0000002535807027__fig15176410142), there are three areas that cause slow and fast ranks: areas 1 and 4, 2 and 5, and 3 and 6.
+Take [Figure 6](#ZH-CN_TOPIC_0000002535807027__fig15176410142) as an example. Three main regions cause the fast and slow device issue, that is, regions 1 and 4, regions 2 and 5, and regions 3 and 6.
 
-**Figure 6** Example <a name="ZH-CN_TOPIC_0000002535807027__fig15176410142"></a>
+**Figure 6** Example<a name="ZH-CN_TOPIC_0000002535807027__fig15176410142"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/example.png "example")
 
-The problem points of the fast and slow ranks have been located. Next, locate the root cause of the fast and slow ranks based on the operator and code.
+At this point, you have located the point where the fast and slow device issue occurs. The next step is to locate the root cause of the fast and slow device issue based on the operators and the code.
 
-### Locating Fast and Slow Ranks Using the Timeline<a name="solution_to_top1-1"></a>
+### Timeline-Based Fast and Slow Device Localization Example<a name="solution_to_top1-1"></a>
 
-This section describes how to locate fast and slow rank faults using MindStudio Insight.
+This section describes a specific example of using MindStudio Insight to further locate a fast and slow device issue.
 
-If the fast and slow rank issue has been preliminarily located in the cluster (for details, see [Summary](performance_tool_usage.md#performance_tool_usage06)), and the transmit time is low while wait or synchronization time is high (for details, see [Communication](performance_tool_usage.md#performance_tool_usage07)), the cluster has the issue. In this case, view **Communication Time Analysis**. The communication operators are tiled horizontally to determine where the slow rank is.
+If you have already preliminarily identified a fast and slow device desynchronization issue in the cluster through [Summary](performance_tool_usage.md#summary), and confirmed through [Communication](performance_tool_usage.md#communication) that, in the cluster communication time, the transmission time proportion is low and the wait or synchronization time proportion is high, you can determine that the current cluster has a fast and slow device issue, and you need to view **Communication Duration Analysis**. Confirm exactly where the slow device is slow by tiling the communication operators horizontally.
 
-As shown in [Figure 1](#ZH-CN_TOPIC_0000002504087044__fig145361328205714), for the hcom allGather collective communication operators in green, ranks 4, 5, and 13 with short duration are slow ranks, and ranks (such as ranks 11 and 14) with long duration are relatively fast ranks.
+As shown in [Figure 1](#ZH-CN_TOPIC_0000002504087044__fig145361328205714), for the green hcom allGather collective communication operator, device 4, device 5, and device 13, which have shorter durations, are slow devices, while the devices with longer durations (such as device 11 and device 14) are relatively fast devices.
 
-The next step is to analyze what the slow rank is doing during the idle period. You need to go to the **Timeline** module to view the specific differences.
+The next localization goal is to analyze what the slow device is doing during the blank time. Go to the Timeline module and check the specific differences.
 
-**Figure 1** Communication operator tiling <a name="ZH-CN_TOPIC_0000002504087044__fig145361328205714"></a>
+**Figure 1** Tiled view of communication operators<a name="ZH-CN_TOPIC_0000002504087044__fig145361328205714"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/communication-operator-thumbnail.png)
 
-1. Right-click a communication operator and choose **Find in Timeline** from the shortcut menu. On the **Timeline** view displayed, mark the approximate range with a flag to facilitate subsequent locating.
+1. Select the communication operator, right-click, and choose **Jump to Timeline View** to jump from the communication operator to the Timeline view. Use flags to mark the approximate range for subsequent localization.
 
-   **Figure 2** Switching from the communication operator to the Timeline view
+   **Figure 2** Jumping from a communication operator to the Timeline view
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/switching-from-the-communication-operator-to-the-timeline-view.png)
 
-   **Figure 3** Marking the approximate range with a flag
+   **Figure 3** Marking the approximate range with flags
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/marking-the-approximate-range-with-a-flag.png)
 
-2. Select a step, click **Fit to screen**, and pin it to the top to compare the **Overlap Analysis** lanes of the slow rank (rank 13) and fast rank (rank 14) to determine the source of the difference. (The **Overlap Analysis** lanes shows the computing and communication tasks at the Ascend Hardware layer in a unified manner, making the comparison clearer.)
+2. Select a step (display one full screen per step), and pin the Overlap Analysis lanes of the slow device (device 13) and the fast device (device 14) to the top for comparison to confirm the source of the difference (the Overlap Analysis lane projects the computing and communication tasks of the Ascend Hardware layer together, which makes comparison clearer).
 
-   **Figure 4** Limiting the troubleshooting area to a step (full-screen display by step)
+   **Figure 4** Limiting the study region to one step (display one full screen per step)
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/limiting-the-troubleshooting-area-to-a-step-(full-screen-display-by-step).png)
 
-   **Figure 5** Pinning the slow rank (rank 13) and fast rank (rank 14) to the top to compare the Overlap Analysis lanes and determine the source of the difference
+   **Figure 5** Pinning the overlap analysis lanes of the slow device (device 13) and the fast device (device 14) to the top for comparison to confirm the source of the difference
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/pinning-the-slow-card-(card-13)-and-fast-card-(card-14)-to-the-top-to-compare-the-overlap-analysis-l.png)
 
-3. Based on statistics from the selected area, the number of slow rank lane computing tasks is much greater than that of fast rank lane computing tasks.
+3. Box-selection statistics show that the slow device lane has significantly more computing tasks than the fast device lane.
 
-   **Figure 6** Statistics
+   **Figure 6** Box-selection statistics
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/selected-area-statistics.png)
+   Most of the difference comes from the second half, which indicates that load imbalance causes the fast and slow device issue.
 
-   The difference mainly comes from the second half, indicating that the problem is caused by load imbalance.
-
-   **Figure 7** Operator quantity comparison
+   **Figure 7** Comparison of operator count differences
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/operator-quantity-comparison.png)
 
-4. Determine the Python API that delivers the extra operators based on **async_npu**. (You can select specific area to display connection lines instead of full display.)
+4. Use the `async_npu` dispatch connections to confirm which Python API dispatches the extra operators (lock the box-selected region to display only the connections in the locked region instead of all connections).
 
-   **Figure 8** async_npu delivery connections
+   **Figure 8** async_npu dispatch connections
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/async_npu-delivery-connections.png)
 
-   According to the statistics from the selected area at the Ascend hardware layer, for an API on the Python side, the fast rank delivers 1,218 computing operators and the slow rank delivers 3,303 computing operators. Therefore, the slow rank is caused by the unbalanced load of the API on the Python side.
+   Box-selection statistics for the Ascend Hardware layer show that for the same Python-side API, the fast device dispatches 1218 computing operators and the slow device dispatches 3303 computing operators. Therefore, the load imbalance of that Python-side API causes the fast and slow device issue.
 
-5. Confirm with the model development personnel whether the load imbalance can be avoided.
+5. Confirm with the model developer whether this load imbalance can be avoided.
 
-### Locating Fast and Slow Ranks Through Operator Comparison
+### Operator Comparison-Based Fast and Slow Device Localization Example
 
-If the slow and fast ranks in the cluster are caused by the fluctuation of the computing time on the **Summary** page of MindStudio Insight, in addition to the method mentioned in [Precise Divergence Point Analysis for Fast and Slow Ranks](#precise-divergence-point-analysis-for-fast-and-slow-ranks), you can compare the time consumption of the slow and fast rank operators to quickly locate the difference source.
+If you find in the overview page of MindStudio Insight that the fast and slow devices in the cluster are caused by computing time fluctuation, in addition to the pinpoint analysis method described in [Pinpoint Analysis Method for Fast and Slow Devices](#pinpoint-analysis-method-for-fast-and-slow-devices), you can also compare the operator durations of fast and slow devices to quickly identify the source of the difference.
 
-#### Locating the Fast and Slow Ranks on the Summary Page
+#### Determining Fast and Slow Devices from the Overview Page
 
-Go to the **Computation/Communication Overview** area on the **Summary** page of MindStudio Insight. In this example, ranks 0 to 7 are slow computing ranks (long computing time and short communication time), and ranks 8 to 15 are fast computing ranks (short computing time and long communication time). The long communication time of the latter is caused by waiting for the former.
+In the Overview page of MindStudio Insight, check the computing/communication overview area. You can see that devices 0 to 7 are computing slow devices (long computing time and short communication time), and devices 8 to 15 are computing fast devices (short computing time and long communication time). The long communication time of the latter is caused by waiting for the former.
 
-**Figure 1** Computation/Communication Overview page
+**Figure 1** Overview page of computing fast and slow devices
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/computation-communication-overview-page.png)
 
-#### Comparing operator differences
+#### Comparing Operator Differences
 
-As described in [Operator](performance_tool_usage.md#performance_tool_usage11), you can quickly locate the operators that cause the time consumption difference. As shown in [Figure 2](#ZH-CN_TOPIC_0000002503927274__fig146751313103511), set ranks 7 and 8 to the inter-rank comparison mode and sort them by total time consumption in ascending order. If the number of operators on the fast and slow ranks differs greatly, the computing load is unbalanced. In this case, confirm with the model development personnel whether the load imbalance can be avoided. If the number of operators of a certain type is the same but the average time consumption differs, contact the operator development owner or use the method in [Precise Divergence Point Analysis for Fast and Slow Ranks](#precise-divergence-point-analysis-for-fast-and-slow-ranks) to further locate the root cause on the **Timeline**.
+As described in [Operator](performance_tool_usage.md#operator), you can quickly identify the operators that cause the duration difference, as shown in [Figure 2](#ZH-CN_TOPIC_0000002503927274__fig146751313103511). First, set device 7 and device 8 to cross-device comparison mode, and then sort by total duration in ascending order. If the fast and slow devices have a large difference in operator count, computing load imbalance exists, and you can confirm with the model developer whether this load imbalance can be avoided. If the count of a certain type of operator is the same but the average duration differs, ask the relevant operator development owner for help, or combine the method in [Pinpoint Analysis Method for Fast and Slow Devices](#pinpoint-analysis-method-for-fast-and-slow-devices) to further confirm the root cause through the Timeline.
 
-**Figure 2** Inter-rank operator comparison <a name="ZH-CN_TOPIC_0000002503927274__fig146751313103511"></a>
+**Figure 2** Cross-device operator comparison<a name="ZH-CN_TOPIC_0000002503927274__fig146751313103511"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/operator-comparison-between-cards-0.png)
 
-Similarly, you can use the compare tool to go to the **KernelCompare** comparison page and analyze operator differences. For details, see [Quick Analysis for Model Tuning (msprof-analyze)](performance_tool_usage.md#performance_tool_usage01).
+Similarly, you can use the compare tool in [Model Tuning Quick Analysis (msprof-analyze CLI)](performance_tool_usage.md#quick-analysis-for-model-tuning-msprof-analyze-cli) to open the KernelCompare comparison page and analyze operator differences.
 
-**Figure 3** KernelCompare page of the compare tool
+**Figure 3** KernelCompare comparison page of the compare performance breakdown tool
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087206.png)
 
-### Fast and Slow Rank Cases
+### Additional Fast and Slow Device Cases
 
-#### Case 1: Continuous Performance Deterioration After Checkpoints Are Saved in a Cluster
+#### Case 1: Performance Continues to Degrade After the Cluster Saves a Checkpoint
 
-**Issue**
+**Issue Description**
 
-In a 4-node 64-rank cluster, the performance deteriorates continuously after checkpoints are saved.
+Four servers with 64 devices. Performance continues to degrade after a checkpoint is saved.
 
-**Problem Analysis**
+**Issue Analysis**
 
-The msprof-analyze tool described in [Quick Analysis for Model Tuning (msprof-analyze)](performance_tool_usage.md#performance_tool_usage01) is used to analyze the cluster. The results ([Figure 1](#ZH-CN_TOPIC_0000002503927272__fig175962111612)) show that the fluctuation trends of communication time and free time are negatively correlated. In other words, for the same rank, a rank with longer communication time has shorter free time, while a rank with shorter communication time has longer free time. Based on this observation, rank 0, which has the shortest free time, finishes its computation first and waits for the other ranks, indicating that it is the fast rank. In contrast, rank 1, which has the longest free time, finishes last and is identified as the slow rank. In this case, the fast and slow rank issue is caused by performance fluctuation on the host side.
+First, as shown in [Figure 1](#ZH-CN_TOPIC_0000002503927272__fig175962111612), after using the msprof-analyze tool in [Model Tuning Quick Analysis (msprof-analyze CLI)](performance_tool_usage.md#quick-analysis-for-model-tuning-msprof-analyze-cli) for cluster analysis, you can find that the fluctuation trends of communication time and free time between devices are negatively correlated (that is, in the same rank, a long communication duration corresponds to a short Free duration, and a short communication duration corresponds to a long Free duration). Therefore, you can infer that device 0, which has the shortest Free Time, is a fast device that finishes first and waits for other devices, while device 1, which has the longest Free Time, is a slow device that finishes last. That is, this case is a fast and slow device issue caused by host-side dispatch performance fluctuation.
 
-**Figure 1** cluster_step_trace_time.csv <a name="ZH-CN_TOPIC_0000002503927272__fig175962111612"></a>
+**Figure 1** cluster_step_trace_time.csv deliverable<a name="ZH-CN_TOPIC_0000002503927272__fig175962111612"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/cluster_step_trace_time-csv-deliverable.png)
 
-Go to the **Timeline** page. As shown in [Figure 2](#ZH-CN_TOPIC_0000002503927272__fig16619142217167) and [Figure 3](#ZH-CN_TOPIC_0000002503927272__fig969067145819), the communication waiting of rank 0 occurs in the gradient summary phase after backpropagation. Compare the fast and slow ranks on the **Timeline**. An abnormal gap is observed at the end of the step for rank 1 of the slow rank. During this phase, frame freezing occurs, causing rank 0 of the fast rank to wait.
+Open the Timeline view. As shown in [Figure 2](#ZH-CN_TOPIC_0000002503927272__fig16619142217167) and [Figure 3](#ZH-CN_TOPIC_0000002503927272__fig969067145819), the communication wait of device 0 occurs in the gradient aggregation phase after backpropagation. Compare similar positions on the Timelines of the fast and slow devices, and you can find an abnormal gap at the end of the step on slow device Rank1, which stalls in this phase and causes fast device Rank0 to wait.
 
-**Figure 2** Timeline view (Rank0) <a name="ZH-CN_TOPIC_0000002503927272__fig16619142217167"></a>
+**Figure 2** Timeline view (Rank0)<a name="ZH-CN_TOPIC_0000002503927272__fig16619142217167"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887191.png)
 
-**Figure 3** Timeline view (Rank1) <a name="ZH-CN_TOPIC_0000002503927272__fig969067145819"></a>
+**Figure 3** Timeline view (Rank1)<a name="ZH-CN_TOPIC_0000002503927272__fig969067145819"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807157.png)
 
-**Fault Locating Completed**
+**Root Cause Identified**
 
-The cause of this problem is that the code has unreleased memory at the end of the slow rank step. After the memory is manually cleared, the problem is resolved.
+The final root cause of this issue is that the code does not release memory at the end of the step on the slow device. After you release the memory manually, the issue disappears.
 
-#### Case 2: Long Waiting Time of the AllReduce Communication Operator in a Cluster
+#### Case 2: Excessive Wait Time of the Cluster AllReduce Communication Operator
 
-**Issue**
+**Issue Description**
 
-The waiting time of the AllReduce communication operator in the 256P cluster is long, and the linearity does not meet the requirement.
+The wait time of the allreduce communication operator in a 256p cluster is long, and the linearity does not meet the requirement.
 
-**Problem Analysis**
+**Issue Analysis**
 
-The Notify Wait message in the DP communication domain takes a long time, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535807039__fig9295127131610).
+The direct manifestation of the issue is a long-duration notify wait in the dp communication domain, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535807039__fig9295127131610).
 
-**Figure 1** Timeline analysis of the DP communication domain <a name="ZH-CN_TOPIC_0000002535807039__fig9295127131610"></a>
+**Figure 1** Timeline analysis of the dp communication domain<a name="ZH-CN_TOPIC_0000002535807039__fig9295127131610"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/timeline-analysis-of-the-dp-communication-domain.png)
 
-On the **Communication** page, locate the communication domain. There is a long Notify Wait message, and the **Elapse Time** (total communication time) varies significantly. The difference between the fastest and slowest ranks exceeds 200ms.
+Find this communication domain on the Communication page. You can see a very long notify wait, a huge gap in Elapse Time (total communication time), and a gap of more than 200 ms between the fastest device and the slowest device.
 
 **Figure 2** Communication duration analysis
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087200.png)
 
-Compare the fast rank 0 and slow rank 208 on the **Timeline** page. The slow rank 208 is slow in TP domain communication, as shown in [Figure 3](#ZH-CN_TOPIC_0000002535807039__fig1010153111614). In a micro computation task, TP domain communication takes 494ms on slow rank 208, compared to 340 ms on fast rank 0. Communication transmission speeds in the TP domain are similar for both fast and slow ranks. The performance difference is mainly caused by the wait time.
+As shown in [Figure 3](#ZH-CN_TOPIC_0000002535807039__fig1010153111614), open the Timeline views of fast device 0 and slow device 208 at the same time. You can find that slow device 208 is mainly slow in tp communication. In one micro computation, the tp domain communication of slow device 208 takes 494 ms, while that of fast device 0 takes 340 ms, which is a large gap. The tp domain communication transmission speeds of the fast and slow devices are basically the same, and the gap is mainly caused by wait time.
 
-**Figure 3** Timeline page of fast rank 0 and slow rank 208 <a name="ZH-CN_TOPIC_0000002535807039__fig1010153111614"></a>
+**Figure 3** Timeline view of fast device 0 and slow device 208<a name="ZH-CN_TOPIC_0000002535807039__fig1010153111614"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/timeline-page-of-fast-card-0-and-slow-card-208.png)
 
-Within the same TP domain as rank 208, rank 214 is the slow rank affecting the entire TP domain. Specifically, rank 214 delays rank 208 in the TP domain, and rank 208 subsequently impacts rank 0 in the DP domain. Therefore, rank 214 is identified as the root cause. Comparing the timelines of ranks 208 and 214 shows that rank 214 experiences slow host delivery, as shown in [Figure 4](#ZH-CN_TOPIC_0000002535807039__fig43241642201912).
+Further observe the devices in the same tp domain as device 208, and you can find that device 214 is the slow device that drags down the entire tp domain. That is, device 214 drags down device 208 through the tp domain, and device 208 further drags down device 0 along the dp domain. Therefore, device 214 is the true root-cause slow device. As shown in [Figure 4](#ZH-CN_TOPIC_0000002535807039__fig43241642201912), compare the Timelines of device 208 and device 214, and you can see that device 214 has a slow host dispatch issue.
 
-**Figure 4** Timelines for Ranks 208 and 214 <a name="ZH-CN_TOPIC_0000002535807039__fig43241642201912"></a>
+**Figure 4** Timeline of device 208 and device 214<a name="ZH-CN_TOPIC_0000002535807039__fig43241642201912"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087204.png)
 
-The timeline selection statistics function is used to compare the CANN-side APIs responsible for delivering ranks 208 and 214. The results show that the CANN-side API for rank 214 takes significantly longer time than that for rank 208, as shown in [Figure 5](#ZH-CN_TOPIC_0000002535807039__fig1646164615811).
+As shown in [Figure 5](#ZH-CN_TOPIC_0000002535807039__fig1646164615811), use the box-selection statistics function of the Timeline to compare the CANN-side interfaces responsible for dispatch on device 208 and device 214. You can see that the duration of the CANN-side interfaces on device 214 is significantly longer than that on device 208.
 
-**Figure 5** Selected area statistics of CANN APIs on ranks 208 and 214 <a name="ZH-CN_TOPIC_0000002535807039__fig1646164615811"></a>
+**Figure 5** Box-selection statistics of the CANN-side interfaces on device 208 and device 214<a name="ZH-CN_TOPIC_0000002535807039__fig1646164615811"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/selected-area-statistics-of-cann-apis-on-cards-208-and-214.png)
 
-**Fault Locating Completed**
+**Root Cause Identified**
 
-Comparison of the fast and slow rank timelines indicates that the difference is caused by the delivery bottleneck on the host side of the slow rank (rank 214). For details about how to solve the delivery bottleneck on the host side, see [Host Bound Troubleshooting](solution_to_top3.md).
+Through pinpoint comparison and analysis of the fast and slow device Timelines, you can preliminarily confirm that the difference between the fast and slow devices is caused by the host-side dispatch bottleneck of the slow device (device 214). To further resolve the host-side dispatch bottleneck, refer to [Locating and Resolving Host Bound Issues](solution_to_top3.md).
 
 ## Communication Retransmission
 
-### Analyzing Cluster Data to Determine Whether Communication Retransmission Occurs
+### Determining Whether Communication Retransmission Occurs Based on Cluster Data
 
-In distributed training, if a communication operator takes more than 4s (the typical threshold for communication retransmission), packet retransmission may occur after the possibility of fast and slow rank issues is excluded. It is difficult to distinguish the two cases based on the profile data of a single rank. You can further locate the fault using MindStudio Insight.
+In distributed training, if a communication operator takes more than 4 seconds (a typical threshold for communication retransmission), after you exclude the possibility of a fast and slow device issue, you can suspect that packet retransmission occurs. Performance data of a single device alone makes it difficult to directly distinguish these two cases. Therefore, you can use MindStudio Insight for further troubleshooting.
 
-Typically, communication retransmission occurs in performance jitter between clusters. You can use MindStudio Insight to compare the profile data of normal and abnormal steps to confirm the problem.
+Communication retransmission usually occurs in performance jitter issues between clusters, and you can confirm it by comparing the profiling data of normal and abnormal steps in MindStudio Insight.
 
-1. On the MindStudio Insight cluster summary page, you can view the time consumption distribution of different steps, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087090__fig13354164218130).
+1. On the cluster result overview page of MindStudio Insight, you can see the duration distribution of different steps, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087090__fig13354164218130).
 
-   **Figure 1** MindStudio Insight cluster overview page <a name="ZH-CN_TOPIC_0000002504087090__fig13354164218130"></a>
+   **Figure 1** Cluster overview page of MindStudio Insight<a name="ZH-CN_TOPIC_0000002504087090__fig13354164218130"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/cluster-summary-page-on-mindstudio-insight.png)
 
-2. Compare the overview results of two steps. The computing time and free time of each rank are close, indicating that there is no obvious fast and slow rank problem. The main difference lies in the communication time (overlapped communication time + non-overlapped communication time).
+2. Compare the overview results of the two steps, and you can find that the computing time and idle time between devices are relatively close, which indicates that no obvious fast and slow device issue exists. The difference is mainly in the communication duration (communication time (covered) + communication time (not covered)).
 
-3. Compare all ranks at the same time. The communication time difference of each rank in steps 11 and 12 is about 4.7s.
+3. Compare all devices synchronously at the same time, and you can find that the communication duration gap of every device between Step11 and Step12 is about 4.7 s.
 
-4. As shown in [Figure 2](#ZH-CN_TOPIC_0000002504087090__fig1049254151413), the operator LinearWithGradAccumulationAndAsyncCommunication is used for synchronization. The subsequent task (AscendCL@aclnnTopK) is blocked during delivery.
+4. As shown in [Figure 2](#ZH-CN_TOPIC_0000002504087090__fig1049254151413), observe the Timeline result of device 320. The operator is `LinearWithGradAccumulationAndAsyncCommunication`, which is a communication operator used for synchronization, and subsequent task dispatch (`AscendCL@aclnnTopK`) is blocked.
 
-   **Figure 2** Timeline of Rank 320 <a name="ZH-CN_TOPIC_0000002504087090__fig1049254151413"></a>
+   **Figure 2** Timeline of Rank320<a name="ZH-CN_TOPIC_0000002504087090__fig1049254151413"></a>
 
    ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/timeline-of-rank-card-320.png)
 
-   According to the data analysis results, the NPU (computing) and CPU (scheduling) operate normally. The main difference in communication time between ranks is caused by point-to-point communication timeouts, which are likely due to packet retransmissions triggered by network exceptions.
+   Based on the analysis of all data, the NPU (computing) and CPU (scheduling) are normal. The difference in communication time between devices comes from an abnormal timeout of point-to-point communication, which is most likely communication retransmission caused by a network exception.
 
-5. After communication retransmissions are detected, check whether the switch network is correctly configured. For example, verify whether the PFC mechanism is configured. If PFC is not enabled, network congestion may occur, leading to communication retransmissions.
+5. After you find a communication retransmission issue, you are advised to check whether the switch network is properly configured. For example, check whether the PFC control mechanism is not added, which causes PFC congestion and then communication retransmission.
 
-### A Typical Case of Communication Retransmission
+### Typical Communication Retransmission Case
 
-**Issue**
+**Issue Description**
 
-When the Llama3-70B model is migrated from a four-node cluster to a 32-node cluster, the linearity deteriorates.
+When the Llama3-70B model is migrated from 4 servers to a 32-server cluster, linearity degrades.
 
-**Problem Analysis**
+**Issue Analysis**
 
-Use the tool described in [Quick Analysis for Model Tuning (msprof-analyze)](performance_tool_usage.md#performance_tool_usage01) to analyze the normal 4-node cluster and abnormal 32-node cluster. The comparison shows that the time difference is due to communication, with the 32-node cluster experiencing longer overall communication, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535807041__fig1423422518177).
+As shown in [Figure 1](#ZH-CN_TOPIC_0000002535807041__fig1423422518177), use [Model Tuning Quick Analysis (msprof-analyze CLI)](performance_tool_usage.md#quick-analysis-for-model-tuning-msprof-analyze-cli) to analyze the normal 4-server cluster and the abnormal 32-server cluster separately. A comparison of the two results shows that the duration difference is mainly in communication, and the overall communication duration of the 32-server cluster is longer.
 
-**Figure 1** cluster_step_trace_time.csv deliverable (comparison between a normal 4-node cluster and an abnormal 32-node cluster)<a name="ZH-CN_TOPIC_0000002535807041__fig1423422518177"></a>
+**Figure 1** cluster_step_trace_time.csv deliverable, comparison between the normal 4-server cluster and the abnormal 32-server cluster<a name="ZH-CN_TOPIC_0000002535807041__fig1423422518177"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/cluster_step_trace_time-csv-deliverable-(comparison-between-a-normal-4-node-cluster-and-an-abnormal.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/cluster_step_trace_time-csv-deliverable-\(comparison-between-a-normal-4-node-cluster-and-an-abnormal.png)
 
-The following uses rank 0 as an example. Compare rank 0 in the normal cluster with that in the abnormal cluster. The problem occurs on the allReduce and broadcast operators at the end of the iteration, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807041__fig636142716175).
+Take device 0 as an example. Compare device 0 in the normal cluster and in the abnormal cluster, and you can find that the issue occurs in the allReduce and broadcast operators at the end of the iteration, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807041__fig636142716175).
 
-**Figure 2** Timeline of Rank 0 in the abnormal cluster <a name="ZH-CN_TOPIC_0000002535807041__fig636142716175"></a>
+**Figure 2** Timeline of device 0 in the abnormal cluster<a name="ZH-CN_TOPIC_0000002535807041__fig636142716175"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807169.png)
 
-According to the **dst rank** (target rank, which generally indicates the slow rank in the Notify Wait communication event) in the communication operator selection details, continuously redirect to locate the cause. It is found that the rank 440 affects other ranks in the same TP communication domain, as shown in [Figure 3](#ZH-CN_TOPIC_0000002535807041__fig2023542961715).
+Jump repeatedly based on the dst rank in the selected details of the communication operator (the destination device, which in a notify wait communication event generally indicates the slow device being waited for). You can find that device 440 drags down other devices in the same tp communication domain, as shown in [Figure 3](#ZH-CN_TOPIC_0000002535807041__fig2023542961715).
 
-**Figure 3** Timeline of Rank 440 in the abnormal cluster <a name="ZH-CN_TOPIC_0000002535807041__fig2023542961715"></a>
+**Figure 3** Timeline of device 440 in the abnormal cluster<a name="ZH-CN_TOPIC_0000002535807041__fig2023542961715"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/timeline-of-card-440-in-the-abnormal-cluster.png)
 
-On the **Communication** tab page, select **Communication Duration Analysis** and find the corresponding communication domain. Sort the ranks by **Wait Time** in ascending order and find the ranks with short wait time and long transmission time in the communication domain. See [Figure 4](#ZH-CN_TOPIC_0000002535807041__fig1634973181714).
+Go to the Communication tab, select **Communication Duration Analysis**, and find the corresponding communication domain. Sort by Wait Time in ascending order, and find the devices in this communication domain that have short wait time and long transmission time, as shown in [Figure 4](#ZH-CN_TOPIC_0000002535807041__fig1634973181714).
 
-**Figure 4** Communication Duration Analysis <a name="ZH-CN_TOPIC_0000002535807041__fig1634973181714"></a>
+**Figure 4** Communication tab > Communication Duration Analysis<a name="ZH-CN_TOPIC_0000002535807041__fig1634973181714"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/communication-duration-analysis-on-the-communication-page-2.png)
 
-Check the **Bandwidth Analysis** of the ranks with long transmission time. In [Figure 5](#ZH-CN_TOPIC_0000002535807041__fig12279203317179), a large number of RDMA communication packets exist with extremely low bandwidth. In this case, the network transmission may be faulty. Check the network configuration.
+Further check the bandwidth analysis of the device with long transmission time, and you can find a large number of RDMA communication packets with extremely low bandwidth, as shown in [Figure 5](#ZH-CN_TOPIC_0000002535807041__fig12279203317179). A network transmission issue is suspected, and you need to troubleshoot the network configuration.
 
-**Figure 5** Bandwidth analysis <a name="ZH-CN_TOPIC_0000002535807041__fig12279203317179"></a>
+**Figure 5** Bandwidth analysis<a name="ZH-CN_TOPIC_0000002535807041__fig12279203317179"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807165.png)
 
-**Solution**
+**Resolution**
 
-Network configuration analysis reveals that traffic between the switch and the compute node server passes through a PFC-free congestion control queue, resulting in substantial packet loss and subsequent RDMA packet retransmissions. Correctly setting the related environment variables can eliminate the problem.
+After troubleshooting the network configuration, you can find that the traffic between the switch and the compute node servers is routed through a queue without PFC congestion control. This causes a large amount of packet loss on the network of the corresponding queue and then causes RDMA data network packet retransmission. After you correctly configure the related environment variables, the issue is resolved.
 
-## Small Communication Packets
+## Small-Packet Communication
 
-### Case: Small Communication Packets Caused by the ZeRO3 Mode
+### Case: ZeRO3 Mode Causes Small-Packet Communication
 
-**Issue**
+**Issue Description**
 
-When a model is migrated from an NPU to a GPU, the performance does not meet the requirements.
+The same model is migrated from the NPU to the GPU, and the performance does not meet the requirement.
 
-**Problem Analysis**
+**Issue Analysis**
 
-The compare performance comparison tool in [Quick Analysis for Model Tuning (msprof-analyze)](performance_tool_usage.md#performance_tool_usage01) is used to compare the data of the baseline GPU with that of the migrated NPU. A large gap exists between the uncovered communication time, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535887091__fig18477143015137).
+Use the compare performance comparison tool in [Model Tuning Quick Analysis (msprof-analyze CLI)](performance_tool_usage.md#quick-analysis-for-model-tuning-msprof-analyze-cli) to compare the data of the baseline GPU and the migrated NPU. You can find a large gap in the communication uncovered time, as shown in [Figure 1](#ZH-CN_TOPIC_0000002535887091__fig18477143015137).
 
-**Figure 1** Comparison between the GPU and NPU<a name="ZH-CN_TOPIC_0000002535887091__fig18477143015137"></a>
+**Figure 1** compare comparison between the GPU and the NPU<a name="ZH-CN_TOPIC_0000002535887091__fig18477143015137"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887171.png)
 
-According to the comparison between the timeline of the baseline GPU and that of the NPU after the migration, the difference lies in the allGather communication part at the end of the step. The NPU takes about 100 ms, and the GPU takes only about 4 ms, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535887091__fig311914449169).
+Compare the Timelines of the baseline GPU and the migrated NPU, and you can find that the difference mainly comes from the allGather communication part at the end of the step. The NPU takes about 100 ms, while the GPU takes only about 4 ms, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535887091__fig311914449169).
 
-**Figure 2** Timeline comparison between the GPU and NPU <a name="ZH-CN_TOPIC_0000002535887091__fig311914449169"></a>
+**Figure 2** Timeline comparison between the GPU and the NPU<a name="ZH-CN_TOPIC_0000002535887091__fig311914449169"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927348.png)
 
-The bandwidth of the NPU communication operators is only about 0.2 GB/s. There are a large number of allGather communication operators, and the amount of data transmitted is only 256 bytes. The communication link setup takes most of the time, as shown in [Figure 3](#ZH-CN_TOPIC_0000002535887091__fig38716463229). These operators are mainly used for ZeRO3 operations.
+The bandwidth of this part of the NPU communication operators is only 0.2 GB/s. You can observe a large number of allGather communication operators, the transmitted data volume is only 256 Bytes, and communication link establishment takes up most of the duration, as shown in [Figure 3](#ZH-CN_TOPIC_0000002535887091__fig38716463229). These operators are mainly performing ZeRO3 operations.
 
-**Figure 3** AllGather small-packet communication operator <a name="ZH-CN_TOPIC_0000002535887091__fig38716463229"></a>
+**Figure 3** allGather small-packet communication operator<a name="ZH-CN_TOPIC_0000002535887091__fig38716463229"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927350.png)
 
-The Zero Redundancy Optimizer (ZeRO) mode is used to save memory by changing the communication policy. The main principle of ZeRO is to split data such as the optimizer status, gradient, and weight, and synchronize the data through collective communication when necessary to reduce the peak usage of the GPU memory. ZeRO is a typical method of trading time for space.
+Zero Redundancy Optimizer (ZeRO) mode is a method for saving memory, and ZeRO mode changes the communication strategy. The main principle of ZeRO is to partition data such as optimizer states, gradients, and weights, and then synchronize them through collective communication when they are needed, which reduces the peak memory usage. It is a typical approach of trading time for space.
 
-**Solution**
+**Resolution**
 
-Change the ZeRO3 algorithm to the ZeRO2 algorithm. That is, model weights are no longer split. Although the GPU memory usage increases, the communication overhead between devices is reduced, improving the overall performance by 2.7%.
+Change the ZeRO3 algorithm to the ZeRO2 algorithm, that is, no longer partition the model weights. This increases memory usage but reduces the communication overhead between devices. After you switch to ZeRO2, the overall performance improves by 2.7%.
 
-## Byte Misalignment Between the Source and Destination Addresses
+## Source and Destination Address Byte Misalignment
 
-Byte misalignment occurs when the source and destination addresses are not aligned by a specific number of bytes (for example, 512Bytes) during cluster communication, significantly reducing transmission bandwidth and affecting communication performance. This issue commonly arises in SDMA transmissions (intra-node communication) and often appears in the ZeRO algorithm. Proper data padding for address alignment can resolve the issue and improve communication performance.
+Byte misalignment means that when a cluster performs communication, if the source address or destination address is not aligned to a specific byte boundary (for example, 512-byte alignment), the transmission bandwidth drops significantly, which affects communication performance. This misalignment issue is common in SDMA transmission (that is, intra-node transmission) and often occurs in the ZeRO algorithm. Solutions usually include padding the data appropriately to ensure address alignment, which optimizes communication performance.
 
-**Issue**
+**Issue Description**
 
-The performance of a single node with eight ranks is lower than expected. According to the communication matrix analysis on MindStudio Insight, the average bandwidth is only 1~2GB/s, which is far lower than the empirical value, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087072__fig5563919151714).
+The performance of a single server with eight devices is lower than expected. Through the communication matrix analysis of MindStudio Insight, you can find that the average bandwidth is very low, only 1 to 2 GB/s, which is far lower than the empirical value, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087072__fig5563919151714).
 
-**Figure 1** Cluster communication matrix analysis <a name="ZH-CN_TOPIC_0000002504087072__fig5563919151714"></a>
+**Figure 1** Cluster communication matrix analysis<a name="ZH-CN_TOPIC_0000002504087072__fig5563919151714"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927338.png)
 
-**Problem Analysis**
+**Issue Analysis**
 
-An allGather operator takes more than 300ms, and the bandwidth is only 0.1GB/s, as shown in [Figure 2](#ZH-CN_TOPIC_0000002504087072__fig18242421111714).
+Further locate the specific operator, and you can find that the bandwidth of one allGather operator is particularly low. It takes more than 300 ms and the bandwidth is only 0.1 GB/s, as shown in [Figure 2](#ZH-CN_TOPIC_0000002504087072__fig18242421111714).
 
-**Figure 2** Timeline details of the allGather operator <a name="ZH-CN_TOPIC_0000002504087072__fig18242421111714"></a>
+**Figure 2** Selected details of the allGather operator on the Timeline<a name="ZH-CN_TOPIC_0000002504087072__fig18242421111714"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807129.png)
 
-According to the analysis of HCCL experts, the source address and destination address of the allGather communication operator in the DP communicator cannot be aligned. As a result, the communication performance deteriorates seriously.
+According to the analysis of HCCL experts, the source address and destination address of the allGather communication operator in the DP communication domain cannot be aligned, which severely degrades communication performance.
 
-**Solution**
+**Resolution**
 
-Perform byte-aligned padding for the allGather bucket in the DP communication domain. Currently, AscendSpeed has adapted to byte-aligned padding for the allGather bucket in the DP communication domain. DeepSpeed and Megatron have not been modified. You need to modify **nccl_start_alignment_factor** in the DeepSpeed source code, as shown in [Figure 3](#ZH-CN_TOPIC_0000002504087072__fig1128582301711). After the modification, the allGather duration is changed from 350ms to 50ms.
+Perform byte-aligned padding on the allGather bucket of the DP communication domain to align bytes. Currently, AscendSpeed already supports byte-aligned padding on the allGather bucket of the DP communication domain, while DeepSpeed and Megatron have not been modified yet. You need to change `nccl_start_alignment_factor` in the DeepSpeed source code, as shown in [Figure 3](#ZH-CN_TOPIC_0000002504087072__fig1128582301711). After the modification, the allGather duration changes from 350 ms to 50 ms.
 
-**Figure 3** Modifying nccl_start_alignment_factor to enable byte alignment <a name="ZH-CN_TOPIC_0000002504087072__fig1128582301711"></a>
+**Figure 3** Modifying nccl_start_alignment_factor for byte alignment<a name="ZH-CN_TOPIC_0000002504087072__fig1128582301711"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087168.png)
 
-## Computing and Communication Bandwidth Contention
+## Computing and Communication Bandwidth Preemption
 
-Operators such as MatMul and FA are memory-intensive operators and are prone to MTE bound. When such operators are executed in parallel with communication operators, the memory bandwidth is preempted by the computing and communication operators, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087110__fig10255174541713). As a result, the communication transmission bandwidth is lower than the empirical value (about 1 to 2 times lower, but not too low), as shown in [Figure 2](#ZH-CN_TOPIC_0000002504087110__fig13417943141714).
+Operators such as MatMul and FA are memory-bound operators and are prone to mte bound. When such operators run in parallel with communication operators, as shown in [Figure 1](#ZH-CN_TOPIC_0000002504087110__fig10255174541713), computing and communication preempt memory bandwidth, which causes the communication transmission bandwidth to be lower than the empirical value (it may drop by about 1 to 2 times, but not extremely low), as shown in [Figure 2](#ZH-CN_TOPIC_0000002504087110__fig13417943141714).
 
-**Solution**: If bandwidth contention is severe due to parallel computing and communication, compare the profile data of parallel and non-parallel operations, evaluate whether the impact of bandwidth contention outweighs the benefits of parallel computing, and select the mode with better performance.
+**Solution**: If bandwidth preemption caused by computing-communication parallelism is severe, compare the performance data with and without computing-communication parallelism, evaluate whether the impact of bandwidth preemption exceeds the benefit of computing-communication parallelism, and choose the option with better performance.
 
-**Figure 1** Parallelism of the MatMul operator and AllGather communication operator <a name="ZH-CN_TOPIC_0000002504087110__fig10255174541713"></a>
+**Figure 1** The MatMul operator running in parallel with the allGather communication operator<a name="ZH-CN_TOPIC_0000002504087110__fig10255174541713"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807181.png)
 
-**Figure 2** Bandwidth contention caused by the allGather communication operator <a name="ZH-CN_TOPIC_0000002504087110__fig13417943141714"></a>
+**Figure 2** Computing and communication bandwidth preemption on the allGather operator<a name="ZH-CN_TOPIC_0000002504087110__fig13417943141714"></a>
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927390.png)
 
-## Performance Bloat During Profile Data Collection
+## Profiling Data Inflation
 
-If a high collection level is enabled or a large number of collection items are configured, the host may be under great pressure during profile data collection, resulting in inaccurate profile data collection. For details, see [Model Tuning Profiling Tools](performance_tool_usage.md#model-tuning-profiling-tools). When the profiling collection level is set to level 2, communication scheduling overhead increases. This may cause the host-side delivery of communication operators to be blocked, resulting in long periods of free time.
+While collecting profiling data with the [Model Tuning Performance Data Collection Tools](performance_tool_usage.md#model-tuning-performance-data-collection-tools), if you enable a high collection level or configure many collection items, performance data sampling may put great pressure on the host side, which causes the collected performance data to inflate and become inaccurate. When the profiling collection level is set to Level2, communication scheduling inflates. The specific manifestation may be that host-side dispatch of communication operators is blocked and long Free durations appear.
 
-**Solution**: Degrade the collection level. Do not enable level 2 unless necessary. If level 2 must be enabled, compare and analyze the data at level 1 to eliminate the interference of performance bloat in the data.
+**Solution**: Lower the collection level appropriately. You are advised not to enable Level2 unless necessary. If you must enable it, compare and analyze the Level1 data as well to exclude the impact of data inflation on the data.

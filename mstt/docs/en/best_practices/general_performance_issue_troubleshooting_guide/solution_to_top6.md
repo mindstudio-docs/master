@@ -130,7 +130,7 @@ Before tuning, you can first confirm the theoretical upper limit and theoretical
 
 **Tool-based Tuning**
 
-Manual tuning requires some service-oriented background. For more convenient tuning, you can use the expert advice function of the **service-oriented tuning tool** (`msServiceProfiler`). For details, see [Service-Oriented Advisor Tool](https://atomgit.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/service_profiling_advisor_instruct.md). To use the advisor tool, first use MindIE Benchmark to perform a service-oriented performance test. The advisor tool provides tuning suggestions based on the files written to drive from the MindIE Benchmark test result.
+Manual tuning requires some service-oriented background. For more convenient tuning, you can use the expert advice function of the **service-oriented tuning tool** (`msServiceProfiler`). For details, see [Service-Oriented Advisor Tool](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/service_profiling_advisor_instruct.md). To use the advisor tool, first use MindIE Benchmark to perform a service-oriented performance test. The advisor tool provides tuning suggestions based on the files written to drive from the MindIE Benchmark test result.
 
 **Challenging Issues**
 

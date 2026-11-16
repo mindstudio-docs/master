@@ -109,7 +109,7 @@ MindStudio Insight提供了丰富的调优分析手段：可视化呈现真实�
 
 #### 通过概览界面查看数据总体情况
 
-可以通过概览页了解每个模块的具体内容。详细介绍请参见《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/overview.md)》中的“系统调优 > [概览（Summary）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md#%E6%A6%82%E8%A7%88%EF%BC%88summary%EF%BC%89)”。
+可以通过概览页了解每个模块的具体内容。详细介绍请参见《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/overview.md)》中的“系统调优 > [概览（Summary）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning/summary.md)”。
 
 1. 在“并行策略分析”模块，提供PP、TP、CP、DP、EP等不同并行策略分析视角。
 
@@ -146,7 +146,7 @@ MindStudio Insight提供了丰富的调优分析手段：可视化呈现真实�
 
 #### 计算问题
 
-当数据指标现象指示为计算问题时，可以直接查看异常卡的算子数据，并与正常卡进行比较。此时可以使用MindStudio Insight的卡间性能比对功能，根据《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/overview.md)》中的使用说明，设置两卡进入比对模式，并在算子界面查看结果。以下图中存在的计算问题为例，可以看到在算子数量相等的前提下，MatMul类算子平均耗时明显增加，造成了两张卡的计算时间差异。
+当数据指标现象指示为计算问题时，可以直接查看异常卡的算子数据，并与正常卡进行比较。此时可以使用MindStudio Insight的卡间性能比对功能，根据《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/overview.md)》中的使用说明，设置两卡进入比对模式，并在算子界面查看结果。以下图中存在的计算问题为例，可以看到在算子数量相等的前提下，MatMul类算子平均耗时明显增加，造成了两张单卡的计算时间差异。
 
 **图3** 计算算子类型
 
@@ -160,7 +160,7 @@ MindStudio Insight提供了丰富的调优分析手段：可视化呈现真实�
 
 #### 调度问题
 
-当数据指标现象指示为调度问题时，需要到时间线界面将异常卡和正常卡进行比较，进一步定位出现问题的算子，可以根据《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/overview.md)》中的“系统调优 > [时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md#%E6%97%B6%E9%97%B4%E7%BA%BF%EF%BC%88timeline%EF%BC%89)”了解界面详情。进入时间线界面，选择HostToDevice连线类型，HostToDevice展示了CANN层算子到Ascend Hardware的算子的下发执行关系和CANN层算子到HCCL通信算子的下发执行关系，用于定位调度问题。
+当数据指标现象指示为调度问题时，需要到时间线界面将异常卡和正常卡进行比较，进一步定位出现问题的算子，可以根据《[MindStudio Insight工具用户指南](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/overview.md)》中的“系统调优 > [时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning/timeline.md)”了解界面详情。进入时间线界面，选择HostToDevice连线类型，HostToDevice展示了CANN层算子到Ascend Hardware的算子的下发执行关系和CANN层算子到HCCL通信算子的下发执行关系，用于定位调度问题。
 
 HostToDevice的连线通常有两种形态，倾斜和竖直。下图是一个存在调度问题的案例，如果HostToDevice连线如左侧所示，是倾斜的，说明此时间段调度任务安排合理，昇腾设备是满负荷执行计算和通信任务的。如果HostToDevice连线如右侧所示，是竖直的，说明昇腾设备此时快速执行完了CPU下发的任务，未满负荷进行计算和通信任务，这一般表示存在调度问题。此时，可以通过增大batch size、绑核、融合算子替换等方法进行调优。
 
@@ -203,7 +203,7 @@ HostToDevice的连线通常有两种形态，倾斜和竖直。下图是一个�
 
 ### 案例描述
 
-某多模态模型在训练时突然出现性能大幅度劣化问题，我们将根据上述流程进行性能调优。
+某多模态模型在训练时突然出现性能大幅度劣化问题，我们将根据上述介绍的流程进行性能调优。
 
 使用Ascend PyTorch Profiler采集大模型训练过程中的性能数据，此案例集群共有16张卡。
 
@@ -221,7 +221,7 @@ MindStudio Insight加载全部数据，进行问题定位。
 
    ![img](../figures/best_practices/case_of_troubleshooting_performance_bottleneck_in_llm_training/zh-cn_image_0000002503928436.png)
 
-2. 切换通信界面：发现存在大量卡间不同步现象（框中红色部分），这表示很多算子在长时间地等待，挑选了一张最明显的慢卡（第12卡）分析详细原因。
+2. 切换通信界面：发现存在大量卡间不同步现象（框中红色部分），这表示很多算子在长时间的等待，挑选了一张最明显的慢卡（第12卡）分析详细原因。
 
    **图2** 通信界面
 

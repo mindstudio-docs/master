@@ -310,7 +310,7 @@ MindStudio Insight工具的软件包及资料获取方式如[表1](#ZH-CN_TOPIC_
 | 6    | Overlap Analysis（覆盖分析）  | 将Ascend Hardware（NPU层）的计算、通信任务垂直投影至此，得到计算、通信、空闲时间的拆分。常用于快速比对不同卡间计算、通信、空闲差异来源。 |
 | 7    | Stats System View（统计视图） | 单卡维度统计汇总信息，可通过左侧“卡序号”下拉框切换不同卡。   |
 
-此处列举了定位过程中Timeline最常用的泳道与界面，每条泳道可展开查看具体细节，如[图2](#ZH-CN_TOPIC_0000002535807019__fig7728122216162)所示。完整界面介绍请参见《[MindStudio Insight系统调优](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md)》的"[时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md#%E6%97%B6%E9%97%B4%E7%BA%BF%EF%BC%88timeline%EF%BC%89)"章节。
+此处列举了定位过程中Timeline最常用的泳道与界面，每条泳道可展开查看具体细节，如[图2](#ZH-CN_TOPIC_0000002535807019__fig7728122216162)所示。完整界面介绍请参见《MindStudio Insight系统调优》的"[时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning/timeline.md)"章节。
 
 **图2** 泳道展开查看具体细节<a name="ZH-CN_TOPIC_0000002535807019__fig7728122216162"></a>
 
@@ -320,7 +320,7 @@ MindStudio Insight工具的软件包及资料获取方式如[表1](#ZH-CN_TOPIC_
 
 想要快速查看或了解当前所有快捷键操作，可单击界面右上角的问号按钮，在下拉菜单中选择“键盘快捷键”，即可打开快捷键说明的弹窗。
 
-Timeline常用操作包括**通信与时间线相互跳转、置顶比对、覆盖分析、旗帜标记重点区域、框选统计、下发连线关系查看**等功能。详情请参见《[MindStudio Insight系统调优](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md)》的"[时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md#%E6%97%B6%E9%97%B4%E7%BA%BF%EF%BC%88timeline%EF%BC%89)"章节。
+Timeline常用操作包括**通信与时间线相互跳转、置顶比对、覆盖分析、旗帜标记重点区域、框选统计、下发连线关系查看**等功能。详情请参见《MindStudio Insight系统调优》的"[时间线（Timeline）](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning/timeline.md)"章节。
 
 **定位快慢卡具体差异来源**
 
@@ -398,7 +398,7 @@ Timeline常用操作包括**通信与时间线相互跳转、置顶比对、覆�
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927340.png)
 
-内存（Memory）界面还支持两卡间的比对功能，详情请参见《[MindStudio Insight系统调优](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md)》的“内存（Memory） > [使用说明](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E-1)”章节。
+内存（Memory）界面还支持两卡间的比对功能，详情请参见《MindStudio Insight系统调优》的“内存（Memory） > [使用说明](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning/memory.md)”章节。
 
 ##### 算子（Operator）<a name="performance_tool_usage11"></a>
 
@@ -415,7 +415,7 @@ Timeline常用操作包括**通信与时间线相互跳转、置顶比对、覆�
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807197.png)
 
-算子（Operator）界面还支持两卡间的比对功能，详情请参见《[MindStudio Insight系统调优](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md)》的“算子（Operator） > [使用说明](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E-2)”章节。
+算子（Operator）界面还支持两卡间的比对功能，详情请参见《MindStudio Insight系统调优》的“算子（Operator）> [使用说明](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning/operator.md)”章节。
 
 **典型案例：利用算子比对功能快速定位计算性能劣化原因**
 
@@ -423,7 +423,7 @@ Timeline常用操作包括**通信与时间线相互跳转、置顶比对、覆�
 
 1. 将两卡的性能数据移动至同一父目录，使用MindStudio Insight打开该父目录。
 
-2. 参见《[MindStudio Insight系统调优](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md)》的“算子（Operator） > [使用说明](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning.md#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E-3)”章节设置两卡间数据比对。
+2. 参见《MindStudio Insight系统调优》的“算子（Operator）> [使用说明](https://gitcode.com/Ascend/msinsight/blob/master/docs/zh/user_guide/system_tuning/operator.md)”章节设置两卡间数据比对。
 
 3. 已知慢卡相比快卡单Step计算耗时多出约80ms。开启比对模式后，在“算子详情”中，按照“总耗时”进行排序，如[图2](#ZH-CN_TOPIC_0000002535807065__fig459772715412)所示。观察可发现，计算时间差异主要来源是Matmul算子，在数量一致的前提下（数量差为0），总耗时相差约74ms，为主要耗时差异来源。
 

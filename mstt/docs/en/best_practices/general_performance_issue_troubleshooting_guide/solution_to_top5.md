@@ -6,7 +6,7 @@ This document uses the Atlas 200I A2 acceleration module as an example to analyz
 
 **Profiling Information Collection**
 
-For details about how to collect Profiling data, see the [msprof Model Tuning Tool](https://atomgit.com/Ascend/msprof/blob/master/docs/en/quick_start/msprof_quick_start.md).
+For details about how to collect Profiling data, see the [msprof Model Tuning Tool](https://gitcode.com/Ascend/msprof/blob/master/docs/en/quick_start/msprof_quick_start.md).
 
 1. Log in to the running environment and go to the directory where the msprof tool is located, `/var`.
 
@@ -185,7 +185,7 @@ Quantization methods include the following:
 
 - Quantization through ATC: use the `--compression_optimize_conf` parameter during ATC conversion to directly obtain the quantized OM file. For details about the usage, see the [ATC Offline Model Compilation Tool User Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/atctool/docs/en/user_guides/atc_tools/overview/learning_guide.md) and its [Parameters](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/devaids/atctool/docs/en/user_guides/atc_tools/CLI_options/general_restrictions.md).
 - `AMCT_ONNX`: quantize the ONNX model. You need to download and install "AMCT (ONNX)", which is equivalent to the ONNX version of ATC parameter quantization. You can obtain the AMCT tool from the CANN software download link. AMCT supports joint quantization and may provide additional performance improvement on the ResNet structure.
-- msModelSlim tool: quantize the ONNX model. This tool is provided with the CANN package and does not require installation. It supports quantization of ONNX models larger than 2 GB. For usage guidance, see the [msModelSlim tool](https://atomgit.com/Ascend/msmodelslim/blob/master/docs/en/quick_start/quantization_quick_start.md).
+- msModelSlim tool: quantize the ONNX model. This tool is provided with the CANN package and does not require installation. It supports quantization of ONNX models larger than 2 GB. For usage guidance, see the [msModelSlim tool](https://gitcode.com/Ascend/msmodelslim/blob/master/docs/en/quick_start/quantization_quick_start.md).
 
 ### ONNX Model Tuning
 
@@ -261,7 +261,7 @@ Some products run in RC mode and generally have a small memory capacity. As a re
 
 - Environment preparation
 
-  The environment consists of a regular Linux server (referred to as the host machine later in this document) and a server equipped with an Ascend NPU (referred to as the device machine later in this document). You need to install the toolkit package on the servers. For the installation method of the toolkit package, see [CANN Quick Installation](https://www.hiascend.com/cann/download) for the corresponding version.
+  The environment consists of a regular Linux server (referred to as the host machine later in this document) and a server equipped with an Ascend NPU (referred to as the device machine later in this document). You need to install the toolkit package on the servers. For the installation method of the toolkit package, see [CANN Quick Installation](https://www.hiascend.com/en/cann/download) for the corresponding version.
 
   **Figure 1** Environment preparation
 

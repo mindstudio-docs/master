@@ -8,7 +8,7 @@ This chapter systematically describes how to efficiently use the tuning toolchai
 
 | Tuning Step | Tool | Details |
 | ----------- | ---- | ------- |
-| Performance data collection | Depending on how collection is enabled, it falls into the following categories: msprof CLI collection and AI framework Profiler interface collection. For details, see [Model Tuning Performance Data Collection Tools](#model-tuning-performance-data-collection-tools).<br>AI framework Profiler interface collection<br/>&#8226; PyTorch scenario: Ascend PyTorch Profiler<br/>&#8226; MindSpore scenario: MindSpore Profiler<br/>msprof CLI collection<br/>The msprof CLI tool does not collect AI framework layer data. | Select an appropriate performance data collection tool to record the AI framework and Ascend hardware and software data required during model running. For details, see [Model Tuning Performance Data Collection Tools](#model-tuning-performance-data-collection-tools).<br/>The msprof CLI tool mainly collects CANN layer and NPU layer performance data and serves as the foundation for other collection interfaces.<br/>The AI framework Profiler interface encapsulates the msprof CLI tool and additionally collects and parses AI framework layer performance data. Therefore, it is the most commonly used collection method in training or online inference scenarios. By function, AI framework Profiler interfaces fall into the following modes: regular collection (that is, static collection), dynamic collection, and online monitoring.<br/>In addition, some training or inference suites further encapsulate the AI framework Profiler interface, and you can call it directly through the interface provided by the suite, such as [MindSpeed-MM](https://atomgit.com/Ascend/MindSpeed-MM/blob/master/docs/en/tools.md#profiling-tool) and [MindFormers](https://www.mindspore.cn/mindformers/docs/zh-CN/r1.3.2/perf_optimize/perf_optimize.html#profiler工具). |
+| Performance data collection | Depending on how collection is enabled, it falls into the following categories: msprof CLI collection and AI framework Profiler interface collection. For details, see [Model Tuning Performance Data Collection Tools](#model-tuning-performance-data-collection-tools).<br>AI framework Profiler interface collection<br/>&#8226; PyTorch scenario: Ascend PyTorch Profiler<br/>&#8226; MindSpore scenario: MindSpore Profiler<br/>msprof CLI collection<br/>The msprof CLI tool does not collect AI framework layer data. | Select an appropriate performance data collection tool to record the AI framework and Ascend hardware and software data required during model running. For details, see [Model Tuning Performance Data Collection Tools](#model-tuning-performance-data-collection-tools).<br/>The msprof CLI tool mainly collects CANN layer and NPU layer performance data and serves as the foundation for other collection interfaces.<br/>The AI framework Profiler interface encapsulates the msprof CLI tool and additionally collects and parses AI framework layer performance data. Therefore, it is the most commonly used collection method in training or online inference scenarios. By function, AI framework Profiler interfaces fall into the following modes: regular collection (that is, static collection), dynamic collection, and online monitoring.<br/>In addition, some training or inference suites further encapsulate the AI framework Profiler interface, and you can call it directly through the interface provided by the suite, such as [MindSpeed-MM](https://gitcode.com/Ascend/MindSpeed-MM/blob/master/docs/en/tools/tools.md#profiling-tool) and [MindFormers](https://www.mindspore.cn/mindformers/docs/zh-CN/r1.3.2/perf_optimize/perf_optimize.html#profiler工具). |
 | Performance data analysis | Quick analysis tools for model tuning:<br/>&#8226; Cluster analysis (`cluster_analyze`)<br/>&#8226; Expert advice (`advisor`)<br/>&#8226; Performance breakdown comparison (`compare`)<br/>For details, see [Quick Analysis for Model Tuning (msprof-analyze CLI)](#quick-analysis-for-model-tuning-msprof-analyze-cli). | For a quick preliminary analysis, you can use the functions provided by msprof-analyze:<br/>&#8226; `cluster_analyze`: In cluster scenarios where all data cannot be analyzed directly, such as with thousands or tens of thousands of devices, you can use this tool to extract cluster iteration duration and communication data and quickly locate slow devices, slow nodes, and slow links. You are advised to use this tool together with the Summary and Communication tabs of the MindStudio Insight visualization tool. For details, see the [Cluster Performance Analysis](#cluster-performance-analysis) chapter of MindStudio Insight.<br/>&#8226; `advisor`: This tool turns the identification of common issues and optimization suggestions into tool capabilities, helping you quickly narrow down and locate typical performance issues or determine the direction for further analysis.<br/>&#8226; `compare`: This tool compares training duration and memory usage to locate the specific degraded operators/APIs and helps you improve performance tuning efficiency. It supports single-device performance comparison between GPU and NPU and between NPU and NPU. It is better suited to scenarios with baseline comparison data, such as performance degradation after GPU-to-NPU migration and performance jitter.|
 | Performance data visualization | In-depth analysis tool for model tuning. For details, see [In-Depth Analysis for Model Tuning (MindStudio Insight)](#in-depth-analysis-for-model-tuning-mindstudio-insight). | The MindStudio Insight visualization tool displays complete Profiling data graphically, helping you deeply understand and accurately locate the root cause of issues. This tool uses a top-down analysis method, that is, it drills down progressively from the macro level to the micro level and from the entire cluster to a single node. For details about its usage strategy and specific operations, see [In-Depth Analysis for Model Tuning (MindStudio Insight)](#in-depth-analysis-for-model-tuning-mindstudio-insight). |
 
@@ -54,19 +54,19 @@ The msprof CLI tool mainly collects CANN layer and NPU layer performance data an
 
 The AI framework Profiler interface encapsulates the msprof CLI tool and additionally collects and parses AI framework layer performance data, making it **the most commonly used collection method**. By function, AI framework Profiler interfaces fall into the following modes: regular collection (that is, static collection), dynamic collection, and online monitoring.
 
-In addition, some training or inference suites further encapsulate the AI framework Profiler interface, and you can call it directly through the interface provided by the suite, such as [MindSpeed-MM](https://atomgit.com/Ascend/MindSpeed-MM/blob/master/docs/en/tools.md#profiling-tool) and [MindFormers](https://www.mindspore.cn/mindformers/docs/zh-CN/r1.3.2/perf_optimize/perf_optimize.html#profiler工具).
+In addition, some training or inference suites further encapsulate the AI framework Profiler interface, and you can call it directly through the interface provided by the suite, such as [MindSpeed-MM](https://gitcode.com/Ascend/MindSpeed-MM/blob/master/docs/en/tools/tools.md#profiling-tool) and [MindFormers](https://www.mindspore.cn/mindformers/docs/zh-CN/r1.3.2/perf_optimize/perf_optimize.html#profiler工具).
 
 **Figure 1** Performance collection framework
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087180.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/performance-collection-framework.png "performance-collection-framework")
 
 **Table 1** Collection method description<a name="ZH-CN_TOPIC_0000002504087082__table38291mcpsimp"></a>
 
 | Collection Method | Features | Recommended Scenario | Reference Documentation |
 | --------------------- | ------------ | ------------------------ | --------------------------- |
-| msprof CLI collection | The msprof CLI tool can collect and parse performance data such as AI task running performance data and Ascend AI processor system data.<br>The msprof CLI tool does not collect AI framework layer data. | This method is available in both training and inference scenarios. | [msProf Model Tuning Tool](https://atomgit.com/Ascend/msprof/blob/master/docs/en/quick_start/msprof_quick_start.md) |
-| Ascend PyTorch Profiler interface collection | It is fully aligned with the usage in the PyTorch GPU scenario and can collect PyTorch framework data and Ascend hardware and software data. | Regular performance analysis based on PyTorch. | [Ascend PyTorch Tuning Tool](https://atomgit.com/Ascend/pytorch/blob/v2.14.0-26.2.0/docs/en/developer_notes/ascend_pytorch_profiler_user_guide.md) |
-| MindSpore Profiler interface collection | It can collect MindSpore framework data and Ascend hardware and software data. | Regular performance analysis based on MindSpore. | [MindSpore Tuning Tool](https://atomgit.com/Ascend/docs/blob/master/MindStudio/master/en/menu/mindspore_profiler_user_guide.md) |
+| msprof CLI collection | The msprof CLI tool can collect and parse performance data such as AI task running performance data and Ascend AI processor system data.<br>The msprof CLI tool does not collect AI framework layer data. | This method is available in both training and inference scenarios. | [msProf Model Tuning Tool](https://gitcode.com/Ascend/msprof/blob/master/docs/en/quick_start/msprof_quick_start.md) |
+| Ascend PyTorch Profiler interface collection | It is fully aligned with the usage in the PyTorch GPU scenario and can collect PyTorch framework data and Ascend hardware and software data. | Regular performance analysis based on PyTorch. | [Ascend PyTorch Tuning Tool](https://gitcode.com/Ascend/pytorch/blob/v2.14.0-26.2.0/docs/en/developer_notes/ascend_pytorch_profiler_user_guide.md) |
+| MindSpore Profiler interface collection | It can collect MindSpore framework data and Ascend hardware and software data. | Regular performance analysis based on MindSpore. | [MindSpore Tuning Tool](https://gitcode.com/Ascend/docs/blob/master/MindStudio/master/en/menu/mindspore_profiler_user_guide.md) |
 
 When you use the AI framework Profiler for collection, you can configure parameters by referring to [Table 2](#ZH-CN_TOPIC_0000002504087082__table3829mcpsimp).
 
@@ -91,7 +91,7 @@ The collection methods in [Table 1](#ZH-CN_TOPIC_0000002504087082__table38291mcp
 
 ### Quick Analysis for Model Tuning (msprof-analyze CLI)<a name="performance_tool_usage01"></a>
 
-For performance bottlenecks in AI jobs, the [msprof-analyze tool](https://atomgit.com/Ascend/msprof-analyze/blob/master/docs/en/quick_start/msprof-analyze_quick_start.md) provides a CLI tool for quick analysis. It has the following core capabilities, as shown in [Table 1](#ZH-CN_TOPIC_0000002535887119__table2845mcpsimp).
+For performance bottlenecks in AI jobs, the [msprof-analyze tool](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/en/quick_start/msprof-analyze_quick_start.md) provides a CLI tool for quick analysis. It has the following core capabilities, as shown in [Table 1](#ZH-CN_TOPIC_0000002535887119__table2845mcpsimp).
 
 **Table 1** Core capabilities of the msprof-analyze tool<a name="ZH-CN_TOPIC_0000002535887119__table2845mcpsimp"></a>
 
@@ -107,7 +107,7 @@ For performance bottlenecks in AI jobs, the [msprof-analyze tool](https://atomgi
 
   **Figure 1** Example of visualizing cluster analysis results with MindStudio Insight
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807177.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/visual-cluster-analysis-result-on-mindstudio-insight.png "visual-cluster-analysis-result-on-mindstudio-insight")
 
 - `compare` (performance comparison)
 
@@ -123,13 +123,13 @@ For performance bottlenecks in AI jobs, the [msprof-analyze tool](https://atomgi
 
   **Figure 3** Main functions of the advisor tool
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887211.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/main-functions-of-the-advisor-tool.png "main-functions-of-the-advisor-tool")
 
   The `advisor` tool grades optimization suggestions by urgency. Red labels indicate the highest priority and must be handled first.
 
   **Figure 4** Example of an advisor tool analysis report
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927388.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/analysis-result-report-of-the-advisor-tool.png "analysis-result-report-of-the-advisor-tool")
 
 ### In-Depth Analysis for Model Tuning (MindStudio Insight)<a name="performance_tool_usage02"></a>
 
@@ -141,7 +141,7 @@ The process for using the MindStudio Insight tool to analyze issues is shown in 
 
 **Figure 1** Flowchart for analyzing issues with the MindStudio Insight tool<a name="ZH-CN_TOPIC_0000002535807093__fig71814018265"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927414.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/mindstudio-insight-analysis-flowchart.png "mindstudio-insight-analysis-flowchart")
 
 1. Use the cluster analysis function to narrow down the scope.
 
@@ -168,8 +168,8 @@ The ways to obtain the software package and documentation of the MindStudio Insi
 
 | Category | Link |
 | -------- | ---- |
-| Software package | [Link](https://www.hiascend.com/developer/software/mindstudio/download) |
-| Documentation | [Link](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md) |
+| Software package | [Link](https://www.hiascend.com/en/developer/software/mindstudio/download) |
+| Documentation | [Link](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md) |
 
 #### Cluster Performance Analysis<a name="performance_tool_usage05"></a>
 
@@ -183,7 +183,7 @@ First, compare the computation, communication, and scheduling time across device
 
 **Figure 1** Summary page<a name="ZH-CN_TOPIC_0000002503927234__fig135675411608"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087158.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/summary-page.png "summary-page")
 
 Common operation steps are as follows:
 
@@ -200,25 +200,25 @@ Common operation steps are as follows:
 
   **Figure 2** Typical case 1<a name="ZH-CN_TOPIC_0000002503927234__fig1879412319517"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087162.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/typical-case-1.png "typical-case-1")
 
 - Typical case 2: As shown in [Figure 3](#ZH-CN_TOPIC_0000002503927234__fig1531948185114), the idle time accounts for a relatively high proportion, indicating that this cluster has a significant dispatch bottleneck. See [Locating and Resolving Host Bound Issues](solution_to_top3.md) for further locating and optimization. The communication time also accounts for a relatively high proportion and fluctuates among devices. See [Communication Issue Optimization Solutions](solution_to_top1.md) for further locating and optimization.
 
   **Figure 3** Typical case 2<a name="ZH-CN_TOPIC_0000002503927234__fig1531948185114"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887153.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/typical-case-2.png "typical-case-2")
 
   When the number of devices is large, the full amount of data presented is too much for viewing and analysis, as shown in [Figure 4](#ZH-CN_TOPIC_0000002503927234__fig18983117211). You need to **simplify and split** the data in a reasonable way to make the analysis direction clearer.
 
   **Figure 4** Full data display on the "Computation/Communication Overview" page<a name="ZH-CN_TOPIC_0000002503927234__fig18983117211"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087154.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/full-data-display-on-the-computation-communication-overview-page.png "full-data-display-on-the-computation-communication-overview-page")
 
   Simplification method 1: Left-click a communication domain connection (for example, ① in [Figure 5](#ZH-CN_TOPIC_0000002503927234__fig189831172111)) to view a single communication domain and obtain an overview diagram broken down by communication domain. You can also click a box for a similar effect (the same connection line represents the same communication domain, and the same box represents the same parallel group).
 
   **Figure 5** Computation/Communication Overview broken down by communication domain<a name="ZH-CN_TOPIC_0000002503927234__fig189831172111"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807119.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/computation-communication-overview-of-a-communication-domain.png "computation-communication-overview-of-a-communication-domain")
 
   Simplification method 2: View the collapsed view first and progressively narrow down from the whole to the part. Take a 512-device cluster with the parallel strategy DP8, PP8, and TP8 as an example. Its fully expanded dimension (that is, the "DP + PP + TP" dimension) has 512 devices. After you collapse the TP dimension (that is, the "DP + PP" dimension), every 8 devices in a TP domain are merged into one node. Therefore, the view is collapsed to 64 nodes. You can first select the "DP + PP" dimension to preliminarily locate slow groups, and then enter the "DP + PP + TP" dimension to locate slow devices.
 
@@ -226,23 +226,23 @@ Common operation steps are as follows:
 
      **Figure 6** DP+PP dimension (TP collapsed)<a name="ZH-CN_TOPIC_0000002503927234__fig17985111822"></a>
 
-     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887151.png)
+     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/dp-+-pp-(tp-folded).png "dp-+-pp-(tp-folded)")
 
   2. Take the parallel group `dpIndex=4` as an example. Right-click 4 and choose "Expand" to jump to the "DP + PP + TP" dimension, as shown in [Figure 7](#ZH-CN_TOPIC_0000002503927234__fig3995119219). You can then switch "Performance Metrics" to "TP-Communication Time" and see that the slow device is device 38, that is, device 38 affects the TP domain (32-39) and further affects `dpIndex0` to `dpIndex7` in [Figure 6](#ZH-CN_TOPIC_0000002503927234__fig17985111822).
 
      **Figure 7** DP+PP+TP dimension (fully expanded dimension)<a name="ZH-CN_TOPIC_0000002503927234__fig3995119219"></a>
 
-     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927330.png)
+     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/dp-+-pp-+-tp-(all-dimensions-expanded).png "dp-+-pp-+-tp-(all-dimensions-expanded)")
 
   3. After you locate the slow device, right-click the communication domain connection of interest (for example, the green connection here, which represents the TP communication domain) to view the communication duration analysis, and go to the Communication page to further analyze the communication process of the slow device, as shown in [Figure 8](#ZH-CN_TOPIC_0000002503927234__fig12999111628) and [Figure 9](#ZH-CN_TOPIC_0000002503927234__fig199171113216).
 
      **Figure 8** Right-click a connection to view the communication duration analysis<a name="ZH-CN_TOPIC_0000002503927234__fig12999111628"></a>
 
-     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807123.png)
+     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/viewing-the-communication-duration-analysis.png "viewing-the-communication-duration-analysis")
 
      **Figure 9** Communication page - communication duration analysis<a name="ZH-CN_TOPIC_0000002503927234__fig199171113216"></a>
 
-     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087160.png)
+     ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/communication-duration-analysis-on-the-communication-page.png "communication-duration-analysis-on-the-communication-page")
 
 ##### Communication<a name="performance_tool_usage07"></a>
 
@@ -250,7 +250,7 @@ The Communication tab breaks down communication metrics by communication domain.
 
 **Figure 1** Switching between the communication matrix and communication duration analysis views<a name="ZH-CN_TOPIC_0000002503927296__fig667414820578"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807187.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/switching-between-the-communication-matrix-and-communication-duration-analysis-views.png "switching-between-the-communication-matrix-and-communication-duration-analysis-views")
 
 **Procedure**
 
@@ -260,19 +260,19 @@ The Communication tab breaks down communication metrics by communication domain.
 
    **Figure 2** Communication duration<a name="ZH-CN_TOPIC_0000002503927296__fig1125010131226"></a>
 
-   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087230.png)
+   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/visualized-communication-duration.png "visualized-communication-duration")
 
 2. If the proportion of transmission time is too high, select "Communication Matrix" and view the communication matrix chart to analyze whether the transmission bandwidth is far lower than the empirical bandwidth, as shown in [Figure 3](#ZH-CN_TOPIC_0000002503927296__fig136271632185319). Provided that the amount of transmitted data is sufficient, if the bandwidth is significantly lower than the expected bandwidth, you can consider that there is room for optimization. Common causes of slow links include communication retransmission, small communication packets, and unaligned data packet bytes. For details, see the related cases in [Communication Issue Optimization Solutions](solution_to_top1.md).
 
    **Figure 3** Communication matrix<a name="ZH-CN_TOPIC_0000002503927296__fig136271632185319"></a>
 
-   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087232.png)
+   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/communication-matrix.png "communication-matrix")
 
 3. If the proportion of transmission time is low while the proportion of waiting or synchronization time is high, the issue is a fast/slow device issue, and you need to select "Communication Duration Analysis". View the "Communication Operator Thumbnail" with communication operators laid out horizontally to identify the slow device, as shown in [Figure 4](#ZH-CN_TOPIC_0000002503927296__fig2429143613918). For the green `hcom allGather` collective communication operator, devices 4, 5, and 13 have shorter durations and are slow devices, while devices with longer durations (for example, devices 11 and 14) are relatively fast devices. Next, you need to analyze what the slow devices do during the idle time. Go to the Timeline page to view the specific differences. For details, see [Timeline operation case for locating fast/slow devices](solution_to_top1.md#timeline-based-fast-and-slow-device-localization-example).
 
    **Figure 4** Identifying the slow device<a name="ZH-CN_TOPIC_0000002503927296__fig2429143613918"></a>
 
-   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087234.png)
+   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/locating-the-slow-cards.png "locating-the-slow-cards")
 
 **Jumping between Communication and Timeline**
 
@@ -282,11 +282,11 @@ The Communication tab breaks down communication metrics by communication domain.
 
   **Figure 5** Jumping from an operator on the Communication page to the Timeline page<a name="ZH-CN_TOPIC_0000002503927296__fig16998195192919"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807189.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/switching-from-the-communication-page-to-the-timeline-page-by-operators.png "switching-from-the-communication-page-to-the-timeline-page-by-operators")
 
   **Figure 6** Jumping from a communication operator on the Timeline page to the Communication page<a name="ZH-CN_TOPIC_0000002503927296__fig368718341305"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887223.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/switching-from-the-timeline-to-the-communication-page-by-operators.png "switching-from-the-timeline-to-the-communication-page-by-operators")
 
 #### Single-Device Performance Analysis<a name="performance_tool_usage08"></a>
 
@@ -296,7 +296,7 @@ The Timeline lays out the details of host and device execution during training o
 
 **Figure 1** Commonly used Timeline lanes and the page<a name="ZH-CN_TOPIC_0000002535807019__fig1128122615409"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807127.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/common-timeline-units-and-the-gui.png "common-timeline-units-and-the-gui")
 
 **Table 1** Description of commonly used Timeline lanes and page information<a name="ZH-CN_TOPIC_0000002535807019__table9307154914018"></a>
 
@@ -310,17 +310,17 @@ The Timeline lays out the details of host and device execution during training o
 | 6 | Overlap Analysis | It vertically projects the computation and communication tasks of Ascend Hardware (NPU layer) here to break down computation, communication, and idle time. It is often used to quickly compare the sources of differences in computation, communication, and idle time among devices. |
 | 7 | Stats System View | It provides statistical summary information at the single-device dimension. You can switch between devices using the "Device ID" drop-down list on the left.|
 
-This section lists the Timeline lanes and pages most commonly used during issue locating. Each lane can be expanded to view specific details, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807019__fig7728122216162). For a complete description of the page, see [Timeline](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md#timeline) in [MindStudio Insight System Tuning](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md).
+This section lists the Timeline lanes and pages most commonly used during issue locating. Each lane can be expanded to view specific details, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807019__fig7728122216162). For a complete description of the page, see [Timeline](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning/timeline.md) in [MindStudio Insight System Tuning](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md).
 
 **Figure 2** Expanding a lane to view specific details<a name="ZH-CN_TOPIC_0000002535807019__fig7728122216162"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887161.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/expanding-lanes-to-view-details.png "expanding-lanes-to-view-details")
 
 **Common Operations**
 
 To quickly view or learn about all current shortcut key operations, click the question mark button in the upper right corner of the page and choose "Keyboard Shortcuts" from the drop-down menu to open the shortcut key description dialog box.
 
-Common Timeline operations include **jumping between Communication and Timeline, pin-to-top comparison, overlap analysis, flagging key regions, box selection statistics, and viewing dispatch connection relationships**. For details, see [Timeline](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md#timeline) in [MindStudio Insight System Tuning](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md).
+Common Timeline operations include **jumping between Communication and Timeline, pin-to-top comparison, overlap analysis, flagging key regions, box selection statistics, and viewing dispatch connection relationships**. For details, see [Timeline](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning/timeline.md) in [MindStudio Insight System Tuning](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md).
 
 **Locating the Specific Source of Fast/Slow Device Differences**
 
@@ -356,7 +356,7 @@ The typical manifestations of a dispatch bottleneck on the Timeline are as follo
 
   **Figure 4** Typical manifestation 2 of a dispatch bottleneck<a name="ZH-CN_TOPIC_0000002535807019__fig18956112318318"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887157.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/typical-delivery-bottleneck-2.png "typical-delivery-bottleneck-2")
 
 - The host-to-device connection is nearly vertical, as shown in [Figure 5](#ZH-CN_TOPIC_0000002535807019__fig12167922161).
 
@@ -368,7 +368,7 @@ The typical manifestations of a dispatch bottleneck on the Timeline are as follo
 
   **Figure 6** Typical manifestation 4 of a dispatch bottleneck<a name="ZH-CN_TOPIC_0000002535807019__fig113818131710"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927332.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/typical-delivery-bottleneck-4.png "typical-delivery-bottleneck-4")
 
 **Single-Device Statistics and Operator Search**
 
@@ -376,7 +376,7 @@ If you want to view the specific position of an operator in the Timeline, select
 
 **Figure 7** Operator details<a name="ZH-CN_TOPIC_0000002535807019__fig12208010468"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087164.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/operator-details.png "operator-details")
 
 ##### Memory<a name="performance_tool_usage10"></a>
 
@@ -390,7 +390,7 @@ In [Figure 1](#ZH-CN_TOPIC_0000002535807021__fig775318316219), you can see that 
 
 **Figure 1** Typical case<a name="ZH-CN_TOPIC_0000002535807021__fig775318316219"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535887163.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/typical-example.png "typical-example")
 
 Based on the time point of a memory spike, box-select the operators in the spike time range. In the memory allocation/release details, sort in descending order of memory allocation size and jump to the Timeline based on the operator that ranks first in memory allocation to locate the specific code, as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807021__fig256619222223). Then, based on the code position, discuss with model developers to confirm whether there is room for optimization.
 
@@ -398,7 +398,7 @@ Based on the time point of a memory spike, box-select the operators in the spike
 
 ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927340.png)
 
-The Memory page also supports comparison between two devices. For details, see the "Memory > [Usage Instructions](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md#usage-description-1)" chapter of [MindStudio Insight System Tuning](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md).
+The Memory page also supports comparison between two devices. For details, see the "Memory > [Usage Instructions](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning/memory.md#usage-description)" chapter of [MindStudio Insight System Tuning](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md).
 
 ##### Operator<a name="performance_tool_usage11"></a>
 
@@ -413,9 +413,9 @@ For specific locating and optimization methods, see [Operator Performance Issue 
 
 **Figure 1** Operator page<a name="ZH-CN_TOPIC_0000002535807065__fig18956232172415"></a>
 
-![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807197.png)
+![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/operator-page.png "operator-page")
 
-The Operator page also supports comparison between two devices. For details, see the "Operator > [Usage Instructions](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md#usage-description-2)" chapter of [MindStudio Insight System Tuning](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md).
+The Operator page also supports comparison between two devices. For details, see the "Operator > [Usage Instructions](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning/operator.md#usage-description)" chapter of [MindStudio Insight System Tuning](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md).
 
 **Typical Case: Using the Operator Comparison Function to Quickly Locate the Cause of Compute Performance Degradation**
 
@@ -423,19 +423,19 @@ Background: The same model is deployed on different machines and compute perform
 
 1. Move the performance data of the two devices to the same parent directory and open that parent directory with MindStudio Insight.
 
-2. Set up data comparison between the two devices as described in the "Operator > [Usage Instructions](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md#usage-description-3)" chapter of [MindStudio Insight System Tuning](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md).
+2. Set up data comparison between the two devices as described in the "Operator > [Usage Instructions](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning/operator.md#usage-description)" chapter of [MindStudio Insight System Tuning](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md).
 
 3. The slow device is known to take about 80ms more computation time per step than the fast device. After you enable comparison mode, sort by "Total Duration" in "Operator Details", as shown in [Figure 2](#ZH-CN_TOPIC_0000002535807065__fig459772715412). You can observe that the main source of the computation time difference is the Matmul operator. Given the same quantity (a quantity difference of 0), the total duration differs by about 74ms, which is the main source of the duration difference.
 
    **Figure 2** Operator comparison between devices<a name="ZH-CN_TOPIC_0000002535807065__fig459772715412"></a>
 
-   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002503927408.png)
+   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/operator-comparison-between-cards.png "operator-comparison-between-cards")
 
 4. Further compare operators with the same Shape. You can see that operators of the same type (MatmulV3) with different Shapes degrade to different degrees. Under each Shape, the Matmul on the slow device consistently degrades compared with the fast device, as shown in [Figure 3](#ZH-CN_TOPIC_0000002535807065__fig43061311115511).
 
    **Figure 3** Comparison by Shape<a name="ZH-CN_TOPIC_0000002535807065__fig43061311115511"></a>
 
-   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002504087242.png)
+   ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/shape-based-comparison.png "shape-based-comparison")
 
 5. After investigation, the cause is finally confirmed to be differences in on-chip memory chips among different machines. Matmul is a memory-intensive operator, and the degree of contention for compute and communication bandwidth differs among machines.
 
@@ -453,7 +453,7 @@ This section mainly describes the usage scenarios and locating ideas for service
 
 | Tool | Description |
 | ---- | ----------- |
-| [Inference Pre-Check Tool](https://atomgit.com/Ascend/msit/blob/master/msprechecker/README.md) | It supports full-process checks before, during, and after inference.<br/>&#8226; Before inference, it provides a one-click pre-check function that comprehensively checks for issues that may cause service deployment failures or performance degradation, such as environment variables, the system kernel, and configuration files.<br/>&#8226; During inference, it can write all environment-related data completely to drive.<br/>&#8226; After inference, it can compare the files written to drive to help identify differences and facilitate reproduction of the baseline environment. |
-| [Service-Oriented Advisor](https://atomgit.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/service_profiling_advisor_instruct.md) | Based on the current Benchmark output and the `config.json` configuration of the MindIE service, and combined with a theoretical analysis of the performance upper limit, it provides optimization suggestions for improving key metrics such as time to first token (TTFT) and throughput. |
-| [Service-Oriented Automatic Parameter Optimization](https://atomgit.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/serviceparam_optimizer_instruct.md) | It provides automatic parameter optimization for MindIE service-oriented and vLLM service-oriented scenarios. It uses advanced search algorithms to efficiently find the optimal solution in the parameter space and implement automatic tuning. This function also supports a lightweight design, deploys quickly and conveniently, and ensures more accurate search results. |
-| [Service-Oriented Tuning Tool](https://atomgit.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/msserviceprofiler_serving_tuning_instruct.md) | It provides parsing and breakdown capabilities for inference service-oriented performance data collection interfaces. This interface is designed specifically for service-oriented tuning. It can collect the start and end time points of key processes, identify and record information such as key function calls, key events, and service-oriented scheduling, and support the collection of operator information, helping you quickly locate performance issues. |
+| [Inference Pre-Check Tool](https://gitcode.com/Ascend/msit/blob/master/msprechecker/README.md) | It supports full-process checks before, during, and after inference.<br/>&#8226; Before inference, it provides a one-click pre-check function that comprehensively checks for issues that may cause service deployment failures or performance degradation, such as environment variables, the system kernel, and configuration files.<br/>&#8226; During inference, it can write all environment-related data completely to drive.<br/>&#8226; After inference, it can compare the files written to drive to help identify differences and facilitate reproduction of the baseline environment. |
+| [Service-Oriented Advisor](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/service_profiling_advisor_instruct.md) | Based on the current Benchmark output and the `config.json` configuration of the MindIE service, and combined with a theoretical analysis of the performance upper limit, it provides optimization suggestions for improving key metrics such as time to first token (TTFT) and throughput. |
+| [Service-Oriented Automatic Parameter Optimization](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/serviceparam_optimizer_instruct.md) | It provides automatic parameter optimization for MindIE service-oriented and vLLM service-oriented scenarios. It uses advanced search algorithms to efficiently find the optimal solution in the parameter space and implement automatic tuning. This function also supports a lightweight design, deploys quickly and conveniently, and ensures more accurate search results. |
+| [Service-Oriented Tuning Tool](https://gitcode.com/Ascend/msserviceprofiler/blob/master/docs/en/user_guide/msserviceprofiler_serving_tuning_instruct.md) | It provides parsing and breakdown capabilities for inference service-oriented performance data collection interfaces. This interface is designed specifically for service-oriented tuning. It can collect the start and end time points of key processes, identify and record information such as key function calls, key events, and service-oriented scheduling, and support the collection of operator information, helping you quickly locate performance issues. |

@@ -30,7 +30,7 @@ In addition, to resolve the difficulty of verification, when conditions permit, 
    - Version check: Collect the versions in use, including at least HDK, OS, CANN, and the framework. Use the compatibility list to confirm whether compatibility issues exist in the versions, and also confirm whether known performance-related issues exist in the versions.
    - Change check: Determine whether any change was made recently, including but not limited to version upgrades and cluster re-planning.
    - Environment check: Check whether hardware alarms exist and whether KPIs such as storage (I/O and so on) and network (packet loss and so on) are normal.
-   - Configuration check: Refer to the typical check items in the [Pre-Check Tool Guide](https://atomgit.com/Ascend/msit/blob/master/msprechecker/README.md) to check whether the configuration is correct.
+   - Configuration check: Refer to the typical check items in the [Pre-Check Tool Guide](https://gitcode.com/Ascend/msit/blob/master/msprechecker/README.md) to check whether the configuration is correct.
 
    > [!NOTE]
    >

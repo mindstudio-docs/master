@@ -72,7 +72,7 @@ Before committing a PR, ensure that:
 
 ### 5.2 Creating a PR
 
-When creating a PR on [AtomGit](https://atomgit.com/), complete the following:
+When creating a PR on [AtomGit](https://gitcode.com/), complete the following:
 
 1. **Title**: Briefly summarize the theme or functionality of this change.
 2. **Description**: Explain what was changed, the reason for the change, and self-testing details (including environment and results) to help reviewers understand.

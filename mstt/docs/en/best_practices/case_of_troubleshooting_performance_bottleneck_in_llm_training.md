@@ -25,14 +25,14 @@ The first step in performance tuning is to identify the issue clearly, and then 
 
 1. Collect performance data. You can use the APIs provided by Ascend PyTorch Profiler to collect and parse data.
 2. Use the MindStudio Insight visualization tool to localize performance issues. The localization results usually fall into three directions: compute, scheduling, and communication.
-3. Use the [advisor expert suggestion tool](https://atomgit.com/Ascend/msprof-analyze/blob/master/docs/en/user_guide/advisor_instruct.md) to help locate issues. The advisor tool uses a built-in case set to automatically analyze performance data and output performance tuning suggestions.
+3. Use the [advisor expert suggestion tool](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/en/user_guide/advisor_instruct.md) to help locate issues. The advisor tool uses a built-in case set to automatically analyze performance data and output performance tuning suggestions.
 4. Tune specific issues using the corresponding tuning methods. After each tuning, **rerun the training**, **collect performance data**, and use the MindStudio Insight visualization tool to check whether the tuning method takes effect. Repeat this process until the performance issue is resolved.
 
 ### Collecting Performance Data with Ascend PyTorch Profiler<a name="case_of_troubleshooting_performance_bottleneck_in_llm_training01"></a>
 
 Ascend PyTorch Profiler is a set of APIs for collecting performance data during LLM training under the Ascend PyTorch framework. It can collect and parse raw performance data from the framework side, the CANN side, and the device side.
 
-For details about Ascend PyTorch Profiler, see [Ascend PyTorch Profiler](https://atomgit.com/Ascend/pytorch/blob/master/docs/en/developer_notes/ascend_pytorch_profiler_user_guide.md).
+For details about Ascend PyTorch Profiler, see [Ascend PyTorch Profiler](https://gitcode.com/Ascend/pytorch/blob/master/docs/en/developer_notes/ascend_pytorch_profiler_user_guide.md).
 
 Add the following example code to the training script, such as a `train_*.py` file, to configure performance data collection parameters, and then start training.
 
@@ -105,11 +105,11 @@ The structure of the generated files is as follows:
 
 MindStudio Insight provides a wealth of tuning analysis methods. It visually presents real hardware and software runtime data, analyzes performance data from multiple dimensions to locate performance bottlenecks, and supports cluster performance analysis at the scale of hundreds or thousands of devices or more.
 
-Follow the [MindStudio Insight Tool User Guide](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), specifically "Basic Operations > [Importing Data](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/basic_operations.md#importing-data)", to import the performance data collected by [Collecting Performance Data with Ascend PyTorch Profiler](#collecting-performance-data-with-ascend-pytorch-profiler) into MindStudio Insight. Then analyze the performance data by performing the following steps.
+Follow the [MindStudio Insight Tool User Guide](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), specifically "Basic Operations > [Importing Data](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/basic_operations.md#importing-data)", to import the performance data collected by [Collecting Performance Data with Ascend PyTorch Profiler](#collecting-performance-data-with-ascend-pytorch-profiler) into MindStudio Insight. Then analyze the performance data by performing the following steps.
 
 #### Viewing Overall Data on the Summary Page
 
-You can view the details of each module on the Summary page. For details, see the [MindStudio Insight Tool User Guide](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), "System Tuning > [Summary](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md#summary)".
+You can view the details of each module on the Summary page. For details, see the [MindStudio Insight Tool User Guide](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), "System Tuning > [Summary](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning/summary.md)".
 
 1. The "Parallel Strategy Analysis" module provides analysis perspectives for different parallel strategies, such as PP, TP, CP, DP, and EP.
 
@@ -146,7 +146,7 @@ Different metric patterns indicate different performance issues:
 
 #### Compute Issues
 
-When the data metrics indicate compute issues, you can view the operator data of the abnormal devices directly and compare it with that of normal devices. In this case, use the inter-device performance comparison function of MindStudio Insight. Following the instructions in the [MindStudio Insight Tool User Guide](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), set two devices to comparison mode and view the results on the operator page. Take the compute issue in the following figure as an example. When the number of operators is the same, the average duration of MatMul operators increases significantly, which causes the compute time difference between the two devices.
+When the data metrics indicate compute issues, you can view the operator data of the abnormal devices directly and compare it with that of normal devices. In this case, use the inter-device performance comparison function of MindStudio Insight. Following the instructions in the [MindStudio Insight Tool User Guide](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), set two devices to comparison mode and view the results on the operator page. Take the compute issue in the following figure as an example. When the number of operators is the same, the average duration of MatMul operators increases significantly, which causes the compute time difference between the two devices.
 
 **Figure 3** Compute operator type
 
@@ -160,7 +160,7 @@ Experience shows that MatMul operators are likely to degrade under specific shap
 
 #### Scheduling Issues
 
-When the data metrics indicate scheduling issues, compare the abnormal devices with normal devices on the Timeline page to further locate the operators that cause the issue. For details about the page, see the [MindStudio Insight Tool User Guide](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), "System Tuning > [Timeline](https://atomgit.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning.md#timeline)". On the Timeline page, select the host-to-device link type. Host-to-device shows the delivery and execution relationship between CANN layer operators and Ascend Hardware operators, and between CANN layer operators and HCCL communication operators. You can use it to locate scheduling issues.
+When the data metrics indicate scheduling issues, compare the abnormal devices with normal devices on the Timeline page to further locate the operators that cause the issue. For details about the page, see the [MindStudio Insight Tool User Guide](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/overview.md), "System Tuning > [Timeline](https://gitcode.com/Ascend/msinsight/blob/master/docs/en/user_guide/system_tuning/timeline.md)". On the Timeline page, select the host-to-device link type. Host-to-device shows the delivery and execution relationship between CANN layer operators and Ascend Hardware operators, and between CANN layer operators and HCCL communication operators. You can use it to locate scheduling issues.
 
 Host-to-device links usually have two shapes: slanted and vertical. The following figure shows a case with scheduling issues. If the host-to-device links are slanted, as shown on the left, scheduling tasks are arranged properly in this period, and the Ascend devices run compute and communication tasks at full load. If the host-to-device links are vertical, as shown on the right, the Ascend devices quickly finish the tasks delivered by the CPU and do not run compute and communication tasks at full load, which generally indicates scheduling issues. In this case, you can tune performance by increasing the batch size, binding CPU cores, or replacing operators with fused ones.
 
@@ -239,7 +239,7 @@ MindStudio Insight loads all data and locates the issue.
 
 ### Localization with advisor
 
-You can also use the [advisor expert suggestion tool](https://atomgit.com/Ascend/msprof-analyze/blob/master/docs/en/user_guide/advisor_instruct.md) to help locate the issue in this case.
+You can also use the [advisor expert suggestion tool](https://gitcode.com/Ascend/msprof-analyze/blob/master/docs/en/user_guide/advisor_instruct.md) to help locate the issue in this case.
 
 1. Run the `msprof-analyze advisor all -d $HOME/profiling_data/` command to obtain the path of the file that stores the expert suggestions. `$HOME/profiling_data/` is the path where the performance data is stored.
 

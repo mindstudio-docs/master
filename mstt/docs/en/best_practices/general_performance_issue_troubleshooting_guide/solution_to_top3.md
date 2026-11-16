@@ -24,9 +24,9 @@ Host Bound issues are mainly caused by two factors: operator dispatch latency an
 
 | Optimization Method | Advantage | Description |
 | ------------ | ---------------- | ------------------------------------------------------------ |
-| Operator dispatch optimization | Reduce the number of operator dispatches | After you identify the bottleneck with the [methods for locating fast and slow device issues](solution_to_top1.md#methods-for-locating-fast-and-slow-device-issues), optimize it through logic optimization, equivalent computation replacement, operator fusion, and other methods. See [Affinity Operator Optimization Strategies](solution_to_top2.md#affinity-operator-optimization-strategies). |
+| Operator dispatch optimization | Reduce the number of operator dispatches | After you identify the bottleneck with the [methods for locating fast and slow device issues](solution_to_top1.md#methods-for-locating-fast-and-slow-device-issues), optimize it through logic optimization, equivalent computation replacement, operator fusion, and other methods. See [Affinity Operator Optimization Strategies](solution_to_top2.md#affinity-operator-tuning-strategy). |
 |              | Improve operator dispatch speed | &#8226; [Pipeline optimization](#pipeline-optimization): a general and efficient optimization method. Its core idea is to migrate some operator adaptation tasks to the secondary pipeline, thereby balancing the load between the two pipelines and reducing the wake-up time when tasks are dequeued.<br>&#8226; [Core binding optimization](#core-binding-optimization): controls the processor affinity of CPU-side operator tasks (that is, core binding) to improve task execution efficiency, avoid memory access across Non-Uniform Memory Access (NUMA) nodes, and reduce task scheduling overhead.<br/>&#8226; [Compilation optimization](#compilation-optimization): applies the Link Time Optimization (LTO) and Profile-Guided Optimization (PGO) technologies of BiSheng Compiler to build the core components, Python, PyTorch (torch), and Ascend TorchNPU, from source. This effectively improves program performance. |
-| CPU computing optimization | Exploit the advantages of heterogeneous computing power | Minimize the use of AI CPU operators and preferentially select operators with better affinity. See [Affinity Operator Optimization Strategies](solution_to_top2.md#affinity-operator-optimization-strategies). |
+| CPU computing optimization | Exploit the advantages of heterogeneous computing power | Minimize the use of AI CPU operators and preferentially select operators with better affinity. See [Affinity Operator Optimization Strategies](solution_to_top2.md#affinity-operator-tuning-strategy). |
 |              | Exploit the advantages of parallel computing | Promote asynchronous parallel processing between the CPU and NPU (for example, place data processing logic in the `DataLoader`), and reduce stream synchronization operations (for example, use `item()`, `cpu()`, and `npu()` with caution, and merge or avoid them where possible).|
 
 In addition, there is a class of dispatch anomaly issues, in which the operator dispatch process takes significantly longer because of factors such as resource preemption and operating system scheduling policy conflicts. See [Dispatch Anomaly Analysis](solution_to_top3.md#dispatch-anomaly-analysis).
@@ -43,11 +43,11 @@ export TASK_QUEUE_ENABLE=2
 
 **Detailed Principles**
 
-The `task_queue` operator dispatch queue supports three configuration levels (the add operator is used as an example). You can configure them as needed. For details, see [TASK_QUEUE_ENABLE](https://atomgit.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/op_execution/TASK_QUEUE_ENABLE.md) in the [TorchNPU Environment Variable Reference](https://atomgit.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/env_variable_list.md).
+The `task_queue` operator dispatch queue supports three configuration levels (the add operator is used as an example). You can configure them as needed. For details, see [TASK_QUEUE_ENABLE](https://gitcode.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/op_execution/TASK_QUEUE_ENABLE.md) in the [TorchNPU Environment Variable Reference](https://gitcode.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/env_variable_list.md).
 
 **Precautions**
 
-- When `ASCEND_LAUNCH_BLOCKING` is set to "1", the `task_queue` operator queue is forcibly disabled, and the `TASK_QUEUE_ENABLE` configuration does not take effect. For the `ASCEND_LAUNCH_BLOCKING` configuration, see [ASCEND_LAUNCH_BLOCKING](https://atomgit.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/op_execution/ASCEND_LAUNCH_BLOCKING.md) in the [TorchNPU Environment Variable Reference](https://atomgit.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/env_variable_list.md).
+- When `ASCEND_LAUNCH_BLOCKING` is set to "1", the `task_queue` operator queue is forcibly disabled, and the `TASK_QUEUE_ENABLE` configuration does not take effect. For the `ASCEND_LAUNCH_BLOCKING` configuration, see [ASCEND_LAUNCH_BLOCKING](https://gitcode.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/op_execution/ASCEND_LAUNCH_BLOCKING.md) in the [TorchNPU Environment Variable Reference](https://gitcode.com/Ascend/pytorch/blob/master/docs/en/api/environment_variable/env_variable_list.md).
 
 - When `TASK_QUEUE_ENABLE` is set to 2, the increased concurrency of memory access may raise the NPU memory peak during running.
 
@@ -322,7 +322,7 @@ Currently, dispatch anomalies are one of the common causes of fast and slow devi
 
   **Figure 2** Operator dispatch is generally slower<a name="ZH-CN_TOPIC_0000002503927256__fig1918315395150"></a>
 
-  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/zh-cn_image_0000002535807143.png)
+  ![img](../../figures/best_practices/general_performance_issue_troubleshooting_guide/en-us_image_0000002548419823.png)
 
 Such issues are usually difficult to locate because of scenario complexity and can be classified as dispatch anomaly issues.
 
@@ -344,7 +344,7 @@ Before you perform an in-depth analysis, complete the following basic checks:
 
   > [!NOTE]
   >
-  > For details about the `CPU_AFFINITY_CONF` environment variable, see [Core Binding Optimization](https://atomgit.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/en/performance_tuning/performance_tuning_methods/scheduling_opt.md#core-binding-optimization) under "Performance Tuning > Performance Tuning Methods > Scheduling Optimization" in the [PyTorch Training Model Migration and Tuning Guide](https://atomgit.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/en/README.md).
+  > For details about the `CPU_AFFINITY_CONF` environment variable, see [Core Binding Optimization](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/en/performance_tuning/performance_tuning_methods/scheduling_opt.md#core-binding-optimization) under "Performance Tuning > Performance Tuning Methods > Scheduling Optimization" in the [PyTorch Training Model Migration and Tuning Guide](https://gitcode.com/Ascend/ModelZoo-PyTorch/blob/master/PyTorch/docs/en/README.md).
 
 ### Formal Analysis
 
