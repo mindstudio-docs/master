@@ -18,10 +18,10 @@
 - E8M0：$e\in[-127,127]$；编码为无符号 8bit 时写作 $e+127$，$0\mathrm{xFF}$ 保留为 NaN。
 - 元素：默认 E4M3（$e_{\max}=8$，$\mathrm{max\_norm}=448$），可选 E5M2（$e_{\max}=15$，$\mathrm{max\_norm}=57344$）。
 
-| 元素 | 指数位 | 尾数位（含隐含） | $e_{\max}$ | $\mathrm{max\_norm}$ | $\mathrm{min\_exp}$ |
-|------|--------|------------------|-----------|----------------------|---------------------|
-| E4M3 | 4 | 5 | 8 | 448 | $-6$ |
-| E5M2 | 5 | 4 | 15 | 57344 | $-14$ |
+| 元素 | 符号 | 指数 | 尾数 | $e_{\max}$ | $\mathrm{max\_norm}$ | $\mathrm{min\_exp}$ |
+|------|------|------|------|-----------|----------------------|---------------------|
+| E4M3 | 1 | 4 | 3 | 8 | $2^{8}\times 1.75=448$ | $-6$ |
+| E5M2 | 1 | 5 | 2 | 15 | $2^{15}\times 1.75=57344$ | $-14$ |
 
 ### 2.2 量化公式
 
@@ -38,7 +38,7 @@ $$q_i = \mathrm{clamp}(\mathrm{roundTiesToEven\_to\_FP8}(x'_i), \pm\mathrm{max\_
 - $q_i$：块内 FP8 量化值。
 - $\hat{x}_i$：反量化还原值。
 
-减去 $e_{\max}$，是为了让块内最大元素落到元素格式的上沿。全零块的 $e_{\mathrm{shared}}=-127$ 是合法值。元素舍入与 [FP8](term_fp8.md) 相同。没有 zero-point。
+减去 $e_{\max}$，是为了让块内最大元素落到元素格式的上沿。全零块的 $e_{\mathrm{shared}}=-127$ 是合法值。元素舍入与 [FP8](term_fp8.md) 相同，没有 zero-point。
 
 ### 2.3 与相关格式的关系
 
@@ -48,14 +48,14 @@ $$q_i = \mathrm{clamp}(\mathrm{roundTiesToEven\_to\_FP8}(x'_i), \pm\mathrm{max\_
 
 ### 2.4 适用场景与限制
 
-- **适用**：离群值较多、又希望摊薄 scale 开销的 8bit 部署，例如 [W8A8 MX 动态量化](../quantization_mode/linear_layer_quantization/term_w8a8_mx_dynamic.md)。
+- **适用**：离群值较多、又希望摊薄 scale 开销的 8bit 部署，例如 [W8A8 MX 动态量化](../quantization_schema/linear_layer_quantization/term_w8a8_mx_dynamic.md)。
 - **限制**：收益依赖硬件 MX 算子。只有对称路径。
 
 ---
 
 ## 3. 关联流程
 
-- 《[量化数据类型 ops 使用流程指南](usage_dtype_ops.md)》：本类型函数的调用步骤，含 `fmt` 默认 `e4m3`。
+- 《[量化数据类型 ops 使用流程指南](usage_dtype_ops.md)》：张量级量化、反量化与参数计算函数的调用步骤。
 - 《[一键量化使用指南](../../user_guide/usage_one_click_quantization.md)》：量化任务的执行入口。
 - 《[量化精度调优指南](../../user_guide/process_quantization_precision_tuning.md)》：本格式导致的精度问题可通过该流程排查。
 
@@ -68,8 +68,8 @@ $$q_i = \mathrm{clamp}(\mathrm{roundTiesToEven\_to\_FP8}(x'_i), \pm\mathrm{max\_
 - [FP8](term_fp8.md)：同类 8bit 浮点格式，逐元素对照。
 - [MXFP4](term_mxfp4.md)：同类 MX 格式，元素为 E2M1。
 - [INT8](term_int8.md)：同类 8bit 格式，整数仿射对照。
-- [GEMM](../quantization_mode/term_gemm.md)：配套术语，低精度矩阵乘。
-- [W8A8 MX 动态量化](../quantization_mode/linear_layer_quantization/term_w8a8_mx_dynamic.md)：应用对象，线性层采用本格式。
+- [GEMM](../quantization_schema/term_gemm.md)：配套术语，低精度矩阵乘。
+- [W8A8 MX 动态量化](../quantization_schema/linear_layer_quantization/term_w8a8_mx_dynamic.md)：应用对象，线性层采用本格式。
 
 ---
 

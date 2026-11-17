@@ -7,7 +7,7 @@
 - \- 表示该量化策略暂未通过msModelSlim官方验证，用户可根据实际需求进行配置尝试，但量化效果和功能稳定性无法得到官方保证。
 - 标记了“一键量化”的“模型名称-量化模式（w8a8s等）”组合可在《[安装](../../install_guide/install_guide.md)》后使用如下《[一键量化](../../user_guide/usage_one_click_quantization.md)》命令行执行模型量化。
 - 因 Qwen 系列推出能力更强的新版本，Qwen1.5-14B/32B/72B 模型已超出维护周期，后续将对该系列老模型实施日落处理，其现网版本量化模式不再提供维护支持。
-- **Qwen3.5 / Qwen3.6** 具备原生多模态（Vision）能力，校准模态说明见《[Qwen3.5 量化说明 - 校准模态支持](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_5/README.md#校准模态支持)》。
+- **Qwen3.5 / Qwen3.6 / Qwen3.8** 具备原生多模态（Vision）能力，校准模态说明见《[Qwen3.5 量化说明 - 校准模态支持](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_5/README.md#校准模态支持)》《[Qwen3.6 量化说明 - 校准模态支持](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_6/README.md#校准模态支持)》《[Qwen3.8 量化说明 - 校准模态支持](https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_8/README.md#校准模态支持)》。
 
 ```bash
 msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device npu --model_type ${MODEL_TYPE} --quant_type ${QUANT_TYPE} --trust_remote_code true
@@ -19,9 +19,9 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
 
 量化模式名称格式为 `W{weight_bit}A{activation_bit}[C{cache_bit}][S]`，含义如下：
 
-- `{weight_bit}`：权重量化位数（如 8、4、16）
-- `{activation_bit}`：激活值量化位数（如 8、16）
-- `{cache_bit}`（可选）：KV Cache 量化位数（如 8）
+- `{weight_bit}`：权重量化位数（如8、4、16）
+- `{activation_bit}`：激活值量化位数（如8、16）
+- `{cache_bit}`（可选）：KV Cache量化位数（如8）
 - `S`（可选）：表示稀疏量化（Sparse）
 
 ## 大语言模型支持列表
@@ -375,7 +375,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="3"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3-MOE/README.md">Qwen3-MOE系列</a></strong></td>
+      <td rowspan="3"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3-MOE/README.md">Qwen3-MoE系列</a></strong></td>
       <td>Qwen3-30B-A3B</td>
       <td>transformers==4.57.6</td>
       <td>-</td>
@@ -418,7 +418,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="7"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_5/README.md">Qwen3.5系列</a></strong></td>
+      <td rowspan="5"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_5/README.md">Qwen3.5系列</a></strong></td>
       <td>Qwen3.5-397B-A17B</td>
       <td>transformers==5.2.0</td>
       <td>-</td>
@@ -489,6 +489,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
+      <td rowspan="2"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_6/README.md">Qwen3.6系列</a></strong></td>
       <td>Qwen3.6-27B<sup>6</sup></td>
       <td>transformers==5.2.0</td>
       <td>-</td>
@@ -511,6 +512,21 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
       <td>√(一键量化)<sup>4</sup></td>
       <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/Qwen3_8/README.md">Qwen3.8系列</a></strong></td>
+      <td>Qwen3.8-27B</td>
+      <td>transformers==5.2.0</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>√(一键量化)</td>
+      <td>√(一键量化)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -746,7 +762,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="5"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM-5/README.md">GLM5-MOE系列</a></strong></td>
+      <td rowspan="5"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM-5/README.md">GLM5-MoE系列</a></strong></td>
       <td>GLM-5</td>
       <td>transformers==5.4.0</td>
       <td>-</td>
@@ -832,7 +848,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM4-MOE/README.md">GLM4-MOE系列</a></strong></td>
+      <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM4-MOE/README.md">GLM4-MoE系列</a></strong></td>
       <td>GLM-4.7</td>
       <td>transformers==4.57.3</td>
       <td>-</td>
@@ -847,11 +863,11 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
       <td>-</td>
     </tr>
     <tr>
-      <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM4-MOE-LITE/README.md">GLM4-MOE-LITE系列</a></strong></td>
+      <td rowspan="1"><strong><a href="https://gitcode.com/Ascend/msmodelslim/blob/master/example/GLM4-MOE-LITE/README.md">GLM4-MoE-LITE系列</a></strong></td>
       <td>GLM-4.7-Flash</td>
       <td>transformers==5.3.0</td>
       <td>-</td>
-      <td>√(一键量化，仅sglang支持)</td>
+      <td>√(一键量化，仅SGLang支持)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -1089,7 +1105,7 @@ msmodelslim quant --model_path ${MODEL_PATH} --save_path ${SAVE_PATH} --device n
 - <sup>2</sup> kvcache量化和fa3量化都纳入c8，两者均量化LLM中的k和v缓存；仅MindIE支持c8量化模式，包括w8a8c8、w4a8c8和w4a4c8。
 - <sup>3</sup> 压缩后配合Atlas 推理系列产品解压缩特性更佳；仅MindIE支持稀疏量化模式，包括w8a8s和w16a16s。
 - <sup>4</sup> 仅MindIE支持采用了PDMIX量化方案的最佳实践。
-- <sup>5</sup> DeepSeek-V4-Flash-0731、DeepSeek-V4-Pro-0813 的 w4a4c8 列为 W4A4C8 混合精度方案：路由专家 MXFP4、Attention/共享专家 MXFP8、KV 复用官方 FP8；量化时使用 `--quant_type w4a4c8`。已验证场景为 vLLM-Ascend + Ascend_950 与 vLLM-Ascend + Atlas_350，详见[DeepSeek 量化说明](https://gitcode.com/Ascend/msmodelslim/blob/master/example/DeepSeek/README.md)。
+- <sup>5</sup> DeepSeek-V4-Flash-0731、DeepSeek-V4-Pro-0813 的 w4a4c8 列为 W4A4C8 混合精度方案：路由专家 MXFP4、Attention/共享专家 MXFP8、KV 复用官方 FP8；量化时使用 `--quant_type w4a4c8`。已验证场景为 vLLM-Ascend + Ascend_950 与 vLLM-Ascend + Atlas_350，详见[DeepSeek量化说明](https://gitcode.com/Ascend/msmodelslim/blob/master/example/DeepSeek/README.md)。
 - <sup>6</sup> Qwen3.6-27B 在伪量化场景（如 `msmodelslim eval`）下建议使用 transformers==5.14.1 或更高版本，较低版本可能偶现输出乱码。
 
 ## 多模态模型支持列表

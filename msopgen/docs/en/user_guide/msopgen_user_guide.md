@@ -15,7 +15,7 @@ It provides the following functions:
 
 For details, see [Figure 1 msOpGen workflow](#fig1120319585112).
 
-**Figure 1** msOpGen workflow<a id="fig1120319585112"></a>  
+**Figure 1** msOpGen workflow<a id="fig1120319585112"></a>
 ![](../figures/msopgen_workflow.png "msOpGen workflow")
 
 ## Preparations<a id="Preparations"></a>
@@ -39,7 +39,7 @@ After the environment is set up according to the requirements, you can directly 
 
 **Environment Setup<a id="section16705155515116"></a>**
 
-Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/softwareinst/instg/instg_0000.html?OS=openEuler&InstallType=netyum). No installation example is provided in this section.
+Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see the [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/softwareinst/instg/instg_0000.html?OS=openEuler&InstallType=netyum). No installation example is provided in this section.
 
 **Constraints<a id="section160697141319"></a>**
 
@@ -50,7 +50,7 @@ Before developing an operator, install the CANN Toolkit and ops operator package
 - When downloading the code sample, run the following command to specify the branch version:
 
     ```sh
-    git clone https://gitee.com/ascend/samples.git -b master
+    git clone https://gitcode.com/cann/cann-learning-hub.git -b 8.5.0
     ```
 
 ## Operator Project Creation Functions <a id="ZH-CN_TOPIC_0000002507799464"></a>
@@ -188,7 +188,7 @@ msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out 
 </td>
 <td class="cellrowborder" valign="top" width="66.95%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001740005677_p1828545205719"><a id="zh-cn_topic_0000001740005677_p1828545205719"></a><a id="zh-cn_topic_0000001740005677_p1828545205719"></a>Deliverable generation mode.</p>
 <a id="zh-cn_topic_0000001740005677_ul19828945145717"></a><a id="zh-cn_topic_0000001740005677_ul19828945145717"></a><ul id="zh-cn_topic_0000001740005677_ul19828945145717"><li><code>0</code>: creates an operator project. If an operator project already exists in the specified path, an error is reported and the system exits. </li><li><code>1</code>: generates the deliverables to an existing operator project.</li></ul>
-<p id="zh-cn_topic_0000001740005677_p78281845115710"><a id="zh-cn_topic_0000001740005677_p78281845115710"></a><a id="zh-cn_topic_0000001740005677_p78281845115710"></a>Default value: <code>0</code>.</p>
+<p id="zh-cn_topic_0000001740005677_p78281845115710"><a id="zh-cn_topic_0000001740005677_p78281845115710"></a><a id="zh-cn_topic_0000001740005677_p78281845115710"></a>Default value: 0.</p>
 </td>
 <td class="cellrowborder" valign="top" width="13.83%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001740005677_p38280455574"><a id="zh-cn_topic_0000001740005677_p38280455574"></a><a id="zh-cn_topic_0000001740005677_p38280455574"></a>Optional</p>
 </td>
@@ -313,7 +313,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
                     "type": ["int32"]
                 }
             ],
-            "attr": [                                                                   
+            "attr": [
                 {
                     "name": "reduceDim",
                     "param_type": "required",
@@ -496,7 +496,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     </table>
 
     > [!NOTE]
-    > 
+    >
     >- Multiple operators can be configured in a JSON file, which contains a list, with each element representing an operator.
     >- If the `input_desc` or `output_desc` parameter has the same `name`, the latter parameter overwrites the previous one.
     >- The `type` and `format` fields in `input_desc` and `output_desc` must be matched in sequence.
@@ -525,7 +525,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     │   ├── add_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation
     │   ├── CMakeLists.txt
     ├── op_kernel                   // Implementation file on the kernel
-    │   ├── CMakeLists.txt   
+    │   ├── CMakeLists.txt
     │   ├── add_custom.cpp        // Operator implementation file
     │   ├── add_custom_tiling.h    // Operator tiling definition file
     ```
@@ -536,7 +536,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
     msopgen gen -i json_path/*.json -f tf -c ai_core-{Soc Version} -out ./output_data -m 1
     ```
 
-    - `-i`: specifies the path of the operator prototype definition file `add_custom.json`.
+    - `-i`: Specifies the path of the operator prototype definition file `add_custom.json`.
     - `-c`: The value of `{Soc Version}` is the model of the AI processor.
 
     The operator is added to the `*.json` file in the operator project directory. Only operators based on the MindSpore framework can be added to the MindSpore operator project.
@@ -547,8 +547,8 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
 
 **Procedure<a id="section7309175019420"></a>**
 
-1. Complete operator development and adaptation, including the development of the operator kernel function and tiling implementation. For details, see "Project-based Operator Development" in [Ascend C Operator Development Guide](https://gitcode.com/cann/asc-devkit/blob/master/docs/en/guide/programming_guide/advanced_programming/aclnn_operator_development/overview.md).
-2. Refer to [AddCustom documentation](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom) to complete the implementation of `op_host/add_custom_tiling.h`, `op_host/add_custom.cpp`, and `op_kernel/add_custom.cpp`.
+1. Complete operator development and adaptation, including the development of the operator kernel function and tiling implementation. For details, see "Project-based Operator Development" in the [Ascend C Operator Development Guide](https://gitcode.com/cann/asc-devkit/blob/master/docs/en/guide/programming_guide/advanced_programming/aclnn_operator_development/overview.md).
+2. Refer to [the documentation](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04) to complete the implementation of `op_host/add_custom_tiling.h`, `op_host/add_custom.cpp`, and `op_kernel/add_custom.cpp`.
 3. After the operator is implemented, [build and deploy the operator](#building-and-deploying-an-operator).
 
 #### Building and Deploying an Operator<a id="building-and-deploying-an-operator"></a>
@@ -569,7 +569,7 @@ For details about other parameters of the msOpGen tool, see [Table 2 Parameter d
 
 After the operator kernel and host are developed, build the operator project to generate a custom operator installation package (`.run`). For details about the build process, see [Figure 1 Operator project build process](#zh-cn_topic_0000001691887130_fig11482161513267).
 
-**Figure 1** Operator project build process <a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>  
+**Figure 1** Operator project build process <a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>
 ![](../figures/operator_project_build_process.png "Operator project build process")
 
 **Procedure <a id="zh-cn_topic_0000001691887130_section122481539171817"></a>**
@@ -728,7 +728,7 @@ After the operator kernel and host are developed, build the operator project to 
     <td class="cellrowborder" valign="top" width="13.47134713471347%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001691887130_p14579434123019"><a id="zh-cn_topic_0000001691887130_p14579434123019"></a><a id="zh-cn_topic_0000001691887130_p14579434123019"></a>Required</p>
     </td>
     <td class="cellrowborder" valign="top" width="69.54695469546954%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001691887130_p45791034113018"><a id="zh-cn_topic_0000001691887130_p45791034113018"></a><a id="zh-cn_topic_0000001691887130_p45791034113018"></a>Custom compile options. Multiple compile options are separated by spaces.</p>
-    <div class="note" id="note711712719212"><a id="note711712719212"></a><a id="note711712719212"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><ul id="zh-cn_topic_0000001691887130_ul19831524153414"><li>The compile option for debugging, such as <code>-sanitizer</code>, is added to enable the msSanitizer tool. For details, see section "Preparations" > "msOpGen Operator Project Compilation Scenarios" in *MindStudio Sanitizer User Guide*.<pre class="code_wrap" id="screen1234155718541"><a id="screen1234155718541"></a><a id="screen1234155718541"></a>add_ops_compile_options(ALL OPTIONS -sanitizer)</pre>
+    <div class="note" id="note711712719212"><a id="note711712719212"></a><a id="note711712719212"></a><span class="notetitle"> Note: </span><div class="notebody"><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><a id="zh-cn_topic_0000001691887130_ul19831524153414"></a><ul id="zh-cn_topic_0000001691887130_ul19831524153414"><li>The compile option for debugging, such as <code>-sanitizer</code>, is added to enable the msSanitizer tool. For details, see section "Preparations" > "msOpGen Operator Project Compilation Scenarios" in MindStudio Sanitizer User Guide.<pre class="code_wrap" id="screen1234155718541"><a id="screen1234155718541"></a><a id="screen1234155718541"></a>add_ops_compile_options(ALL OPTIONS -sanitizer)</pre>
     </li><li>Add compile options such as <code>-g</code> for debugging to enable the code call stack and hot spot map functions in the msprof op simulator scenario of the msProf tool.<pre class="code_wrap" id="zh-cn_topic_0000001691887130_screen18443326335"><a id="zh-cn_topic_0000001691887130_screen18443326335"></a><a id="zh-cn_topic_0000001691887130_screen18443326335"></a>add_ops_compile_options(ALL COMPUTE_UNIT Ascend<em id="zh-cn_topic_0000001691887130_i269111816425"><a id="zh-cn_topic_0000001691887130_i269111816425"></a><a id="zh-cn_topic_0000001691887130_i269111816425"></a>xxxyy</em> OPTIONS -g)</pre>
     </li><li>Add compilation options such as <code>-g -O0</code> for debugging to enable the msDebug tool.<pre class="code_wrap" id="zh-cn_topic_0000001691887130_screen179549733110"><a id="zh-cn_topic_0000001691887130_screen179549733110"></a><a id="zh-cn_topic_0000001691887130_screen179549733110"></a>add_ops_compile_options(ALL OPTIONS -g -O0)</pre>
     </li></ul>
@@ -747,7 +747,7 @@ After the operator kernel and host are developed, build the operator project to 
     After the compilation is successful, the <code>build_out</code> directory is created in the current directory, and the custom operator installation package `custom_opp_<target_os>_<target_architecture>.run` is generated in the directory.
 
     > [!NOTE]
-    > 
+    >
     > After the operator type is registered, the framework obtains the operator registration information based on the operator type and matches the operator implementation file name and kernel function name based on certain rules during compilation and running. To ensure correct matching, the operator type, operator implementation file name, and kernel function name must comply with the following rules. Generally, you only need to ensure that the value of the operator type in the JSON prototype definition file is in upper camel case. The code automatically generated after the project is created meets this rule. When manually writing the operator prototype definition and operator implementation file, comply with the following rules:
     >Name operator type in upper camel case and separate words with a single capitalized letter.
     >The operator implementation file name and kernel function name must be the same. They are the values after the operator type is converted using underscores (_). The following describes the process of converting the operator implementation file name and kernel function name through the operator type.
@@ -774,12 +774,12 @@ After the operator kernel and host are developed, build the operator project to 
 
         > [!NOTE]
         > 
-        > The permission on the default installation path `${INSTALL_DIR}/opp/vendors` of the custom operator package is related to the installation user and configuration of the CANN package. If the custom operator package fails to be installed due to insufficient permissions, use the `--install-path` option and configure the environment variable `ASCEND_CUSTOM_OPP_PATH` to specify the installation directory (see [Installation in a specified directory](#zh-cn_topic_0000001691887130_li1652971821912), or contact the CANN package installation user to modify the permission on the `vendors` directory. For details about cases, see "FAQs" > "[Failed to Open the config.ini File During Operator Calling and Insufficient Permission During Operator Package Deployment](https://gitcode.com/cann/asc-devkit/blob/master/docs/en/guide/programming_guide/appendix/faq/config_ini_open_error.md)" in *Ascend C Operator Development Guide*.
+        > The permission on the default installation path `${INSTALL_DIR}/opp/vendors` of the custom operator package is related to the installation user and configuration of the CANN package. If the custom operator package fails to be installed due to insufficient permissions, use the `--install-path` option and configure the environment variable `ASCEND_CUSTOM_OPP_PATH` to specify the installation directory (see [Installation in a specified directory](#zh-cn_topic_0000001691887130_li1652971821912), or contact the CANN package installation user to modify the permission on the `vendors` directory. For details about cases, see "FAQs" > "[Failed to Open the config.ini File During Operator Calling and Insufficient Permission During Operator Package Deployment](https://gitcode.com/cann/asc-devkit/blob/master/docs/en/guide/programming_guide/appendix/faq/config_ini_open_error.md)" in Ascend C Operator Development Guide.
 
     - <a id="zh-cn_topic_0000001691887130_li1652971821912"></a>For a specified directory installation scenario, configure the `--install-path` option. Upon successful installation, the files associated with the compiled custom operators will be deployed to the `<path>/vendors/<vendor_name>` directory. Additionally, a `set_env.bash` script will be created in the `<path>/vendors/<vendor_name>/bin` directory, which contains the environment variables required for the current custom operator package.
 
         > [!NOTE]
-        > 
+        >
         > If the `--install-path` option is configured to specify the installation directory of the operator package during deployment, run the `source <path>/vendors/<vendor_name>/bin/set_env.bash` command before using the custom operator. The `set_env.bash` script adds the installation path of the custom operator package to the environment variable `ASCEND_CUSTOM_OPP_PATH` so that the custom operator takes effect in the current environment.
 
     After the command is executed successfully, related files in the custom operator package are deployed in the current environment.
@@ -812,7 +812,7 @@ After the operator kernel and host are developed, build the operator project to 
     │           │           │   └── config
     │           │           └── op_tiling
     │           │               ├── lib
-    │           │               └── liboptiling.so 
+    │           │               └── liboptiling.so
     │           └── op_proto     // Directory of custom operator prototype library
     │                ├── inc
     │                │   └── op_proto.h
@@ -821,7 +821,7 @@ After the operator kernel and host are developed, build the operator project to 
     ```
 
     > [!NOTE]
-    > 
+    >
     >**Parameter value:** `<soc_version>`. The query method is as follows:
     >- For servers other than the Atlas A3 products: Run the `npu-smi info` command on the server where the Ascend AI Processor is installed to obtain the chip name. Note that the actual value is represented by `AscendChip name`. For example, if the chip name is `xxxyy`, the actual value is `Ascendxxxyy`. If `Ascendxxxyy` is the path of the code sample, set this parameter to `ascendxxxyy`.
     >- For the Atlas A3 products, run the `npu-smi info -t board -i id -c chip_id` command on the server where the Ascend AI Processor is installed to obtain the chip name and NPU name. The actual value is represented by `Chip name_NPU name`. For example, if the chip name is `Ascendxxx` and the NPU name is 1234, the actual value is `Ascendxxx_1234`. If `Ascendxxx_1234` is the path of the code sample, set this parameter to `ascendxxx_1234`. 
@@ -868,48 +868,54 @@ After the operator kernel and host are developed, build the operator project to 
 
 #### Viewing the Operator Simulation Pipeline<a id="ZH-CN_TOPIC_0000002526426579"></a>
 
-msOpGen parses dump files generated by users, and generates operator simulation pipeline files (trace.json).
+msOpGen parses dump files generated by users, and generates operator simulation pipeline files (`trace.json`).
 
-1. Run the `install.sh` file in the `${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch` directory and generate the `CustomOp` folder. For details, see [the document](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch).
+1. Prepare the operator project in the `${git_clone_path}/cann-learning-hub/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04` directory. For details, see [the document](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04).
 
     > [!NOTE]
     > 
-    > This sample project does not support Atlas A3 products or Atlas training products.
-
-    ```sh
-    ./install.sh -v Ascendxxxyy   # xxxyy indicates the type of the chip used by the user
-    ```
+    > This sample project is configured for Atlas A2 products by default. If you use other products, modify the following two default configurations:
+    > 
+    > - In the `CMakeLists.txt` file in the root directory, `ASCEND_COMPUTE_UNIT` defaults to `ascend910b`. Change it based on the actual chip model (query the chip name by running the `npu-smi info` command). For example, for Atlas 950PR/950DT products, change it to `ascend950`.
+    > - In the `op_host` directory, modify the value of `.AddConfig("ascend910b")` in `add_custom_template.cpp` in the same way.
 
 2. Build the operator project.
     1. Complete build configurations by referring to [Preparations](#section4684858183614).
-    2. Run the following command in the `CustomOp` operator project directory to build the operator project:
+    2. Run the following command in the `custom_op_04` operator project directory to build the operator project:
 
         > [!NOTE]
-        > 
-        > To generate an operator simulation pipeline, change the value of `CMAKE_BUILD_TYPE` in the `CMakePresets.json` file in the current directory to `Debug`.
+        >
+        > To generate an operator simulation pipeline, add the kernel-side debug compilation options in `op_kernel/CMakeLists.txt` to enable the debug feature of the kernel compiler.
 
-        After the build is complete, the .run operator package is generated in the `build_out` directory.
+        ```cmake
+        # Add before npu_op_kernel_sources in op_kernel/CMakeLists.txt
+        if ("${CMAKE_BUILD_TYPE}x" STREQUAL "Debugx")
+            npu_op_kernel_options(ascendc_kernels ALL OPTIONS -g)
+        endif()
+        ```
+
+        After the build is complete, the .run operator package is generated in the `build` directory.
 
         ```sh
-        ./build.sh
+        mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make -j binary package
         ```
 
 3. In the directory where the custom operator package is stored, run the following command to deploy the operator package:
 
     ```sh
-    ./build_out/custom_opp_<target_os>_<target_architecture>.run
+    ./custom_opp_<target_os>_<target_architecture>.run
     ```
 
-4. Switch to the `${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch/AclNNInvocation` directory of the AclNNInvocation repository and run the following command:
+4. Switch to the `test` directory `${git_clone_path}/cann-learning-hub/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04/test` and run the following command:
 
     ```sh
     ./run.sh
     ```
 
-5. After the environment variables are enabled, perform simulation by referring to the "Tool Usage" >"msprof op simulator" in *msProf User Guide* and generate dump data.
+5. After the environment variables are enabled (replace `<SOC_VERSION>` with the actual value, for example, `Ascend910B4`), perform simulation by referring to the "Tool Usage" >"msprof op simulator" in msProf User Guide and generate dump data.
 
     ```sh
-    export LD_LIBRARY_PATH=${git_clone_path}/samples/operator/ascendc/0_introduction/1_add_frameworklaunch/CustomOp/build_out/op_host/:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=${ASCEND_HOME_PATH}/tools/simulator/<SOC_VERSION>/lib:${ASCEND_HOME_PATH}/opp/vendors/customize/op_api/lib:$LD_LIBRARY_PATH
     ```
 
 6. Generate an operator simulation pipeline file.
@@ -917,7 +923,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     Run the following command. For details about the parameters, see [Table 1 Parameter description](#zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_table197301923143513).
 
     ```sh
-    msopgen sim -c core{id} -d xx/{path of dump data} -subc {sub core id} -out {output path} -reloc {path of .o file or executable file} 
+    msopgen sim -c core{id} -d xx/{path of dump data} -subc {sub core id} -out {output path} -reloc {path of .o file or executable file}
     ```
 
     **Table 1** Parameter description
@@ -934,7 +940,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
     <tbody><tr id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_row873118237358"><td class="cellrowborder" valign="top" width="19.2%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p12731223193511"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p12731223193511"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p12731223193511"></a>sim</p>
     </td>
     <td class="cellrowborder" valign="top" width="61.19%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1373162314351"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1373162314351"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p1373162314351"></a>Simulation operation.</p>
-    <div class="note" id="note109501342173317"><a id="note109501342173317"></a><a id="note109501342173317"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p199501342193310"><a id="p199501342193310"></a><a id="p199501342193310"></a>The <code>msopgen sim</code> command will be removed from the next version of MindStudio. After the removal, you can use the simulation capability provided by msOpProf. For details, see "Tool Usage" in *msProf User Guide*.</p>
+    <div class="note" id="note109501342173317"><a id="note109501342173317"></a><a id="note109501342173317"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p199501342193310"><a id="p199501342193310"></a><a id="p199501342193310"></a>The <code>msopgen sim</code> command will be removed from the next version of MindStudio. After the removal, you can use the simulation capability provided by msOpProf. For details, see "Tool Usage" in msProf User Guide.</p>
     </div></div>
     </td>
     <td class="cellrowborder" valign="top" width="19.61%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p47317233358"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p47317233358"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p47317233358"></a>Required</p>
@@ -1007,7 +1013,7 @@ msOpGen parses dump files generated by users, and generates operator simulation 
 
     - `-c` specifies the core ID of the dump data file to be parsed, for example, `core0`.
     - `-d` specifies the path of the dump data file generated in the performance simulation environment, for example, `{model}/ca/add_custom/add_custom_pre_static_add_custom`.
-    - `-subc`: specifies the subcore ID of the dump file to be parsed. For example, if the file name is `core0.cubecore0.instr_log.dump`, `cubecore0` is the subcore ID. (This parameter is required only for Atlas A3 products and Atlas A2 products.)
+    - `-subc`: Specifies the subcore ID of the dump file to be parsed. For example, if the file name is `core0.cubecore0.instr_log.dump`, `cubecore0` is the subcore ID. (This parameter is required only for Atlas A3 products and Atlas A2 products.)
     - `-reloc` sets the value to the path of the .o file or executable file generated after operator compilation on the kernel.
 
     Example 2:
@@ -1018,16 +1024,16 @@ msOpGen parses dump files generated by users, and generates operator simulation 
 
     - `-c` specifies the core ID of the dump data file to be parsed, for example, `core0`.
     - `-d` specifies the path of the dump data file generated in the performance simulation environment, for example, `{model}/ca/add_custom/add_custom_pre_static_add_custom`.
-    - `-mix`: specifies that the Mix operator can be displayed.
+    - `-mix`: Specifies that the Mix operator can be displayed.
 
 7. View the operator simulation pipeline file.
 
     Enter `chrome://tracing` in the Chrome address bar, drag the `dump2trace_core*.json` file in the output path to the blank area to open it, and press the shortcut keys (**W**: zoom in, **S**: zoom out, **A**: move left, **D**: move right) to view the file.
 
-    **Figure 1** Display of a single sub-core <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a> 
+    **Figure 1** Display of a single sub-core <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a>
     ![](../figures/display_of_a_single_sub_core.png "Display of a single sub-core")
 
-    **Figure 2** Display of the Mix operator <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig793111117274"></a> 
+    **Figure 2** Display of the Mix operator <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig793111117274"></a>
     ![](../figures/display_of_the_mix_operator.png "Display of the Mix operator")
 
     **Table 2** Field description
@@ -1091,12 +1097,12 @@ msOpGen parses dump files generated by users, and generates operator simulation 
 
     Open the time consumption file of code lines `{Core_ID}_code_exe_prof.csv` in the output path, as shown in the following figure.
 
-    **Figure 3** Time consumption file of code lines <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig35497207381"></a> 
+    **Figure 3** Time consumption file of code lines <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig35497207381"></a>
     ![](../figures/time_consumption_file_of_code_lines.png "Time consumption file of code lines")
 
     Open the time consumption file of instructions `{Core_ID}_instr_exe_prof.csv` in the output path, as shown in the following figure.
 
-    **Figure 4** Time consumption file of instructions <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig15979118144012"></a> 
+    **Figure 4** Time consumption file of instructions <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig15979118144012"></a>
     ![](../figures/time_consumption_file_of_instructions.png "Time consumption file of instructions")
 
     You can view the `call count` and `cycles` fields in the file to view the number of times that a code line or instruction is called and the accumulated duration.
@@ -1111,15 +1117,15 @@ Test cases usually include various types of data inputs and expected outputs, as
 
 **Environment Requirements <a id="section78326397288"></a>**
 
-Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/softwareinst/instg/instg_0003.html?OS=openEuler&InstallType=netyum). No installation example is provided in this section. After the configuration is complete, you can directly use the functions of the msOpST tool.
+Before developing an operator, install the CANN Toolkit and ops operator package of the required version and configure CANN environment variables. For details, see the [CANN Software Installation Guide](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/softwareinst/instg/instg_0003.html?OS=openEuler&InstallType=netyum). No installation example is provided in this section. After the configuration is complete, you can directly use the functions of the msOpST tool.
 
 **Constraints <a id="section34178519565"></a>**
 
 - Before using this tool to generate operator test cases, ensure that the operator to be tested has been deployed into the operator library in advance. For details, see [Building and Deploying an Operator](#building-and-deploying-an-operator).
 - If an AI framework is required for performing operator ST, install the AI framework in advance.
-    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 1.15" in [TensorFlow 1.15 Model Porting Guide](https://www.hiascend.com/document/detail/en/TensorFlowCommunity/latest/migration/tfmigr1/docs/en/tfadapter_1/installation/tensorflow-1-15_install.md).
-    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 2.6.5" in [TensorFlow 2.6.5 Model Porting Guide](https://www.hiascend.com/document/detail/en/TensorFlowCommunity/latest/migration/tfmigr2/docs/en/tfadapter_2/installation/tensorflow-2-6-5_install.md).
-    - For details about how to install PyTorch, see [TorchNPU Software Installation Guide](https://www.hiascend.com/document/detail/en/Pytorch/latest/installguide/swinstall/docs/en/installation_guide/installation_description.md).
+    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 1.15" in the [TensorFlow 1.15 Model Porting Guide](https://www.hiascend.com/document/detail/en/TensorFlowCommunity/latest/migration/tfmigr1/docs/en/tfadapter_1/installation/tensorflow-1-15_install.md).
+    - For details about how to install TensorFlow, see "Environment Setup" > "Installing TensorFlow 2.6.5" in the [TensorFlow 2.6.5 Model Porting Guide](https://www.hiascend.com/document/detail/en/TensorFlowCommunity/latest/migration/tfmigr2/docs/en/tfadapter_2/installation/tensorflow-2-6-5_install.md).
+    - For details about how to install PyTorch, see the [TorchNPU Software Installation Guide](https://www.hiascend.com/document/detail/en/Pytorch/latest/installguide/swinstall/docs/en/installation_guide/installation_description.md).
 
 ## Operator Test Functions <a id="ZH-CN_TOPIC_0000002539479311"></a>
 
@@ -1232,7 +1238,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     </tr>
     <tr id="zh-cn_topic_0000001821790281_row23494431992"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p6349114314915"><a id="zh-cn_topic_0000001821790281_p6349114314915"></a><a id="zh-cn_topic_0000001821790281_p6349114314915"></a>-i, --input</p>
     </td>
-    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p53491443498"><a id="zh-cn_topic_0000001821790281_p53491443498"></a><a id="zh-cn_topic_0000001821790281_p53491443498"></a>Path to the operator test case definition file, which can be specified as an absolute or relative path. For details, see the msOpST test case definition file in the *MindStudio Ops Generator Typical Cases*. </p>
+    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p53491443498"><a id="zh-cn_topic_0000001821790281_p53491443498"></a><a id="zh-cn_topic_0000001821790281_p53491443498"></a>Path to the operator test case definition file, which can be specified as an absolute or relative path. For details, see the msOpST test case definition file in the MindStudio Ops Generator Typical Cases. </p>
     <div class="note" id="note613523464216"><a id="note613523464216"></a><a id="note613523464216"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="p17135534144217"><a id="p17135534144217"></a><a id="p17135534144217"></a>The JSON file supports up to 1000 test cases.</p>
     </div></div>
     </td>
@@ -1267,7 +1273,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <tr id="zh-cn_topic_0000001821790281_row83503431494"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p33502431092"><a id="zh-cn_topic_0000001821790281_p33502431092"></a><a id="zh-cn_topic_0000001821790281_p33502431092"></a>-d, --device_id</p>
     </td>
     <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1735018438911"><a id="zh-cn_topic_0000001821790281_p1735018438911"></a><a id="zh-cn_topic_0000001821790281_p1735018438911"></a>NPU device ID: ID of the AI processor on which to run ST cases.</p>
-    <p id="zh-cn_topic_0000001821790281_p1350943597"><a id="zh-cn_topic_0000001821790281_p1350943597"></a><a id="zh-cn_topic_0000001821790281_p1350943597"></a>If this option is not set, the default value <code>0</code> is used.</p>
+    <p id="zh-cn_topic_0000001821790281_p1350943597"><a id="zh-cn_topic_0000001821790281_p1350943597"></a><a id="zh-cn_topic_0000001821790281_p1350943597"></a>If this option is not set, the default value 0 is used.</p>
     </td>
     <td class="cellrowborder" valign="top" width="6.811326262527976%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p10350174314911"><a id="zh-cn_topic_0000001821790281_p10350174314911"></a><a id="zh-cn_topic_0000001821790281_p10350174314911"></a>Optional</p>
     </td>
@@ -1287,7 +1293,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     </tr>
     <tr id="zh-cn_topic_0000001821790281_row1735319434917"><td class="cellrowborder" valign="top" width="24.18020823197431%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p13352174319915"><a id="zh-cn_topic_0000001821790281_p13352174319915"></a><a id="zh-cn_topic_0000001821790281_p13352174319915"></a>-conf, --config_file</p>
     </td>
-    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1035211432915"><a id="zh-cn_topic_0000001821790281_p1035211432915"></a><a id="zh-cn_topic_0000001821790281_p1035211432915"></a>Path to the ST advanced feature configuration file (msopst.ini), which can be specified as an absolute or relative path.</p>
+    <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1035211432915"><a id="zh-cn_topic_0000001821790281_p1035211432915"></a><a id="zh-cn_topic_0000001821790281_p1035211432915"></a>Path to the ST advanced feature configuration file (`msopst.ini`), which can be specified as an absolute or relative path.</p>
     <p id="zh-cn_topic_0000001821790281_p1335215433917"></p><a id="zh-cn_topic_0000001821790281_p1335215433917"></a><a id="zh-cn_topic_0000001821790281_p1335215433917"></a>Users can implement the following advanced features by modifying the <code>msopst.ini</code> configuration file.
     <a id="zh-cn_topic_0000001821790281_ul83525436917"></a><a id="zh-cn_topic_0000001821790281_ul83525436917"></a><ul id="zh-cn_topic_0000001821790281_ul83525436917"><li>Edit the ST source code. </li><li>Execute the edited ST source code. </li><li>Set the environment variable for the host log level. </li><li>Set whether to display logs on the console. </li><li>Set the log level for ATC model conversion. </li><li>Set the OS type and architecture of the operating environment for ATC model conversion. </li><li>Set the model accuracy. </li><li>Read profile data of the compute operator running on the AI processor.</li></ul>
     <p id="p57016533264"><a id="p57016533264"></a><a id="p57016533264"></a>If <code>--config_file</code> is not specified, the model will forcibly use <code>FP16</code> precision. For details about the <code>msopst.ini</code> file, see <a href="#zh-cn_topic_0000001821790281_table17358154319919">Table 1 msopst.ini file parameter description</a>.</p>
@@ -1378,20 +1384,28 @@ This section describes how to use the msOpST tool to generate the operator test 
 
     The msOpST tool generates the ST case definition file of the operator based on the implementation file of the operator to be tested on the host. The following describes the implementation file path of the operator on the host in the operator project file.
 
-    You can obtain the host-side operator implementation file [add_custom.cpp](https://gitee.com/ascend/samples/tree/master/operator/ascendc/0_introduction/1_add_frameworklaunch/AddCustom) for reference.
+    You can obtain the host-side operator implementation file [add_custom_template.cpp](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04) for reference.
 
     > [!NOTE]
     > 
-    > This sample project does not support Atlas A3 products.
+    > This sample project is configured for Atlas A2 products by default. If you use other products, modify the following two default configurations:
+    > 
+    > - In the `CMakeLists.txt` file in the root directory, `ASCEND_COMPUTE_UNIT` defaults to `ascend910b`. Change it based on the actual chip model (query the chip name by running the `npu-smi info` command). For example, for Atlas 950PR/950DT products, change it to `ascend950`.
+    > - In the `op_host` directory, modify the value of `.AddConfig("ascend910b")` in `add_custom_template.cpp` in the same way.
 
     ```text
-    ├── framework/tf_plugin        // Directory for storing the implementation file of the operator plugin. The generation of single-operator model files does not depend on the operator plugin and can be ignored
-    ├── op_host                      // Implementation file on the host
-    │   ├── add_custom_tiling.h    // Operator tiling definition file
-    │   ├── add_custom.cpp         // Content file for operator prototype registration, shape derivation, information library, and tiling implementation
-    ├── op_kernel                   // Implementation file on the kernel
-    │   ├── CMakeLists.txt   
-    │   ├── add_custom.cpp        // Operator implementation file
+    ├── CMakeLists.txt            // Build configuration file in the root directory of the sample project
+    ├── framework                 // Directory for storing the operator framework adaptation files. The generation of single-operator model files does not depend on the operator plugin and can be ignored
+    ├── op_host                   // Directory for storing the implementation files on the host
+    │   ├── CMakeLists.txt
+    │   ├── add_custom_template.cpp    // Content file for operator prototype registration, shape derivation, information library, and tiling implementation
+    ├── op_kernel                 // Directory for storing the implementation files on the kernel
+    │   ├── CMakeLists.txt
+    │   ├── add_custom_template.cpp    // Operator implementation file
+    │   ├── add_custom_template_tiling.h    // Operator tiling definition file
+    ├── test                      // Directory for storing the operator test files
+    ├── run_deploy.sh             // Operator deployment script
+    ├── run_test.sh               // Operator test execution script
     ```
 
 2. <a id="zh-cn_topic_0000001775029424_li1663966193910"></a> Run the following command to generate the operator test case definition file. For details about the parameters, see [Table 1 Parameters for generating an operator test case definition file](#zh-cn_topic_0000001775029424_table15856145565413).
@@ -1401,14 +1415,14 @@ This section describes how to use the msOpST tool to generate the operator test 
     ```
 
     > [!NOTE]
-    > 
+    >
     > Example:
     > The following command uses the AddCustom operator as an example.
-    > 
+    >
     > ```sh
     > msopst create -i Op_implementation/add_custom.cpp -out ./output
     > ```
-    > 
+    >
     > Replace `Op_implementation` with the path of the implementation file of the operator on the host.
     > After the command is executed successfully, the operator test case definition file `AddCustom_case_timestamp.json` is generated in the `output` directory of the current path.
 
@@ -1550,7 +1564,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p3714795501"><a id="zh-cn_topic_0000001775029424_p3714795501"></a><a id="zh-cn_topic_0000001775029424_p3714795501"></a>Optional.</p>
     <p id="zh-cn_topic_0000001775029424_p59222248501"><a id="zh-cn_topic_0000001775029424_p59222248501"></a><a id="zh-cn_topic_0000001775029424_p59222248501"></a>In the dynamic multi-input scenario (that is, the number of operator inputs is not fixed and the inputs form a TensorList), <code>name</code> is required and must be set as the corresponding <code>inputx.name</code> parameter value from the operator information library appended with an index starting from 0 and incrementing sequentially (0, 1, 2, ...) based on the number of inputs.</p>
     <p id="zh-cn_topic_0000001775029424_p1271413914509"><a id="zh-cn_topic_0000001775029424_p1271413914509"></a><a id="zh-cn_topic_0000001775029424_p1271413914509"></a> For example, if the number of inputs specified in the operator information file is 4, four input descriptions need to be configured in <code>input_desc</code>. The names are <code>xxx0</code>, <code>xxx1</code>, <code>xxx2</code>, and <code>xxx3</code>, where <code>xxx</code> indicates the name of the input parameter.</p>
-    <p id="zh-cn_topic_0000001775029424_p048015111916"><a id="zh-cn_topic_0000001775029424_p048015111916"></a><a id="zh-cn_topic_0000001775029424_p048015111916"></a>For details about the configuration example in the dynamic multi-input scenario, see "Test Case Definition File" >"Uncertain Number of Inputs of an Operator (Dynamic Multi-Input Scenario)" in *Typical Cases of MindStudio Ops Generator*.</p>
+    <p id="zh-cn_topic_0000001775029424_p048015111916"><a id="zh-cn_topic_0000001775029424_p048015111916"></a><a id="zh-cn_topic_0000001775029424_p048015111916"></a>For details about the configuration example in the dynamic multi-input scenario, see "Test Case Definition File" >"Uncertain Number of Inputs of an Operator (Dynamic Multi-Input Scenario)" in Typical Cases of MindStudio Ops Generator.</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001775029424_row163658570476"><td class="cellrowborder" valign="top" width="16.41%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p14365155713478"><a id="zh-cn_topic_0000001775029424_p14365155713478"></a><a id="zh-cn_topic_0000001775029424_p14365155713478"></a>-</p>
@@ -1584,7 +1598,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <p id="zh-cn_topic_0000001775029424_p14314194913143"><a id="zh-cn_topic_0000001775029424_p14314194913143"></a><a id="zh-cn_topic_0000001775029424_p14314194913143"></a>String or string array.</p>
     <p id="zh-cn_topic_0000001775029424_p23671157174710"><a id="zh-cn_topic_0000001775029424_p23671157174710"></a><a id="zh-cn_topic_0000001775029424_p23671157174710"></a>Input data type:</p>
     <a id="zh-cn_topic_0000001775029424_ul43676579471"></a><a id="zh-cn_topic_0000001775029424_ul43676579471"></a><ul id="zh-cn_topic_0000001775029424_ul43676579471"><li>bool</li><li>int8</li><li>uint8</li><li>int16</li><li>uint16</li><li>int32</li><li>int64</li><li>uint32</li><li>uint64</li><li>float16</li><li>float32</li><li>float</li><li>bfloat16 (only supported by <span id="ph38341327102213"><a id="ph38341327102213"></a><a id="ph38341327102213"></a>Atlas A3 products</span> and <span id="ph135659390269"><a id="ph135659390269"></a><a id="ph135659390269"></a>Atlas A2 products)</span> </li><li>UNDEFINED: The input type of the operator is optional. </li><li>fuzz: automatically generates test cases in batches by using the fuzzing script.</li></ul>
-    <p id="zh-cn_topic_0000001775029424_p67493712412"><a id="zh-cn_topic_0000001775029424_p67493712412"></a><a id="zh-cn_topic_0000001775029424_p67493712412"></a>For details about the configuration example when the input data type is complex number, see "Test Case Definition File" > "Complex Input and Output Types of an Operator" in *Typical Cases of MindStudio Ops Generator*.</p>
+    <p id="zh-cn_topic_0000001775029424_p67493712412"><a id="zh-cn_topic_0000001775029424_p67493712412"></a><a id="zh-cn_topic_0000001775029424_p67493712412"></a>For details about the configuration example when the input data type is complex number, see "Test Case Definition File" > "Complex Input and Output Types of an Operator" in Typical Cases of MindStudio Ops Generator.</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001775029424_row4368135714474"><td class="cellrowborder" valign="top" width="16.41%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p1536835764713"><a id="zh-cn_topic_0000001775029424_p1536835764713"></a><a id="zh-cn_topic_0000001775029424_p1536835764713"></a>-</p>
@@ -1646,7 +1660,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p82242179011"><a id="zh-cn_topic_0000001775029424_p82242179011"></a><a id="zh-cn_topic_0000001775029424_p82242179011"></a>Optional.</p>
     <p id="zh-cn_topic_0000001775029424_p117170179117"><a id="zh-cn_topic_0000001775029424_p117170179117"></a><a id="zh-cn_topic_0000001775029424_p117170179117"></a>Bool.</p>
     <a id="zh-cn_topic_0000001775029424_ul18848161531620"></a><a id="zh-cn_topic_0000001775029424_ul18848161531620"></a><ul id="zh-cn_topic_0000001775029424_ul18848161531620"><li>true: configures test cases with constant inputs. </li><li>false: configures test cases with tensor inputs.</li></ul>
-    <p id="zh-cn_topic_0000001775029424_p1666691614181"><a id="zh-cn_topic_0000001775029424_p1666691614181"></a><a id="zh-cn_topic_0000001775029424_p1666691614181"></a>For details about the configuration example when the input is a constant, see "Test Case Definition File" > "Complex Input and Output Types of an Operator" in *Typical Cases of MindStudio Ops Generator*.</p>
+    <p id="zh-cn_topic_0000001775029424_p1666691614181"><a id="zh-cn_topic_0000001775029424_p1666691614181"></a><a id="zh-cn_topic_0000001775029424_p1666691614181"></a>For details about the configuration example when the input is a constant, see "Test Case Definition File" > "Complex Input and Output Types of an Operator" in Typical Cases of MindStudio Ops Generator.</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001775029424_row9369105715476"><td class="cellrowborder" valign="top" width="16.41%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p436915575472"><a id="zh-cn_topic_0000001775029424_p436915575472"></a><a id="zh-cn_topic_0000001775029424_p436915575472"></a>-</p>
@@ -1680,7 +1694,7 @@ This section describes how to use the msOpST tool to generate the operator test 
     <div class="p" id="zh-cn_topic_0000001775029424_p15124436379"><a id="zh-cn_topic_0000001775029424_p15124436379"></a><a id="zh-cn_topic_0000001775029424_p15124436379"></a>If you need to specify the input data, add this parameter. There are two configuration methods: <a id="zh-cn_topic_0000001775029424_ul2026010173720"></a><a id="zh-cn_topic_0000001775029424_ul2026010173720"></a><ul id="zh-cn_topic_0000001775029424_ul2026010173720"><li>Directly enter the tensor data. For example, the tensor value is <code>[1,2,3,4]</code>.<p id="zh-cn_topic_0000001775029424_p6901205794117"><a id="zh-cn_topic_0000001775029424_p6901205794117"></a><a id="zh-cn_topic_0000001775029424_p6901205794117"></a>"value": [1,2,3,4]</p>
     </li><li>Specify the path of a binary file (for example, <code>test.bin</code>):<p id="zh-cn_topic_0000001775029424_p151013154214"><a id="zh-cn_topic_0000001775029424_p151013154214"></a><a id="zh-cn_topic_0000001775029424_p151013154214"></a>"value": "../test.bin"</p>
     <p id="zh-cn_topic_0000001775029424_p72611408378"><a id="zh-cn_topic_0000001775029424_p72611408378"></a><a id="zh-cn_topic_0000001775029424_p72611408378"></a>The binary data file .bin needs to be prepared by the user. The path can be an absolute path or a relative path of the test case definition file.</p>
-    </li><li>Set it to <code>"fuzz"</code> to automatically generate test cases in batches by using the fuzzing script. <div class="note" id="zh-cn_topic_0000001775029424_note12221316194415"><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p1022161610445"><a id="zh-cn_topic_0000001775029424_p1022161610445"></a><a id="zh-cn_topic_0000001775029424_p1022161610445"></a>If the <code>value</code> parameter is added, the <code>data_distribute</code> and <code>value_range</code> parameters will be ignored. In addition, ensure that <code>value</code> matches <code>format</code>, <code>type</code>, and <code>shape</code>. Each test case supports one data type only. For details about the configuration example, see "Test Case Definition File" > "Specifying a Fixed Input" in *Typical Cases of MindStudio Ops Generator*.</p>
+    </li><li>Set it to <code>"fuzz"</code> to automatically generate test cases in batches by using the fuzzing script. <div class="note" id="zh-cn_topic_0000001775029424_note12221316194415"><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><span class="notetitle"> Note: </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p1022161610445"><a id="zh-cn_topic_0000001775029424_p1022161610445"></a><a id="zh-cn_topic_0000001775029424_p1022161610445"></a>If the <code>value</code> parameter is added, the <code>data_distribute</code> and <code>value_range</code> parameters will be ignored. In addition, ensure that <code>value</code> matches <code>format</code>, <code>type</code>, and <code>shape</code>. Each test case supports one data type only. For details about the configuration example, see "Test Case Definition File" > "Specifying a Fixed Input" in Typical Cases of MindStudio Ops Generator.</p>
     </div></div>
     </li></ul>
     </div>
@@ -1821,13 +1835,13 @@ This section describes how to use the msOpST tool to generate the operator test 
         For example, the expected operator data generation function of the Add operator is implemented as follows:
 
         ```py
-        def calc_expect_func(x1, x2, y):    
+        def calc_expect_func(x1, x2, y):
             res = x1["value"] + x2["value"]
             return [res, ]
         ```
 
         > [!NOTE]
-        > 
+        >
         > You need to create the expected data generation function of the operator based on the developed custom operator. The names of all input, output, and attribute elements in the test case definition file are used as the input parameters of the expected data generation function of the operator. If an input is optional, the default value will be specified for the input.
 
         For example, if the `x3` input is optional, define the expected operator data generation function of the operator as follows:
@@ -1843,8 +1857,8 @@ This section describes how to use the msOpST tool to generate the operator test 
         ```json
         [
             {
-                "case_name":"Test_AddCustom_001",         
-                "op": "AddCustom",                             
+                "case_name":"Test_AddCustom_001",
+                "op": "AddCustom",
                 "calc_expect_func_file": "/home/test/test_add_st.py:calc_expect_func",   // Configure the implementation file for generating expected compute result
                 "input_desc": [...]
                 ...
@@ -1867,7 +1881,7 @@ This section walks through the workflow of generating the ST data and test case 
     ```
 
     > [!NOTE]
-    > 
+    >
     >- Replace `${INSTALL_DIR}` with the actual file storage path after the CANN software is installed. For example, if the installation is performed as the `root` user, the default file storage path after the installation is `/usr/local/Ascend/cann`.
     >- In `{arch-os}`, `arch` indicates the OS architecture, and `os` indicates the operating system.
 
@@ -1881,7 +1895,7 @@ This section walks through the workflow of generating the ST data and test case 
     - The following table describes the parameters in the·`msopst.ini` file.
 
         > [!NOTE]
-        > 
+        >
         > By default, the `msopst.ini` file uses the `FP16` precision mode. To use another precision mode, manually modify the `--precision_mode` option of `atc_singleop_advance_option` in [Table 1 msopst.ini file parameter description](#zh-cn_topic_0000001821790281_table17358154319919).
 
         **Table 1** msopst.ini file parameter description
@@ -1976,9 +1990,9 @@ This section walks through the workflow of generating the ST data and test case 
         <a id="zh-cn_topic_0000001821790281_table1836016436913"></a>
         <table><thead align="left"><tr id="zh-cn_topic_0000001821790281_row335954310914"><th class="cellrowborder" valign="top" width="7.5200000000000005%" id="mcps1.2.5.1.1"><p id="zh-cn_topic_0000001821790281_p12358154313918"><a id="zh-cn_topic_0000001821790281_p12358154313918"></a><a id="zh-cn_topic_0000001821790281_p12358154313918"></a>Mode</p>
         </th>
-        <th class="cellrowborder" valign="top" width="28.22%" id="mcps1.2.5.1.2"><p id="zh-cn_topic_0000001821790281_p103588431797"><a id="zh-cn_topic_0000001821790281_p103588431797"></a><a id="zh-cn_topic_0000001821790281_p103588431797"></a><span id="zh-cn_topic_0000001821790281_ph1035812431091"><a id="zh-cn_topic_0000001821790281_ph1035812431091"></a><a id="zh-cn_topic_0000001821790281_ph1035812431091"></a>only_gen_without_run</span></p>
+        <th class="cellrowborder" valign="top" width="28.22%" id="mcps1.2.5.1.2"><p id="zh-cn_topic_0000001821790281_p103588431797"><a id="zh-cn_topic_0000001821790281_p103588431797"></a><a id="zh-cn_topic_0000001821790281_p103588431797"></a><span id="zh-cn_topic_0000001821790281_ph1035812431091"><a id="zh-cn_topic_0000001821790281_ph1035812431091"></a><a id="zh-cn_topic_0000001821790281_ph1035812431091"></a><code>only_gen_without_run</code></span></p>
         </th>
-        <th class="cellrowborder" valign="top" width="26.840000000000003%" id="mcps1.2.5.1.3"><p id="zh-cn_topic_0000001821790281_p735954318920"><a id="zh-cn_topic_0000001821790281_p735954318920"></a><a id="zh-cn_topic_0000001821790281_p735954318920"></a><span id="zh-cn_topic_0000001821790281_ph2035934315914"><a id="zh-cn_topic_0000001821790281_ph2035934315914"></a><a id="zh-cn_topic_0000001821790281_ph2035934315914"></a>only_run_without_gen</span></p>
+        <th class="cellrowborder" valign="top" width="26.840000000000003%" id="mcps1.2.5.1.3"><p id="zh-cn_topic_0000001821790281_p735954318920"><a id="zh-cn_topic_0000001821790281_p735954318920"></a><a id="zh-cn_topic_0000001821790281_p735954318920"></a><span id="zh-cn_topic_0000001821790281_ph2035934315914"><a id="zh-cn_topic_0000001821790281_ph2035934315914"></a><a id="zh-cn_topic_0000001821790281_ph2035934315914"></a><code>only_run_without_gen</code></span></p>
         </th>
         <th class="cellrowborder" valign="top" width="37.419999999999995%" id="mcps1.2.5.1.4"><p id="zh-cn_topic_0000001821790281_p735916431094"><a id="zh-cn_topic_0000001821790281_p735916431094"></a><a id="zh-cn_topic_0000001821790281_p735916431094"></a>Run Mode</p>
         </th>
@@ -2058,7 +2072,7 @@ This section walks through the workflow of generating the ST data and test case 
                 ```
 
             > [!NOTE]
-            > 
+            >
             > If the execution fails, analyze the cause as follows:
             >- For details about aclError, see [aclError](https://www.hiascend.com/document/detail/en/CANNCommunityEdition/latest/API/runtimeapi/aclcppdevg_03_1345.html).
             >- See [Error Code Reference](https://gitcode.com/cann/docs/blob/master/docs/en/troubleshooting/error_code_desc.md).
@@ -2145,7 +2159,7 @@ This section walks through the workflow of generating the ST data and test case 
 
         After the command is executed successfully, an `st_report.json` report is automatically generated. The report records the detailed test information and the runtime states in each stage, which facilitates troubleshooting and test result comparison. The `st_report.json` file is saved in the path specified by "The st_report saved in" in [Figure 1 Example of the running result](#zh-cn_topic_0000001821790281_fig1936411431910).
 
-        **Figure 1** Example of the running result <a id="zh-cn_topic_0000001821790281_fig1936411431910"></a> 
+        **Figure 1** Example of the running result <a id="zh-cn_topic_0000001821790281_fig1936411431910"></a>
         ![](../figures/example_of_the_running_result.png "Example of the running result")
 
         **Table 3** Fields in the st_report.json report
@@ -2269,7 +2283,7 @@ This section walks through the workflow of generating the ST data and test case 
             ```
 
         > [!NOTE]
-        > 
+        >
         >- Replace `${INSTALL_DIR}` with the actual file storage path after the CANN software is installed. For example, if the installation is performed as the `root` user, the default file storage path after the installation is `/usr/local/Ascend/cann`.
         >- In `arch-os`, `arch` indicates the OS architecture (select a value based on the architecture of the operating environment), and `os` indicates the operating system (select a value based on the OS of the operating environment).
 
@@ -2309,7 +2323,7 @@ This section walks through the workflow of generating the ST data and test case 
 
     After the execution is complete, the execution result of the test cases is displayed, as shown in [Figure 2 Execution result](#zh-cn_topic_0000001821790281_fig204517552811).
 
-    **Figure 2** Execution result <a id="zh-cn_topic_0000001821790281_fig204517552811"></a> 
+    **Figure 2** Execution result <a id="zh-cn_topic_0000001821790281_fig204517552811"></a>
     ![](../figures/execution_result.png "Execution result")
 
 #### Generating a Single-Operator On-board Test Framework<a id="generating-a-single-operator-on-board-test-framework"></a>
@@ -2324,7 +2338,7 @@ This section describes how to specify the ST case definition file (.json) and im
 
 1. Prepare the following input files:
     - Operator ST case definition file (.json).
-    - Operator implementation file (.cpp) on the kernel side. For details, see "Operator Implementation" > "Project-based Operator Development" > "Operator Implementation on the Kernel Side" in [Ascend C Operator Development Guide](https://gitcode.com/cann/asc-devkit/blob/master/docs/en/guide/programming_guide/advanced_programming/aclnn_operator_development/design_and_implementation/kernel_operator_implementation.md).
+    - Operator implementation file (.cpp) on the kernel side. For details, see "Operator Implementation" > "Project-based Operator Development" > "Operator Implementation on the Kernel Side" in the [Ascend C Operator Development Guide](https://gitcode.com/cann/asc-devkit/blob/master/docs/en/guide/programming_guide/advanced_programming/aclnn_operator_development/design_and_implementation/kernel_operator_implementation.md).
 
 2. Run the following command to generate the test code to call the kernel function. For details about the parameters, see [Parameters for generating single-operator on-board test framework](#zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_table20825174505717).
 
@@ -2340,8 +2354,8 @@ This section describes how to specify the ST case definition file (.json) and im
      {time_stamp}
     │   ├── OpType
     │   │   ├── CMakeLists.txt     // Build script
-    │   │   ├── data    
-    │   │   │   └── xx.bin        
+    │   │   ├── data
+    │   │   │   └── xx.bin
     │   │   │   └── xx.bin
     │   │   ├── data_utils.h
     │   │   ├── main.cpp        // Test framework
@@ -2473,7 +2487,7 @@ This section describes how to specify the ST case definition file (.json) and im
     ```sh
     # Point to the installation address of the Ascend software package and export environment variables
     if [ -z "$ASCEND_HOME_DIR" ]; then
-        export ASCEND_HOME_DIR=${INSTALL_DIR}     
+        export ASCEND_HOME_DIR=${INSTALL_DIR}
     fi
     source $ASCEND_HOME_DIR/bin/set_env.bash
     ```
