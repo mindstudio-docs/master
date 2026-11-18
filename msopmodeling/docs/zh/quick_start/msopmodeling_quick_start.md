@@ -110,66 +110,74 @@ msopmodeling eng  list -s 950
 
 ## 6. 查看输出结果
 
-成功执行后，输出目录结构如下：
+`theo` 理论建模只输出 `result.json`，不生成其他交付件：
 
 ```text
 result_dir/
-├── result.json          # 所有算子的预测结果
-├── OP_0/                # 第 1 个算子的交付件
-│   ├── trace.json
-│   ├── events.json
-│   ├── OpBasicInfo.csv
-│   ├── PipeUtilization.csv
-│   ├── diagnostics.json
-│   ├── runtime_profile.json
-│   └── optimization_hints_OP_0.csv
-└── OP_1/
-    └── ...
+└── result.json          # 所有算子的预测结果
 ```
 
-> 输出目录不存在时会自动创建；已存在时直接复用，不会清空其中已有文件，`result.json` 与对应 `OP_x/` 内容会被覆盖更新。
+`eng` 工程建模除 `result.json` 外，还为每个算子输出 `OP_x/` 交付件（trace、events、CSV、diagnostics 和优化建议）。
 
-CSV 的每条数据行按原始顺序从 `OP_0` 开始编号（不含表头），不支持或无效的行也占用编号，不会跳过后重新编号。成功行保留正常的 `latency` 等预测字段，并附带 CSV 来源信息；不支持、无效或预测失败的行保留来源信息，并记录 `error` 和 `error_kind`，不能当作有效时延结果。
+> 输出目录不存在时会自动创建；已存在时直接复用，不会清空其中已有文件，`result.json` 与 `eng` 的对应 `OP_x/` 内容会被覆盖更新。
+
+输出结果的键为 `<op_name>_<index>`，`index` 针对相同 `op_name` 独立从 0 开始递增。结果键中的 `op_name` 取自输入配置，结果 JSON 内的 `op_name` 是模型返回的算子名，两者可能不同。CSV 每条数据行按输入顺序参与对应 `op_name` 的编号（不含表头），不支持或无效的行也占用编号，不会跳过后重新编号。成功行保留正常的 `latency` 等预测字段，并附带 CSV 来源信息；不支持、无效或预测失败的行保留来源信息，并记录 `error` 和 `error_kind`，不能当作有效时延结果。
 
 CSV 的单行错误不会中断后续行处理。处理结束后，终端按错误类别分组汇总；只要有失败或不支持的行，工具会先保存结果，再以退出码 `1` 结束。文件级错误（如文件无法读取、格式无法识别）则直接终止，不进入逐行容错流程。
 
-`result.json` 的 JSON 结构如下：
+以下示例来自第 4 节输入（Add 2048×2048、FLOAT16）在 910B4 上的实际运行结果：
 
 ```json
 {
-  "OP_0": {
+  "Add_0": {
     "op_name": "TheoAdd",
-    "latency": 20.704635592517192,
+    "latency": "15.630610860210579μs",
+    "kernel_body_latency": "13.03061086021058μs",
+    "kernel_launch_overhead": "2.6μs",
     "component_latency": {
-      "CUBE": 0,
-      "MTE1": 0.0,
-      "MTE2": 0,
-      "FIXPIPE": 0,
-      "VEC": 1.654949494949495,
-      "MTE2_AIV": 15.682507068407942,
-      "MTE3": 5.022128524109251
+      "CUBE": "0.0μs",
+      "MTE1": "0.0μs",
+      "MTE2": "0.0μs",
+      "FIXPIPE": "0.0μs",
+      "VEC": "1.0291027365454546μs",
+      "MTE2_AIV": "10.929782410423453μs",
+      "MTE3": "2.1008284497871275μs"
     },
-    "l2_hit_rate": 0.0,
     "cube_utilization_rate": 0.0,
-    "vec_utilization_rate": 0.07993135100371464,
-    "mem_volume": {
-      "GM_2_UB": 16777216,
-      "UB_2_L2": 8388608
-    },
-    "compute_workload": {
-      "CUBE": 0,
-      "VEC": 0
-    },
-    "gm_volume": 0
+    "vec_utilization_rate": 0.06583893270384893,
+    "memory_traffic": {
+      "GM_2_UB": 16777216.0,
+      "UB_2_L2": 8388608.0
+    }
   }
+}
+```
+
+`theoretical_analysis` 为理论建模明细列表，按 tileop 记录理论明细；顶层 `latency` 是汇总后的算子时延。以下为其中一条记录的节选（省略 `inputs`、`outputs`、`tensor` 等字段）：
+
+```json
+{
+  "op_name": "add",
+  "cycles": 67920.780612,
+  "latency": "41.164109461818185μs",
+  "memory_access": [
+    {"reason": "copy_in", "path": "GM_2_UB", "bytes": 8388608, "time": "5.464891205211726μs"},
+    {"reason": "copy_in", "path": "GM_2_UB", "bytes": 8388608, "time": "5.464891205211726μs"},
+    {"reason": "copy_out", "path": "UB_2_L2", "bytes": 8388608, "time": "2.1008284497871275μs"}
+  ]
 }
 ```
 
 **关键字段解读：**
 
+微秒字段在 `result.json` 中以字符串形式输出，值尾部附加 `μs`，例如 `"15.63μs"`；下表中的 μs 表示其单位。
+
 | 字段 | 单位    | 含义                             |
 |------|-------|--------------------------------|
+| `op_name` | -     | 本次预测的算子名称                      |
 | `latency` | μs    | **算子总时延**（核心指标），流水仿真给出的端到端时延   |
+| `kernel_body_latency` | μs    | kernel 主体耗时，不含启动开销             |
+| `kernel_launch_overhead` | μs    | kernel 启动开销                      |
 | `component_latency.CUBE` | μs    | Cube 矩阵运算单元耗时（向量算子为 0）          |
 | `component_latency.MTE1` | μs    | Cube 核 L1→L0 数据搬运耗时             |
 | `component_latency.MTE2` | μs    | Cube 核 GM→L1 数据搬运耗时             |
@@ -179,8 +187,12 @@ CSV 的单行错误不会中断后续行处理。处理结束后，终端按错�
 | `component_latency.VEC` | μs    | 向量运算耗时（向量算子为主要耗时段）             |
 | `cube_utilization_rate` | -     | Cube 单元利用率，越接近 `1.0` 说明计算效率越高  |
 | `vec_utilization_rate` | -     | 向量单元利用率                        |
-| `l2_hit_rate` | -     | L2 缓存命中率，越高说明访存局部性越好，搬运开销越小    |
-| `mem_volume` | Bytes | 各存储层间的数据搬运量，字段名反映具体搬运路径（如 `GM_2_UB`、`UB_2_L2`） |
+| `memory_traffic` | Bytes | 各存储层间的数据搬运量，字段名反映具体搬运路径（如 `GM_2_UB`、`UB_2_L2`） |
+| `theoretical_analysis[].op_name` | -     | 理论分析条目对应的 tileop 名称             |
+| `theoretical_analysis[].cycles` | -     | 该条记录的时钟周期数                     |
+| `theoretical_analysis[].latency` | μs    | 该条记录的建模时延                      |
+| `theoretical_analysis[].memory_access[].time` | μs    | 单次数据搬运耗时                       |
+| `theoretical_analysis[].memory_access[].bytes` | Bytes | 单次数据搬运量                        |
 
 **性能瓶颈快速判断（向量算子）：**
 
