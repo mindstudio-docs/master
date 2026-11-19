@@ -170,7 +170,7 @@ msprof\_slice.json配置文件保存目录为：
 
 |参数|可选/必选|说明|
 |--|--|--|
-|slice_switch|可选|分片开关。取值为：<br>&#8226; on：开启分片。<br/>&#8226; off：关闭分片。<br/>默认值为off。<br/>当前分片限制文件最大为20GB，如果开启分片功能且文件大小超过20GB时文件导出失败，此外，如果开启了分片开关，但是实际文件大小小于200MB时，也不会触发分片。<br/>默认情况下关闭数据分片，开启数据分片须编辑msprof_slice.json文件并配置该参数为on，配置为其他值均表示取默认值。<br/>默认情况下，数据分片根据timeline数据文件在Chrome浏览器上打开时间的长短判断分片，打开时间超出上限时，执行分片操作，分片文件大小由slice_file_size参数控制，分片文件数量由strategy参数控制。<br/>分片后的文件名格式为：模块名\_{slice_n}\_{timestamp}.json，其中slice_n表示分片的序号。|
+|slice_switch|可选|分片开关。取值为：<br>&#8226; on：开启分片。<br/>&#8226; off：关闭分片。<br/>默认值为off。<br/>当前对导出文件大小不做限制，此外，如果开启了分片开关，但是实际文件大小小于200MB时，也不会触发分片。<br/>默认情况下关闭数据分片，开启数据分片须编辑msprof_slice.json文件并配置该参数为on，配置为其他值均表示取默认值。<br/>默认情况下，数据分片根据timeline数据文件在Chrome浏览器上打开时间的长短判断分片，打开时间超出上限时，执行分片操作，分片文件大小由slice_file_size参数控制，分片文件数量由strategy参数控制。<br/>分片后的文件名格式为：模块名\_{slice_n}\_{timestamp}.json，其中slice_n表示分片的序号。|
 |slice_file_size(MB)|可选|分片文件的容量上限。单位为MB，取值范围为大于等于200的正整数，默认情况下，不限制分片文件的大小。<br/>参数配置大于等于200的正整数时，每个分片文件大小不能超过该值；参数配置其他值时，不限制分片文件的大小，仅根据strategy参数限制分片文件数量。|
 |strategy|可选|分片策略。取值为：<br/>&#8226; 0：按照切分次数最少且每个文件打开时间在可接受范围内的标准，对文件进行拆分。<br/>&#8226; 1：按照每个文件打开时间缩短为快速打开的标准（切分次数更多），对文件进行拆分。<br/>默认值为0。<br/>由于文件打开的时间长短与计算机性能有关，故无法给出准确的打开时间，一般情况下文件打开时间参考值如下：<br/>&#8226; 文件打开时间超出上限的参考时间为≥30s。<br/>&#8226; 文件打开时间在可接受范围内的参考时间为[10,30)，单位为s。<br/>&#8226; 文件打开时间为快速打开的参考时间为(0,10)，单位为s。<br/>具体打开时间请以设备实际情况为准。|
 
@@ -399,6 +399,14 @@ msprof工具的查询功能获取到的信息如[表2](#zh-cn_topic_000000131270
     python3 msprof.py export db -dir <dir>
     ```
 
+- 一次性导出summary、timeline和db文件
+
+    ```bash
+    python3 msprof.py export all -dir <dir> [-reports <reports_sample_config.json>] [--model-id <model-id>] [--iteration-id <iteration_id>] [--iteration-count <iteration_count>] [--clear]
+    ```
+
+    该命令在一次解析流程内同时产出timeline、summary和db三类交付件，避免重复解析。summary固定为csv格式，`--format`仅为兼容保留，传入后不生效。
+
 **参数说明<a name="zh-cn_topic_0000001265069834_section039513131005"></a>**
 
 **表 1**  导出性能数据命令参数说明
@@ -406,15 +414,13 @@ msprof工具的查询功能获取到的信息如[表2](#zh-cn_topic_000000131270
 |参数|**可选/必选**|说明|
 |--|--|--|
 |-dir或--collection-dir|必选|收集到的性能数据目录。须指定为PROF\_XXX目录或PROF\_XXX目录的父目录，例如：/home/HwHiAiUser/profiler_data/PROF_XXX。|
-|-reports|可选|传入用户自定义的reports_sample_config.json配置文件，会根据配置文件中指定的范围导出相应的性能数据文件。参数实现与msprof --reports一致，详细介绍请参见[使用示例（--reports参数）](msprof_parsing_instruct.md#zh-cn_topic_0000001265229686_section1128153151819)。|
+|-reports|可选|传入用户自定义的reports_sample_config.json配置文件，会根据配置文件中指定的范围导出相应的性能数据文件。参数实现与msprof --reports一致，详细介绍请参见[使用示例（--reports参数）](msprof_parsing_instruct.md#zh-cn_topic_0000001265229686_section1128153151819)。<br/>当前export timeline与export all会依据该配置过滤导出范围；export summary与export db可传入该参数，过滤能力由后续版本补齐。|
 |--model-id|可选|模型ID。需配置为正整数。与--iteration-id必须同时配置，导出该Model下指定计算迭代的性能数据。--model-id与--iteration-id均未配置时，默认导出所有性能数据。<br/>&#8226; 对于Atlas A2系列产品和Atlas A3系列产品，支持--model-id 4294967295，为Step模式，即--iteration-id配置的值以Step为粒度解析。仅支持解析MindSpore（版本号大于等于2.3）框架的性能数据。<br/>&#8226;--model-id配置为其他值时，指定以Graph为粒度统计的迭代ID（每个Graph执行一次，Iteration ID加1，当一个脚本被编译为多个Graph时，该ID与脚本层面的Step ID不一致）。|
 |--iteration-id|可选|迭代ID。需配置为正整数。与--model-id必须同时配置，导出该Model下指定计算迭代的性能数据。--model-id与--iteration-id均未配置时，默认导出所有性能数据。<br>&#8226; 对于Atlas A2系列产品和Atlas A3系列产品，支持--model-id 4294967295，表示指定以Step为粒度统计的迭代ID（每执行完成一个Step，Iteration ID加1）。仅支持解析MindSpore（版本号大于等于2.3）框架的性能数据。<br/>&#8226; --model-id配置为其他值时，指定以Graph为粒度统计的迭代ID（每个Graph执行一次，Iteration ID加1，当一个脚本被编译为多个Graph时，该ID与脚本层面的Step ID不一致）。|
 |--iteration-count|可选|导出连续迭代的个数，取值范围为1~5的整数，根据--iteration-id配置的值为起始Step，导出连续数量的Step，比如配置--iteration-count为3，--iteration-id为1，则导出Step为1、2、3。|
-|--format|可选|summary数据文件的导出格式，支持csv和json两种格式，默认值为csv。仅配置summary参数时支持。<br/>本文中summary文件介绍均以csv文件为例。|
+|--format|可选|summary数据文件的导出格式，支持csv和json两种格式，默认值为csv。仅配置summary参数时支持；配置export all时该参数仅用于兼容保留，summary固定按csv格式导出。<br/>本文中summary文件介绍均以csv文件为例。|
 |--clear|可选|数据精简模式，开启后将在导出性能数据后删除PROF_XXX/device_{id}下的sqlite目录，以节省存储空间。配置该参数时表示开启数据精简模式，未配置表示关闭，默认关闭。|
 |-h或--help|可选|显示帮助信息，仅在获取使用方式时使用。|
-
-Python 和 C++ 解析日志共用安装目录 `analysis/msconfig/msprof_config.json` 中的 `log.level`，配置路径不依赖当前工作目录。等级使用整数：`0` 对应 `DEBUG`、`1` 对应 `INFO`、`2` 对应 `WARN`、`3` 对应 `ERROR`，默认 `1`（INFO）。例如，配置为 `{"log":{"level":0}}` 后，新任务初始化日志时启用 DEBUG 日志，运行中的任务不热加载配置。Python 日志仍写入原有 `collection*.log`，C++ 日志写入 `msprof_analysis_<pid>.log`，均位于 `mindstudio_profiler_log` 目录。配置文件或字段缺省时使用 INFO；文件不可读、格式或等级无效时提示告警并使用 INFO。文件日志等级不影响控制台提示。C++ 文件日志同步写入并逐条刷新，启用 DEBUG 可能增加解析耗时。本次不引入异步日志队列。
 
 **使用示例<a name="zh-cn_topic_0000001265069834_section202865387012"></a>**
 
@@ -424,6 +430,12 @@ Python 和 C++ 解析日志共用安装目录 `analysis/msconfig/msprof_config.j
     `${INSTALL_DIR}/tools/profiler/profiler_tool/analysis/msprof`，$\{INSTALL\_DIR\}请替换为CANN软件安装后文件存储路径。若安装的Toolkit软件包，以root安装举例，则安装后文件存储路径为：/usr/local/Ascend/cann。
 
 3. 导出性能数据。可以导出timeline、summary和db三类文件，命令行格式如下：
+
+    - 一次性导出summary、timeline和db文件（推荐，仅解析一次）。
+
+        ```bash
+        python3 msprof.py export all -dir /home/HwHiAiUser/profiler_data/PROF_XXX
+        ```
 
     - 导出timeline数据和db文件
 
@@ -509,6 +521,40 @@ Python 和 C++ 解析日志共用安装目录 `analysis/msconfig/msprof_config.j
 >- mindstudio\_profiler\_output目录中的文件是根据采集的实际性能数据进行生成，如果实际的性能数据没有相关的数据文件，就不会导出对应的timeline和summary数据。
 >- 使用export命令能直接从已解析的性能数据中导出数据文件。当性能数据未解析时，单独执行export命令也能对性能数据进行解析并导出数据文件。
 >- 对于被强制中断的msprof采集进程，工具会保存已采集的原始性能数据，也可以使用**export**解析并导出。
+
+### 日志说明
+
+msProf解析工具任务执行过程中，按照配置的日志级别输出日志。
+
+日志输出目录为PROF_XXX/mindstudio_profiler_log目录。
+
+**设置日志级别**
+
+msProf解析工具输出日志可通过${INSTALL_DIR}/tools/profiler/profiler_tool/analysis/msconfig/msprof_config.json中的log.level字段配置。
+
+${INSTALL_DIR}请替换为CANN软件安装后文件存储路径，若安装的Toolkit软件包，以root安装举例，则安装后文件存储路径为：/usr/local/Ascend/cann。
+
+log.level字段取值范围：
+
+- 0：表示DEBUG级别。
+- 1：表示INFO级别，默认值。
+- 2：表示WARNING级别。
+- 3：表示ERROR级别。
+
+配置示例：
+
+```json
+ {"log":{"level":0}}
+```
+
+表示新任务初始化日志时启用DEBUG日志。
+
+> [!NOTE]
+>
+> - msProf任务执行过程中修改日志级别不生效。
+> - 文件不可读、格式或配置其他值时，提示告警并使用INFO级别。
+> - 文件日志等级不影响控制台提示。
+> - C++ 文件日志同步写入并逐条刷新，启用 DEBUG 可能增加解析耗时。
 
 ## 性能调优建议
 

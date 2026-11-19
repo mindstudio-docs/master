@@ -15,7 +15,7 @@
 
 具体流程请参考[图1 msOpGen工具使用流程介绍](#fig1120319585112)。
 
-**图 1**  msOpGen工具使用流程介绍<a id="fig1120319585112"></a>
+**图 1** msOpGen工具使用流程介绍<a id="fig1120319585112"></a>
 ![](../figures/msOpGen工具使用流程介绍.png "msOpGen工具使用流程介绍")
 
 ## 使用前准备<a id="使用前准备"></a>
@@ -59,7 +59,7 @@
 
 msOpGen目前已支持的功能如下：包括算子工程创建、算子实现（Host侧&Kernel侧）、算子工程编译部署以及解析算子仿真流水图文件等。
 
-**表 1**  msOpGen工具功能
+**表 1** msOpGen工具功能
 
 <a id="zh-cn_topic_0000001691887174_table2520191519210"></a>
 <table><thead align="left"><tr id="zh-cn_topic_0000001691887174_row17520215162117"><th class="cellrowborder" valign="top" width="27.6%" id="mcps1.2.3.1.1"><p id="zh-cn_topic_0000001691887174_p4521815102112"><a id="zh-cn_topic_0000001691887174_p4521815102112"></a><a id="zh-cn_topic_0000001691887174_p4521815102112"></a>功能</p>
@@ -99,7 +99,7 @@ msOpGen目前已支持的功能如下：包括算子工程创建、算子实现�
 
 **命令汇总<a id="section66278453613"></a>**
 
-执行如下命令，参数说明请参见[表1 创建算子工程参数说明](#zh-cn_topic_0000001740005677_table20825174505717)。用户按照输入的配置参数生成算子模板后，建议在运行前确认算子工程代码的安全性。
+执行如下命令，参数说明请参见[**表 2** 创建算子工程参数说明](#zh-cn_topic_0000001740005677_table20825174505717)。用户按照输入的配置参数生成算子模板后，建议在运行前确认算子工程代码的安全性。
 
 ```sh
 msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out {Output Path}
@@ -107,7 +107,7 @@ msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out 
 
 ### 参数说明<a id="ZH-CN_TOPIC_0000002508123428"></a>
 
-**表 1**  创建算子工程参数说明
+**表 2** 创建算子工程参数说明
 
 <a id="zh-cn_topic_0000001740005677_table20825174505717"></a>
 <table><thead align="left"><tr id="zh-cn_topic_0000001740005677_row682564565718"><th class="cellrowborder" valign="top" width="19.220000000000002%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001740005677_p128251945155719"><a id="zh-cn_topic_0000001740005677_p128251945155719"></a><a id="zh-cn_topic_0000001740005677_p128251945155719"></a>参数名称</p>
@@ -213,9 +213,9 @@ msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out 
 
 **补充说明<a id="zh-cn_topic_0000001776910254_section1497642710915"></a>**
 
-msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)。
+msOpGen工具其他参数说明可参考[**表 3** 参数说明](#table122041115099)。
 
-**表 2**  参数说明<a id="table122041115099"></a>
+**表 3** 参数说明<a id="table122041115099"></a>
 
 |参数名称|参数描述|说明|
 |------|-------|-------|
@@ -227,7 +227,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 
 #### 创建算子工程<a id="创建算子工程"></a>
 
-1. <a id="zh-cn_topic_0000001740005677_zh-cn_topic_0000001502825998_li1426528194416"></a>编写算子的原型定义json文件，用于生成算子开发工程。json文件的配置参数详细说明请参考[表1 json文件配置参数说明](#json文件配置参数说明)。
+1. <a id="zh-cn_topic_0000001740005677_zh-cn_topic_0000001502825998_li1426528194416"></a>编写算子的原型定义json文件，用于生成算子开发工程。json文件的配置参数详细说明请参考[**表 4** json文件配置参数说明](#json文件配置参数说明)。
 
     例如，AddCustom算子的json文件命名为add_custom.json，文件内容如下：
 
@@ -330,7 +330,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     ]
     ```
 
-    **表 1**  json文件配置参数说明<a id="json文件配置参数说明"></a>
+    **表 4** json文件配置参数说明<a id="json文件配置参数说明"></a>
 
     <table><thead align="left"><tr id="zh-cn_topic_0000001740005677_row1753514201512"><th class="cellrowborder" colspan="2" valign="top" id="mcps1.2.6.1.1"><p id="zh-cn_topic_0000001740005677_p145353201118"><a id="zh-cn_topic_0000001740005677_p145353201118"></a><a id="zh-cn_topic_0000001740005677_p145353201118"></a>配置字段</p>
     </th>
@@ -376,7 +376,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.1 "><p id="zh-cn_topic_0000001740005677_p23116081312"><a id="zh-cn_topic_0000001740005677_p23116081312"></a><a id="zh-cn_topic_0000001740005677_p23116081312"></a>字符串</p>
     </td>
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.2 "><p id="zh-cn_topic_0000001740005677_p1528116199820"><a id="zh-cn_topic_0000001740005677_p1528116199820"></a><a id="zh-cn_topic_0000001740005677_p1528116199820"></a>参数类型：</p>
-    <a id="zh-cn_topic_0000001740005677_ul74582338815"></a><a id="zh-cn_topic_0000001740005677_ul74582338815"></a><ul id="zh-cn_topic_0000001740005677_ul74582338815"><li>required（必选）</li><li>optional （可选）</li><li>dynamic（动态输入）</li></ul>
+    <a id="zh-cn_topic_0000001740005677_ul74582338815"></a><a id="zh-cn_topic_0000001740005677_ul74582338815"></a><ul id="zh-cn_topic_0000001740005677_ul74582338815"><li>required（必选）</li><li>optional（可选）</li><li>dynamic（动态输入）</li></ul>
     <p id="zh-cn_topic_0000001740005677_p862570718"><a id="zh-cn_topic_0000001740005677_p862570718"></a><a id="zh-cn_topic_0000001740005677_p862570718"></a>未配置默认为required（必选）。</p>
     </td>
     </tr>
@@ -396,7 +396,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.1 "><p id="zh-cn_topic_0000001740005677_p1311707133"><a id="zh-cn_topic_0000001740005677_p1311707133"></a><a id="zh-cn_topic_0000001740005677_p1311707133"></a>列表</p>
     </td>
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.2 "><p id="p132471493320"><a id="p132471493320"></a><a id="p132471493320"></a>算子参数的类型。</p>
-    <a id="ul2066691961715"></a><a id="ul2066691961715"></a><ul id="ul2066691961715"><li><span id="ph1189182417255"><a id="ph1189182417255"></a><a id="ph1189182417255"></a>Ascend C或TBE算子取值范围：float、half、float16 (fp16)、float32 (fp32)、int8、int16、int32、int64、uint8、uint16、uint32、uint64、qint8、qint16、qint32、quint8、quint16、quint32、bool、double、string、resource、complex64、complex128、bf16、numbertype、realnumbertype、quantizedtype、all、BasicType、IndexNumberType、bfloat16。</span></li><li><span id="ph51382781714"><a id="ph51382781714"></a><a id="ph51382781714"></a>MindSpore数据类型取值范围：None_None、BOOL_None、BOOL_Default、BOOL_5HD、BOOL_FracZ、BOOL_FracNZ、BOOL_C1HWNCoC0、BOOL_NCHW、BOOL_NHWC、BOOL_NDHWC、I8_None、I8_Default、I8_5HD、I8_FracZ、I8_FracNZ、I8_C1HWNCoC0、I8_NCHW、I8_NHWC、I8_HWCN、I8_NDHWC、U8_None、U8_Default、U8_5HD、U8_FracZ、U8_FracNZ、U8_C1HWNCoC0、U8_NCHW、U8_NHWC、U8_HWCN、U8_NDHWC、I16_None、I16_Default、I16_5HD、I16_FracZ、I16_FracNZ、I16_C1HWNCoC0、I16_NCHW、I16_NHWC、I16_HWCN、I16_NDHWC、U16_None、U16_Default、U16_5HD、U16_FracZ、U16_FracNZ、U16_C1HWNCoC0、U16_NCHW、U16_NHWC、U16_HWCN、U16_NDHWC、I32_None、I32_Default、I32_5HD、I32_FracZ、I32_FracNZ、I32_C1HWNCoC0、I32_NCHW、I32_NHWC、I32_HWCN、I32_NDHWC、U32_None、U32_Default、U32_5HD、U32_FracZ、U32_FracNZ、U32_C1HWNCoC0、U32_NCHW、U32_NHWC、U32_HWCN、U32_NDHWC、I64_None、I64_Default、I64_5HD、I64_FracZ、I64_FracNZ、I64_C1HWNCoC0、I64_NCHW、I64_NHWC、I64_HWCN、I64_NDHWC、U64_None、U64_Default、U64_5HD、U64_FracZ、U64_FracNZ、U64_C1HWNCoC0、U64_NCHW、U64_NHWC、U64_HWCN、U64_NDHWC、F16_None、F16_Default、F16_5HD、F16_FracZ、F16_FracNZ、F16_C1HWNCoC0、F16_NCHW、F16_NHWC、F16_HWCN、F16_NDHWCi、F16_FracZNLSTM、F32_None、F32_Default、F32_5HD、F32_FracZ、F32_FracNZ、F32_C1HWNCoC0、F32_NCHW、F32_NHWC、F32_HWCN、F32_NDHWC、F32_FracZNLSTM、F64_None、F64_Default、F64_5HD、F64_FracZ、F64_FracNZ、F64_C1HWNCoC0、F64_NCHW、F64_NHWC、F64_HWCN、F64_NDHWC。</span></li></ul>
+    <a id="ul2066691961715"></a><a id="ul2066691961715"></a><ul id="ul2066691961715"><li><span id="ph1189182417255"><a id="ph1189182417255"></a><a id="ph1189182417255"></a>Ascend C或TBE算子取值范围：float、half、float16 (fp16)、float32 (fp32)、int8、int16、int32、int64、uint8、uint16、uint32、uint64、qint8、qint16、qint32、quint8、quint16、quint32、bool、double、string、resource、complex64、complex128、bf16、numbertype、realnumbertype、quantizedtype、all、BasicType、IndexNumberType、bfloat16。</span></li><li><span id="ph51382781714"><a id="ph51382781714"></a><a id="ph51382781714"></a>MindSpore数据类型取值范围：None_None、BOOL_None、BOOL_Default、BOOL_5HD、BOOL_FracZ、BOOL_FracNZ、BOOL_C1HWNCoC0、BOOL_NCHW、BOOL_NHWC、BOOL_NDHWC、I8_None、I8_Default、I8_5HD、I8_FracZ、I8_FracNZ、I8_C1HWNCoC0、I8_NCHW、I8_NHWC、I8_HWCN、I8_NDHWC、U8_None、U8_Default、U8_5HD、U8_FracZ、U8_FracNZ、U8_C1HWNCoC0、U8_NCHW、U8_NHWC、U8_HWCN、U8_NDHWC、I16_None、I16_Default、I16_5HD、I16_FracZ、I16_FracNZ、I16_C1HWNCoC0、I16_NCHW、I16_NHWC、I16_HWCN、I16_NDHWC、U16_None、U16_Default、U16_5HD、U16_FracZ、U16_FracNZ、U16_C1HWNCoC0、U16_NCHW、U16_NHWC、U16_HWCN、U16_NDHWC、I32_None、I32_Default、I32_5HD、I32_FracZ、I32_FracNZ、I32_C1HWNCoC0、I32_NCHW、I32_NHWC、I32_HWCN、I32_NDHWC、U32_None、U32_Default、U32_5HD、U32_FracZ、U32_FracNZ、U32_C1HWNCoC0、U32_NCHW、U32_NHWC、U32_HWCN、U32_NDHWC、I64_None、I64_Default、I64_5HD、I64_FracZ、I64_FracNZ、I64_C1HWNCoC0、I64_NCHW、I64_NHWC、I64_HWCN、I64_NDHWC、U64_None、U64_Default、U64_5HD、U64_FracZ、U64_FracNZ、U64_C1HWNCoC0、U64_NCHW、U64_NHWC、U64_HWCN、U64_NDHWC、F16_None、F16_Default、F16_5HD、F16_FracZ、F16_FracNZ、F16_C1HWNCoC0、F16_NCHW、F16_NHWC、F16_HWCN、F16_NDHWC、F16_FracZNLSTM、F32_None、F32_Default、F32_5HD、F32_FracZ、F32_FracNZ、F32_C1HWNCoC0、F32_NCHW、F32_NHWC、F32_HWCN、F32_NDHWC、F32_FracZNLSTM、F64_None、F64_Default、F64_5HD、F64_FracZ、F64_FracNZ、F64_C1HWNCoC0、F64_NCHW、F64_NHWC、F64_HWCN、F64_NDHWC。</span></li></ul>
     <div class="note" id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"><a id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"></a><a id="zh-cn_topic_0000001740005677_zh-cn_topic_0228422146_zh-cn_topic_0187054064_note125461103482"></a><span class="notetitle"> 说明： </span><div class="notebody"><a id="ul54891820181216"></a><a id="ul54891820181216"></a><ul id="ul54891820181216"><li>不同计算操作支持的数据类型不同，详细请参见《<a href="https://gitcode.com/cann/asc-devkit/blob/master/docs/zh/api/api_list.md" target="_blank" rel="noopener noreferrer">Ascend C算子开发接口</a>》。</li><li><span id="ph1183323441317"><a id="ph1183323441317"></a><a id="ph1183323441317"></a>format与type需一一对应。若仅填充其中一项的唯一值，msOpGen工具将会以未填充项的唯一输入值为准自动补充至已填充项的长度。例如用户配置为format:["ND"] /type:["fp16","float","int32"]，msOpGen工具将会以format的唯一输入值（"ND"）为准自动补充至type参数的长度，自动补充后的配置为format:["ND","ND","ND"]/type:["fp16","float","int32"]。</span></li></ul>
     </div></div>
     </td>
@@ -444,7 +444,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.1 "><p id="zh-cn_topic_0000001740005677_p852610548135"><a id="zh-cn_topic_0000001740005677_p852610548135"></a><a id="zh-cn_topic_0000001740005677_p852610548135"></a>列表</p>
     </td>
     <td class="cellrowborder" valign="top" headers="mcps1.2.6.1.2 "><p id="zh-cn_topic_0000001740005677_p98712521657"><a id="zh-cn_topic_0000001740005677_p98712521657"></a><a id="zh-cn_topic_0000001740005677_p98712521657"></a>算子参数的类型。</p>
-    <a id="ul17864151012187"></a><a id="ul17864151012187"></a><ul id="ul17864151012187"><li><span id="ph15518186114510"><a id="ph15518186114510"></a><a id="ph15518186114510"></a>Ascend C或TBE算子取值范围：float、half、float16 (fp16)、float32 (fp32)、int8、int16、int32、int64、uint8、uint16、uint32、uint64、qint8、qint16、qint32、quint8、quint16、quint32、bool、double、string、resource、complex64、complex128、bf16、numbertype、realnumbertype、quantizedtype、all、BasicType、IndexNumberType、bfloat16。</span></li><li><span id="ph192021333111720"><a id="ph192021333111720"></a><a id="ph192021333111720"></a>MindSpore数据类型取值范围：None_None、BOOL_None、BOOL_Default、BOOL_5HD、BOOL_FracZ、BOOL_FracNZ、BOOL_C1HWNCoC0、BOOL_NCHW、BOOL_NHWC、BOOL_NDHWC、I8_None、I8_Default、I8_5HD、I8_FracZ、I8_FracNZ、I8_C1HWNCoC0、I8_NCHW、I8_NHWC、I8_HWCN、I8_NDHWC、U8_None、U8_Default、U8_5HD、U8_FracZ、U8_FracNZ、U8_C1HWNCoC0、U8_NCHW、U8_NHWC、U8_HWCN、U8_NDHWC、I16_None、I16_Default、I16_5HD、I16_FracZ、I16_FracNZ、I16_C1HWNCoC0、I16_NCHW、I16_NHWC、I16_HWCN、I16_NDHWC、U16_None、U16_Default、U16_5HD、U16_FracZ、U16_FracNZ、U16_C1HWNCoC0、U16_NCHW、U16_NHWC、U16_HWCN、U16_NDHWC、I32_None、I32_Default、I32_5HD、I32_FracZ、I32_FracNZ、I32_C1HWNCoC0、I32_NCHW、I32_NHWC、I32_HWCN、I32_NDHWC、U32_None、U32_Default、U32_5HD、U32_FracZ、U32_FracNZ、U32_C1HWNCoC0、U32_NCHW、U32_NHWC、U32_HWCN、U32_NDHWC、I64_None、I64_Default、I64_5HD、I64_FracZ、I64_FracNZ、I64_C1HWNCoC0、I64_NCHW、I64_NHWC、I64_HWCN、I64_NDHWC、U64_None、U64_Default、U64_5HD、U64_FracZ、U64_FracNZ、U64_C1HWNCoC0、U64_NCHW、U64_NHWC、U64_HWCN、U64_NDHWC、F16_None、F16_Default、F16_5HD、F16_FracZ、F16_FracNZ、F16_C1HWNCoC0、F16_NCHW、F16_NHWC、F16_HWCN、F16_NDHWCi、F16_FracZNLSTM、F32_None、F32_Default、F32_5HD、F32_FracZ、F32_FracNZ、F32_C1HWNCoC0、F32_NCHW、F32_NHWC、F32_HWCN、F32_NDHWC、F32_FracZNLSTM、F64_None、F64_Default、F64_5HD、F64_FracZ、F64_FracNZ、F64_C1HWNCoC0、F64_NCHW、F64_NHWC、F64_HWCN、F64_NDHWC。</span></li></ul>
+    <a id="ul17864151012187"></a><a id="ul17864151012187"></a><ul id="ul17864151012187"><li><span id="ph15518186114510"><a id="ph15518186114510"></a><a id="ph15518186114510"></a>Ascend C或TBE算子取值范围：float、half、float16 (fp16)、float32 (fp32)、int8、int16、int32、int64、uint8、uint16、uint32、uint64、qint8、qint16、qint32、quint8、quint16、quint32、bool、double、string、resource、complex64、complex128、bf16、numbertype、realnumbertype、quantizedtype、all、BasicType、IndexNumberType、bfloat16。</span></li><li><span id="ph192021333111720"><a id="ph192021333111720"></a><a id="ph192021333111720"></a>MindSpore数据类型取值范围：None_None、BOOL_None、BOOL_Default、BOOL_5HD、BOOL_FracZ、BOOL_FracNZ、BOOL_C1HWNCoC0、BOOL_NCHW、BOOL_NHWC、BOOL_NDHWC、I8_None、I8_Default、I8_5HD、I8_FracZ、I8_FracNZ、I8_C1HWNCoC0、I8_NCHW、I8_NHWC、I8_HWCN、I8_NDHWC、U8_None、U8_Default、U8_5HD、U8_FracZ、U8_FracNZ、U8_C1HWNCoC0、U8_NCHW、U8_NHWC、U8_HWCN、U8_NDHWC、I16_None、I16_Default、I16_5HD、I16_FracZ、I16_FracNZ、I16_C1HWNCoC0、I16_NCHW、I16_NHWC、I16_HWCN、I16_NDHWC、U16_None、U16_Default、U16_5HD、U16_FracZ、U16_FracNZ、U16_C1HWNCoC0、U16_NCHW、U16_NHWC、U16_HWCN、U16_NDHWC、I32_None、I32_Default、I32_5HD、I32_FracZ、I32_FracNZ、I32_C1HWNCoC0、I32_NCHW、I32_NHWC、I32_HWCN、I32_NDHWC、U32_None、U32_Default、U32_5HD、U32_FracZ、U32_FracNZ、U32_C1HWNCoC0、U32_NCHW、U32_NHWC、U32_HWCN、U32_NDHWC、I64_None、I64_Default、I64_5HD、I64_FracZ、I64_FracNZ、I64_C1HWNCoC0、I64_NCHW、I64_NHWC、I64_HWCN、I64_NDHWC、U64_None、U64_Default、U64_5HD、U64_FracZ、U64_FracNZ、U64_C1HWNCoC0、U64_NCHW、U64_NHWC、U64_HWCN、U64_NDHWC、F16_None、F16_Default、F16_5HD、F16_FracZ、F16_FracNZ、F16_C1HWNCoC0、F16_NCHW、F16_NHWC、F16_HWCN、F16_NDHWC、F16_FracZNLSTM、F32_None、F32_Default、F32_5HD、F32_FracZ、F32_FracNZ、F32_C1HWNCoC0、F32_NCHW、F32_NHWC、F32_HWCN、F32_NDHWC、F32_FracZNLSTM、F64_None、F64_Default、F64_5HD、F64_FracZ、F64_FracNZ、F64_C1HWNCoC0、F64_NCHW、F64_NHWC、F64_HWCN、F64_NDHWC。</span></li></ul>
     <div class="note" id="zh-cn_topic_0000001740005677_note1311920126217"><a id="zh-cn_topic_0000001740005677_note1311920126217"></a><a id="zh-cn_topic_0000001740005677_note1311920126217"></a><span class="notetitle"> 说明： </span><div class="notebody"><a id="ul135819481168"></a><a id="ul135819481168"></a><ul id="ul135819481168"><li>不同计算操作支持的数据类型不同，详细请参见《<a href="https://gitcode.com/cann/asc-devkit/blob/master/docs/zh/api/api_list.md" target="_blank" rel="noopener noreferrer">Ascend C算子开发接口</a>》。</li><li><span id="ph52588526169"><a id="ph52588526169"></a><a id="ph52588526169"></a>format与type需一一对应。若仅填充其中一项的唯一值，msOpGen工具将会以未填充项的唯一输入值为准自动补充至已填充项的长度。例如用户配置为format:["ND"] /type:["fp16","float","int32"]，msOpGen工具将会以format的唯一输入值（"ND"）为准自动补充至type参数的长度，自动补充后的配置为format:["ND","ND","ND"]/type:["fp16","float","int32"]。</span></li></ul>
     </div></div>
     </td>
@@ -505,7 +505,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     >- json文件可对“attr”算子属性进行配置，具体请参考[编写原型定义文件](#zh-cn_topic_0000001740005677_zh-cn_topic_0000001502825998_li1426528194416)。
     >- 算子的Operator Type需要采用**大驼峰**的命名方式，即采用大写字符区分不同的语义，具体请参见[算子工程编译](#算子编译部署)的须知内容。
 
-2. 以生成AddCustom的算子工程为例，执行如下命令，参数说明请参见[表1 json文件配置参数说明](#json文件配置参数说明)。
+2. 以生成AddCustom的算子工程为例，执行如下命令，参数说明请参见[**表 2** 创建算子工程参数说明](#zh-cn_topic_0000001740005677_table20825174505717)。
 
     ```sh
     msopgen gen -i {*.json} -f {framework type} -c {Compute Resource} -lan cpp -out {Output Path}
@@ -567,14 +567,14 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 
 **编译流程<a id="section06811210114115"></a>**
 
-完成算子Kernel、Host侧的开发后，需要对算子工程进行编译，生成自定义算子安装包*.run，具体编译操作流程请参考[图1 算子工程编译示意图](#zh-cn_topic_0000001691887130_fig11482161513267)。
+完成算子Kernel、Host侧的开发后，需要对算子工程进行编译，生成自定义算子安装包*.run，具体编译操作流程请参考[图2 算子工程编译示意图](#zh-cn_topic_0000001691887130_fig11482161513267)。
 
-**图 1**  算子工程编译示意图<a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>
+**图 2** 算子工程编译示意图<a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>
 ![](../figures/算子工程编译示意图.png "算子工程编译示意图")
 
 **操作步骤<a id="zh-cn_topic_0000001691887130_section122481539171817"></a>**
 
-1. 修改工程目录下的**CMakePresets.json**中cacheVariables的配置项，完成工程编译相关配置。**CMakePresets.json**文件内容如下，参数说明请参见[表1 需要开发者配置的常用参数列表](#zh-cn_topic_0000001691887130_table2023245818513)。
+1. 修改工程目录下的**CMakePresets.json**中cacheVariables的配置项，完成工程编译相关配置。**CMakePresets.json**文件内容如下，参数说明请参见[**表 5** 需要开发者配置的常用参数列表](#zh-cn_topic_0000001691887130_table2023245818513)。
 
     ```json
     {
@@ -642,7 +642,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     }
     ```
 
-    **表 1**  需要开发者配置的常用参数列表
+    **表 5** 需要开发者配置的常用参数列表
 
     <a id="zh-cn_topic_0000001691887130_table2023245818513"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001691887130_row1723219582515"><th class="cellrowborder" valign="top" width="28.590000000000003%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001691887130_p1223245811518"><a id="zh-cn_topic_0000001691887130_p1223245811518"></a><a id="zh-cn_topic_0000001691887130_p1223245811518"></a>参数名称</p>
@@ -679,7 +679,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     </td>
     <td class="cellrowborder" valign="top" width="41.45%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001691887130_p122334581150"><a id="zh-cn_topic_0000001691887130_p122334581150"></a><a id="zh-cn_topic_0000001691887130_p122334581150"></a>标识自定义算子所属厂商的名称。建议开发者自行指定所属厂商名称，避免和其他厂商提供的算子包冲突。</p>
     </td>
-    <td class="cellrowborder" valign="top" width="29.960000000000004%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001691887130_p942011361797"><a id="zh-cn_topic_0000001691887130_p942011361797"></a><a id="zh-cn_topic_0000001691887130_p942011361797"></a>"customize"</p>
+    <td class="cellrowborder" valign="top" width="29.960000000000004%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001691887130_p942011361797"><a id="zh-cn_topic_0000001691887130_p942011361797"></a><a id="zh-cn_topic_0000001691887130_p942011361797"></a>“customize”</p>
     </td>
     </tr>
     </tbody>
@@ -693,7 +693,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     add_ops_compile_options(OpType COMPUTE_UNIT soc_version1 soc_version2 ... OPTIONS option1 option2 ...)
     ```
 
-    **表 2**  具体参数介绍
+    **表 6** 具体参数介绍
 
     <a id="zh-cn_topic_0000001691887130_table151052168302"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001691887130_row141050165305"><th class="cellrowborder" valign="top" width="16.981698169816983%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001691887130_p17106816133011"><a id="zh-cn_topic_0000001691887130_p17106816133011"></a><a id="zh-cn_topic_0000001691887130_p17106816133011"></a>参数名称</p>
@@ -768,7 +768,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
     ./custom_opp_<target_os>_<target_architecture>.run --install-path=<path>  # 其中--install-path为可选参数，用于指定自定义算子包的安装目录。支持指定绝对路径，运行用户需要具有指定安装路径的读写权限。
     ```
 
-    下文描述中的<vendor_name\>为算子工程编译时CMakePresets.json配置文件中字段“vendor_name”的取值，默认为"customize"。
+    下文描述中的<vendor_name\>为算子工程编译时CMakePresets.json配置文件中字段“vendor_name”的取值，默认为“customize”。
 
     - 默认安装场景，不配置--install-path参数，安装成功后会将编译生成的自定义算子相关文件部署到`${INSTALL_DIR}/opp/vendors/<vendor_name>`目录。`${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。例如，若安装的Ascend-cann-toolkit软件包，安装后文件存储路径示例为：`$HOME/Ascend/cann`。
 
@@ -850,7 +850,7 @@ msOpGen工具其他参数说明可参考[表2 参数说明](#table122041115099)�
 
         指定目录安装场景下，如果需要多个自定义算子包同时生效，分别执行各算子包安装路径下的**set_env.bash**脚本即可。每次脚本执行都会将当前算子包的安装路径追加到ASCEND_CUSTOM_OPP_PATH环境变量的最前面。因此可以按照脚本执行顺序确定优先级：脚本执行顺序越靠后，算子包优先级越高。
 
-        比如先执行`source <path>/vendor_name1/bin/set_env.bash`，后执行`source <path>vendor_name2/bin/set_env.bash`，vendor_name2算子包的优先级高于vendor_name1。ASCEND_CUSTOM_OPP_PATH示例如下：
+        比如先执行`source <path>/vendor_name1/bin/set_env.bash`，后执行`source <path>/vendor_name2/bin/set_env.bash`，vendor_name2算子包的优先级高于vendor_name1。ASCEND_CUSTOM_OPP_PATH示例如下：
 
         ```sh
         ASCEND_CUSTOM_OPP_PATH=<path>/vendor_name2:<path>/vendor_name1
@@ -912,7 +912,7 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
     ./run.sh
     ```
 
-5. 使能环境变量后（<SOC_VERSION>需要替换为具体值，如Ascend910B4），请参考《msOpProf工具用户指南》中的“工具使用\>msprof op simulator”功能进行仿真，并生成dump数据。
+5. 使能环境变量后（<SOC\_VERSION>需要替换为具体值，如Ascend910B4），请参考《msOpProf工具用户指南》中的“工具使用\>msprof op simulator”功能进行仿真，并生成dump数据。
 
     ```sh
     export LD_LIBRARY_PATH=${ASCEND_HOME_PATH}/tools/simulator/<SOC_VERSION>/lib:${ASCEND_HOME_PATH}/opp/vendors/customize/op_api/lib:$LD_LIBRARY_PATH
@@ -920,13 +920,13 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
 6. 生成算子仿真流水图文件。
 
-    执行如下命令，参数说明请参见[表1 参数说明](#zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_table197301923143513)。
+    执行如下命令，参数说明请参见[**表 7** 参数说明](#zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_table197301923143513)。
 
     ```sh
     msopgen sim -c core{id} -d xx/{path of dump data} -subc {sub core id} -out {output path} -reloc {path of .o file or executable file}
     ```
 
-    **表 1**  参数说明
+    **表 7** 参数说明
 
     <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_table197301923143513"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_row157316238353"><th class="cellrowborder" valign="top" width="19.2%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p673142318355"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p673142318355"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p673142318355"></a>参数名称</p>
@@ -1013,7 +1013,7 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
     - -c：指定待解析dump文件的core id，如：core0。
     - -d：指定性能仿真环境下生成的dump文件所在路径。例如："{model}/ca/_add_custom_/add_custom_pre_static_add_custom"。
-    - -subc：指定待解析dump文件的subcore id，如文件名为core0._cubecore0_.instr_log.dump，“cubecore0”即为subcore id。（仅Atlas A3系列产品和Atlas A2系列产品需配置该参数）
+    - -subc：指定待解析dump文件的subcore id，如文件名为core0._cubecore0_.instr_log.dump，“cubecore0”即为subcore id。（仅Atlas A3系列产品和Atlas A2系列产品需配置该参数）。
     - -reloc：指定Kernel侧算子编译生成的.o文件或可执行文件所在路径。
 
     示例二：
@@ -1028,15 +1028,15 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
 7. 查看算子仿真流水图文件。
 
-    可以在Chrome浏览器中输入“chrome://tracing“地址，将输出路径下的**dump2trace_core*.json**文件拖到空白处打开，通过键盘上的快捷键（W：放大，S：缩小，A：左移，D：右移）进行查看，如下图所示。
+    可以在Chrome浏览器中输入“chrome://tracing”地址，将输出路径下的**dump2trace_core*.json**文件拖到空白处打开，通过键盘上的快捷键（W：放大，S：缩小，A：左移，D：右移）进行查看，如下图所示。
 
-    **图 1**  单个子核展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a>
+    **图 3** 单个子核展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a>
     ![](../figures/单个子核展示.png "单个子核展示")
 
-    **图 2**  Mix融合算子展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig793111117274"></a>
+    **图 4** Mix融合算子展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig793111117274"></a>
     ![](../figures/Mix融合算子展示.png "Mix融合算子展示")
 
-    **表 2**  字段说明
+    **表 8** 字段说明
 
     <a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_table3849941182518"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_row1085074132519"><th class="cellrowborder" valign="top" width="23.79%" id="mcps1.2.3.1.1"><p id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p785034119253"><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p785034119253"></a><a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_p785034119253"></a>字段名</p>
@@ -1097,15 +1097,15 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
     在输出路径下打开代码行耗时文件{核编号}_code_exe_prof.csv，如下图所示。
 
-    **图 3**  代码行耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig35497207381"></a>
+    **图 5** 代码行耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig35497207381"></a>
     ![](../figures/代码行耗时文件.png "代码行耗时文件")
 
     在输出路径下打开指令耗时文件{核编号}_instr_exe_prof.csv，如下图所示。
 
-    **图 4**  指令耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig15979118144012"></a>
+    **图 6** 指令耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig15979118144012"></a>
     ![](../figures/指令耗时文件.png "指令耗时文件")
 
-    通过文件中的“call count“及“cycles“字段可以分别查看代码行或指令的调用次数和累计耗时。
+    通过文件中的“call count”及“cycles”字段可以分别查看代码行或指令的调用次数和累计耗时。
 
 ## 算子测试简介<a id="ZH-CN_TOPIC_0000002526426581"></a>
 
@@ -1124,7 +1124,7 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 - 使用此工具生成算子测试用例前，需要将要测试的算子部署到算子库中，具体请参见[算子编译部署](#算子编译部署)。
 - 若在实现算子ST功能验证时使用到AI框架，请完成所需AI框架的安装。
     - TensorFlow框架的安装请参见《[TensorFlow 1.15模型迁移指南](https://www.hiascend.com/document/detail/zh/TensorFlowCommunity/latest/migration/tfmigr1/docs/zh/tfadapter_1/installation/tensorflow-1-15_install.md)》的“环境准备 \> 安装开源框架TensorFlow 1.15”章节。
-    - TensorFlow 2.6.5 框架的安装请参见《[TensorFlow 2.6.5模型迁移指南](https://www.hiascend.com/document/detail/zh/TensorFlowCommunity/latest/migration/tfmigr2/docs/zh/tfadapter_2/installation/tensorflow-2-6-5_install.md)》的“环境准备 \> 安装开源框架TensorFlow 2.6.5”章节。
+    - TensorFlow 2.6.5框架的安装请参见《[TensorFlow 2.6.5模型迁移指南](https://www.hiascend.com/document/detail/zh/TensorFlowCommunity/latest/migration/tfmigr2/docs/zh/tfadapter_2/installation/tensorflow-2-6-5_install.md)》的“环境准备 \> 安装开源框架TensorFlow 2.6.5”章节。
     - PyTorch框架的安装请参见《[TorchNPU 软件安装指南](https://www.hiascend.com/document/detail/zh/Pytorch/latest/installguide/swinstall/docs/zh/installation_guide/installation_description.md)》。
 
 ## 算子测试功能介绍<a id="ZH-CN_TOPIC_0000002539479311"></a>
@@ -1144,7 +1144,7 @@ msOpST支持生成算子的ST测试用例并在硬件环境中执行。具有如
 
 ### 命令格式<a id="ZH-CN_TOPIC_0000002539803267"></a>
 
-执行如下命令生成算子测试用例定义文件，详细参数说明请参见[表1 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)。
+执行如下命令生成算子测试用例定义文件，详细参数说明请参见[**表 9** 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)。
 
 ```sh
 msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
@@ -1154,7 +1154,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
 - 生成算子测试用例定义文件。
 
-    **表 1**  生成算子测试用例定义文件的参数说明
+    **表 9** 生成算子测试用例定义文件的参数说明
 
     <a id="zh-cn_topic_0000001775029424_table15856145565413"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001775029424_row1785613551549"><th class="cellrowborder" valign="top" width="25.619999999999997%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001775029424_p12856135510543"><a id="zh-cn_topic_0000001775029424_p12856135510543"></a><a id="zh-cn_topic_0000001775029424_p12856135510543"></a>参数名称</p>
@@ -1218,7 +1218,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
 - 生成/执行测试用例。
 
-    **表 2**  生成/执行测试用例的参数说明
+    **表 10** 生成/执行测试用例的参数说明
 
     <a id="zh-cn_topic_0000001821790281_table1735410430919"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001821790281_row163498431294"><th class="cellrowborder" valign="top" width="24.18020823197431%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001821790281_p5348134320915"><a id="zh-cn_topic_0000001821790281_p5348134320915"></a><a id="zh-cn_topic_0000001821790281_p5348134320915"></a>参数名称</p>
@@ -1296,7 +1296,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1035211432915"><a id="zh-cn_topic_0000001821790281_p1035211432915"></a><a id="zh-cn_topic_0000001821790281_p1035211432915"></a>ST测试高级功能配置文件（msopst.ini）存储路径，可配置为绝对路径或者相对路径。</p>
     <p id="zh-cn_topic_0000001821790281_p1335215433917"><a id="zh-cn_topic_0000001821790281_p1335215433917"></a><a id="zh-cn_topic_0000001821790281_p1335215433917"></a>用户可通过修改msopst.ini配置文件，实现如下高级功能：</p>
     <a id="zh-cn_topic_0000001821790281_ul83525436917"></a><a id="zh-cn_topic_0000001821790281_ul83525436917"></a><ul id="zh-cn_topic_0000001821790281_ul83525436917"><li>ST测试源码可编辑。</li><li>已编辑的ST测试源码可执行。</li><li>设置Host日志级别环境变量。</li><li>设置日志是否在控制台显示。</li><li>设置atc模型转换的日志级别。</li><li>设置atc模型转换运行环境的操作系统类型及架构。</li><li>设置模型精度。</li><li>读取算子在<span id="zh-cn_topic_0000001821790281_ph93528431917"><a id="zh-cn_topic_0000001821790281_ph93528431917"></a><a id="zh-cn_topic_0000001821790281_ph93528431917"></a>AI处理器</span>上运行的性能数据。</li></ul>
-    <p id="p57016533264"><a id="p57016533264"></a><a id="p57016533264"></a>若未配置--config_file文件，模型将强制使用FP16类型精度，msopst.ini配置文件的详细说明请参见<a href="#zh-cn_topic_0000001821790281_table17358154319919">表1 msopst.ini文件参数说明</a>。</p>
+    <p id="p57016533264"><a id="p57016533264"></a><a id="p57016533264"></a>若未配置--config_file文件，模型将强制使用FP16类型精度，msopst.ini配置文件的详细说明请参见<a href="#zh-cn_topic_0000001821790281_table17358154319919">表 1 msopst.ini文件参数说明</a>。</p>
     </td>
     <td class="cellrowborder" valign="top" width="6.811326262527976%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p53531043896"><a id="zh-cn_topic_0000001821790281_p53531043896"></a><a id="zh-cn_topic_0000001821790281_p53531043896"></a>否</p>
     </td>
@@ -1323,7 +1323,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
 - 生成单算子上板测试框架。
 
-    **表 3**  生成单算子上板测试框架参数说明
+    **表 11** 生成单算子上板测试框架参数说明
 
     <a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_table20825174505717"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_row682564565718"><th class="cellrowborder" valign="top" width="19.24%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_p128251945155719"><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_p128251945155719"></a><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_p128251945155719"></a>参数名称</p>
@@ -1408,7 +1408,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     ├── run_test.sh               // 算子测试执行脚本
     ```
 
-2. <a id="zh-cn_topic_0000001775029424_li1663966193910"></a>执行如下命令生成算子测试用例定义文件，详细参数说明请参见[表1 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)。
+2. <a id="zh-cn_topic_0000001775029424_li1663966193910"></a>执行如下命令生成算子测试用例定义文件，详细参数说明请参见[**表 9** 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)。
 
     ```sh
     msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
@@ -1417,7 +1417,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     > [!NOTE]
     >
     > 示例如下：
-    > 以AddCustom算子为例，执行如下命令:
+    > 以AddCustom算子为例，执行如下命令：
     >
     > ```sh
     > msopst create -i Op_implementation/add_custom.cpp -out ./output
@@ -1426,7 +1426,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     > 请将Op_implementation更换为Host侧算子的实现文件所在路径。
     > 命令执行成功后，会在当前路径的output目录下生成算子测试用例定义文件：AddCustom_case_timestamp.json。
 
-3. 创建算子ST测试用例定义文件“AddCustom_case.json”。该文件的模板如下，您可以基于如下模板进行修改，“\*.json”文件支持的全量字段说明参见[表1 算子测试用例定义json文件](#zh-cn_topic_0000001775029424_table103623575476)。不同场景下的测试用例定义文件的样例可参见《[MindStudio Ops Generator典型案例](../best_practices/example.md)》中的“msOpST测试用例定义文件”。
+3. 创建算子ST测试用例定义文件“AddCustom_case.json”。该文件的模板如下，您可以基于如下模板进行修改，“\*.json”文件支持的全量字段说明参见[**表 12** 算子测试用例定义json文件](#zh-cn_topic_0000001775029424_table103623575476)。不同场景下的测试用例定义文件的样例可参见《[MindStudio Ops Generator典型案例](../best_practices/example.md)》中的“msOpST测试用例定义文件”。
 
     ```json
     [
@@ -1460,7 +1460,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     ]
     ```
 
-    **表 1**  算子测试用例定义json文件
+    **表 12** 算子测试用例定义json文件
 
     <a id="zh-cn_topic_0000001775029424_table103623575476"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001775029424_row1636255717475"><th class="cellrowborder" colspan="2" valign="top" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001775029424_p17362657194719"><a id="zh-cn_topic_0000001775029424_p17362657194719"></a><a id="zh-cn_topic_0000001775029424_p17362657194719"></a>参数</p>
@@ -1505,7 +1505,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p8656111913214"><a id="zh-cn_topic_0000001775029424_p8656111913214"></a><a id="zh-cn_topic_0000001775029424_p8656111913214"></a>可选。</p>
     <p id="zh-cn_topic_0000001775029424_p66561119727"><a id="zh-cn_topic_0000001775029424_p66561119727"></a><a id="zh-cn_topic_0000001775029424_p66561119727"></a>String类型。</p>
-    <p id="zh-cn_topic_0000001775029424_p1365614198220"><a id="zh-cn_topic_0000001775029424_p1365614198220"></a><a id="zh-cn_topic_0000001775029424_p1365614198220"></a>ST测试模式，其值为："ms_python_train"，表示Mindspore的算子工程（仅<span id="zh-cn_topic_0000001775029424_ph9594183016437"><a id="zh-cn_topic_0000001775029424_ph9594183016437"></a><a id="zh-cn_topic_0000001775029424_ph9594183016437"></a><term id="zh-cn_topic_0000001312391781_term71949488213"><a id="zh-cn_topic_0000001312391781_term71949488213"></a><a id="zh-cn_topic_0000001312391781_term71949488213"></a>Atlas 训练系列产品</term></span>支持）；"pt_python_train"，表示PyTorch框架下的算子工程。</p>
+    <p id="zh-cn_topic_0000001775029424_p1365614198220"><a id="zh-cn_topic_0000001775029424_p1365614198220"></a><a id="zh-cn_topic_0000001775029424_p1365614198220"></a>ST测试模式，其值为："ms_python_train"，表示MindSpore的算子工程（仅<span id="zh-cn_topic_0000001775029424_ph9594183016437"><a id="zh-cn_topic_0000001775029424_ph9594183016437"></a><a id="zh-cn_topic_0000001775029424_ph9594183016437"></a><term id="zh-cn_topic_0000001312391781_term71949488213"><a id="zh-cn_topic_0000001312391781_term71949488213"></a><a id="zh-cn_topic_0000001312391781_term71949488213"></a>Atlas 训练系列产品</term></span>支持）；"pt_python_train"，表示PyTorch框架下的算子工程。</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001775029424_row12217121513817"><td class="cellrowborder" valign="top" width="16.41%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p82174153388"><a id="zh-cn_topic_0000001775029424_p82174153388"></a><a id="zh-cn_topic_0000001775029424_p82174153388"></a>run_torch_api</p>
@@ -1562,8 +1562,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <td class="cellrowborder" valign="top" width="15.8%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p17364157114719"><a id="zh-cn_topic_0000001775029424_p17364157114719"></a><a id="zh-cn_topic_0000001775029424_p17364157114719"></a>name</p>
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p3714795501"><a id="zh-cn_topic_0000001775029424_p3714795501"></a><a id="zh-cn_topic_0000001775029424_p3714795501"></a>可选。</p>
-    <p id="zh-cn_topic_0000001775029424_p59222248501"><a id="zh-cn_topic_0000001775029424_p59222248501"></a><a id="zh-cn_topic_0000001775029424_p59222248501"></a>算子为动态多输入场景（动态多输入场景：算子输入的数量不固定，类似一个TensorList）时，“name”为必选配置，请配置为算子信息库中“input<em id="zh-cn_topic_0000001775029424_i879463117446"><a id="zh-cn_topic_0000001775029424_i879463117446"></a><a id="zh-cn_topic_0000001775029424_i879463117446"></a>x</em>.name”参数的名称+编号，编号从“0”开始，根据输入的个数按照0，1，2......，依次递增。</p>
-    <p id="zh-cn_topic_0000001775029424_p1271413914509"><a id="zh-cn_topic_0000001775029424_p1271413914509"></a><a id="zh-cn_topic_0000001775029424_p1271413914509"></a>例如，算子信息文件中指定的输入个数为4个，则input_desc中需要配置4个输入描述，name分别为“xxx0”、"xxx1"、“xxx2”、“xxx3”，其中xxx为输入参数的名称。</p>
+    <p id="zh-cn_topic_0000001775029424_p59222248501"><a id="zh-cn_topic_0000001775029424_p59222248501"></a><a id="zh-cn_topic_0000001775029424_p59222248501"></a>算子为动态多输入场景（动态多输入场景：算子输入的数量不固定，类似一个TensorList）时，“name”为必选配置，请配置为算子信息库中“input<em id="zh-cn_topic_0000001775029424_i879463117446"><a id="zh-cn_topic_0000001775029424_i879463117446"></a><a id="zh-cn_topic_0000001775029424_i879463117446"></a>x</em>.name”参数的名称+编号，编号从“0”开始，根据输入的个数按照0，1，2……，依次递增。</p>
+    <p id="zh-cn_topic_0000001775029424_p1271413914509"><a id="zh-cn_topic_0000001775029424_p1271413914509"></a><a id="zh-cn_topic_0000001775029424_p1271413914509"></a>例如，算子信息文件中指定的输入个数为4个，则input_desc中需要配置4个输入描述，name分别为“xxx0”、“xxx1”、“xxx2”、“xxx3”，其中xxx为输入参数的名称。</p>
     <p id="zh-cn_topic_0000001775029424_p048015111916"><a id="zh-cn_topic_0000001775029424_p048015111916"></a><a id="zh-cn_topic_0000001775029424_p048015111916"></a>动态多输入场景的配置示例可参见《MindStudio Ops Generator典型案例》中的“测试用例定义文件&gt;若算子的输入个数不确定（动态多输入场景）”。</p>
     </td>
     </tr>
@@ -1694,7 +1694,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <div class="p" id="zh-cn_topic_0000001775029424_p15124436379"><a id="zh-cn_topic_0000001775029424_p15124436379"></a><a id="zh-cn_topic_0000001775029424_p15124436379"></a>若用户需要指定输入数据时，可通过增加“value”字段进行配置。有如下三种配置方式：<a id="zh-cn_topic_0000001775029424_ul2026010173720"></a><a id="zh-cn_topic_0000001775029424_ul2026010173720"></a><ul id="zh-cn_topic_0000001775029424_ul2026010173720"><li>直接输入Tensor数据，如Tensor的值为[1,2,3,4]。<p id="zh-cn_topic_0000001775029424_p6901205794117"><a id="zh-cn_topic_0000001775029424_p6901205794117"></a><a id="zh-cn_topic_0000001775029424_p6901205794117"></a>"value": [1,2,3,4]</p>
     </li><li>输入二进制数据文件的路径，如数据文件为test.bin时。<p id="zh-cn_topic_0000001775029424_p151013154214"><a id="zh-cn_topic_0000001775029424_p151013154214"></a><a id="zh-cn_topic_0000001775029424_p151013154214"></a>"value": "../test.bin"</p>
     <p id="zh-cn_topic_0000001775029424_p72611408378"><a id="zh-cn_topic_0000001775029424_p72611408378"></a><a id="zh-cn_topic_0000001775029424_p72611408378"></a>二进制数据bin文件需用户自行准备。可以输入绝对路径，也可以输入测试用例定义文件的相对路径。</p>
-    </li><li>配置为“fuzz”，使用fuzz测试参数生成脚本自动批量生成值。<div class="note" id="zh-cn_topic_0000001775029424_note12221316194415"><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><span class="notetitle"> 说明： </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p1022161610445"><a id="zh-cn_topic_0000001775029424_p1022161610445"></a><a id="zh-cn_topic_0000001775029424_p1022161610445"></a>若用户添加了“value”字段，“data_distribute”和“value_range”字段将会被忽略。同时需要保证“format”,"type"，"shape"字段的值与“value”数据对应，且每个用例只能测试一种数据类型。配置示例可参见《MindStudio Ops Generator典型案例》中的“测试用例定义文件&gt;若指定固定输入”。</p>
+    </li><li>配置为“fuzz”，使用fuzz测试参数生成脚本自动批量生成值。<div class="note" id="zh-cn_topic_0000001775029424_note12221316194415"><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><span class="notetitle"> 说明： </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p1022161610445"><a id="zh-cn_topic_0000001775029424_p1022161610445"></a><a id="zh-cn_topic_0000001775029424_p1022161610445"></a>若用户添加了“value”字段，“data_distribute”和“value_range”字段将会被忽略。同时需要保证“format”、"type"、"shape"字段的值与“value”数据对应，且每个用例只能测试一种数据类型。配置示例可参见《MindStudio Ops Generator典型案例》中的“测试用例定义文件&gt;若指定固定输入”。</p>
     </div></div>
     </li></ul>
     </div>
@@ -1717,8 +1717,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     </td>
     <td class="cellrowborder" valign="top" width="67.78999999999999%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001775029424_p6632104591614"><a id="zh-cn_topic_0000001775029424_p6632104591614"></a><a id="zh-cn_topic_0000001775029424_p6632104591614"></a>可选。String类型。</p>
     <p id="zh-cn_topic_0000001775029424_p4157145635814"><a id="zh-cn_topic_0000001775029424_p4157145635814"></a><a id="zh-cn_topic_0000001775029424_p4157145635814"></a>输出参数名称。</p>
-    <p id="zh-cn_topic_0000001775029424_p914085185914"><a id="zh-cn_topic_0000001775029424_p914085185914"></a><a id="zh-cn_topic_0000001775029424_p914085185914"></a>算子为动态多输出场景（动态多输出场景：算子输出的数量不固定）时，“name”为必选配置，请配置为算子信息库中“outputx.name”参数的名称+编号，编号从“0”开始，根据输出的个数按照0，1，2......，依次递增。</p>
-    <p id="zh-cn_topic_0000001775029424_p14140175195913"><a id="zh-cn_topic_0000001775029424_p14140175195913"></a><a id="zh-cn_topic_0000001775029424_p14140175195913"></a>例如，算子信息文件中指定的输出个数为4个，则output_desc中需要配置4个输出描述，name分别为“xxx0”、"xxx1"、“xxx2”、“xxx3”，其中xxx为输出参数的名称。</p>
+    <p id="zh-cn_topic_0000001775029424_p914085185914"><a id="zh-cn_topic_0000001775029424_p914085185914"></a><a id="zh-cn_topic_0000001775029424_p914085185914"></a>算子为动态多输出场景（动态多输出场景：算子输出的数量不固定）时，“name”为必选配置，请配置为算子信息库中“outputx.name”参数的名称+编号，编号从“0”开始，根据输出的个数按照0，1，2……，依次递增。</p>
+    <p id="zh-cn_topic_0000001775029424_p14140175195913"><a id="zh-cn_topic_0000001775029424_p14140175195913"></a><a id="zh-cn_topic_0000001775029424_p14140175195913"></a>例如，算子信息文件中指定的输出个数为4个，则output_desc中需要配置4个输出描述，name分别为“xxx0”、“xxx1”、“xxx2”、“xxx3”，其中xxx为输出参数的名称。</p>
     </td>
     </tr>
     <tr id="zh-cn_topic_0000001775029424_row737217571479"><td class="cellrowborder" valign="top" width="16.41%" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001775029424_p637265734714"><a id="zh-cn_topic_0000001775029424_p637265734714"></a><a id="zh-cn_topic_0000001775029424_p637265734714"></a>-</p>
@@ -1885,7 +1885,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     >- `${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
     >- {arch-os}中arch表示操作系统架构，os表示操作系统。
 
-2. 执行如下命令生成/执行测试用例，具体参数介绍请参见[表1 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)
+2. 执行如下命令生成/执行测试用例，具体参数介绍请参见[**表 9** 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)。
 
     ```sh
     msopst run -i {*.json}  -soc {soc version}  -out {output path} -c {case name} -d {device id} -conf {msopst.ini path} -err_thr "[threshold1,threshold2]"
@@ -1896,9 +1896,9 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
         > [!NOTE]
         >
-        > msopst.ini文件默认使用FP16精度模式，如需使用其他精度模式需手动修改[表1 msopst.ini文件参数说明](#zh-cn_topic_0000001821790281_table17358154319919)中atc_singleop_advance_option的--precision_mode参数。
+        > msopst.ini文件默认使用FP16精度模式，如需使用其他精度模式需手动修改[**表 13** msopst.ini文件参数说明](#zh-cn_topic_0000001821790281_table17358154319919)中atc_singleop_advance_option的--precision_mode参数。
 
-        **表 1**  msopst.ini文件参数说明
+        **表 13** msopst.ini文件参数说明
 
         <a id="zh-cn_topic_0000001821790281_table17358154319919"></a>
         <table><thead align="left"><tr id="zh-cn_topic_0000001821790281_row83549434915"><th class="cellrowborder" valign="top" width="29.432943294329434%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001821790281_p535414431493"><a id="zh-cn_topic_0000001821790281_p535414431493"></a><a id="zh-cn_topic_0000001821790281_p535414431493"></a>参数</p>
@@ -1914,7 +1914,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         <td class="cellrowborder" valign="top" width="41.3041304130413%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001821790281_ul1035412431192"></a><a id="zh-cn_topic_0000001821790281_ul1035412431192"></a><ul id="zh-cn_topic_0000001821790281_ul1035412431192"><li>True</li><li>False（默认）</li></ul>
         </td>
         <td class="cellrowborder" rowspan="2" valign="top" width="29.262926292629267%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p73543437920"><a id="zh-cn_topic_0000001821790281_p73543437920"></a><a id="zh-cn_topic_0000001821790281_p73543437920"></a>msOpST工具运行模式。</p>
-        <p id="zh-cn_topic_0000001821790281_p53556431196"><a id="zh-cn_topic_0000001821790281_p53556431196"></a><a id="zh-cn_topic_0000001821790281_p53556431196"></a>详情请参见<a href="#zh-cn_topic_0000001821790281_table1836016436913">表2 msOpST的运行模式</a>。</p>
+        <p id="zh-cn_topic_0000001821790281_p53556431196"><a id="zh-cn_topic_0000001821790281_p53556431196"></a><a id="zh-cn_topic_0000001821790281_p53556431196"></a>详情请参见<a href="#zh-cn_topic_0000001821790281_table1836016436913">**表 2** msOpST的运行模式</a>。</p>
         </td>
         </tr>
         <tr id="zh-cn_topic_0000001821790281_row14355443298"><td class="cellrowborder" valign="top" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p203558435910"><a id="zh-cn_topic_0000001821790281_p203558435910"></a><a id="zh-cn_topic_0000001821790281_p203558435910"></a>only_run_without_gen</p>
@@ -1985,7 +1985,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         </tbody>
         </table>
 
-        **表 2**  msOpST的运行模式
+        **表 14** msOpST的运行模式
 
         <a id="zh-cn_topic_0000001821790281_table1836016436913"></a>
         <table><thead align="left"><tr id="zh-cn_topic_0000001821790281_row335954310914"><th class="cellrowborder" valign="top" width="7.5200000000000005%" id="mcps1.2.5.1.1"><p id="zh-cn_topic_0000001821790281_p12358154313918"><a id="zh-cn_topic_0000001821790281_p12358154313918"></a><a id="zh-cn_topic_0000001821790281_p12358154313918"></a>模式</p>
@@ -2037,13 +2037,13 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
         - 启动msOpST工具的高级功能，仅生成ST测试用例，用户修改ST测试用例后，再执行ST测试用例。
 
-            1. 执行命令，编辑msopst.ini文件
+            1. 执行命令，编辑msopst.ini文件。
 
                 ```sh
                 vim ${INSTALL_DIR}/python/site-packages/bin/msopst.ini
                 ```
 
-                将msOpST工具的运行模式修改为模式2，按照[表2 msOpST的运行模式](#zh-cn_topic_0000001821790281_table1836016436913)修改`only_gen_without_run`和`only_run_without_gen`参数的取值。只生成ST测试代码，不运行ST测试代码。
+                将msOpST工具的运行模式修改为模式2，按照[**表 14** msOpST的运行模式](#zh-cn_topic_0000001821790281_table1836016436913)修改`only_gen_without_run`和`only_run_without_gen`参数的取值。只生成ST测试代码，不运行ST测试代码。
 
             2. 执行如下命令生成ST测试源码。
 
@@ -2057,13 +2057,13 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
             3. 修改msopst.ini文件，修改运行模式为仅执行ST测试用例。
 
-                执行命令，编辑msopst.ini文件
+                执行命令，编辑msopst.ini文件。
 
                 ```sh
                 vim ${INSTALL_DIR}/python/site-packages/bin/msopst.ini
                 ```
 
-                将msOpST工具的运行模式修改为模式3，按照[表2 msOpST的运行模式](#zh-cn_topic_0000001821790281_table1836016436913)修改`only_gen_without_run`和`only_run_without_gen`参数的取值。不生成ST测试代码，只运行ST测试代码。
+                将msOpST工具的运行模式修改为模式3，按照[**表 14** msOpST的运行模式](#zh-cn_topic_0000001821790281_table1836016436913)修改`only_gen_without_run`和`only_run_without_gen`参数的取值。不生成ST测试代码，只运行ST测试代码。
 
             4. 执行如下命令运行已修改的ST测试源码。
 
@@ -2157,12 +2157,12 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         │   └── st_report.json        //运行报表
         ```
 
-        命令运行成功后，会生成报表st_report.json，记录了测试的信息以及各阶段运行情况，用户运行出问题以后，可基于报表查询运行信息，以便问题定位。同时，st_report.json报表可以对比测试结果。st_report.json保存在[图1 运行结果示例](#zh-cn_topic_0000001821790281_fig1936411431910)中“The st_report saved in”路径下。
+        命令运行成功后，会生成报表st_report.json，记录了测试的信息以及各阶段运行情况，用户运行出问题以后，可基于报表查询运行信息，以便问题定位。同时，st_report.json报表可以对比测试结果。st_report.json保存在[图6 运行结果示例](#zh-cn_topic_0000001821790281_fig1936411431910)中“The st_report saved in”路径下。
 
-        **图 1**  运行结果示例<a id="zh-cn_topic_0000001821790281_fig1936411431910"></a>
+        **图 7** 运行结果示例<a id="zh-cn_topic_0000001821790281_fig1936411431910"></a>
         ![](../figures/运行结果示例.png "运行结果示例")
 
-        **表 3**  st_report.json报表主要字段及含义
+        **表 15** st_report.json报表主要字段及含义
 
         <a id="zh-cn_topic_0000001821790281_table1236818431294"></a>
         <table><thead align="left"><tr id="zh-cn_topic_0000001821790281_row83651743795"><th class="cellrowborder" colspan="3" valign="top" id="mcps1.2.5.1.1"><p id="zh-cn_topic_0000001821790281_p1636584311913"><a id="zh-cn_topic_0000001821790281_p1636584311913"></a><a id="zh-cn_topic_0000001821790281_p1636584311913"></a>字段</p>
@@ -2294,8 +2294,8 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         vim ${INSTALL_DIR}/python/site-packages/bin/msopst.ini
         ```
 
-    2. 将msOpST工具的运行模式修改为模式2，按照[表2 msOpST的运行模式](#zh-cn_topic_0000001821790281_table1836016436913)修改“only_gen_without_run“和“only_run_without_gen“参数的取值。只生成ST测试代码，不运行ST测试代码。
-    3. 若开发环境和运行环境架构不同，按照[表1 msopst.ini文件参数说明](#zh-cn_topic_0000001821790281_table17358154319919)修改“HOST_ARCH“和“TOOL_CHAIN“参数的取值。
+    2. 将msOpST工具的运行模式修改为模式2，按照[**表 14** msOpST的运行模式](#zh-cn_topic_0000001821790281_table1836016436913)修改“only_gen_without_run”和“only_run_without_gen”参数的取值。只生成ST测试代码，不运行ST测试代码。
+    3. 若开发环境和运行环境架构不同，按照[**表 13** msopst.ini文件参数说明](#zh-cn_topic_0000001821790281_table17358154319919)修改“HOST_ARCH”和“TOOL_CHAIN”参数的取值。
     4. 执行如下命令生成ST测试源码。
 
         ```sh
@@ -2306,7 +2306,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
         ST测试用例生成后，用户可根据需要自行修改ST测试用例代码。
 
-    5. 执行完成后，将在{output path}下生成ST测试用例，并使用g++编译器生成可执行文件main。同时，屏幕打印信息中展示此次一共运行几个用例，测试用例运行的情况，并生成报表st_report.json，保存在打印信息中“The st report saved in”所示路径下，报表具体信息请参见[表3 st_report.json报表主要字段及含义](#zh-cn_topic_0000001821790281_table1236818431294)。
+    5. 执行完成后，将在{output path}下生成ST测试用例，并使用g++编译器生成可执行文件main。同时，屏幕打印信息中展示此次一共运行几个用例，测试用例运行的情况，并生成报表st_report.json，保存在打印信息中“The st report saved in”所示路径下，报表具体信息请参见[**表 15** st_report.json报表主要字段及含义](#zh-cn_topic_0000001821790281_table1236818431294)。
 
 3. 执行测试用例。
     1. 将开发环境的算子工程目录的run目录下的out文件夹拷贝至运行环境任一目录，例如上传到`${INSTALL_DIR}/Ascend_project/run_add/`目录下。
@@ -2321,9 +2321,9 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
 4. 查看运行结果。<a id="开发环境与运行环境分设场景输出结果"></a>
 
-    执行完成后，打印信息提示此次用例运行的情况，如[图2 运行结果](#zh-cn_topic_0000001821790281_fig204517552811)所示。
+    执行完成后，打印信息提示此次用例运行的情况，如[图7 运行结果](#zh-cn_topic_0000001821790281_fig204517552811)所示。
 
-    **图 2**  运行结果<a id="zh-cn_topic_0000001821790281_fig204517552811"></a>
+    **图 8** 运行结果<a id="zh-cn_topic_0000001821790281_fig204517552811"></a>
     ![](../figures/运行结果.png "运行结果")
 
 #### 生成单算子上板测试框架<a id="生成单算子上板测试框架"></a>
@@ -2334,7 +2334,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 > 
 >- 该功能仅支持Atlas 推理系列产品和Atlas 训练系列产品，不支持Atlas A2系列产品和Atlas A3系列产品。
 >- 所有参数不支持输入addr及tiling属性。
->- 支持使用#ifndef__CCE_KT_TEST__对核函数的调用进行封装的场景。
+>- 支持使用#ifndef __CCE_KT_TEST__对核函数的调用进行封装的场景。
 
 1. 请用户完成以下输入文件的准备工作。
     - 算子ST测试用例定义文件（\*.json文件）。
@@ -2380,7 +2380,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     2024-01-17 08:40:55 (3271037) - [INFO] The st report saved in: $HOME/AddCustom/output/20240117084055/st_report.json.
     ```
 
-    **表 1**  st_report.json报表主要字段及含义
+    **表 16** st_report.json报表主要字段及含义
 
     <a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_table17196134111916"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_row13197104131914"><th class="cellrowborder" colspan="3" valign="top" id="mcps1.2.5.1.1"><p id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p141978414191"><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p141978414191"></a><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_zh-cn_topic_0290818047_p141978414191"></a>字段</p>
@@ -2492,13 +2492,13 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     source $ASCEND_HOME_DIR/bin/set_env.bash
     ```
 
-5. 进入执行测试框架的脚本文件所在目录，如下命令进行测试框架代码的上板验证。
+5. 进入执行测试框架的脚本文件所在目录，执行如下命令进行测试框架代码的上板验证。
 
     ```sh
     bash run.sh <kernel_name> <soc_version> <core_type> <run_mode>
     ```
 
-    **表 2**  脚本参数介绍
+    **表 17** 脚本参数介绍
 
     <a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001571310758_table1777011201334"></a>
     <table><thead align="left"><tr id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001615270497_row53101935185"><th class="cellrowborder" valign="top" width="18.45%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001615270497_p20310136189"><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001615270497_p20310136189"></a><a id="zh-cn_topic_0000001776778716_zh-cn_topic_0000001615270497_p20310136189"></a>参数名</p>

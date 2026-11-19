@@ -12,7 +12,7 @@ msOpGen 工具在算子开发过程中可自动生成自定义算子工程，使
 
 ### 2.1【环境】必备环境准备（强制前置 ⚠️）
 
-🛑 **本节为强制前置步骤！跳过将导致后续操作大量出现失败。**  
+🛑 **本节为强制前置步骤！跳过将导致后续操作出现大量失败。**  
 本教程**仅支持**标准化 CANN 容器环境，不兼容裸机、虚拟机或其他非标准容器部署。
 
 #### 2.1.1 安装 CANN 容器环境
@@ -108,7 +108,7 @@ rm -rf ~/ot_demo/workspace/src && mkdir -p ~/ot_demo/workspace/src && cd ~/ot_de
 参数 -c：芯片类型，格式为 `aicpu`/`ai_core-{首字母小写芯片SoC型号}`
 
 **2. 生成 Ascend C 算子工程**   
-执行以下命令，请将 -c 参数替换上节查询的拼接值（<span style="color:#e60000;">**注意**</span>：**其中的减号和下划线不能写错，例如：ai<span style="color:#e60000;">_</span>core<span style="color:#e60000;">-</span>ascendxxx**）：
+执行以下命令，请将-c参数替换为上节查询的拼接值（<span style="color:#e60000;">**注意**</span>：**其中的减号和下划线不能写错，例如：ai<span style="color:#e60000;">_</span>core<span style="color:#e60000;">-</span>ascendxxx**）：
 
 ```shell
 msopgen gen -i msopgen_demo.json -c xxx -lan cpp -out AddCustom
@@ -119,8 +119,8 @@ msopgen gen -i msopgen_demo.json -c xxx -lan cpp -out AddCustom
 > [!NOTE]
 > 
 > **知识点（可选阅读）：关键概念**       
-> Host侧：运行于CPU的代码，负责数据预处理、任务调度及算子调用；   
-> Kernel侧：运行于NPU的代码，负责执行实际的大规模并行计算逻辑；   
+> Host侧：运行于CPU的代码，负责数据预处理、任务调度及算子调用。   
+> Kernel侧：运行于NPU的代码，负责执行实际的大规模并行计算逻辑。   
 > Tiling：将大规模数据分块处理，以提高Local Memory利用率并优化内存访问效率。
 
 生成的工程结构看起来很庞大复杂，但我们**仅需关注标记为【用户扩展点】的三个C++文件**，其余均为框架代码，无特殊需求则无需查看或修改：
@@ -147,9 +147,9 @@ AddCustom
 > [!NOTE]
 > 
 > **知识点（可选阅读）：算子核心代码文件实现原理**  
-> op_host/add_custom.cpp：实现Host侧的Tiling计算逻辑与算子原型注册；   
-> op_kernel/add_custom_tiling.h：定义Tiling分块策略的数据结构；  
-> op_kernel/add_custom.cpp：实现Kernel侧加法算子的具体计算逻辑（GM→UB搬运→向量加法→UB→GM写回）；     
+> op_host/add_custom.cpp：实现Host侧的Tiling计算逻辑与算子原型注册。   
+> op_kernel/add_custom_tiling.h：定义Tiling分块策略的数据结构。  
+> op_kernel/add_custom.cpp：实现Kernel侧加法算子的具体计算逻辑（GM→UB搬运→向量加法→UB→GM写回）。     
 > 若需深入理解上述三个文件的功能与协作机制，除参考代码注释外，建议详细阅读<a href="https://www.hiascend.com/developer/blog/details/0239124507827469022" target="_blank">《昇腾Ascend C编程入门教程（纯干货）》</a>。
 
 #### 2.3.1 开发 op_kernel/add_custom_tiling.h
@@ -211,7 +211,7 @@ this->AICore().AddConfig("ascend910_93");
 
 namespace optiling {
     /**
-     * 此函数使用CANN框架编程模式，若未学过可能较难理解。当前只需理解其设置了3个数字信息（数据总长、tile数、核数）
+     * 此函数使用CANN框架编程模式，若未学过可能较难理解。当前只需理解其设置了3个数值（数据总长、tile数、核数）
      * 并传递到核函数即可，不影响对算子工具使用的理解。详细原理流程请参考《Ascend C算子开发指南》相关章节。
      * 
      * 功能：计算算子分块的相关信息（数据总长度、tile数量等）。将其注册到下方的算子定义中后，
@@ -463,7 +463,7 @@ extern "C" __global__ __aicore__ void add_custom(GM_ADDR x, GM_ADDR y, GM_ADDR z
  * @brief 启动自定义向量加法算子的 AI Core 核函数
  *
  * 该函数封装了昇腾 AI Core 上的核函数调用，用于执行用户自定义的向量加法运算。
- * 通过传入 Tiling 配置、工作空间及设备内存指针，完成算子在 NPU 上的调度与执行。
+ * 通过传入 Tiling 配置、工作空间及设备内存指针，完成算子在NPU上的调度与执行。
  *
  * @param blockDim 本次启动的AI Core数量
  * @param l2ctrl 预留参数
@@ -529,9 +529,9 @@ bash ./run.sh
 
 > [!NOTE]
 >
-> **关于 NPU 设备选择的说明**   
-> 执行如上 `run.sh` 脚本将实际运行算子。为便于学习，假设环境中所有 NPU 卡型号相同，系统将随机选择一张空闲卡执行任务。
-> 若因随机选定的卡存在故障等原因需指定 NPU 卡，请根据 `npu-smi info` 命令返回的 NPU 信息，使用其顺序号（取值范围为 [0, NPU 数量 - 1]）按如下方式调用：
+> **关于NPU设备选择的说明**   
+> 执行如上 `run.sh` 脚本将实际运行算子。为便于学习，假设环境中所有 NPU卡型号相同，系统将随机选择一张空闲卡执行任务。
+> 若因随机选定的卡存在故障等原因需指定NPU卡，请根据 `npu-smi info` 命令返回的NPU信息，使用其顺序号（取值范围为 [0, NPU数量 - 1]）按如下方式调用：
 >
 > ```shell
 > bash ./run.sh 2
@@ -539,17 +539,18 @@ bash ./run.sh
 
 若输出如下内容，结果为 3.0，则表明算子已成功加载并计算正确：
 
-```text
+```output
 result is:
 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 
 test pass
 ```
 
-若超过 30 秒未返回结果，可能是 NPU 卡繁忙，可按 Ctrl+C 终止后切换至其他空闲卡重试；若出现类似如下错误，可能原因包括：NPU卡异常（硬件故障、驱动问题等），/dev/hisi_hdc 设备异常（如容器内未成功挂载、缺乏访问权限、因线程数过多导致设备无法打开等），以及内存等系统资源不足等。    
-错误码说明请参见：[《ACL错误码表》](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/API/appdevgapi/aclcppdevg_03_1345.html)，
-请先解决 NPU 卡故障或更换为其他正常卡后再继续体验（指定 NPU 卡运行的方法详见上文“关于 NPU 设备选择的说明”）：
+若超过30秒未返回结果，可能是NPU卡繁忙，可按Ctrl+C终止后切换至其他空闲卡重试；若出现类似如下错误，可能原因包括：NPU卡异常（硬件故障、驱动问题等），/dev/hisi_hdc设备异常（如容器内未成功挂载、缺乏访问权限、因线程数过多导致设备无法打开等），以及内存等系统资源不足等。
 
-```text
+错误码说明请参见：《[ACL错误码表](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850/API/appdevgapi/aclcppdevg_03_1345.html)》，
+请先解决NPU卡故障或更换为其他正常卡后再继续体验（指定NPU卡运行的方法详见上文“关于NPU设备选择的说明”）：
+
+```output
 aclrtSetDevice failed. ERROR: xxxxxx
 Init acl failed. ERROR: 1
 ```
@@ -558,7 +559,7 @@ Init acl failed. ERROR: 1
 
 #### 2.6.1 编译调用算子程序时报错如下，怎么解决？
 
-```text
+```output
 -- Build files have been written to: /root/ot_demo/workspace/src/caller/build
 [ 50%] Building CXX object CMakeFiles/execute_add_op.dir/main.cpp.o
 /root/ot_demo/workspace/src/caller/main.cpp:16:10: fatal error: aclnn_add_custom.h: No such file or directory
@@ -569,5 +570,6 @@ gmake[2]: *** [CMakeFiles/execute_add_op.dir/build.make:76: CMakeFiles/execute_a
 gmake[1]: *** [CMakeFiles/Makefile2:83: CMakeFiles/execute_add_op.dir/all] Error 2
 ```
 
-**问题原因：** 算子部署时没有将 op_api/include/aclnn_add_custom.h 部署到正确的位置，导致找不到头文件。一种可能的原因是环境中存在环境变量 `ASCEND_CUSTOM_OPP_PATH` 且值不正确，或者存在多个以冒号间隔的路径，但目前部署头文件时只会成功拷贝到第一个路径中，后续路径均未拷贝。   
-**解决方法：** 删除环境变量，执行`unset ASCEND_CUSTOM_OPP_PATH`，重新部署算子。   
+**问题原因：** 算子部署时没有将 op_api/include/aclnn_add_custom.h 部署到正确的位置，导致找不到头文件。一种可能的原因是环境中存在环境变量 `ASCEND_CUSTOM_OPP_PATH` 且值不正确，或者存在多个以冒号间隔的路径，但目前部署头文件时只会成功拷贝到第一个路径中，后续路径均未拷贝。
+
+**解决方法：** 删除环境变量，执行`unset ASCEND_CUSTOM_OPP_PATH`，重新部署算子。
