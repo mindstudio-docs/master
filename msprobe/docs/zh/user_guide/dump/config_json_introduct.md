@@ -1,5 +1,7 @@
 # 配置文件介绍
 
+本文档介绍msProbe的config.json配置文件，说明通用配置参数与各task任务类型的配置示例和参数含义，适用于调用PrecisionDebugger执行dump、需要按需配置config.json的用户。
+
 - 当调用**PrecisionDebugger**接口执行dump或其他操作时，需要使用[config.json](../../../../python/msprobe/config.json)文件；当未指定config.json时，将使用默认配置。
 - msProbe成功安装后，可根据msProbe的安装路径确认config.json文件的所在路径，可通过如下命令确认msProbe的安装路径：
 
@@ -81,7 +83,7 @@
 | data_mode    | 可选      | dump数据过滤，list[str]类型。详细配置方法请参见[data_mode参数配置说明](#data_mode参数配置说明)。                                                                                                       |
 | summary_mode | 可选      | 控制dump文件输出的模式，支持PyTorch、MSAdapter、MindSpore动态图以及MindSpore静态图L0级别jit_level=O0/O1场景。详细配置方法请参见[summary_mode参数配置说明](#summary_mode参数配置说明)。                                    |
 | slice        | 可选      | 对tensor进行切片，list[dict]类型。详细配置方法请参见[slice参数配置说明](#slice参数配置说明)。                                                                                                           |
-| request_id   | 可选      | 指定request_id对tensor的第0维进行切片， str类型，默认未配置。详细配置方法请参见[request_id参数配置说明](#request_id参数配置说明)。                                                                                 |
+| request_id   | 可选      | 指定request_id对tensor的第0维进行切片，str类型，默认未配置。详细配置方法请参见[request_id参数配置说明](#request_id参数配置说明)。                                                                                 |
 
 ### task配置为tensor
 
@@ -157,7 +159,7 @@
 | 参数        | 可选/必选 | 解释                   |
 | --------------- | ------------ | ------------------------ |
 | white_list      | 可选     | API dump白名单，仅对指定的API进行dump。默认未配置白名单，即dump全量API数据。<br/>配置示例："white_list": ["conv1d", "conv2d"]。 |
-| black_list      | 可选     | API dump黑名单，被指定的API不进行 dump。默认未配置黑名单，即dump全量API数据。<br/>配置示例："black_list": ["conv1d", "conv2d"]。 |
+| black_list      | 可选     | API dump黑名单，被指定的API不进行dump。默认未配置黑名单，即dump全量API数据。<br/>配置示例："black_list": ["conv1d", "conv2d"]。 |
 | error_data_path | 可选     | 配置保存精度未达标的API输入输出数据路径，默认为当前路径。<br/>配置示例："error_data_path": "./"。 |
 
 > [!NOTE]
@@ -198,7 +200,7 @@
 | scope | 可选 | 检测范围，`list[str]`类型，见[scope参数配置说明](#scope参数配置说明)。 |
 | list | 可选 | 待检测API列表，`list[str]`类型，见[list参数配置说明](#list参数配置说明)。 |
 | check_mode | 可选 | 检测方式，`str`类型，默认`"isnan"`，见[check_mode参数配置说明](#check_mode参数配置说明)。 |
-| detail | 可选 | `bool`类型，默认为`true`，适用于`check_mode: "isnan"`。`true`记录检测JSON；`false`的输出文件仅包含输出含NaN的调用的`.pt`文件。在`slot`模式中显式配置该字段会输出warning并忽略该配置。落盘内容见[使用示例：落盘结果](./pytorch_nan_check_quickstart.md#3-落盘结果)。 |
+| detail | 可选 | `bool`类型，默认为`true`，适用于`check_mode: "isnan"`。`true`记录检测JSON；`false`的输出文件仅包含输出含NaN的调用的`.pt`文件。在`slot`模式中显式配置该字段会输出warning并忽略该配置。落盘内容见[使用示例：落盘结果](./pytorch_nan_check_quickstart.md#13-落盘结果)。 |
 | tensor_list | 可选 | 仅`check_mode: "slot"`支持，指定需要详细采集的API关键字，`list[str]`类型，见[tensor_list参数配置说明](#tensor_list参数配置说明)。 |
 | data_mode | 可选 | 数据过滤，`list[str]`类型，默认`["all"]`。指定`"input"`时须同时配置`"output"`，见[data_mode参数配置说明](#data_mode参数配置说明)。 |
 
@@ -208,7 +210,7 @@ eager场景的运行步骤见[nan_check使用示例](./pytorch_nan_check_quickst
 
 **结果说明**
 
-`isnan`模式的落盘文件和字段含义见[使用示例：落盘结果](./pytorch_nan_check_quickstart.md#3-落盘结果)；`slot`模式的结果说明见[使用示例：slot模式](./pytorch_nan_check_quickstart.md#5-slot模式)。图模式的目录和`data_name`示例见[nan_check任务输出](./aclgraph_dump_instruct.md#nan_check-任务)。
+`isnan`模式的落盘文件和字段含义见[使用示例：落盘结果](./pytorch_nan_check_quickstart.md#13-落盘结果)；`slot`模式的结果说明见[使用示例：slot模式](./pytorch_nan_check_quickstart.md#2-slot模式)。图模式的目录和`data_name`示例见[nan_check任务输出](./aclgraph_dump_instruct.md#nan_check-任务)。
 
 ### task配置为structure
 
@@ -287,7 +289,7 @@ MindSpore动态图场景下，"level"须为"L2"；MindSpore静态图场景下，
 
 支持场景：
 
- - PyTorch场景
+ - PyTorch场景。
 
 ### list参数配置说明
 
@@ -321,27 +323,8 @@ MindSpore动态图场景下，"level"须为"L2"；MindSpore静态图场景下，
 
 `nan_check.check_mode`为`str`类型，可选值如下：
 
-- `"isnan"`（默认）：检测Tensor中的NaN。eager场景使用`PrecisionDebugger`，`level`为`"L1"`，构建、运行及输出说明见[nan_check使用示例](./pytorch_nan_check_quickstart.md)。AclGraph图模式使用`AclGraphDumper`，`level`支持`L0`、`L1`、`mix`，配置与输出说明见[NaN自动检测](./aclgraph_dump_instruct.md#nan-自动检测)。
-- `"slot"`：eager场景通过`PrecisionDebugger`读取NPU寄存器状态，检测NaN、Inf或过程溢出，`level`为`"L1"`。详细采集范围由`tensor_list`指定；构建、环境变量和结果说明见[使用示例：slot模式](./pytorch_nan_check_quickstart.md#5-slot模式)。
-
-以下完整配置启用`slot`模式，并详细采集`sqrt`：
-
-```json
-{
-    "task": "nan_check",
-    "dump_path": "/home/data_dump",
-    "rank": [],
-    "step": [],
-    "level": "L1",
-    "nan_check": {
-        "scope": [],
-        "list": [],
-        "check_mode": "slot",
-        "tensor_list": ["sqrt"],
-        "data_mode": ["all"]
-    }
-}
-```
+- `"isnan"`（默认）：检测Tensor中的NaN。eager场景使用`PrecisionDebugger`，`level`为`"L1"`，构建、运行及输出说明见[使用示例：isnan模式](./pytorch_nan_check_quickstart.md#1-isnan模式)。AclGraph图模式使用`AclGraphDumper`，`level`支持`L0`、`L1`、`mix`，配置与输出说明见[NaN自动检测](./aclgraph_dump_instruct.md#nan-自动检测)。
+- `"slot"`：eager场景通过`PrecisionDebugger`读取NPU寄存器状态，检测NaN、Inf或过程溢出，`level`为`"L1"`。详细采集范围由`tensor_list`指定；构建、环境变量和结果说明见[使用示例：slot模式](./pytorch_nan_check_quickstart.md#2-slot模式)。
 
 ### tensor_list参数配置说明
 
@@ -359,7 +342,7 @@ MindSpore动态图场景下，"level"须为"L2"；MindSpore静态图场景下，
 
   配置示例："data_mode": ["backward"]（仅保存反向数据）或"data_mode": ["forward", "input"]（仅保存前向的输入数据）。
 
-- MindSpore静态图O0/O1场景：L0级别dump仅支持"all"、"forward"和"backward"参数；L2级别dump仅支持"all"、"input"和"output"参数。且各参数只能单独配置，不支持自由组合。
+- MindSpore静态图O0/O1场景：L0级别dump仅支持"all"、"forward"和"backward"参数；L2级别dump仅支持"all"、"input"和"output"参数，且各参数只能单独配置，不支持自由组合。
 
   配置示例："data_mode": ["all"]。
 
@@ -409,9 +392,9 @@ MindSpore动态图场景下，"level"须为"L2"；MindSpore静态图场景下，
 
  | 配置字段 | 配置示例 | 说明                              |
 |---------|---------|---------------------------------|
-| `begin` | `"slice": [{"begin": 10}]` | 移除第0维的前10个数据                    |
+| begin | `"slice": [{"begin": 10}]` | 移除第0维的前10个数据                    |
 | `begin`（负值） | `"slice": [{"begin": -10}]` | 保留第0维的后10个数据                    |
-| `end` | `"slice": [{"end": 10}]` | 保留第0维的前10个数据                    |
+| end | `"slice": [{"end": 10}]` | 保留第0维的前10个数据                    |
 | `end`（负值） | `"slice": [{"end": -10}]` | 移除第0维的后10个数据                    |
 | `begin` + `end` | `"slice": [{"begin": 10, "end": 20}]` | 针对第0维，保留索引区间[10, 20)的数据（共10个）   |
 | `dim` + `begin` + `end` | `"slice": [{"dim": 1, "begin": 10, "end": 20}]` | 针对第1维，保留索引区间[10, 20)的数据（共10个）   |

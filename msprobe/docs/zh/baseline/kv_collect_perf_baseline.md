@@ -1,10 +1,12 @@
 # vLLM KV Cache 统计值采集性能基线
 
+本文档介绍vLLM KV Cache统计值采集性能基线，给出关闭采集、全层采集、限2层采集三档配置的端到端时延数据与复现命令，适用于需要评估KV Cache统计值采集开销的用户。
+
 **环境信息**
 
 NPU：Atlas A2 训练服务器系列产品（单卡 32 GB，本次使用 2 张）
 
-软件：vLLM 0.22.1 + vllm-ascend，Torch 2.10.0
+软件：vLLM 0.22.1 + vllm-ascend、Torch 2.10.0
 
 **模型信息**
 
@@ -20,7 +22,6 @@ NPU：Atlas A2 训练服务器系列产品（单卡 32 GB，本次使用 2 张�
 
 ```shell
 export ASCEND_RT_VISIBLE_DEVICES=0,1
-export VLLM_USE_V1=1
 vllm serve /data/weights/DeepSeek-V2-Lite \
   --host 0.0.0.0 --port 8000 \
   --tensor-parallel-size 2 --seed 1024 \

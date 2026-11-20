@@ -1,4 +1,6 @@
-# aclgraph_dump 使用指南
+# aclgraph_dump使用指南
+
+本文档介绍aclgraph_dump的整网采集与单点采集能力，支持统计值采集、Tensor真实数据采集、自定义API采集与动态启停，适用于在PyTorch ACLGraph图模式下执行精度对齐的用户。
 
 ## 简介
 
@@ -14,7 +16,7 @@
 1. 安装并正确配置 TorchNPU。
 2. 安装 msProbe 工具，详见《[msProbe 安装指南](../../install_guide/msprobe_install_guide.md)》。
 
->[!NOTE]
+> [!NOTE]
 >
 >源码编译安装时需包含 `aclgraph_dump` 模块，通过如下命令安装：
 >
@@ -188,7 +190,7 @@ AclGraphDumper.step(dump: bool = True) -> None
 
 一次调用的任意输出Tensor含NaN时，保存当前module/API调用的全部输入、输出Tensor。支持inplace和`out=`操作，保存修改前的输入和修改后的结果；API采集前按名称过滤`empty`条目。
 
-Tensor的`is_nan`含义和特殊数据类型说明见[使用示例：is_nan字段](./pytorch_nan_check_quickstart.md#is_nan字段)。图模式采集时会过滤FakeTensor和meta Tensor；落盘格式见[nan_check任务输出](#nan_check-任务)。
+Tensor的`is_nan`含义和特殊数据类型说明见[使用示例：is_nan字段](./pytorch_nan_check_quickstart.md#131-is_nan字段)。图模式采集时会过滤FakeTensor和meta Tensor；落盘格式见[nan_check任务输出](#nan_check-任务)。
 
 ### Tensor 整网采集
 
@@ -530,8 +532,8 @@ tensor = torch.load("./dump/act_0.pt")
 
 请确认：
 
-- 编译安装时通过 `python3 build.py -e include-mod=aclgraph_dump -e no-check=true` 完成编译安装；
-- 已安装 TorchNPU 且环境变量配置正确；
+- 编译安装时通过 `python3 build.py -e include-mod=aclgraph_dump -e no-check=true` 完成编译安装。
+- 已安装 TorchNPU 且环境变量配置正确。
 - 当前系统为 Linux。
 
 **2. `Allocate SQ failed` 问题**
