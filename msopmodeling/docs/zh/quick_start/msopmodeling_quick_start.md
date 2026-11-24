@@ -148,22 +148,47 @@ CSV 的单行错误不会中断后续行处理。处理结束后，终端按错�
     "memory_traffic": {
       "GM_2_UB": 16777216.0,
       "UB_2_L2": 8388608.0
-    }
+    },
+    "op_type": "AIV",
+    "inputs": [
+      {"name": "input", "shape": [2048, 2048], "dtype": "FP16"},
+      {"name": "other", "shape": [2048, 2048], "dtype": "FP16"}
+    ],
+    "outputs": [
+      {"name": "output", "shape": [2048, 2048], "dtype": "FP16"}
+    ]
   }
 }
 ```
 
-`theoretical_analysis` 为理论建模明细列表，按 tileop 记录理论明细；顶层 `latency` 是汇总后的算子时延。以下为其中一条记录的节选（省略 `inputs`、`outputs`、`tensor` 等字段）：
+顶层 `op_type` 描述整个算子的核类型，值为 `AIC`、`AIV` 或 `MIX`。`theoretical_analysis` 按 tileop 记录理论明细，其中每条记录的 `op_type` 和 `core_num` 分别表示该 tileop 使用的核类型和核数。顶层 `latency` 是汇总后的算子时延。以下为其中一条记录的节选：
 
 ```json
 {
   "op_name": "add",
-  "cycles": 67920.780612,
+  "op_type": "AIV",
+  "core_num": 40,
   "latency": "41.164109461818185μs",
+  "inputs": [
+    {
+      "name": "input",
+      "shape": [2048, 2048]
+    },
+    {
+      "name": "other",
+      "shape": [2048, 2048]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "output",
+      "shape": [2048, 2048]
+    }
+  ],
   "memory_access": [
-    {"reason": "copy_in", "path": "GM_2_UB", "bytes": 8388608, "time": "5.464891205211726μs"},
-    {"reason": "copy_in", "path": "GM_2_UB", "bytes": 8388608, "time": "5.464891205211726μs"},
-    {"reason": "copy_out", "path": "UB_2_L2", "bytes": 8388608, "time": "2.1008284497871275μs"}
+    {"src_mem": "GM", "dst_mem": "UB", "bytes": 8388608, "time": "5.464891205211726μs"},
+    {"src_mem": "GM", "dst_mem": "UB", "bytes": 8388608, "time": "5.464891205211726μs"},
+    {"src_mem": "UB", "dst_mem": "L2", "bytes": 8388608, "time": "2.1008284497871275μs"}
   ]
 }
 ```
@@ -180,19 +205,27 @@ CSV 的单行错误不会中断后续行处理。处理结束后，终端按错�
 | `kernel_launch_overhead` | μs    | kernel 启动开销                      |
 | `component_latency.CUBE` | μs    | Cube 矩阵运算单元耗时（向量算子为 0）          |
 | `component_latency.MTE1` | μs    | Cube 核 L1→L0 数据搬运耗时             |
-| `component_latency.MTE2` | μs    | Cube 核 GM→L1 数据搬运耗时             |
-| `component_latency.MTE2_AIV` | μs    | 向量核 GM→UB 数据搬运耗时（向量算子的访存主路径）   |
-| `component_latency.MTE3` | μs    | 向量核 UB→GM 输出写回耗时               |
+| `component_latency.MTE2` | μs    | Cube 侧输入搬运流水估时             |
+| `component_latency.MTE2_AIV` | μs    | 向量侧输入搬运流水估时，如 GM→UB 或 L2→UB   |
+| `component_latency.MTE3` | μs    | 向量侧写回流水估时，如 UB→L2               |
 | `component_latency.FIXPIPE` | μs    | Cube 后处理流水段耗时（执行 bias 加、量化、格式转换等后处理） |
 | `component_latency.VEC` | μs    | 向量运算耗时（向量算子为主要耗时段）             |
 | `cube_utilization_rate` | -     | Cube 单元利用率，越接近 `1.0` 说明计算效率越高  |
 | `vec_utilization_rate` | -     | 向量单元利用率                        |
 | `memory_traffic` | Bytes | 各存储层间的数据搬运量，字段名反映具体搬运路径（如 `GM_2_UB`、`UB_2_L2`） |
 | `theoretical_analysis[].op_name` | -     | 理论分析条目对应的 tileop 名称             |
-| `theoretical_analysis[].cycles` | -     | 该条记录的时钟周期数                     |
-| `theoretical_analysis[].latency` | μs    | 该条记录的建模时延                      |
-| `theoretical_analysis[].memory_access[].time` | μs    | 单次数据搬运耗时                       |
+| `op_type` | - | 整个算子的核类型：`AIC`、`AIV` 或 `MIX` |
+| `theoretical_analysis[].op_type` | - | 该 tileop 的核类型：`AIC` 或 `AIV` |
+| `theoretical_analysis[].core_num` | -     | 该条记录的计算核配置                         |
+| `theoretical_analysis[].inputs[].name` | - | 实际引用的 DSL 张量名，可以重复 |
+| `theoretical_analysis[].inputs[].shape` | -     | 输入 tensor 的逻辑 shape，按原生多维形状展示 |
+| `theoretical_analysis[].outputs[].shape` | -     | 输出 tensor 的逻辑 shape，按原生多维形状展示 |
+| `theoretical_analysis[].latency` | μs    | TileOp 模型估时；AIV 明细保留分核前的向量代价，计入 VEC 流水时再按核数折算 |
+| `theoretical_analysis[].memory_access[].time` | μs    | 单独估算的搬运耗时；`null` 表示未提供逐路径耗时，不等于零 |
+| `theoretical_analysis[].memory_access[].src_mem` / `dst_mem` | - | 搬运的起点和终点 |
 | `theoretical_analysis[].memory_access[].bytes` | Bytes | 单次数据搬运量                        |
+
+完整的顶层、张量、访存明细和 CSV 失败字段见[用户指南：theo 结果字段](../user_guide/msopmodeling_user_guide.md#62-theo-结果字段)。
 
 **性能瓶颈快速判断（向量算子）：**
 

@@ -398,7 +398,7 @@ task数据，呈现所有硬件执行的算子信息。
 |attrInfo|INTEGER|算子的attr信息，用来映射算子shape，算子自定义的参数等，STRING_IDS(attrInfo)|
 |opState|INTEGER|算子的动静态信息，dynamic表示动态算子，static表示静态算子，N/A表示该场景或该算子不识别，STRING_IDS(opState)|
 |hf32Eligible|INTEGER|标识是否使用HF32精度标记，YES表示使用，NO表示未使用，N/A表示该场景或该算子不识别，STRING_IDS(hf32Eligible)|
-|gridDim|INTEGER|体现SIMT线程模型的线程块网络（Grid）中启用的线程块个数，同一时刻一个AIV核只执行一个线程块任务。仅Ascend 950PR&950DT系列产品支持该字段。STRING_IDS(gridDim)|
+|gridDim|INTEGER|体现SIMT线程模型的线程块网格（Grid）中启用的线程块个数，同一时刻一个AIV核只执行一个线程块任务。仅Ascend 950PR&950DT系列产品支持该字段。STRING_IDS(gridDim)|
 |blockDim|INTEGER|体现SIMT线程模型的线程块（Thread Block）启用的线程个数，一个线程块最多可以启用2048个线程。仅Ascend 950PR&950DT系列产品支持该字段。STRING_IDS(blockDim)|
 
 ## COMMUNICATION\_TASK\_INFO
@@ -427,7 +427,7 @@ task数据，呈现所有硬件执行的算子信息。
 |linkType|INTEGER| 链路类型，包含：HCCS、PCIe、RoCE，ENUM_HCCL_LINK_TYPE(linkType)                   |
 |opId|INTEGER| 对应的大算子Id，用于关联COMMUNICATION_OP表                                         |
 |isMaster|INTEGER| 标记主从流通信算子，分析时以主流算子为准，取值为：<br>0：从流<br>1：主流                                     |
-|bandwidth|NUMERIC| 该通信小算子的带宽数据，单位Byte / s                                                 |
+|bandwidth|NUMERIC| 该通信小算子的带宽数据，单位Byte/s                                                 |
 
 ## COMMUNICATION\_OP
 
@@ -482,7 +482,7 @@ CANN API数据。
 |--|--|--|
 |deviceId|INTEGER|设备ID|
 |eventName|NUMERIC|QoS事件名称，STRING_IDS(eventName)|
-|bandwidth|NUMERIC|QoS对应时间的带宽，单位Byte / s|
+|bandwidth|NUMERIC|QoS对应时间的带宽，单位Byte/s|
 |timestampNs|NUMERIC|本地时间，单位ns|
 |dieId|INTEGER|用于区分芯片场景的dieId，仅Ascend 950PR&950DT系列产品支持<br>对于Atlas 200I/500 A2推理产品、Atlas A2系列产品和Atlas A3系列产品，不支持区分芯片场景，默认为-1，标识当前芯片场景无dieId内容区分|
 
@@ -661,7 +661,7 @@ sample-based的PMU数据，用于timeline类的数据呈现。
 |usage|NUMERIC|对应core在时间片上的利用率（100%）|
 |freq|NUMERIC|对应core在时间片上的频率，单位MHz|
 |coreId|INTEGER|coreId|
-|coreType|INTEGER|core类型(AIC或AIV)，STRING_IDS(coreType)|
+|coreType|INTEGER|core类型（AIC或AIV），STRING_IDS(coreType)|
 
 ## SAMPLE\_PMU\_SUMMARY
 
@@ -681,7 +681,68 @@ sample-based的PMU数据，用于summary类的数据呈现。
 |metric|INTEGER|PMU metric指标名，STRING_IDS(metric)|
 |value|NUMERIC|对应指标名的数值|
 |coreId|INTEGER|coreId|
-|coreType|INTEGER|core类型(AIC或AIV)，STRING_IDS(coreType)|
+|coreType|INTEGER|core类型（AIC或AIV），STRING_IDS(coreType)|
+
+## HOST\_PMU\_EVENTS
+
+host侧PMU计数器的事件字典。同一个事件在多个CPU上采集时只记录一行，避免事件名随CPU重复存储。
+
+数据来源：采集侧生成的host PMU计数文件（`host/data/pmu/host_pmu_*.data`及其`.timing`旁路文件）。
+
+**表 1**  格式
+
+|字段名|类型|含义|
+|--|--|--|
+|eventId|INTEGER|事件ID，主键|
+|name|TEXT|事件名，如cycles、instructions、page-faults|
+|source|INTEGER|事件来源，取值见**表 2**|
+|unit|TEXT|数值单位，`count`为计数，`ns`为纳秒|
+
+**表 2**  source取值
+
+|取值|来源|含义|
+|--|--|--|
+|0|UNKNOWN|来源未知，旧版本采集器只写事件名、不写来源|
+|1|SYSFS|经`/sys/bus/event_source/devices`下的PMU设备采集|
+|2|GENERIC|perf通用硬件事件（PERF\_TYPE\_HARDWARE）|
+|3|RAW|perf原始事件（PERF\_TYPE\_RAW），需结合事件编码解释|
+|4|SOFTWARE|perf软件事件，如page-faults、task-clock|
+
+## HOST\_PMU\_COUNTER\_INFO
+
+每个事件在每组（进程，CPU）上的采集配置，一行对应一个计数器实例。
+
+**表 1**  格式
+
+|字段名|类型|含义|
+|--|--|--|
+|counterId|INTEGER|计数器ID，主键|
+|eventId|INTEGER|关联HOST\_PMU\_EVENTS.eventId|
+|pid|INTEGER|被采集进程ID，-1表示全部进程|
+|cpu|INTEGER|采集所在CPU，-1表示不绑定CPU|
+|intervalNs|NUMERIC|采样间隔，单位ns|
+
+## HOST\_PMU\_COUNTER\_DATA
+
+计数器在各采样时刻的取值。
+
+**表 1**  格式
+
+|字段名|类型|含义|
+|--|--|--|
+|counterId|INTEGER|关联HOST\_PMU\_COUNTER\_INFO.counterId|
+|timestamp|NUMERIC|采样时刻，epoch时间，单位ns|
+|countValue|REAL|缩放后的计数值，可直接用于展示|
+|valid|INTEGER|1表示本次采样有效，0表示不可用|
+|rawValue|INTEGER|内核读到的原始计数值|
+|timeEnabled|INTEGER|事件被使能的时长|
+|timeRunning|INTEGER|事件实际运行的时长|
+
+说明：
+
+- `valid`为0时`countValue`记为0，表示“读不到”而非“读到了0”；采样值为nan时按此方式记录。
+- 多个事件复用同一个硬件计数器时`timeRunning`小于`timeEnabled`。`countValue`是已缩放的展示值，`rawValue`保留未缩放的原始计数；正常情况下满足`countValue = rawValue * timeEnabled / timeRunning`，可用这三个字段复算并校验。
+- 索引`HostPmuCounterDataTsIndex`建立在`(counterId, timestamp)`上，用于按计数器查询时间序列。
 
 ## NPU\_MEM
 
@@ -753,7 +814,7 @@ CANN算子内存占用数据，仅GE算子支持。
 
 ## DDR
 
-片上内存读写速率数据。
+DDR内存读写速率数据。
 
 由--sys-hardware-mem、--sys-hardware-mem-freq开关控制。
 
@@ -891,7 +952,7 @@ PCIe带宽数据。
 |txNonpostMin|NUMERIC|发送端PCIe Non-Post数据传输带宽最小值，单位Byte/s|
 |txNonpostMax|NUMERIC|发送端PCIe Non-Post数据传输带宽最大值，单位Byte/s|
 |txNonpostAvg|NUMERIC|发送端PCIe Non-Post数据传输带宽平均值，单位Byte/s|
-|txCplMin|NUMERIC|发送端接收写请求的完成数据包最小值，单位Byte/s|
+|txCplMin|NUMERIC|发送端接收写请求的完成数据包带宽最小值，单位Byte/s|
 |txCplMax|NUMERIC|发送端接收写请求的完成数据包最大值，单位Byte/s|
 |txCplAvg|NUMERIC|发送端接收写请求的完成数据包平均值，单位Byte/s|
 |txNonpostLatencyMin|NUMERIC|发送端PCIe Non-Post模式下的传输时延最小值，单位ns|
@@ -920,7 +981,7 @@ PCIe带宽数据。
 |name|TEXT|字段名|
 |value|TEXT|数值|
 
-**表 2**  内容
+**表 2** 内容
 
 |name|含义|
 |--|--|
@@ -929,9 +990,9 @@ PCIe带宽数据。
 |SCHEMA_VERSION_MINOR|中版本号，如0，当更改列或类型时更改，存在兼容性问题|
 |SCHEMA_VERSION_MICRO|小版本号，如2，当更新表时都会更改，不具有兼容性问题|
 
-## ftrace 通用事件表
+## ftrace通用事件表
 
-支持 ftrace 的解析版本可在 DB 导出中生成以下表。表按采集内容生成。
+支持 ftrace 的解析版本可在 DB 导出中生成以下表：表按采集内容生成。
 
 | 表名 | 字段与含义 |
 |--|--|
@@ -944,9 +1005,9 @@ PCIe带宽数据。
 | ENUM_GENERIC_EVENT_GROUP | `id`、`name`、`label` 分别为来源组编号、名称和显示标签。FTrace 的编号为 1，0 为 Unknown。 |
 | ENUM_GENERIC_EVENT_FIELD_TYPE | `id`、`name`、`label` 分别为字段类型编号、名称和显示标签。数值类型编号为 0（有符号）、1（无符号）、2（单精度）、3（双精度）。字符串以非零 `strId` 识别。 |
 
-- `GENERIC_EVENTS.flags` 的 bit0 表示该 CPU 文件不完整，保留行可供分析。bit1 表示至少一个字段解码失败。原始 `common_flags` 作为普通字段写入 `GENERIC_EVENT_DATA`。
+- `GENERIC_EVENTS.flags` 的bit0表示该CPU文件不完整，保留行可供分析。bit1 表示至少一个字段解码失败。原始 `common_flags` 作为普通字段写入 `GENERIC_EVENT_DATA`。
 - `genericEventId` 按 `(timestamp, cpuId)` 稳定排序后分配。查询结果需使用 `ORDER BY` 指定顺序。
-- `META_DATA` 中 `ftrace=1` 表示发现 ftrace 产物，`ftrace_events_complete=1` 表示事件表、索引及关联字符串已写入。采集完整性通过事件标志判断。无 ftrace 产物时不写这两个标记。
+- `META_DATA` 中 `ftrace=1` 表示发现ftrace产物，`ftrace_events_complete=1` 表示事件表、索引及关联字符串已写入。采集完整性通过事件标志判断。无ftrace产物时不写这两个标记。
 
 ## MSTX\_EVENTS
 
@@ -996,7 +1057,7 @@ mstx接口采集的Host侧数据，Device侧数据在TASK表中整合。
 |--|--|--|
 |globalTaskId|NUMERIC|主键，全局算子任务ID，用于关联TASK|
 |size|NUMERIC|拷贝的数据量|
-|memcpyOperation|NUMERIC|拷贝类型，STRING_IDS(memcpyOperation)|
+|memcpyOperation|NUMERIC|拷贝类型，ENUM_MEMCPY_OPERATION(memcpyOperation)|
 
 ## CPU\_USAGE
 
@@ -1118,9 +1179,9 @@ Host侧syscall和pthreadcall数据。
 |macTxPfcPkt|INTEGER|MAC发送的PFC帧数|
 |macRxPfcPkt|INTEGER|MAC接收的PFC帧数|
 |macTxByte|INTEGER|MAC发送的字节数|
-|macTxBandwidth|NUMERIC|MAC发送带宽，单位Byte / s|
+|macTxBandwidth|NUMERIC|MAC发送带宽，单位Byte/s|
 |macRxByte|INTEGER|MAC接收的字节数|
-|macRxBandwidth|NUMERIC|MAC接收带宽，单位Byte / s|
+|macRxBandwidth|NUMERIC|MAC接收带宽，单位Byte/s|
 |macTxBadByte|INTEGER|MAC发送的坏包报文字节数|
 |macRxBadByte|INTEGER|MAC接收的坏包报文字节数|
 |roceTxPkt|INTEGER|RoCEE发送的报文数|
@@ -1131,9 +1192,9 @@ Host侧syscall和pthreadcall数据。
 |roceRxCnpPkt|INTEGER|RoCEE接收的CNP类型报文数|
 |roceNewPktRty|INTEGER|RoCEE发送的超时重传的数量|
 |nicTxByte|INTEGER|NIC发送的字节数|
-|nicTxBandwidth|NUMERIC|NIC发送带宽，单位Byte / s|
+|nicTxBandwidth|NUMERIC|NIC发送带宽，单位Byte/s|
 |nicRxByte|INTEGER|NIC接收的字节数|
-|nicRxBandwidth|NUMERIC|NIC接收带宽，单位Byte / s|
+|nicRxBandwidth|NUMERIC|NIC接收带宽，单位Byte/s|
 
 ## RANK\_DEVICE\_MAP
 
@@ -1141,7 +1202,7 @@ rankId和deviceId的映射关系数据。
 
 无对应开关，导出ascend\_pytorch\_profiler\_\{Rank\_ID\}.db文件时默认生成。
 
-**表 1**  格式
+**表 1** 格式
 
 |字段名|类型|含义|
 |--|--|--|

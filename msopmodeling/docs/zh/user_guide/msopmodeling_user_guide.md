@@ -260,42 +260,103 @@ result_dir/
 
 ### 6.1 CSV 结果与错误处理
 
-CSV 成功行保留正常的 `latency` 等预测结果字段，并附带来源信息，用于追溯原始 CSV 数据行及算子。错误行也保留来源信息，并通过以下字段说明原因，而不是提供有效的预测时延：
+CSV 成功行包含正常的预测字段，并附带 `source`。错误行也保留 `source`，但不提供有效的预测时延。JSON 输入的预测失败记录不含 CSV 专属的 `source` 和 `error_kind`。
 
 | 字段 | 说明 |
 |------|------|
-| `error` | 该行不支持、输入无效或预测失败的具体原因 |
-| `error_kind` | 错误类别，便于分类检查失败结果 |
+| `source` | CSV 来源对象，成功行和失败行均包含此字段 |
+| `source.record_index` | CSV 数据记录的顺序索引，从 0 开始，不含表头 |
+| `source.line_number` | 解析器记录的 CSV 文件行号，从 1 开始，计入表头 |
+| `source.name` | CSV 中的算子实例名称，取自 `Op Name` 或 `Name` 列 |
+| `source.op_type` | CSV 中的算子类型，取自 `OP Type` 或 `Type` 列，不是结果的核类型 |
+| `source.task_id` | CSV 的 `Task ID`，以字符串保留；未提供时为空字符串 |
+| `source.stream_id` | CSV 的 `Stream ID`，以字符串保留；未提供时为空字符串 |
+| `error` | 不支持、输入无效或预测失败的具体原因 |
+| `error_kind` | CSV 错误类别：`unsupported`（不支持）、`invalid_input`（输入无效）、`prediction_failed`（预测失败） |
+| `error_stack` | 预测器捕获异常时可能返回的堆栈文本，并非所有失败记录都有 |
 
 不支持的算子、无效形状、缺少必需属性和预测失败等行级问题均不会中断后续行。所有行处理结束后，终端按错误类别分组汇总错误，便于集中排查；成功结果和错误记录都会写入 `result.json`。
 
 只要存在失败或不支持的行，工具就会在保存结果后以退出码 `1` 结束。因此，非零退出码不一定表示没有结果，应结合 `result.json` 和终端汇总检查。文件无法读取、输入格式无法识别等文件级错误会直接终止，不适用逐行继续处理的规则。
 
-### 6.2 预测字段说明
+### 6.2 theo 结果字段
 
-**关键字段解读：**
+以下字段均指 `result.json` 中某个 `<op_name>_<index>` 对应的对象。时延以字符串表示并附带 `μs`，例如 `"8.56μs"`；字节数为 JSON 数值。
 
-微秒字段在 `result.json` 中以字符串形式输出，值尾部附加 `μs`，例如 `"8.56μs"`；下表中的 μs 表示其单位。`theoretical_analysis[].memory_access[].time`、`tiling_info.event_summary.op_durations` 等嵌套微秒字段同样按此方式输出。
+#### 顶层字段
 
-`theoretical_analysis` 为理论建模明细列表，条目包含 `op_name`、`cycles`、`latency`、`memory_access` 等字段；`op_name` 为 tileop 名称，`memory_access[].time` 为单次搬运耗时。
+| 字段 | 含义 |
+|------|------|
+| `op_name` | 模型返回的名字，如 `TheoFlashAttention`；不一定与输入的 `op_name` 相同 |
+| `latency` | 算子总预测时延，等于 `kernel_body_latency` 加 `kernel_launch_overhead` |
+| `kernel_body_latency` | kernel 主体预测时延，不含启动开销 |
+| `kernel_launch_overhead` | 模型估算的 kernel 启动开销 |
+| `component_latency` | 各计算和搬运流水的累计估时，详见下表 |
+| `cube_utilization_rate` | `component_latency.CUBE / latency`，用数值表示的估算占比，不是硬件实测利用率 |
+| `vec_utilization_rate` | `component_latency.VEC / latency`，用数值表示的估算占比，不是硬件实测利用率 |
+| `memory_traffic` | 按存储路径汇总的搬运字节数，键采用 `<源存储>_2_<目标存储>`，例如 `"L2_2_UB": 4194304` |
+| `op_type` | 整个算子的核类型：`AIC` 为 Cube，`AIV` 为 Vector，`MIX` 表示两者都有。无法判定时省略；有顶层签名时位于 `inputs` 前 |
+| `inputs`、`outputs` | 公开签名的输入、输出张量列表，目前由 Add、MatMul 和 FlashAttention 提供 |
+| `theoretical_analysis` | 逐 tileop 的理论建模明细列表，不表示实际启动了多个 kernel |
+| `source` | 仅 CSV 输入提供，详见 [CSV 结果与错误处理](#61-csv-结果与错误处理) |
 
-| 字段 | 单位    | 含义                             |
-|------|-------|--------------------------------|
-| `latency` | μs    | **算子总时延**（核心指标），流水仿真给出的端到端时延   |
-| `kernel_body_latency` | μs    | kernel 主体耗时，不含启动开销             |
-| `kernel_launch_overhead` | μs    | kernel 启动开销                      |
-| `component_latency.CUBE` | μs    | Cube 矩阵运算单元耗时                  |
-| `component_latency.MTE1` | μs    | L1→L0 数据搬运耗时                   |
-| `component_latency.MTE2` | μs    | GM→L1 数据搬运耗时（通常为访存瓶颈所在）        |
-| `component_latency.FIXPIPE` | μs    | L0→GM 数据搬运耗时                   |
-| `component_latency.VEC` | μs    | 向量运算耗时（向量算子为主要耗时段）             |
-| `cube_utilization_rate` | -     | Cube 单元利用率，越接近 `1.0` 说明计算效率越高  |
-| `vec_utilization_rate` | -     | 向量单元利用率                        |
-| `l2_hit_rate` | -     | L2 缓存命中率，越高说明访存局部性越好，搬运开销越小    |
-| `memory_traffic` | Bytes | 各存储层间的数据搬运量（GM↔L1↔L0A/L0B/L0C） |
-| `compute_workload.CUBE` | -     | Cube 单元实际计算工作量                 |
-| `tiling_info` | -     | 最优 tiling 参数（仅 `eng`）            |
-| `theoretical_analysis` | -     | 理论建模明细列表（仅 `theo`） |
+#### 流水时延
+
+| `component_latency` 子字段 | 含义 |
+|----------------------------|------|
+| `CUBE` | AIC 的 Cube 计算流水估时 |
+| `MTE1` | AIC 核内从 L1 到 L0 的搬运流水估时；当前 `theo` Roofline 不单独计入此项，结果可为 `"0.0μs"` |
+| `MTE2` | AIC 侧输入搬运流水估时；例如 GEMM 模型汇总 `GM → L2` 和 `L2 → L1` 的搬运代价 |
+| `FIXPIPE` | AIC 侧结果处理与写回流水估时；当前 `theo` 中包括 `L0C → L2` 写回 |
+| `VEC` | AIV 向量计算流水估时，包含分核后的计算代价 |
+| `MTE2_AIV` | AIV 侧输入搬运流水估时，例如 `GM → UB` 或 `L2 → UB` |
+| `MTE3` | AIV 侧结果写回流水估时；当前 `theo` 中包括 `UB → L2` 写回 |
+
+当前 `theo` Roofline 以 `max(CUBE, MTE2, FIXPIPE)` 估算 AIC 主体时延。AIV 默认取 `max(VEC, MTE2_AIV + MTE3)`；若配置允许两条搬运流水重叠，则将其中的搬运项改为 `max(MTE2_AIV, MTE3)`。整算子的主体时延取 AIC 和 AIV 两侧中较大的值，不是各流水或各明细的时延之和。
+
+#### 计算明细与张量
+
+| `theoretical_analysis[]` 子字段 | 含义 |
+|--------------------------------|------|
+| `op_name` | DSL 中的 tileop 名称，例如 `gemm`、`mul`、`exp` |
+| `op_type` | 当前 tileop 的核类型：`AIC` 或 `AIV`，与顶层整算子分类分开 |
+| `core_num` | 当前条目使用的建模核数配置，不是实测活跃核数 |
+| `latency` | 当前 TileOp 成本模型返回的估时。AIV 条目这里显示按完整工作量估算的向量代价；计入 `component_latency.VEC` 前，Roofline 再除以 AIV 核数。GEMM 等 AIC 算子的子模型已考虑分核，时延可以包含模型内部的输入搬运 |
+| `inputs`、`outputs` | 当前 tileop 的输入、输出张量列表 |
+| `memory_access` | 与当前条目关联的搬运记录列表。若模型未单独记录搬运则可为空，例如向量操作复用已在 UB 的输入 |
+
+以下字段用于顶层 `inputs[]`、`outputs[]`，也用于明细的 `inputs[]`、`outputs[]` 和 `memory_access[].tensor`：
+
+| 张量字段 | 含义 |
+|----------|------|
+| `name` | 顶层输入取自对齐公开 API 的 DSL 形参，单张量返回名为 `output`；明细使用实际 DSL 张量名，可以重复，不是唯一标识 |
+| `shape` | JSON 维度数组，有关联的原生逻辑 shape 时优先展示，否则展示 DSL 建模 shape。不是内部分块大小；FA 的 `key` 仍是模型实际接收的转置布局 |
+| `dtype` | 张量数据类型，如 `FP16`、`FP32` |
+| `mem_loc` | 只在明细张量中提供。向量计算在 `UB` 读写，GEMM 输入记录送入子模型的位置，输出为 `L0C`；访存张量的位置表示搬运前的位置，与 `src_mem` 相同 |
+
+顶层签名中每个张量单独占一行，明细中的 `shape` 数组也在一行内展示。
+
+#### 访存明细
+
+| `memory_access[]` 子字段 | 含义 |
+|-------------------------|------|
+| `src_mem` | 搬运起点，如 `GM`、`L2`、`UB` 或 `L0C` |
+| `dst_mem` | 搬运终点，可能与下一条记录的起点相同。例如 `L0C → L2` 与 `L2 → UB` 是两段不同记录 |
+| `bytes` | 该条记录的搬运字节数；对于 `tileop_costmodel`，是子模型对该路径的汇总量 |
+| `time` | 这条记录单独估算出的耗时；未提供逐路径估时时为 `null`，不表示零耗时。模型内部可能已将该路径的代价计入流水 |
+| `tensor` | 可选。指与该次显式读入或写出关联的张量，字段同上；`tileop_costmodel` 的路径汇总不附带单个张量 |
+
+`GM` 为全局内存，`L2` 为二级缓存，`L1` 和 `L0A`/`L0B` 是 Cube 输入侧存储，`L0C` 是 Cube 结果缓冲，`UB` 是向量计算使用的统一缓冲区。搬运方向以 `src_mem` 和 `dst_mem` 为准，不能用有 `time` 的记录之和替代流水时延。
+
+### 6.3 eng 专属结果字段
+
+`eng` 同样输出顶层时延、流水、利用率和访存汇总字段，但不输出 `theoretical_analysis`。工程模型额外返回以下字段：
+
+| 字段 | 含义 |
+|------|------|
+| `l2_hit_rate` | 模型估计的 L2 缓存命中率 |
+| `compute_workload.CUBE`、`compute_workload.VEC` | 模型记录的 Cube、Vector 计算工作量，以周期计 |
+| `tiling_info` | 工程模型的 tiling、调度和诊断信息；子字段由所用模型决定。例如 `event_summary.op_durations` 中的时延同样用带 `μs` 的字符串表示 |
 
 **性能瓶颈快速判断：**
 
