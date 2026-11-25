@@ -33,7 +33,7 @@ void mstxMemRegionsUnregister(mstxDomainHandle_t domain, mstxMemRegionsUnregiste
 
 **参数说明<a id="zh-cn_topic_0000002180600118_section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 <a name="zh-cn_topic_0000002180600118_table827101275518"></a>
 <table><thead align="left"><tr id="zh-cn_topic_0000002180600118_row429121265517"><th class="cellrowborder" valign="top" width="28.652865286528655%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000002180600118_p1329121214558"><a name="zh-cn_topic_0000002180600118_p1329121214558"></a><a name="zh-cn_topic_0000002180600118_p1329121214558"></a>参数</p>
@@ -56,7 +56,7 @@ void mstxMemRegionsUnregister(mstxDomainHandle_t domain, mstxMemRegionsUnregiste
 </td>
 <td class="cellrowborder" valign="top" width="21.002100210021005%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000002180600118_p1920117129516"><a name="zh-cn_topic_0000002180600118_p1920117129516"></a><a name="zh-cn_topic_0000002180600118_p1920117129516"></a>输入</p>
 </td>
-<td class="cellrowborder" valign="top" width="50.34503450345035%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000002180600118_p14824161530710"><a name="zh-cn_topic_0000002180600118_p14824161530710"></a><a name="zh-cn_topic_0000002180600118_p14824161530710"></a>输入的描述信息必须是某一次<a href="../Mem/mstxMemHeapRegister.md">mstxMemHeapRegister</a>的输入描述信息，否则工具将打印提示错误。</p>
+<td class="cellrowborder" valign="top" width="50.34503450345035%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000002180600118_p14824161530710"><a name="zh-cn_topic_0000002180600118_p14824161530710"></a><a name="zh-cn_topic_0000002180600118_p14824161530710"></a>输入的描述信息必须是某一次<a href="../Mem/mstxMemHeapRegister.md">mstxMemHeapRegister</a>的输入描述信息，否则工具将打印错误提示。</p>
 
 <pre class="screen" id="zh-cn_topic_0000002180600118_screen1854493213265"><a name="zh-cn_topic_0000002180600118_screen1854493213265"></a><a name="zh-cn_topic_0000002180600118_screen1854493213265"></a>typedef enum mstxMemRegionRefType {
     // 通过指针描述内存引用

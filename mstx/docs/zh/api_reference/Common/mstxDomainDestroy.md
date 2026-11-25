@@ -28,12 +28,12 @@
 **函数原型<a id="section1121883194711"></a>**
 
 ```c
-void mstxDomainDestroy (mstxDomainHandle_t domain)
+void mstxDomainDestroy(mstxDomainHandle_t domain)
 ```
 
 **参数说明<a id="section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 |参数名|输入/输出|说明|
 |--|--|--|

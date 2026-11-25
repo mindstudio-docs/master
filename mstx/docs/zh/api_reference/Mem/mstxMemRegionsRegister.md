@@ -23,7 +23,7 @@
 
 **功能说明<a id="zh-cn_topic_0000002180759810_section20806203412478"></a>**
 
-注册内存池二次分配。用户需保证mstxRegionsRegister的内存位于[mstxMemHeapRegister](../Mem/mstxMemHeapRegister.md)注册的范围内，否则工具会提示越界读写。
+注册内存池二次分配。用户需保证mstxMemRegionsRegister的内存位于[mstxMemHeapRegister](../Mem/mstxMemHeapRegister.md)注册的范围内，否则工具会提示越界读写。
 
 **函数原型<a id="zh-cn_topic_0000002180759810_section1121883194711"></a>**
 
@@ -33,7 +33,7 @@ void mstxMemRegionsRegister(mstxDomainHandle_t domain, mstxMemRegionsRegisterBat
 
 **参数说明<a id="zh-cn_topic_0000002180759810_section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 <a name="zh-cn_topic_0000002180759810_table827101275518"></a>
 <table><thead align="left"><tr id="zh-cn_topic_0000002180759810_row429121265517"><th class="cellrowborder" valign="top" width="28.65286528652865%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000002180759810_p1329121214558"><a name="zh-cn_topic_0000002180759810_p1329121214558"></a><a name="zh-cn_topic_0000002180759810_p1329121214558"></a>参数</p>

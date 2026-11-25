@@ -33,7 +33,7 @@ C/C++函数原型：
 void mstxRangeEnd(mstxRangeId id)
 ```
 
-Python函数：
+Python函数原型：
 
 ```py
 mstx.range_end(range_id)
@@ -41,7 +41,7 @@ mstx.range_end(range_id)
 
 **参数说明<a id="zh-cn_topic_0000001979850148_section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 |参数|输入/输出|说明|
 |--|--|--|
@@ -50,7 +50,7 @@ mstx.range_end(range_id)
 
 **返回值说明<a id="zh-cn_topic_0000001979850148_section16621124213476"></a>**
 
-如果返回0，则表示失败。
+C/C++接口无返回值；Python接口如果返回0，则表示失败。
 
 **调用示例<a id="zh-cn_topic_0000001979850148_section377820328555"></a>**
 

@@ -31,7 +31,7 @@
 #define MSTX_TOOL_INVALID_ID 0x0
 ```  
 
-0x1000，表示程序由《[msprof模型调优工具](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/devaids/Profiling/atlasprofiling_16_0010.html)》或《[MSPTI](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/devaids/Profiling/atlasprofiling_16_1153.html)》工具拉起
+0x1000，表示程序由《[msProf模型调优工具](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/devaids/Profiling/atlasprofiling_16_0010.html)》或《[MSPTI](https://www.hiascend.com/document/detail/zh/canncommercial/83RC1/devaids/Profiling/atlasprofiling_16_1153.html)》工具拉起
 
 ```c
 #define MSTX_TOOL_MSPROF_ID 0x1000
@@ -63,7 +63,7 @@ void mstxGetToolId(uint64 *id)
 
 **参数说明<a id="zh-cn_topic_0000002446914857_section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 |参数|输入/输出|说明|
 |--|--|--|

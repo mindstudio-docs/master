@@ -29,17 +29,17 @@
 
 **函数原型<a id="section1121883194711"></a>**
 
-```python
+```c
 mstxDomainHandle_t mstxDomainCreateA(const char* id)
 ```
 
 **参数说明<a id="section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 |参数名|输入/输出|说明|
 |--|--|--|
-|id|输入|要创建的域的名称。<br>数据类型：const char *。<br>默认域名为globalDomain。<br>最大长度为1023字节，仅支持数字、大小写字母和_符号。<br>MSPTI场景：不能超过255字节。<br>非MSPTI场景（例如msprof命令行、Ascend PyTorch Profiler）：不能超过1024字节。|
+|id|输入|要创建的域的名称。<br>数据类型：const char *。<br>默认域名为globalDomain。<br>最大长度为1023字节，仅支持数字、大小写字母和_符号。<br>MSPTI场景：不能超过255字节。<br>非MSPTI场景（例如msProf命令行、Ascend PyTorch Profiler）：不能超过1023字节。|
 
 **返回值说明<a id="section16621124213476"></a>**
 
@@ -47,6 +47,6 @@ mstxDomainHandle_t mstxDomainCreateA(const char* id)
 
 **调用示例<a id="zh-cn_topic_0000002180600114_section16621124213476"></a>**
 
-```python
-mstxDomainHandle_t domain = mstxDomainCreateA("sample")
+```c
+mstxDomainHandle_t domain = mstxDomainCreateA("sample");
 ```

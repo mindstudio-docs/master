@@ -27,13 +27,13 @@
 
 **函数原型<a id="zh-cn_topic_0000002215920417_section1121883194711"></a>**
 
-```cpp
+```c
 void mstxMemHeapUnregister(mstxDomainHandle_t domain, mstxMemHeapHandle_t heap)
 ```
 
 **参数说明<a id="zh-cn_topic_0000002215920417_section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 <a name="zh-cn_topic_0000002215920417_table827101275518"></a>
 <table><thead align="left"><tr id="zh-cn_topic_0000002215920417_row429121265517"><th class="cellrowborder" valign="top" width="28.65286528652865%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000002215920417_p1329121214558"><a name="zh-cn_topic_0000002215920417_p1329121214558"></a><a name="zh-cn_topic_0000002215920417_p1329121214558"></a>参数</p>

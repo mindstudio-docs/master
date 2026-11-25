@@ -35,13 +35,13 @@ mstxRangeId mstxDomainRangeStartA(mstxDomainHandle_t domain, const char *message
 
 **参数说明<a id="section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 |参数名|输入/输出|说明|
 |--|--|--|
 |domain|输入|指定的domain句柄。|
 |message|输入|打点携带信息字符串指针。<br>传入的message字符串长度要求：MSPTI场景：不能超过255字节。|
-|stream|输入|用于执行打点任务的stream。配置为nullptr时，只标记Host侧的瞬时事件。配置为有效的stream时，标识Host侧和对应Device侧的瞬时事件。|
+|stream|输入|用于执行打点任务的stream。配置为nullptr时，只标记Host侧的时间段事件开始。配置为有效的stream时，标识Host侧和对应Device侧的时间段事件开始。|
 
 **返回值说明<a id="section16621124213476"></a>**
 

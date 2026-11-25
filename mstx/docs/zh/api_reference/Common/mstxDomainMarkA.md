@@ -25,7 +25,7 @@
 
 在指定的domain内，标记瞬时事件。
 
-如果传入的domain已被销毁，日志生成告警提示，接口不再执行打点流程。
+如果传入的domain已被销毁，日志打印告警提示，接口不再执行打点流程。
 
 **函数原型<a id="section1121883194711"></a>**
 
@@ -35,7 +35,7 @@ void mstxDomainMarkA(mstxDomainHandle_t domain, const char *message, aclrtStream
 
 **参数说明<a id="section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 |参数名|输入/输出|说明|
 |--|--|--|

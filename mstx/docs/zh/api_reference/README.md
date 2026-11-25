@@ -11,7 +11,7 @@
 
 **接口列表<a id="section6371427124715"></a>**
 
-**表 1**  MindStudio mstx接口列表
+**表 1** MindStudio mstx接口列表
 
 |接口名称|功能简介|
 |--|--|
@@ -28,4 +28,4 @@
 |[mstxMemRegionsRegister](./Mem/mstxMemRegionsRegister.md)|注册内存池二次分配。|
 |[mstxMemRegionsUnregister](./Mem/mstxMemRegionsUnregister.md)|注销内存池二次分配。|
 |[mstxMemHeapUnregister](./Mem/mstxMemHeapUnregister.md)|注销内存池时，与之关联的Regions将一并被注销。|
-|[mstxMemPermissionsAssign](./Mem/mstxMemPermissionsAssign.md)|为虚拟内存区间指定权限|
+|[mstxMemPermissionsAssign](./Mem/mstxMemPermissionsAssign.md)|为虚拟内存区间指定权限。|

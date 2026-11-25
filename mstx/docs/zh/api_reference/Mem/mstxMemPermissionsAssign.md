@@ -33,7 +33,7 @@ void mstxMemPermissionsAssign(mstxDomainHandle_t domain, mstxMemPermissionsAssig
 
 **参数说明**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 <a name="zh-cn_topic_0000002216005989_table827101275518"></a>
 <table><thead align="left"><tr id="zh-cn_topic_0000002216005989_row429121265517"><th class="cellrowborder" valign="top" width="16.881688168816883%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000002216005989_p1329121214558"><a name="zh-cn_topic_0000002216005989_p1329121214558"></a><a name="zh-cn_topic_0000002216005989_p1329121214558"></a>参数</p>
@@ -114,7 +114,7 @@ perms[0].region.refType = MSTX_MEM_REGION_REF_TYPE_HANDLE;
 perms[0].region.handle = handles[0];
 perms[1].flags = MSTX_MEM_PERMISSIONS_REGION_FLAGS_WRITE;
 perms[1].region.refType = MSTX_MEM_REGION_REF_TYPE_HANDLE;
-perms[1].region.handle = handles[0];
+perms[1].region.handle = handles[1];
 permBatch.regionCount = 2;
 permBatch.regionDescArray = perms;
 

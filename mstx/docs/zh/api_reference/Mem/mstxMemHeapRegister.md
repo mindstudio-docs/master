@@ -33,7 +33,7 @@ mstxMemHeapHandle_t mstxMemHeapRegister(mstxDomainHandle_t domain, mstxMemHeapDe
 
 **参数说明<a id="zh-cn_topic_0000002216005989_section11506138144714"></a>**
 
-**表 1**  参数说明
+**表 1** 参数说明
 
 <a name="zh-cn_topic_0000002216005989_table827101275518"></a>
 <table><thead align="left"><tr id="zh-cn_topic_0000002216005989_row429121265517"><th class="cellrowborder" valign="top" width="16.881688168816883%" id="mcps1.2.4.1.1"><p id="zh-cn_topic_0000002216005989_p1329121214558"><a name="zh-cn_topic_0000002216005989_p1329121214558"></a><a name="zh-cn_topic_0000002216005989_p1329121214558"></a>参数</p>
@@ -60,7 +60,7 @@ mstxMemHeapHandle_t mstxMemHeapRegister(mstxDomainHandle_t domain, mstxMemHeapDe
 
 <pre class="screen" id="zh-cn_topic_0000002216005989_screen47021458121411"><a name="zh-cn_topic_0000002216005989_screen47021458121411"></a><a name="zh-cn_topic_0000002216005989_screen47021458121411"></a>typedef enum mstxMemHeapUsageType {
     /* @brief 此堆内存作为内存池使用
-     * 使用此使用方式注册的堆内存，需要使用二次分配注册后才可以访问
+     * 使用此方式注册的堆内存，需要使用二次分配注册后才可以访问
      */
     MSTX_MEM_HEAP_USAGE_TYPE_SUB_ALLOCATOR = 0,
 } mstxMemHeapUsageType;
@@ -70,7 +70,7 @@ mstxMemHeapHandle_t mstxMemHeapRegister(mstxDomainHandle_t domain, mstxMemHeapDe
  * 此处的“类型”是指通过何种方式来描述堆内存指针。当前仅支持线性排布的
  * 内存，但此处保留日后支持更多内存类型的扩展能力。比如某些API返回
  * 多个句柄来描述内存范围，或者一些高维内存需要使用stride、tiling或
- * interlace来描述
+ * interleave来描述
  */
 typedef enum mstxMemType {
     /** @brief 标准线性排布的虚拟内存
