@@ -1,5 +1,7 @@
 # msOpGen算子调试工具快速入门
 
+本文档介绍msOpGen工具自动生成自定义算子工程的核心功能，演示基于简易加法算子完成工程生成、编译部署与功能验证的完整流程，适用于算子开发初学者。
+
 <br>
 
 ## 1. 概述
@@ -10,7 +12,7 @@ msOpGen 工具在算子开发过程中可自动生成自定义算子工程，使
 
 ## 2. 操作步骤
 
-### 2.1【环境】必备环境准备（强制前置 ⚠️）
+### 2.1 【环境】必备环境准备（强制前置 ⚠️）
 
 🛑 **本节为强制前置步骤！跳过将导致后续操作出现大量失败。**  
 本教程**仅支持**标准化 CANN 容器环境，不兼容裸机、虚拟机或其他非标准容器部署。
@@ -298,6 +300,7 @@ namespace ops {
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #include "kernel_operator.h"
+#include "add_custom_tiling.h"
 constexpr int32_t BUFFER_NUM = 2; // tensor num for each queue
 
 class KernelAdd {

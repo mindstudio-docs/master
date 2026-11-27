@@ -18,7 +18,7 @@
 
 <span style="font-size:14px;">
 
-🔹 **[2026.02.10]**：msOpGen适配AscendC算子新工程    
+🔹 **[2026.02.10]**：msOpGen适配Ascend C算子新工程    
 🔹 **[2025.12.31]**：MindStudio Ops Generator 项目全面开源
 
 </span>

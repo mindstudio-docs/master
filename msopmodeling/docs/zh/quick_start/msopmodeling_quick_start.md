@@ -168,7 +168,7 @@ CSV 的单行错误不会中断后续行处理。处理结束后，终端按错�
   "op_name": "add",
   "op_type": "AIV",
   "core_num": 40,
-  "latency": "41.164109461818185μs",
+  "latency": "1.0291027365454546μs",
   "inputs": [
     {
       "name": "input",
@@ -220,7 +220,7 @@ CSV 的单行错误不会中断后续行处理。处理结束后，终端按错�
 | `theoretical_analysis[].inputs[].name` | - | 实际引用的 DSL 张量名，可以重复 |
 | `theoretical_analysis[].inputs[].shape` | -     | 输入 tensor 的逻辑 shape，按原生多维形状展示 |
 | `theoretical_analysis[].outputs[].shape` | -     | 输出 tensor 的逻辑 shape，按原生多维形状展示 |
-| `theoretical_analysis[].latency` | μs    | TileOp 模型估时；AIV 明细保留分核前的向量代价，计入 VEC 流水时再按核数折算 |
+| `theoretical_analysis[].latency` | μs    | TileOp 模型估时；AIV 向量计算已按核数折算，与计入 VEC 流水的该条耗时一致 |
 | `theoretical_analysis[].memory_access[].time` | μs    | 单独估算的搬运耗时；`null` 表示未提供逐路径耗时，不等于零 |
 | `theoretical_analysis[].memory_access[].src_mem` / `dst_mem` | - | 搬运的起点和终点 |
 | `theoretical_analysis[].memory_access[].bytes` | Bytes | 单次数据搬运量                        |

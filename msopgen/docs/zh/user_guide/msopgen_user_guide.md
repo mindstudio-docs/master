@@ -4,9 +4,7 @@
 
 **工具简介<a id="zh-cn_topic_0000001776910254_section17618134714611"></a>**
 
-完成算子分析和原型定义后，可使用MindStudio Ops Generator（算子工程工具，msOpGen）生成自定义算子工程，并进行编译部署。工具
-
-具有如下功能：
+完成算子分析和原型定义后，可使用MindStudio Ops Generator（算子工程工具，msOpGen）生成自定义算子工程，并进行编译部署。工具具有如下功能：
 
 - 基于算子原型定义输出算子工程。
 - 基于性能仿真环境生成的dump数据文件输出算子仿真流水图文件。
@@ -16,7 +14,8 @@
 具体流程请参考[图1 msOpGen工具使用流程介绍](#fig1120319585112)。
 
 **图 1** msOpGen工具使用流程介绍<a id="fig1120319585112"></a>
-![](../figures/msOpGen工具使用流程介绍.png "msOpGen工具使用流程介绍")
+
+![msOpGen工具使用流程图，展示从算子分析与原型定义到工程创建、编译部署及仿真流水图解析的先后步骤](../figures/msOpGen工具使用流程介绍.png "msOpGen工具使用流程介绍")
 
 ## 使用前准备<a id="使用前准备"></a>
 
@@ -85,7 +84,7 @@ msOpGen目前已支持的功能如下：包括算子工程创建、算子实现�
 </tr>
 <tr id="row13351279322"><td class="cellrowborder" valign="top" width="27.6%" headers="mcps1.2.3.1.1 "><p id="p23350723220"><a id="p23350723220"></a><a id="p23350723220"></a>解析算子仿真流水图文件</p>
 </td>
-<td class="cellrowborder" valign="top" width="72.39999999999999%" headers="mcps1.2.3.1.2 "><p id="p8973947104414"><a id="p8973947104414"></a><a id="p8973947104414"></a><a href="#查看算子仿真流水图">查看算子仿真流水图</a></p>
+<td class="cellrowborder" valign="top" width="72.39999999999999%" headers="mcps1.2.3.1.2 "><p id="p8973947104414"><a id="p8973947104414"></a><a id="p8973947104414"></a><a href="#查看算子仿真流水图">算子仿真流水图</a></p>
 </td>
 </tr>
 </tbody>
@@ -499,9 +498,9 @@ msOpGen工具其他参数说明可参考[**表 3** 参数说明](#table122041115
     >
     >- json文件可以配置多个算子，json文件为列表，列表中每一个元素为一个算子。
     >- 若input_desc或output_desc中存在相同name参数，则后一个会覆盖前一参数。
-    >- input_desc，output_desc中的type需按顺序一一对应匹配，format也需按顺序一一对应匹配。
+    >- input_desc、output_desc中的type需按顺序一一对应匹配，format也需按顺序一一对应匹配。
     >   例如，第一个输入x的type配置为[“int8”,“int32”]，第二个输入y的type配置为[“fp16”,“fp32”]，输出z的type配置为[“int32”,“int64”]，最终这个算子支持输入(“int8”,“fp16”)生成int32，或者(“int32”,“fp32”)生成int64，即输入和输出的type是垂直对应的，类型不能交叉。
-    >- input_desc，output_desc中的type与format需一一对应匹配，数量保持一致。type的数据类型为以下取值（"numbertype"、"realnumbertype"、"quantizedtype"、"BasicType"、"IndexNumberType"、"all"）时，需识别实际的type数量是否与format数量保持一致，若数量不一致，创建工程会收到报错提示，同时format按照type的个数进行补齐，继续生成算子工程。若type的取值为基本数据类型（如：“int32”），且与format无法一一对应时，创建工程会收到报错提示，并停止运行。
+    >- input_desc、output_desc中的type与format需一一对应匹配，数量保持一致。type的数据类型为以下取值（"numbertype"、"realnumbertype"、"quantizedtype"、"BasicType"、"IndexNumberType"、"all"）时，需识别实际的type数量是否与format数量保持一致，若数量不一致，创建工程会收到报错提示，同时format按照type的个数进行补齐，继续生成算子工程。若type的取值为基本数据类型（如：“int32”），且与format无法一一对应时，创建工程会收到报错提示，并停止运行。
     >- json文件可对“attr”算子属性进行配置，具体请参考[编写原型定义文件](#zh-cn_topic_0000001740005677_zh-cn_topic_0000001502825998_li1426528194416)。
     >- 算子的Operator Type需要采用**大驼峰**的命名方式，即采用大写字符区分不同的语义，具体请参见[算子工程编译](#算子编译部署)的须知内容。
 
@@ -548,7 +547,7 @@ msOpGen工具其他参数说明可参考[**表 3** 参数说明](#table122041115
 **操作步骤<a id="section7309175019420"></a>**
 
 1. 完成算子相关的开发适配，包括算子核函数的开发和tiling实现等，详细内容请参考《[Ascend C算子开发指南](https://gitcode.com/cann/asc-devkit/blob/master/docs/zh/guide/programming_guide/advanced_programming/aclnn_operator_development/overview.md)》中的工程化算子开发章节。
-2. 可参考[文档](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)进行开发，完成op_host/add_custom_tiling.h、op_host/add_custom.cpp和op_kernel/add_custom.cpp的实现。
+2. 可参考[custom_op_04样例工程源码](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)进行开发，完成op_host/add_custom_tiling.h、op_host/add_custom.cpp和op_kernel/add_custom.cpp的实现。
 3. 算子实现完成后，进入[算子编译部署](#算子编译部署)。
 
 #### 算子编译部署<a id="算子编译部署"></a>
@@ -570,7 +569,8 @@ msOpGen工具其他参数说明可参考[**表 3** 参数说明](#table122041115
 完成算子Kernel、Host侧的开发后，需要对算子工程进行编译，生成自定义算子安装包*.run，具体编译操作流程请参考[图2 算子工程编译示意图](#zh-cn_topic_0000001691887130_fig11482161513267)。
 
 **图 2** 算子工程编译示意图<a id="zh-cn_topic_0000001691887130_fig11482161513267"></a>
-![](../figures/算子工程编译示意图.png "算子工程编译示意图")
+
+![算子工程编译流程示意图，展示配置CMakePresets.json后执行build.sh生成算子安装包的过程](../figures/算子工程编译示意图.png "算子工程编译示意图")
 
 **操作步骤<a id="zh-cn_topic_0000001691887130_section122481539171817"></a>**
 
@@ -870,7 +870,7 @@ msOpGen工具其他参数说明可参考[**表 3** 参数说明](#table122041115
 
 msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水图文件（trace.json）。
 
-1. 参考[链接](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)，在`${git_clone_path}/cann-learning-hub/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04`路径下准备算子工程。
+1. 参考[样例算子工程](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)，在`${git_clone_path}/cann-learning-hub/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04`路径下准备算子工程。
 
     > [!NOTE]
     > 
@@ -885,7 +885,7 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
 
         > [!NOTE]
         >
-        > 若要生成算子仿真流水图，需要在`op_kernel/CMakeLists.txt`中添加kernel侧调试编译选项，使能kernel编译器调试功能。
+        > 若要生成算子仿真流水图，需要在`op_kernel/CMakeLists.txt`中添加Kernel侧调试编译选项，使能kernel编译器调试功能。
 
         ```cmake
         # op_kernel/CMakeLists.txt 中 npu_op_kernel_sources 之前添加
@@ -1031,10 +1031,12 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
     可以在Chrome浏览器中输入“chrome://tracing”地址，将输出路径下的**dump2trace_core*.json**文件拖到空白处打开，通过键盘上的快捷键（W：放大，S：缩小，A：左移，D：右移）进行查看，如下图所示。
 
     **图 3** 单个子核展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig49021115448"></a>
-    ![](../figures/单个子核展示.png "单个子核展示")
+    
+    ![Chrome浏览器tracing界面中的单子核仿真流水时间轴，展示各指令占用的时间区间与执行耗时](../figures/单个子核展示.png "单个子核展示")
 
     **图 4** Mix融合算子展示<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig793111117274"></a>
-    ![](../figures/Mix融合算子展示.png "Mix融合算子展示")
+    
+    ![Chrome浏览器tracing界面中的Mix融合算子流水图，展示Cube与Vector核任务在时间轴上的交替执行](../figures/Mix融合算子展示.png "Mix融合算子展示")
 
     **表 8** 字段说明
 
@@ -1098,12 +1100,14 @@ msOpGen工具通过解析用户生成的dump文件，并生成算子仿真流水
     在输出路径下打开代码行耗时文件{核编号}_code_exe_prof.csv，如下图所示。
 
     **图 5** 代码行耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig35497207381"></a>
-    ![](../figures/代码行耗时文件.png "代码行耗时文件")
+    
+    ![代码行耗时CSV文件的内容示例，逐行列出代码行的call count调用次数与cycles累计耗时字段](../figures/代码行耗时文件.png "代码行耗时文件")
 
     在输出路径下打开指令耗时文件{核编号}_instr_exe_prof.csv，如下图所示。
 
     **图 6** 指令耗时文件<a id="zh-cn_topic_0000001823418621_zh-cn_topic_0000001650160328_fig15979118144012"></a>
-    ![](../figures/指令耗时文件.png "指令耗时文件")
+    
+    ![指令耗时CSV文件的内容示例，逐条列出指令的call count调用次数与cycles累计耗时字段](../figures/指令耗时文件.png "指令耗时文件")
 
     通过文件中的“call count”及“cycles”字段可以分别查看代码行或指令的调用次数和累计耗时。
 
@@ -1296,7 +1300,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <td class="cellrowborder" valign="top" width="69.00846550549772%" headers="mcps1.2.4.1.2 "><p id="zh-cn_topic_0000001821790281_p1035211432915"><a id="zh-cn_topic_0000001821790281_p1035211432915"></a><a id="zh-cn_topic_0000001821790281_p1035211432915"></a>ST测试高级功能配置文件（msopst.ini）存储路径，可配置为绝对路径或者相对路径。</p>
     <p id="zh-cn_topic_0000001821790281_p1335215433917"><a id="zh-cn_topic_0000001821790281_p1335215433917"></a><a id="zh-cn_topic_0000001821790281_p1335215433917"></a>用户可通过修改msopst.ini配置文件，实现如下高级功能：</p>
     <a id="zh-cn_topic_0000001821790281_ul83525436917"></a><a id="zh-cn_topic_0000001821790281_ul83525436917"></a><ul id="zh-cn_topic_0000001821790281_ul83525436917"><li>ST测试源码可编辑。</li><li>已编辑的ST测试源码可执行。</li><li>设置Host日志级别环境变量。</li><li>设置日志是否在控制台显示。</li><li>设置atc模型转换的日志级别。</li><li>设置atc模型转换运行环境的操作系统类型及架构。</li><li>设置模型精度。</li><li>读取算子在<span id="zh-cn_topic_0000001821790281_ph93528431917"><a id="zh-cn_topic_0000001821790281_ph93528431917"></a><a id="zh-cn_topic_0000001821790281_ph93528431917"></a>AI处理器</span>上运行的性能数据。</li></ul>
-    <p id="p57016533264"><a id="p57016533264"></a><a id="p57016533264"></a>若未配置--config_file文件，模型将强制使用FP16类型精度，msopst.ini配置文件的详细说明请参见<a href="#zh-cn_topic_0000001821790281_table17358154319919">表 1 msopst.ini文件参数说明</a>。</p>
+    <p id="p57016533264"><a id="p57016533264"></a><a id="p57016533264"></a>若未配置--config_file文件，模型将强制使用FP16类型精度，msopst.ini配置文件的详细说明请参见<a href="#zh-cn_topic_0000001821790281_table17358154319919">表 13 msopst.ini文件参数说明</a>。</p>
     </td>
     <td class="cellrowborder" valign="top" width="6.811326262527976%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p53531043896"><a id="zh-cn_topic_0000001821790281_p53531043896"></a><a id="zh-cn_topic_0000001821790281_p53531043896"></a>否</p>
     </td>
@@ -1384,7 +1388,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
     msOpST工具根据待测Host侧算子的实现文件生成算子ST测试用例定义文件，在算子工程文件中Host侧算子的实现文件路径如下所示。
 
-    可以单击[链接](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)获取文档中对应的Host侧算子实现文件add_custom_template.cpp进行参考。
+    可以单击[custom_op_04样例工程源码](https://gitcode.com/cann/cann-learning-hub/tree/8.5.0/tutorials/ascendc_operator_development/03_intermediate_vector_operator_development/src/custom_op_04)获取文档中对应的Host侧算子实现文件add_custom_template.cpp进行参考。
 
     > [!NOTE]
     > 
@@ -1694,7 +1698,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     <div class="p" id="zh-cn_topic_0000001775029424_p15124436379"><a id="zh-cn_topic_0000001775029424_p15124436379"></a><a id="zh-cn_topic_0000001775029424_p15124436379"></a>若用户需要指定输入数据时，可通过增加“value”字段进行配置。有如下三种配置方式：<a id="zh-cn_topic_0000001775029424_ul2026010173720"></a><a id="zh-cn_topic_0000001775029424_ul2026010173720"></a><ul id="zh-cn_topic_0000001775029424_ul2026010173720"><li>直接输入Tensor数据，如Tensor的值为[1,2,3,4]。<p id="zh-cn_topic_0000001775029424_p6901205794117"><a id="zh-cn_topic_0000001775029424_p6901205794117"></a><a id="zh-cn_topic_0000001775029424_p6901205794117"></a>"value": [1,2,3,4]</p>
     </li><li>输入二进制数据文件的路径，如数据文件为test.bin时。<p id="zh-cn_topic_0000001775029424_p151013154214"><a id="zh-cn_topic_0000001775029424_p151013154214"></a><a id="zh-cn_topic_0000001775029424_p151013154214"></a>"value": "../test.bin"</p>
     <p id="zh-cn_topic_0000001775029424_p72611408378"><a id="zh-cn_topic_0000001775029424_p72611408378"></a><a id="zh-cn_topic_0000001775029424_p72611408378"></a>二进制数据bin文件需用户自行准备。可以输入绝对路径，也可以输入测试用例定义文件的相对路径。</p>
-    </li><li>配置为“fuzz”，使用fuzz测试参数生成脚本自动批量生成值。<div class="note" id="zh-cn_topic_0000001775029424_note12221316194415"><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><span class="notetitle"> 说明： </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p1022161610445"><a id="zh-cn_topic_0000001775029424_p1022161610445"></a><a id="zh-cn_topic_0000001775029424_p1022161610445"></a>若用户添加了“value”字段，“data_distribute”和“value_range”字段将会被忽略。同时需要保证“format”、"type"、"shape"字段的值与“value”数据对应，且每个用例只能测试一种数据类型。配置示例可参见《MindStudio Ops Generator典型案例》中的“测试用例定义文件&gt;若指定固定输入”。</p>
+    </li><li>配置为“fuzz”，使用fuzz测试参数生成脚本自动批量生成值。<div class="note" id="zh-cn_topic_0000001775029424_note12221316194415"><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><a id="zh-cn_topic_0000001775029424_note12221316194415"></a><span class="notetitle"> 说明： </span><div class="notebody"><p id="zh-cn_topic_0000001775029424_p1022161610445"><a id="zh-cn_topic_0000001775029424_p1022161610445"></a><a id="zh-cn_topic_0000001775029424_p1022161610445"></a>若用户添加了“value”字段，“data_distribute”和“value_range”字段将会被忽略。同时需要保证“format”、“type”、“shape”字段的值与“value”数据对应，且每个用例只能测试一种数据类型。配置示例可参见《MindStudio Ops Generator典型案例》中的“测试用例定义文件&gt;若指定固定输入”。</p>
     </div></div>
     </li></ul>
     </div>
@@ -1885,7 +1889,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
     >- `${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。以root用户安装为例，安装后文件默认存储路径为：`/usr/local/Ascend/cann`。
     >- {arch-os}中arch表示操作系统架构，os表示操作系统。
 
-2. 执行如下命令生成/执行测试用例，具体参数介绍请参见[**表 9** 生成算子测试用例定义文件的参数说明](#zh-cn_topic_0000001775029424_table15856145565413)。
+2. 执行如下命令生成/执行测试用例，具体参数介绍请参见[**表 10** 生成/执行测试用例的参数说明](#zh-cn_topic_0000001821790281_table1735410430919)。
 
     ```sh
     msopst run -i {*.json}  -soc {soc version}  -out {output path} -c {case name} -d {device id} -conf {msopst.ini path} -err_thr "[threshold1,threshold2]"
@@ -1914,7 +1918,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         <td class="cellrowborder" valign="top" width="41.3041304130413%" headers="mcps1.2.4.1.2 "><a id="zh-cn_topic_0000001821790281_ul1035412431192"></a><a id="zh-cn_topic_0000001821790281_ul1035412431192"></a><ul id="zh-cn_topic_0000001821790281_ul1035412431192"><li>True</li><li>False（默认）</li></ul>
         </td>
         <td class="cellrowborder" rowspan="2" valign="top" width="29.262926292629267%" headers="mcps1.2.4.1.3 "><p id="zh-cn_topic_0000001821790281_p73543437920"><a id="zh-cn_topic_0000001821790281_p73543437920"></a><a id="zh-cn_topic_0000001821790281_p73543437920"></a>msOpST工具运行模式。</p>
-        <p id="zh-cn_topic_0000001821790281_p53556431196"><a id="zh-cn_topic_0000001821790281_p53556431196"></a><a id="zh-cn_topic_0000001821790281_p53556431196"></a>详情请参见<a href="#zh-cn_topic_0000001821790281_table1836016436913">**表 2** msOpST的运行模式</a>。</p>
+        <p id="zh-cn_topic_0000001821790281_p53556431196"><a id="zh-cn_topic_0000001821790281_p53556431196"></a><a id="zh-cn_topic_0000001821790281_p53556431196"></a>详情请参见<a href="#zh-cn_topic_0000001821790281_table1836016436913">**表 14** msOpST的运行模式</a>。</p>
         </td>
         </tr>
         <tr id="zh-cn_topic_0000001821790281_row14355443298"><td class="cellrowborder" valign="top" headers="mcps1.2.4.1.1 "><p id="zh-cn_topic_0000001821790281_p203558435910"><a id="zh-cn_topic_0000001821790281_p203558435910"></a><a id="zh-cn_topic_0000001821790281_p203558435910"></a>only_run_without_gen</p>
@@ -2157,10 +2161,11 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
         │   └── st_report.json        //运行报表
         ```
 
-        命令运行成功后，会生成报表st_report.json，记录了测试的信息以及各阶段运行情况，用户运行出问题以后，可基于报表查询运行信息，以便问题定位。同时，st_report.json报表可以对比测试结果。st_report.json保存在[图6 运行结果示例](#zh-cn_topic_0000001821790281_fig1936411431910)中“The st_report saved in”路径下。
+        命令运行成功后，会生成报表st_report.json，记录了测试的信息以及各阶段运行情况，用户运行出问题以后，可基于报表查询运行信息，以便问题定位。同时，st_report.json报表可以对比测试结果。st_report.json保存在[图7 运行结果示例](#zh-cn_topic_0000001821790281_fig1936411431910)中“The st_report saved in”路径下。
 
         **图 7** 运行结果示例<a id="zh-cn_topic_0000001821790281_fig1936411431910"></a>
-        ![](../figures/运行结果示例.png "运行结果示例")
+        
+        ![ST测试执行后的屏幕打印示例，显示用例运行情况统计及The st_report saved in报表保存路径](../figures/运行结果示例.png "运行结果示例")
 
         **表 15** st_report.json报表主要字段及含义
 
@@ -2321,10 +2326,11 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
 4. 查看运行结果。<a id="开发环境与运行环境分设场景输出结果"></a>
 
-    执行完成后，打印信息提示此次用例运行的情况，如[图7 运行结果](#zh-cn_topic_0000001821790281_fig204517552811)所示。
+    执行完成后，打印信息提示此次用例运行的情况，如[图8 运行结果](#zh-cn_topic_0000001821790281_fig204517552811)所示。
 
     **图 8** 运行结果<a id="zh-cn_topic_0000001821790281_fig204517552811"></a>
-    ![](../figures/运行结果.png "运行结果")
+    
+    ![在运行环境执行main可执行文件后的屏幕打印信息，显示各测试用例的执行情况与结果统计](../figures/运行结果.png "运行结果")
 
 #### 生成单算子上板测试框架<a id="生成单算子上板测试框架"></a>
 
@@ -2367,7 +2373,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
     st_report.json保存在如下“The st_report saved in”路径中。
 
-    ```json
+    ```output
     2024-01-17 08:40:55 (3271037) - [INFO] Create 1 sub test cases for Test_AddCustom_001.
     2024-01-17 08:40:55 (3271037) - [INFO] [STEP2] [data_generator.py] Generate data for testcase.
     2024-01-17 08:40:55 (3271037) - [INFO] Start to generate the input data for Test_AddCustom_001_case_001_ND_float.
@@ -2546,7 +2552,7 @@ msopst create -i {operator.cpp file} -out {output path} -m {pb file} -q
 
     脚本执行完毕会出现类似如下打印，输出"succeed"字样表示完成上板验证。<a id="li176695314178"></a>
 
-    ```text
+    ```output
     INFO: compile op on npu succeed!
     [INFO] Succeeded to exec acl api aclrtCreateContext(&context, deviceId)
     [INFO] Succeeded to exec acl api aclrtCreateStream(&stream)

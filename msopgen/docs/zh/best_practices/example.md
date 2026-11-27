@@ -12,7 +12,7 @@
 
 **操作步骤**
 
-1. 参考以下json文件，准备算子原型文件（以MatmulCustom算子为例）。
+1. 参考以下JSON文件，准备算子原型文件（以MatmulCustom算子为例）。
 
     ```json
     [
@@ -107,7 +107,7 @@
         ./build_out/custom_opp_<target_os>_<target_architecture>.run
         ```
 
-    - 执行以下命令，将算子部署到自定义路径（以_xxx_/MatmulCustom/installed为例）：
+    - 执行以下命令，将算子部署到自定义路径（以xxx/MatmulCustom/installed为例）：
 
         ```sh
         ./build_out/custom_opp_<target_os>_<target_architecture>.run --install-path="xxx/MatmulCustom/installed" 

@@ -90,7 +90,7 @@ pip install mindstudio_opst-xxxxx.whl
 
 安装完成后，执行以下命令验证工具是否安装成功：
 
-```shell
+```bash
 msopgen --help
 ```
 
@@ -131,17 +131,19 @@ msopgen --help
 
 可通过`msopgen --version`命令查看当前环境的版本信息，再选择需要升级的版本。升级版本时需要关注版本配套关系，请参见《[版本说明](https://gitcode.com/Ascend/release-management/blob/master/MindStudio/master/release_notes.md)》。
 
-## 6. 运行UT、ST测试用例
+## 6. 运行UT、ST用例
+
+
 
 `3.7 <= python版本要求 <=3.11`，`${INSTALL_DIR}`请替换为CANN软件安装后文件存储路径。例如，若安装的是Ascend-cann-toolkit软件包，安装后文件存储路径示例为：`$HOME/Ascend/cann`。
 
-```shell
+```bash
 source ${INSTALL_DIR}/set_env.sh
 ```
 
 测试报告在output目录。
 
-```sh
+```bash
 cd msopgen
 python build.py test
 ```

@@ -321,7 +321,7 @@ CSV 成功行包含正常的预测字段，并附带 `source`。错误行也保�
 | `op_name` | DSL 中的 tileop 名称，例如 `gemm`、`mul`、`exp` |
 | `op_type` | 当前 tileop 的核类型：`AIC` 或 `AIV`，与顶层整算子分类分开 |
 | `core_num` | 当前条目使用的建模核数配置，不是实测活跃核数 |
-| `latency` | 当前 TileOp 成本模型返回的估时。AIV 条目这里显示按完整工作量估算的向量代价；计入 `component_latency.VEC` 前，Roofline 再除以 AIV 核数。GEMM 等 AIC 算子的子模型已考虑分核，时延可以包含模型内部的输入搬运 |
+| `latency` | 当前 TileOp 的估时。AIV 向量计算已按 AIV 核数折算，与计入 `component_latency.VEC` 的该条耗时一致。GEMM 等 AIC 算子的子模型已考虑分核，时延可以包含模型内部的输入搬运 |
 | `inputs`、`outputs` | 当前 tileop 的输入、输出张量列表 |
 | `memory_access` | 与当前条目关联的搬运记录列表。若模型未单独记录搬运则可为空，例如向量操作复用已在 UB 的输入 |
 
@@ -347,6 +347,8 @@ CSV 成功行包含正常的预测字段，并附带 `source`。错误行也保�
 | `tensor` | 可选。指与该次显式读入或写出关联的张量，字段同上；`tileop_costmodel` 的路径汇总不附带单个张量 |
 
 `GM` 为全局内存，`L2` 为二级缓存，`L1` 和 `L0A`/`L0B` 是 Cube 输入侧存储，`L0C` 是 Cube 结果缓冲，`UB` 是向量计算使用的统一缓冲区。搬运方向以 `src_mem` 和 `dst_mem` 为准，不能用有 `time` 的记录之和替代流水时延。
+
+`theo` 不展示 GEMM 的 `GM → L2` 路径，但已配置的路径仍参与建模。GEMM 的 `L2 → L1` 明细展示该段的独立估时，不等同于汇总的 `component_latency.MTE2`。
 
 ### 6.3 eng 专属结果字段
 

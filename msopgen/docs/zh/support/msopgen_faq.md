@@ -56,11 +56,11 @@
 4. 检查驱动安装是否正确，参考《[CANN 软件安装指南](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/softwareinst/instg/instg_0107.html?OS=openEuler&InstallType=netyum)》
 5. 错误码详见《[ACL错误码表](https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/latest/API/runtimeapi/aclcppdevg_03_1345.html)》
 
-## 运行结果全为 0 或随机值
+## 运行结果全为0或随机值
 
 **问题现象**
 
-算子执行完成但输出结果与预期不符，全部为 0 或包含随机值。
+算子执行完成但输出结果与预期不符，全部为0或包含随机值。
 
 **原因分析**
 
